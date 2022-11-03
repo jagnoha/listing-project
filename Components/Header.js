@@ -1,3 +1,4 @@
+import React from 'react';
 import { Appbar, useTheme } from 'react-native-paper';
 
 export default function Header(props) {

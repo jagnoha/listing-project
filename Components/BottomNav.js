@@ -1,11 +1,11 @@
-
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Appbar, useTheme } from 'react-native-paper';
 import { BottomNavigation, Text } from 'react-native-paper';
+import Account from './Account';
 
 const HomeRoute = () => <Text>Listings</Text>;
 
-const AccountRoute = () => <Text>Account</Text>;
+const AccountRoute = () => <Account />;//<Text>Account</Text>;
 
 export default function BottomNav() {
     const [index, setIndex] = useState(0);
@@ -17,7 +17,7 @@ export default function BottomNav() {
 
       const renderScene = BottomNavigation.SceneMap({
         home: HomeRoute,
-        account: AccountRoute,        
+        account: AccountRoute, //AccountRoute,        
       });
   
     return (

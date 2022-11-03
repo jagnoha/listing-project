@@ -1,3 +1,4 @@
+import React from 'react';
 import { Provider as PaperProvider, MD3LightTheme as DefaultTheme } from 'react-native-paper';
 import Main from './Main';
 
