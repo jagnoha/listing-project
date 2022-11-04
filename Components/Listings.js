@@ -1,6 +1,6 @@
 import React from 'react';
-import { Appbar, useTheme, Text, FAB } from 'react-native-paper';
-import { StyleSheet, View, SafeAreaView } from 'react-native';
+import { useTheme, FAB } from 'react-native-paper';
+import { StyleSheet, SafeAreaView } from 'react-native';
 import ListingStatusTab from './ListingStatusTab';
 
 export default function Listings() {
@@ -13,7 +13,7 @@ export default function Listings() {
         icon='plus'
         label='Add listing'
         style={styles.fab}
-        onPress={() => console.log('Pressed')}
+        onPress={() => console.log('Pressed FAB')}
       />
     </SafeAreaView>
   );

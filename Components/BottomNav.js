@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Appbar, useTheme } from 'react-native-paper';
 import { BottomNavigation, Text } from 'react-native-paper';
 import Account from './Account';
 import Listings from './Listings';

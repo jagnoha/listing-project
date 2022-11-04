@@ -1,12 +1,19 @@
-import React from 'react';
-import { Appbar, useTheme, Text, Button, Divider } from 'react-native-paper';
+import React, {useEffect} from 'react';
+import { useTheme, Button, Divider } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 
 export default function ListingsReadyToGo() {
   const theme = useTheme();
 
+  
+
+  /*useEffect(()=>{
+    console.log('READY TO GO!!!')
+  })*/
+
   return (
     <>
+      
       <Button
         icon='upload'
         mode='contained'

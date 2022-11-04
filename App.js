@@ -1,4 +1,11 @@
 import React from 'react';
+import {
+  RecoilRoot,
+  atom,
+  selector,
+  useRecoilState,
+  useRecoilValue,
+} from 'recoil';
 import { Provider as PaperProvider, MD3LightTheme as DefaultTheme } from 'react-native-paper';
 import Main from './Main';
 
@@ -50,11 +57,15 @@ const theme = {
   }
 };
 
+
+
 export default function App() {
   return (
-   <PaperProvider theme={theme}>
-      <Main />
-   </PaperProvider>
+    <RecoilRoot>
+      <PaperProvider theme={theme}>
+          <Main />
+      </PaperProvider>
+   </RecoilRoot>
   );
 }
 

@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRecoilState } from 'recoil';
+import selectedAtom from '../Store/atoms/selectedAtom';
 import {
   useTheme,
   List,
   Text,
   Searchbar,
+  IconButton,
+  Avatar,
   Chip,
   Badge,
+  MD3Colors,Button,
 } from 'react-native-paper';
 import { StyleSheet, Image, FlatList } from 'react-native';
 
@@ -69,8 +74,28 @@ const DATA = [
 export default function ListingsToRevise() {
   const theme = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
+  //const [selected, setSelected] = useState([]);
+
+  const [selected, setSelected] = useRecoilState(selectedAtom);
 
   const onChangeSearch = (query) => setSearchQuery(query);
+
+  const onSelectListing = (id) => {
+    if (selected.find(item => item === id)){
+      setSelected(selected.filter(item => item !== id));
+    } else {
+      setSelected((oldSelected) =>  [...oldSelected, id])
+    }
+  }
+
+  /*useEffect(()=>{
+    console.log('READY TO GO!!!')
+  })*/
+
+  console.log('AQUI ESTOY!');
+  //console.log(selectedDemo);
+
+  
   const renderItem = ({ item }) => (
     <List.Item
       title={item.title}
@@ -84,11 +109,12 @@ export default function ListingsToRevise() {
           
         </>
       }
-      onPress={() => console.log('Pressed')}
-      //onLongPress={() => console.log('Pressed')}
+      onPress={() => console.log('Pressed listing')}
+      onLongPress={() => onSelectListing(item.id)}
       left={(props) => (
+        selected.find(listing => listing === item.id)  ? <IconButton icon='check-circle' size={30} iconColor={theme.colors.primary}/> :
         <List.Image {...props} variant='image' source={{ uri: item.image }} />
-      )}
+        )}
       right={() => (
         <Text style={{fontSize: 11}}>
           Nov 4
@@ -99,12 +125,13 @@ export default function ListingsToRevise() {
 
   return (
     <>
-      <Searchbar
+      
+      {selected.length === 0 ? <Searchbar
         placeholder='Search'
         onChangeText={onChangeSearch}
         value={searchQuery}
         loading={false}
-  />
+  />:''}
       <FlatList
         data={DATA}
         renderItem={renderItem}
