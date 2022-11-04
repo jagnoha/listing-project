@@ -1,5 +1,5 @@
 import React from 'react';
-import { Appbar, useTheme, Text, Button } from 'react-native-paper';
+import { Appbar, useTheme, Text, Button, Divider } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 
 export default function ListingsReadyToGo() {
@@ -13,9 +13,10 @@ export default function ListingsReadyToGo() {
         onPress={() => console.log('Pressed')}
         style={styles.button}
       >
-        Upload all products to eBay
+        Upload all to eBay
       </Button>
-      <Text>Ready to Go</Text>
+      <Divider />
+      
     </>
   );
 }

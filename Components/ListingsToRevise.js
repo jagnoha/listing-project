@@ -13,19 +13,19 @@ const DATA = [
   {
     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
     image: 'https://picsum.photos/200',
-    title: 'First Item',
+    title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
     price: 0,
   },
   {
     id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
     image: 'https://picsum.photos/200',
-    title: 'Second Item',
+    title: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco',
     price: 0,
   },
   {
     id: '58694a0f-3da1-471f-bd96-145571e29d72',
     image: 'https://picsum.photos/200',
-    title: 'Third Item',
+    title: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum',
     price: 0,
   },
   {
@@ -76,7 +76,12 @@ export default function ListingsToRevise() {
       title={item.title}
       description={
         <>
-          <Text>Nike</Text> | <Text>Preowned</Text> | <Text>4</Text>
+          <Text        
+            style={styles.features}  
+          >
+            Nike | Preowned
+          </Text>                 
+          
         </>
       }
       onPress={() => console.log('Pressed')}
@@ -85,24 +90,21 @@ export default function ListingsToRevise() {
         <List.Image {...props} variant='image' source={{ uri: item.image }} />
       )}
       right={() => (
-        <Chip
-          icon='cash'
-          mode='outlined'
-          style={{ marginTop: 10, marginBottom: 10 }}
-        >
-          $45
-        </Chip>
+        <Text style={{fontSize: 11}}>
+          Nov 4
+        </Text>
       )}
     />
   );
 
   return (
     <>
-      {/*<Searchbar
+      <Searchbar
         placeholder='Search'
         onChangeText={onChangeSearch}
         value={searchQuery}
-  />*/}
+        loading={false}
+  />
       <FlatList
         data={DATA}
         renderItem={renderItem}
@@ -110,21 +112,7 @@ export default function ListingsToRevise() {
         refreshing={false}
         onRefresh={() => console.log('Refreshing')}
       />
-      {/*<ScrollView contentContainerStyle={{ paddingHorizontal: 5 }}>
-        <List.Item
-          title='First Item'
-          description='Item description'
-          onPress={() => console.log('Pressed')}
-          left={(props) => (
-            <List.Image
-              {...props}
-              variant='image'
-              source={{ uri: 'https://picsum.photos/200' }}
-            />
-          )}
-        />
-        
-          </ScrollView>*/}
+      
     </>
   );
 }
@@ -143,4 +131,8 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
+  features: {
+    color: 'gray',
+    padding: 25,
+  }
 });

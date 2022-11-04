@@ -3,8 +3,11 @@ import { Appbar, useTheme } from 'react-native-paper';
 import { BottomNavigation, Text } from 'react-native-paper';
 import Account from './Account';
 import Listings from './Listings';
+import Stats from './Stats';
 
 const HomeRoute = () => <Listings />;
+
+const StatsRoute = () => <Stats />;
 
 const AccountRoute = () => <Account />; //<Text>Account</Text>;
 
@@ -19,6 +22,12 @@ export default function BottomNav() {
       unfocusedIcon: 'format-list-text',
     },
     {
+        key: 'stats',
+        title: 'Stats',
+        focusedIcon: 'chart-box',
+        unfocusedIcon: 'chart-box-outline',
+    },
+    {
       key: 'account',
       title: 'Account',
       focusedIcon: 'account',
@@ -28,6 +37,7 @@ export default function BottomNav() {
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
+    stats: StatsRoute,
     account: AccountRoute, //AccountRoute,
   });
 
