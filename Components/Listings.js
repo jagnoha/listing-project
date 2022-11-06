@@ -1,21 +1,59 @@
-import React from 'react';
-import { useTheme, FAB } from 'react-native-paper';
+import React, { useState } from 'react';
+import { useTheme, FAB, Portal, Provider } from 'react-native-paper';
 import { StyleSheet, SafeAreaView } from 'react-native';
 import ListingStatusTab from './ListingStatusTab';
+import theme from '../Utils/theming';
 
 export default function Listings() {
-  const theme = useTheme();
+  const [state, setState] = React.useState({ open: false });
+
+  const onStateChange = ({ open }) => setState({ open });
+
+  const { open } = state;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ListingStatusTab />
-      <FAB
-        icon='plus'
-        label='Add listing'
-        style={styles.fab}
-        onPress={() => console.log('Pressed FAB')}
-      />
-    </SafeAreaView>
+    <Provider theme={theme}>
+      <SafeAreaView style={styles.container}>
+        <ListingStatusTab />
+
+        <Portal>
+          <FAB.Group
+            style={styles.fab}
+            open={open}
+            visible
+            icon={open ? 'arrow-left' : 'plus'}
+            actions={[
+              {
+                icon: 'tshirt-crew',
+                label: 'Clothing',
+                onPress: () => console.log('Pressed clothing'),
+              },
+              {
+                icon: 'shoe-formal',
+                label: 'Shoes',
+                onPress: () => console.log('Pressed shoes'),
+              },
+              {
+                icon: 'car-side',
+                label: 'Auto & Motorcycle Parts',
+                onPress: () => console.log('Pressed auto parts'),
+              },
+              {
+                icon: 'tag-multiple',
+                label: 'Everything else',
+                onPress: () => console.log('Pressed notifications'),
+              },
+            ]}
+            onStateChange={onStateChange}
+            onPress={() => {
+              if (open) {
+                // do something if the speed dial is open
+              }
+            }}
+          />
+        </Portal>
+      </SafeAreaView>
+    </Provider>
   );
 }
 
@@ -25,8 +63,8 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 25,
+    //margin: 16,
+    //right: 15,
+    //bottom: 100,
   },
 });

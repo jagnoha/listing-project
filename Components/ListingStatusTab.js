@@ -8,7 +8,6 @@ import ListingsToRevise from './ListingsToRevise';
 import ListingsReadyToGo from './ListingsReadyToGo';
 import Header from './Header';
 
-
 const ToReviseRoute = () => <ListingsToRevise />;
 
 const ReadyToGoRoute = () => <ListingsReadyToGo />;
@@ -32,20 +31,26 @@ export default function ListingStatusTab() {
 
   //console.log(selected);
 
-  console.log(index);
+  //console.log(index);
 
   return (
     <>
-    {selected.length > 0 ? <Header title={selected.length}  type='selection' indexTab = {index} /> : <Header title='ListerFast' type='basic' indexTab = {0} />}
-    <TabView
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
-      onIndexChange={()=>{setIndex;setSelected([])}}
-      initialLayout={{ width: layout.width }}
-      animationEnabled={false}
-      swipeEnabled={false}
-    />
+      {selected.length > 0 ? (
+        <Header title={selected.length} type='selection' indexTab={index} />
+      ) : (
+        <Header title='ListerFast' type='basic' indexTab={0} />
+      )}
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={() => {
+          setIndex;
+          setSelected([]);
+        }}
+        initialLayout={{ width: layout.width }}
+        animationEnabled={false}
+        swipeEnabled={false}
+      />
     </>
-    
   );
 }
