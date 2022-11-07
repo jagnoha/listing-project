@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTheme, FAB, Portal, Provider } from 'react-native-paper';
 import { StyleSheet, SafeAreaView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import ListingStatusTab from './ListingStatusTab';
 import theme from '../Utils/theming';
 
@@ -8,6 +9,8 @@ export default function Listings() {
   const [state, setState] = React.useState({ open: false });
 
   const onStateChange = ({ open }) => setState({ open });
+
+  const navigation = useNavigation();
 
   const { open } = state;
 
@@ -26,22 +29,23 @@ export default function Listings() {
               {
                 icon: 'tshirt-crew',
                 label: 'Clothing',
-                onPress: () => console.log('Pressed clothing'),
+                //onPress: () => console.log('Pressed clothing'),
+                onPress: () => { navigation.navigate('AddListing', {title: 'Add Clothing', type: 'clothing'}) }
               },
               {
                 icon: 'shoe-formal',
                 label: 'Shoes',
-                onPress: () => console.log('Pressed shoes'),
+                onPress: () => { navigation.navigate('AddListing', {title: 'Add Shoes', type: 'shoes'}) }
               },
               {
                 icon: 'car-side',
                 label: 'Auto & Motorcycle Parts',
-                onPress: () => console.log('Pressed auto parts'),
+                onPress: () => { navigation.navigate('AddListing', {title: 'Add Auto Parts', type:'autoparts'}) }
               },
               {
                 icon: 'tag-multiple',
                 label: 'Everything else',
-                onPress: () => console.log('Pressed notifications'),
+                onPress: () => { navigation.navigate('AddListing', {title: 'Add Listing', type:'other'}) }
               },
             ]}
             onStateChange={onStateChange}

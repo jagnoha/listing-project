@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { useRecoilState } from 'recoil';
 import selectedAtom from '../Store/atoms/selectedAtom';
 import {
@@ -94,6 +95,7 @@ const listingStructure = (props) => {
 export default function ListingsToRevise() {
   const theme = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
+  //const navigation = useNavigation(); 
   //const [selected, setSelected] = useState([]);
 
   const [selected, setSelected] = useRecoilState(selectedAtom);
@@ -133,7 +135,8 @@ export default function ListingsToRevise() {
       titleNumberOfLines={2}
       descriptionStyle={{ color: 'gray' }}
       description={'Nike | Preowned'}
-      onPress={() => console.log('Pressed listing')}
+      //onPress={() => navigation.navigate('AddListing')}
+      onPress={()=>console.log(item.id)}
       onLongPress={() => onSelectListing(item.id)}
       left={(props) =>
         selected.find((listing) => listing === item.id) ? (

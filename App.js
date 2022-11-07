@@ -1,8 +1,9 @@
 import React from 'react';
-import { Amplify } from 'aws-amplify';
-import awsconfig from './src/aws-exports';
 
-Amplify.configure(awsconfig);
+//import { Amplify } from 'aws-amplify';
+//import awsconfig from './src/aws-exports';
+
+//Amplify.configure(awsconfig);
 
 import { RecoilRoot } from 'recoil';
 import {
@@ -16,7 +17,7 @@ export default function App() {
   return (
     <RecoilRoot>
       <PaperProvider theme={theme}>
-        <Main />
+      <Main />
       </PaperProvider>
     </RecoilRoot>
   );

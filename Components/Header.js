@@ -24,6 +24,30 @@ export default function Header(props) {
             );
         } 
     }
+
+    if (props.type === 'back'){
+        return (
+
+            <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
+            <Appbar.BackAction onPress={()=>props.actionBack()} />
+            <Appbar.Content title={props.title} color={theme.colors.onBackground} />
+            {/*<Appbar.Action icon='save' onPress={()=>console.log('Delete items!')} />*/}
+            </Appbar.Header>
+
+        );
+    }
+
+    if (props.type === 'createListing'){
+        return (
+
+            <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
+            <Appbar.BackAction onPress={()=>props.actionBack()} />
+            <Appbar.Content title={props.title} color={theme.colors.onBackground} />
+            {/*<Appbar.Action icon='content-save-outline' onPress={()=>console.log('Save item!')} />*/}
+            </Appbar.Header>
+
+        );
+    }
     
 
     return (
