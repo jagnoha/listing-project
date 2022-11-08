@@ -1,4 +1,6 @@
-import { ModelInit, MutableModel, PersistentModelConstructor } from "@aws-amplify/datastore";
+import { ModelInit, MutableModel } from "@aws-amplify/datastore";
+// @ts-ignore
+import { LazyLoading, LazyLoadingDisabled, AsyncItem, AsyncCollection } from "@aws-amplify/datastore";
 
 export enum ListingType {
   CLOTHING = "CLOTHING",
@@ -11,8 +13,6 @@ export enum Plans {
   PERSONAL = "PERSONAL",
   PROFESSIONAL = "PROFESSIONAL"
 }
-
-
 
 type ListingMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
@@ -54,7 +54,7 @@ type EbayAccountsMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
-export declare class Listing {
+type EagerListing = {
   readonly id: string;
   readonly title?: string | null;
   readonly description?: string | null;
@@ -88,20 +88,71 @@ export declare class Listing {
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly listingItemsCompatibilityId?: string | null;
-  constructor(init: ModelInit<Listing, ListingMetaData>);
-  static copyOf(source: Listing, mutator: (draft: MutableModel<Listing, ListingMetaData>) => MutableModel<Listing, ListingMetaData> | void): Listing;
 }
 
-export declare class ItemsCompatibility {
+type LazyListing = {
+  readonly id: string;
+  readonly title?: string | null;
+  readonly description?: string | null;
+  readonly price?: number | null;
+  readonly categoryID?: string | null;
+  readonly shippingProfileID?: string | null;
+  readonly returnProfileID?: string | null;
+  readonly paymentProfileID?: string | null;
+  readonly ebayMotors?: boolean | null;
+  readonly itemsSpecifics?: string | null;
+  readonly manufacturerPartNumber?: string | null;
+  readonly interchangePartNumber?: string | null;
+  readonly otherPartNumber?: string | null;
+  readonly UPC?: string | null;
+  readonly EAN?: string | null;
+  readonly ISBN?: string | null;
+  readonly images?: (string | null)[] | null;
+  readonly conditionCode?: string | null;
+  readonly conditionDescription?: string | null;
+  readonly length?: number | null;
+  readonly width?: number | null;
+  readonly depth?: number | null;
+  readonly weight?: number | null;
+  readonly quantity?: number | null;
+  readonly sku?: string | null;
+  readonly isDraft?: boolean | null;
+  readonly brand?: string | null;
+  readonly accountsID: string;
+  readonly ItemsCompatibility: AsyncItem<ItemsCompatibility | undefined>;
+  readonly type?: ListingType | keyof typeof ListingType | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly listingItemsCompatibilityId?: string | null;
+}
+
+export declare type Listing = LazyLoading extends LazyLoadingDisabled ? EagerListing : LazyListing
+
+export declare const Listing: (new (init: ModelInit<Listing, ListingMetaData>) => Listing) & {
+  copyOf(source: Listing, mutator: (draft: MutableModel<Listing, ListingMetaData>) => MutableModel<Listing, ListingMetaData> | void): Listing;
+}
+
+type EagerItemsCompatibility = {
   readonly id: string;
   readonly compatibilityList?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<ItemsCompatibility, ItemsCompatibilityMetaData>);
-  static copyOf(source: ItemsCompatibility, mutator: (draft: MutableModel<ItemsCompatibility, ItemsCompatibilityMetaData>) => MutableModel<ItemsCompatibility, ItemsCompatibilityMetaData> | void): ItemsCompatibility;
 }
 
-export declare class EbayItems {
+type LazyItemsCompatibility = {
+  readonly id: string;
+  readonly compatibilityList?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type ItemsCompatibility = LazyLoading extends LazyLoadingDisabled ? EagerItemsCompatibility : LazyItemsCompatibility
+
+export declare const ItemsCompatibility: (new (init: ModelInit<ItemsCompatibility, ItemsCompatibilityMetaData>) => ItemsCompatibility) & {
+  copyOf(source: ItemsCompatibility, mutator: (draft: MutableModel<ItemsCompatibility, ItemsCompatibilityMetaData>) => MutableModel<ItemsCompatibility, ItemsCompatibilityMetaData> | void): ItemsCompatibility;
+}
+
+type EagerEbayItems = {
   readonly id: string;
   readonly title?: string | null;
   readonly description?: string | null;
@@ -126,11 +177,42 @@ export declare class EbayItems {
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly ebayItemsItemsCompatibilitiesId?: string | null;
-  constructor(init: ModelInit<EbayItems, EbayItemsMetaData>);
-  static copyOf(source: EbayItems, mutator: (draft: MutableModel<EbayItems, EbayItemsMetaData>) => MutableModel<EbayItems, EbayItemsMetaData> | void): EbayItems;
 }
 
-export declare class Products {
+type LazyEbayItems = {
+  readonly id: string;
+  readonly title?: string | null;
+  readonly description?: string | null;
+  readonly dispatchTimeMax?: number | null;
+  readonly itemID?: string | null;
+  readonly listingType?: string | null;
+  readonly price?: number | null;
+  readonly relistParentID?: string | null;
+  readonly site?: string | null;
+  readonly currency?: string | null;
+  readonly listingDuration?: string | null;
+  readonly categoryID?: string | null;
+  readonly bestOffer?: boolean | null;
+  readonly ebayaccountsID: string;
+  readonly ItemsCompatibilities: AsyncItem<ItemsCompatibility | undefined>;
+  readonly shippingProfileID?: string | null;
+  readonly returnProfileID?: string | null;
+  readonly paymentProfileID?: string | null;
+  readonly ebayMotors?: boolean | null;
+  readonly Products: AsyncItem<Products | undefined>;
+  readonly itemsSpecifics?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly ebayItemsItemsCompatibilitiesId?: string | null;
+}
+
+export declare type EbayItems = LazyLoading extends LazyLoadingDisabled ? EagerEbayItems : LazyEbayItems
+
+export declare const EbayItems: (new (init: ModelInit<EbayItems, EbayItemsMetaData>) => EbayItems) & {
+  copyOf(source: EbayItems, mutator: (draft: MutableModel<EbayItems, EbayItemsMetaData>) => MutableModel<EbayItems, EbayItemsMetaData> | void): EbayItems;
+}
+
+type EagerProducts = {
   readonly id: string;
   readonly title?: string | null;
   readonly accountsID: string;
@@ -162,44 +244,121 @@ export declare class Products {
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly productsEbayItemsId?: string | null;
-  constructor(init: ModelInit<Products, ProductsMetaData>);
-  static copyOf(source: Products, mutator: (draft: MutableModel<Products, ProductsMetaData>) => MutableModel<Products, ProductsMetaData> | void): Products;
 }
 
-export declare class InventoryLocations {
+type LazyProducts = {
+  readonly id: string;
+  readonly title?: string | null;
+  readonly accountsID: string;
+  readonly brandsID: string;
+  readonly InventoryLocations: AsyncCollection<InventoryLocations>;
+  readonly description?: string | null;
+  readonly manufacturerPartNumber?: string | null;
+  readonly interchangePartNumber?: string | null;
+  readonly otherPartNumber?: string | null;
+  readonly UPC?: string | null;
+  readonly EAN?: string | null;
+  readonly ISBN?: string | null;
+  readonly images?: (string | null)[] | null;
+  readonly conditionCode?: string | null;
+  readonly conditionDescription?: string | null;
+  readonly length?: number | null;
+  readonly width?: number | null;
+  readonly depth?: number | null;
+  readonly weight?: number | null;
+  readonly weightUnit?: string | null;
+  readonly lengthUnit?: string | null;
+  readonly totalAvailable?: number | null;
+  readonly tags?: (string | null)[] | null;
+  readonly listingStatus?: string | null;
+  readonly isDraft?: boolean | null;
+  readonly price?: number | null;
+  readonly sku?: string | null;
+  readonly EbayItems: AsyncItem<EbayItems | undefined>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly productsEbayItemsId?: string | null;
+}
+
+export declare type Products = LazyLoading extends LazyLoadingDisabled ? EagerProducts : LazyProducts
+
+export declare const Products: (new (init: ModelInit<Products, ProductsMetaData>) => Products) & {
+  copyOf(source: Products, mutator: (draft: MutableModel<Products, ProductsMetaData>) => MutableModel<Products, ProductsMetaData> | void): Products;
+}
+
+type EagerInventoryLocations = {
   readonly id: string;
   readonly quantity?: number | null;
   readonly productsID: string;
   readonly locationsID: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<InventoryLocations, InventoryLocationsMetaData>);
-  static copyOf(source: InventoryLocations, mutator: (draft: MutableModel<InventoryLocations, InventoryLocationsMetaData>) => MutableModel<InventoryLocations, InventoryLocationsMetaData> | void): InventoryLocations;
 }
 
-export declare class Brands {
+type LazyInventoryLocations = {
+  readonly id: string;
+  readonly quantity?: number | null;
+  readonly productsID: string;
+  readonly locationsID: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type InventoryLocations = LazyLoading extends LazyLoadingDisabled ? EagerInventoryLocations : LazyInventoryLocations
+
+export declare const InventoryLocations: (new (init: ModelInit<InventoryLocations, InventoryLocationsMetaData>) => InventoryLocations) & {
+  copyOf(source: InventoryLocations, mutator: (draft: MutableModel<InventoryLocations, InventoryLocationsMetaData>) => MutableModel<InventoryLocations, InventoryLocationsMetaData> | void): InventoryLocations;
+}
+
+type EagerBrands = {
   readonly id: string;
   readonly name?: string | null;
   readonly accountsID: string;
   readonly Products?: (Products | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<Brands, BrandsMetaData>);
-  static copyOf(source: Brands, mutator: (draft: MutableModel<Brands, BrandsMetaData>) => MutableModel<Brands, BrandsMetaData> | void): Brands;
 }
 
-export declare class Locations {
+type LazyBrands = {
+  readonly id: string;
+  readonly name?: string | null;
+  readonly accountsID: string;
+  readonly Products: AsyncCollection<Products>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Brands = LazyLoading extends LazyLoadingDisabled ? EagerBrands : LazyBrands
+
+export declare const Brands: (new (init: ModelInit<Brands, BrandsMetaData>) => Brands) & {
+  copyOf(source: Brands, mutator: (draft: MutableModel<Brands, BrandsMetaData>) => MutableModel<Brands, BrandsMetaData> | void): Brands;
+}
+
+type EagerLocations = {
   readonly id: string;
   readonly name?: string | null;
   readonly accountsID: string;
   readonly InventoryLocations?: (InventoryLocations | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<Locations, LocationsMetaData>);
-  static copyOf(source: Locations, mutator: (draft: MutableModel<Locations, LocationsMetaData>) => MutableModel<Locations, LocationsMetaData> | void): Locations;
 }
 
-export declare class EbayOrders {
+type LazyLocations = {
+  readonly id: string;
+  readonly name?: string | null;
+  readonly accountsID: string;
+  readonly InventoryLocations: AsyncCollection<InventoryLocations>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Locations = LazyLoading extends LazyLoadingDisabled ? EagerLocations : LazyLocations
+
+export declare const Locations: (new (init: ModelInit<Locations, LocationsMetaData>) => Locations) & {
+  copyOf(source: Locations, mutator: (draft: MutableModel<Locations, LocationsMetaData>) => MutableModel<Locations, LocationsMetaData> | void): Locations;
+}
+
+type EagerEbayOrders = {
   readonly id: string;
   readonly orderId?: string | null;
   readonly legacyOrderId?: string | null;
@@ -214,11 +373,32 @@ export declare class EbayOrders {
   readonly ebayaccountsID: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<EbayOrders, EbayOrdersMetaData>);
-  static copyOf(source: EbayOrders, mutator: (draft: MutableModel<EbayOrders, EbayOrdersMetaData>) => MutableModel<EbayOrders, EbayOrdersMetaData> | void): EbayOrders;
 }
 
-export declare class Accounts {
+type LazyEbayOrders = {
+  readonly id: string;
+  readonly orderId?: string | null;
+  readonly legacyOrderId?: string | null;
+  readonly creationDate?: string | null;
+  readonly lastModifiedDate?: string | null;
+  readonly orderFulfillmentStatus?: string | null;
+  readonly orderPaymentStatus?: string | null;
+  readonly sellerId?: string | null;
+  readonly buyer?: string | null;
+  readonly salesRecordReference?: string | null;
+  readonly accountsID: string;
+  readonly ebayaccountsID: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type EbayOrders = LazyLoading extends LazyLoadingDisabled ? EagerEbayOrders : LazyEbayOrders
+
+export declare const EbayOrders: (new (init: ModelInit<EbayOrders, EbayOrdersMetaData>) => EbayOrders) & {
+  copyOf(source: EbayOrders, mutator: (draft: MutableModel<EbayOrders, EbayOrdersMetaData>) => MutableModel<EbayOrders, EbayOrdersMetaData> | void): EbayOrders;
+}
+
+type EagerAccounts = {
   readonly id: string;
   readonly EbayAccounts?: (EbayAccounts | null)[] | null;
   readonly isNewAccount?: boolean | null;
@@ -230,11 +410,29 @@ export declare class Accounts {
   readonly Listings?: (Listing | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<Accounts, AccountsMetaData>);
-  static copyOf(source: Accounts, mutator: (draft: MutableModel<Accounts, AccountsMetaData>) => MutableModel<Accounts, AccountsMetaData> | void): Accounts;
 }
 
-export declare class EbayAccounts {
+type LazyAccounts = {
+  readonly id: string;
+  readonly EbayAccounts: AsyncCollection<EbayAccounts>;
+  readonly isNewAccount?: boolean | null;
+  readonly plan?: Plans | keyof typeof Plans | null;
+  readonly EbayOrders: AsyncCollection<EbayOrders>;
+  readonly Locations: AsyncCollection<Locations>;
+  readonly Brands: AsyncCollection<Brands>;
+  readonly Products: AsyncCollection<Products>;
+  readonly Listings: AsyncCollection<Listing>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Accounts = LazyLoading extends LazyLoadingDisabled ? EagerAccounts : LazyAccounts
+
+export declare const Accounts: (new (init: ModelInit<Accounts, AccountsMetaData>) => Accounts) & {
+  copyOf(source: Accounts, mutator: (draft: MutableModel<Accounts, AccountsMetaData>) => MutableModel<Accounts, AccountsMetaData> | void): Accounts;
+}
+
+type EagerEbayAccounts = {
   readonly id: string;
   readonly name?: string | null;
   readonly accessTokenUAT?: string | null;
@@ -250,6 +448,28 @@ export declare class EbayAccounts {
   readonly EbayItems?: (EbayItems | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<EbayAccounts, EbayAccountsMetaData>);
-  static copyOf(source: EbayAccounts, mutator: (draft: MutableModel<EbayAccounts, EbayAccountsMetaData>) => MutableModel<EbayAccounts, EbayAccountsMetaData> | void): EbayAccounts;
+}
+
+type LazyEbayAccounts = {
+  readonly id: string;
+  readonly name?: string | null;
+  readonly accessTokenUAT?: string | null;
+  readonly expiresInUAT?: number | null;
+  readonly refreshTokenUAT?: string | null;
+  readonly refreshTokenExpiresInUAT?: number | null;
+  readonly refreshTokenExpirationDate?: string | null;
+  readonly accountsID: string;
+  readonly tokenTypeUAT?: string | null;
+  readonly EbayOrders: AsyncCollection<EbayOrders>;
+  readonly returnPolicy?: string | null;
+  readonly postalCode?: string | null;
+  readonly EbayItems: AsyncCollection<EbayItems>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type EbayAccounts = LazyLoading extends LazyLoadingDisabled ? EagerEbayAccounts : LazyEbayAccounts
+
+export declare const EbayAccounts: (new (init: ModelInit<EbayAccounts, EbayAccountsMetaData>) => EbayAccounts) & {
+  copyOf(source: EbayAccounts, mutator: (draft: MutableModel<EbayAccounts, EbayAccountsMetaData>) => MutableModel<EbayAccounts, EbayAccountsMetaData> | void): EbayAccounts;
 }

@@ -19,6 +19,8 @@ export default function Listings() {
       <SafeAreaView style={styles.container}>
         <ListingStatusTab />
 
+        
+
         <Portal>
           <FAB.Group
             style={styles.fab}
