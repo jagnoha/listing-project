@@ -8,6 +8,8 @@ import { Camera } from 'expo-camera';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import Header from './Header';
+import SearchProduct from './CreateProductWizard/SearchProduct';
+import PhotosSection from './CreateProductWizard/PhotosSection';
 
 export default function AddListingForm(props) {
 
@@ -15,14 +17,18 @@ export default function AddListingForm(props) {
   const [hasCameraPermission, setHasCameraPermission] = useState();
   const [searchCategories, setSearchCategories] = useState('');
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
-  const [photos, setPhotos] = useState(['','','','','','','','']);
+  const [photos, setPhotos] = useState([]);
   const [photoMain, setPhotoMain] = useState();
   const [photoLabel, setPhotoLabel] = useState();
   
   const [openCamera, setOpenCamera] = useState(false);
   const [mainPhotoOpen, setMainPhotoOpen] = useState(false);
   const [labelPhotoOpen, setLabelPhotoOpen] = useState(false);
+  const [morePhotosOpen, setMorePhotosOpen] = useState(false);
   const [listPhotoOpen, setListPhotoOpen] = useState(0);
+  
+
+  
   
   
 
@@ -53,65 +59,86 @@ export default function AddListingForm(props) {
       let backward = async () => {
         setStep((old)=>old-1);
       }
+      
 
       let takePicMain = async () => {
         let options = {
-          quality: 1,
+          quality: 0.7,
           base64: true,
-          exif: false
+          skipProcessing: true,          
+          exif: false,          
         };
 
+        
+        
         let newPhoto = await cameraRef.current.takePictureAsync(options);
         setPhotoMain(newPhoto);
-        setMainPhotoOpen(false);
-        setOpenCamera(false);
+
+        const source = newPhoto.uri;
+        if (source) {
+          await cameraRef.current.pausePreview();
+          setOpenCamera(false);
+          setMainPhotoOpen(false);
+          console.log("picture source", source);          
+        };
       };
 
-      const takePicList = async (n) => {
+      const onOpenPreviewPhoto = async = () => {
+        console.log('ADD NEW PHOTO!!!!');
+        setOpenCamera(true);
+        setMorePhotosOpen(true);
+
+      }
+
+      const takeNewPic = async () => {
         let options = {
-          quality: 1,
+          quality: 0.7,
           base64: true,
-          exif: false
+          skipProcessing: true,          
+          exif: false, 
         };
 
         let newPhoto = await cameraRef.current.takePictureAsync(options);
-        setPhotos(old => old[n] = newPhoto);
-        setListPhotoOpen(0);
-        setOpenCamera(false);
-      }
+        setPhotos((old) => [...old, { id: newPhoto.uri, value: newPhoto }]);
 
-      const onListPhotoOpen = async (n) => {
-        setListPhotoOpen(n);
-        setOpenCamera(true);
-      }
+        const source = newPhoto.uri;
 
-      const deletePicList = async (n) => {
-        setPhotos(old => old[n] = undefined);
-        setListPhotoOpen(0);
-        setOpenCamera(false);
-      }
+        if (source) {
+          await cameraRef.current.pausePreview();
+          setMorePhotosOpen(false);
+          setOpenCamera(false);
+          console.log("picture source", source);          
+        };
 
-      const closePicList = async (n) => {
-        setListPhotoOpen(0);
-        setOpenCamera(false);
       }
 
       const takePicLabel = async () => {
         let options = {
-          quality: 1,
+          quality: 0.7,
           base64: true,
-          exif: false
+          skipProcessing: true,          
+          exif: false, 
         };
 
         let newPhoto = await cameraRef.current.takePictureAsync(options);
         setPhotoLabel(newPhoto);
-        setLabelPhotoOpen(false);
-        setOpenCamera(false);
+
+        const source = newPhoto.uri;
+
+        if (source) {
+          await cameraRef.current.pausePreview();
+          setLabelPhotoOpen(false);
+          setOpenCamera(false);
+          console.log("picture source", source);          
+        };
+
+        
       };
 
       const closePic = async () => {
         setLabelPhotoOpen(false);
         setMainPhotoOpen(false);
+        setMorePhotosOpen(false);
         setOpenCamera(false);
       }
 
@@ -151,80 +178,14 @@ export default function AddListingForm(props) {
         setSearchCategories(query)
       }
 
-      /*if (photo) {
-        let sharePic = () => {
-          shareAsync(photo.uri).then(() => {
-            setPhoto(undefined);
-          });
-        };
-    
-        let savePhoto = () => {
-          
-          MediaLibrary.saveToLibraryAsync(photo.uri).then(() => {
-            setPhoto(undefined);
-          });
-        };
-    
-        return (
-          <SafeAreaView style={styles.container}>
-            <Header title={route.params.title} type='createListing' actionBack={navigation.goBack} />       
-            <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photo.base64 }} />
-            <Button title="Share" onPress={sharePic} />
-            {hasMediaLibraryPermission ? <Button title="Save" onPress={savePhoto} /> : undefined}
-            <Button title="Discard" onPress={() => setPhoto(undefined)} />
-          </SafeAreaView>
-        );
-      }*/
+      
 
       if (step === 0){
 
         return (
+          <SearchProduct title={title} navigation={navigation} onSearchCategories={onSearchCategories} searchCategories={searchCategories} styles={styles} backward = {backward} forward={forward} />
         
-        <View>
-          <Header title={title} type='createListing' actionBack={navigation.goBack} />
-          <View>
-            
-          <Banner
-      visible={true}
-      
-      icon={'head-lightbulb-outline'}
-      >
-
-I'd like to know a little bit about the item you want to create. Tell me something about it. What is it?
-    </Banner>
-
-
-          <Searchbar
-              placeholder='About this item'
-              onChangeText={onSearchCategories}
-              value={searchCategories}
-            />
         
-
-          <SegmentedButtons              
-              style={styles.nextBackControl}
-              onValueChange={()=>console.log('Change value')}
-              buttons={[
-                {
-                  value: 'back',
-                  label: 'Back',
-                  icon: 'arrow-left',
-                  onPress: ()=>backward(),
-                  disabled: 'true'
-                },
-                {
-                  value: 'next',
-                  label: 'Next',
-                  icon: 'arrow-right',
-                  onPress: ()=>forward(),
-                  disabled: searchCategories.length > 0 ? false : true,
-                },
-                ]}                
-              />
-              </View>
-          
-          
-          </View>
         )
       }
 
@@ -233,160 +194,13 @@ I'd like to know a little bit about the item you want to create. Tell me somethi
       if (!openCamera){
       return (
         <View>
-          <Header title={title} type='createListing' actionBack={navigation.goBack} />
+          <PhotosSection title={title} navigation={navigation} styles={styles} 
+          onMainPhotoOpen = {onMainPhotoOpen} photoMain={photoMain} photoLabel={photoLabel} onLabelPhotoOpen ={onLabelPhotoOpen} photos={photos} backward = {backward} forward={forward} type={type} onOpenPreviewPhoto={onOpenPreviewPhoto}/>
 
-          { type === 'clothing' || type === 'shoes' ? 
-          <View>
-            <Banner
-      visible={true}
-      
-      icon={'camera'}
-      >
-
-Now I need some good photos. I would need the main photo and a photo of the product label. It would be nice if product label has the brand name. Additionally you can add up to 10 more photos.
-    </Banner>
-            
-            <View style={styles.clothingButtons}>
-              
-              <Pressable onPress={()=>onMainPhotoOpen()}>
-                <Surface style={styles.surface} elevation={4} >
-                  
-                  
-                  {photoMain ? <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photoMain.base64 }} /> : <Text>Main Photo</Text>}
-                
-                
-                
-                </Surface>
-              </Pressable >
-              <Pressable onPress={()=>onLabelPhotoOpen()}>
-                <Surface style={styles.surface} elevation={4} >
-                {photoLabel ? <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photoLabel.base64 }} />
-                
-                
-                
-                
-                
-                : <Text>Photo Label</Text>}
-                </Surface>
-              </Pressable>
-
-              
-              
-            </View>
-
-            <View style={styles.clothingButtons}>
-              {<Pressable onPress={()=>onListPhotoOpen(1)}>
-                <Surface style={styles.surfaceSmall} elevation={4} >
-                  
-                  <Text>Photo</Text>
-                  {/*photos[0] !== '' ? <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photos[0].base64 }} /> : <Text>Main Photo</Text>*/}
-                
-                </Surface>
-              </Pressable >}
-
-              {<Pressable onPress={()=>onListPhotoOpen(2)}>
-                <Surface style={styles.surfaceSmall} elevation={4} >
-                  
-                  <Text>Photo</Text>
-                  {/*photos[1] ? <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photos[1].base64 }} /> : <Text>Main Photo</Text>*/}
-                
-                </Surface>
-              </Pressable >}
-
-              {<Pressable onPress={()=>onListPhotoOpen(3)}>
-                <Surface style={styles.surfaceSmall} elevation={4} >
-                  
-                  <Text>Photo</Text>
-                  {/*photos[2] ? <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photos[2].base64 }} /> : <Text>Main Photo</Text>*/}
-                
-                </Surface>
-              </Pressable >}
-
-              {<Pressable onPress={()=>onListPhotoOpen(4)}>
-                <Surface style={styles.surfaceSmall} elevation={4} >
-                  
-                  <Text>Photo</Text>
-                  {/*photos[3] ? <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photos[3].base64 }} /> : <Text>Main Photo</Text>*/}
-                
-                </Surface>
-              </Pressable >}
-
-              {<Pressable onPress={()=>onListPhotoOpen(5)}>
-                <Surface style={styles.surfaceSmall} elevation={4} >
-                  
-                  <Text>Photo</Text>
-                  {/*photos[4] ? <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photos[4].base64 }} /> : <Text>Main Photo</Text>*/}
-                
-                </Surface>
-              </Pressable >}
-
-              {<Pressable onPress={()=>onListPhotoOpen(6)}>
-                <Surface style={styles.surfaceSmall} elevation={4} >
-                  
-                  <Text>Photo</Text>
-                  {/*photos[5] ? <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photos[5].base64 }} /> : <Text>Main Photo</Text>*/}
-                
-                </Surface>
-              </Pressable >}
-
-              {<Pressable onPress={()=>onListPhotoOpen(7)}>
-                <Surface style={styles.surfaceSmall} elevation={4} >
-                  
-                  <Text>Photo</Text>
-                  {/*photos[6] ? <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photos[6].base64 }} /> : <Text>Main Photo</Text>*/}
-                
-                </Surface>
-              </Pressable >}
-
-              {<Pressable onPress={()=>onListPhotoOpen(8)}>
-                <Surface style={styles.surfaceSmall} elevation={4} >
-                  
-                  <Text>Photo</Text>
-                  {/*photos[7] ? <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photos[7].base64 }} /> : <Text>Main Photo</Text>*/}
-                
-                </Surface>
-              </Pressable >}
-
-              
-              
-
-             
-
-              
-
-
-
-            </View>
-
-            </View>
-            
           
-          : ''}
-        
-        <SegmentedButtons
-             
-              style={styles.nextBackControl}
-              onValueChange={()=>console.log('Change value')}
-              buttons={[
-                {
-                  value: 'back',
-                  label: 'Back',
-                  icon: 'arrow-left',
-                  onPress: ()=>backward(),
-                  
-                },
-                {
-                  value: 'next',
-                  label: 'Next',
-                  icon: 'arrow-right',
-                  onPress: ()=>forward(),
-                },
-                ]}
-               
-              />
-        
-        
+
         </View>
+        
       
       
       
@@ -398,53 +212,153 @@ Now I need some good photos. I would need the main photo and a photo of the prod
         return (
           
           <Camera style ={styles.container} ref={cameraRef}> 
-          <Button onPress={takePicMain}>Take Pic</Button>  
-          <Button onPress={closePic}>Close</Button>
-          <Button onPress={deleteMainPic}>Delete</Button>              
+          
+
+          <SegmentedButtons
+             density='medium'
+             style={styles.previewCameraControl}
+             onValueChange={()=>console.log('Change value')}
+             buttons={[
+               {
+                 value: 'close',
+                 label: 'Close',
+                 icon: 'close',
+                 onPress: ()=>closePic(),
+                 style: styles.buttonPreviewCameraControl,
+               },
+               {
+                 value: 'next',
+                 label: 'Take photo',
+                 icon: 'camera',
+                 onPress: ()=>takePicMain(),
+                 style: styles.buttonPreviewCameraControl,
+                 //disabled: photoMain && photoLabel ? false : true 
+               },
+               {  
+                value: 'delete',
+                label: 'Delete',
+                icon: 'delete',
+                onPress: ()=>deleteMainPic(),
+                style: styles.buttonPreviewCameraControl,
+                disabled: photoMain ? false : true 
+              },
+               ]}
+              
+             />
+
+
         </Camera>
         
         );  
        } else if (labelPhotoOpen) {
         return (
           
-        <Camera style ={styles.container} ref={cameraRef}> 
-          <Button onPress={takePicLabel}>Take Pic</Button>
-          <Button onPress={closePic}>Close</Button> 
-          <Button onPress={deleteLabelPic}>Delete</Button>
+        <Camera style ={styles.container} ref={cameraRef}>           
+            
+
+            <SegmentedButtons
+             density='medium'
+             style={styles.previewCameraControl}
+             onValueChange={()=>console.log('Change value')}
+             buttons={[
+               {
+                 value: 'close',
+                 label: 'Close',
+                 icon: 'close',
+                 onPress: ()=>closePic(),
+                 style: styles.buttonPreviewCameraControl,
+               },
+               {
+                 value: 'next',
+                 label: 'Take photo',
+                 icon: 'camera',
+                 onPress: ()=>takePicLabel(),
+                 style: styles.buttonPreviewCameraControl,
+                 //disabled: photoMain && photoLabel ? false : true 
+               },
+               {
+                value: 'delete',
+                label: 'Delete',
+                icon: 'delete',
+                onPress: ()=>deleteLabelPic(),
+                style: styles.buttonPreviewCameraControl,
+                disabled: photoLabel ? false : true 
+                //disabled: photoMain && photoLabel ? false : true 
+              },
+               ]}
+              
+             />
 
 
-                              
+          
+          
         </Camera>
         )
-       } else if (listPhotoOpen > 0) {
-        <Camera style ={styles.container} ref={cameraRef}> 
-          <Button onPress={takePicList(listPhotoOpen - 1)}>Take Pic</Button>
-          <Button onPress={closePicList(listPhotoOpen - 1)}>Close</Button> 
-          <Button onPress={deletePicList(listPhotoOpen - 1)}>Delete</Button>
-        </Camera>
+       } else if (morePhotosOpen){
+        return (
+        <Camera style ={styles.container} ref={cameraRef}>           
+            
+
+            <SegmentedButtons
+             density='medium'
+             style={styles.previewCameraControl}
+             onValueChange={()=>console.log('Change value')}
+             buttons={[
+               {
+                 value: 'close',
+                 label: 'Close',
+                 icon: 'close',
+                 onPress: ()=>closePic(),
+                 style: styles.buttonPreviewCameraControl,
+               },
+               {
+                 value: 'next',
+                 label: 'Take photo',
+                 icon: 'camera',
+                 onPress: ()=>takeNewPic(),
+                 style: styles.buttonPreviewCameraControl,
+                 //disabled: photoMain && photoLabel ? false : true 
+               },
+               /*{
+                value: 'delete',
+                label: 'Delete',
+                icon: 'delete',
+                onPress: ()=>deleteLabelPic(),
+                style: styles.buttonPreviewCameraControl,
+                disabled: photoLabel ? false : true 
+                //disabled: photoMain && photoLabel ? false : true 
+              },*/
+               ]}
+              
+             />
+
+
+          
+          
+        </Camera>)
+
+
        }
       }
 
     }
-      /*} else {
-        return (
-          
-          
-          <Camera style={styles.container} ref={cameraRef}>
-            <View style={styles.buttonContainer}>
-              <Button title="Take Pic" onPress={takePic} />
-            </View>            
-        </Camera>
-        );  
-      }*/
+      
     
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-around',   
+    //alignItems:'flex-end',
+    justifyContent: 'flex-end',
+    
+    width: '100%',
+    height: 300,
+    marginTop: '40%',
+    //marginBottom: '55%',  
+    position: 'absolute',
+    
+    
     
   },
   
@@ -454,6 +368,15 @@ const styles = StyleSheet.create({
     flexWrap:'wrap',
     justifyContent: 'space-around',
   },
+
+  imageList: {
+    //marginTop: 15,    
+    flexDirection: 'row',
+    flexWrap:'wrap',
+    justifyContent: 'space-around',
+  },
+
+
   surface: {    
     height: 105,
     width: 130,
@@ -479,6 +402,20 @@ const styles = StyleSheet.create({
   nextBackControl: {   
     justifyContent: 'center',
     marginTop: 25,
+  },
+
+  buttonPreviewCameraControl: {
+    backgroundColor: 'white',
+    
+        
+  },
+
+  previewCameraControl: {   
+    justifyContent: 'center',
+    padding: 10,
+    
+    
+    //marginTop: 25,
   },
   
   preview: {
