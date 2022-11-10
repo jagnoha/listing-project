@@ -25,6 +25,9 @@ export default function AddListingForm(props) {
   const [mainPhotoOpen, setMainPhotoOpen] = useState(false);
   const [labelPhotoOpen, setLabelPhotoOpen] = useState(false);
   const [morePhotosOpen, setMorePhotosOpen] = useState(false);
+  const [editPhotoOpen, setEditPhotoOpen] = useState('');
+
+  
   const [listPhotoOpen, setListPhotoOpen] = useState(0);
   
 
@@ -90,6 +93,14 @@ export default function AddListingForm(props) {
 
       }
 
+      const onOpenEditPhoto = async = (id) => {
+        console.log('EDIT PHOTO: ', id );
+        setOpenCamera(true);
+        setEditPhotoOpen(id);
+
+      }
+
+
       const takeNewPic = async () => {
         let options = {
           quality: 0.7,
@@ -106,6 +117,40 @@ export default function AddListingForm(props) {
         if (source) {
           await cameraRef.current.pausePreview();
           setMorePhotosOpen(false);
+          setOpenCamera(false);
+          console.log("picture source", source);          
+        };
+
+      }
+
+      const takeEditPic = async () => {
+        let options = {
+          quality: 0.7,
+          base64: true,
+          skipProcessing: true,          
+          exif: false, 
+        };
+
+        let newPhoto = await cameraRef.current.takePictureAsync(options);
+        setPhotos((old) => old.map(item => {
+          if (item.id === editPhotoOpen){
+            return (
+              {
+                id: item.id,
+                value: newPhoto,
+              }
+            )            
+          }
+          return item
+        }))
+        //setPhotos((old) => [...old, { id: newPhoto.uri, value: newPhoto }]);
+
+        const source = newPhoto.uri;
+
+        if (source) {
+          await cameraRef.current.pausePreview();
+          //setMorePhotosOpen(false);
+          setEditPhotoOpen('');
           setOpenCamera(false);
           console.log("picture source", source);          
         };
@@ -139,6 +184,13 @@ export default function AddListingForm(props) {
         setLabelPhotoOpen(false);
         setMainPhotoOpen(false);
         setMorePhotosOpen(false);
+        setEditPhotoOpen('');
+        setOpenCamera(false);
+      }
+
+      const deleteEditPic = async () => {
+        setPhotos((old)=>old.filter(item => item.id !== editPhotoOpen));
+        setEditPhotoOpen('');
         setOpenCamera(false);
       }
 
@@ -195,7 +247,7 @@ export default function AddListingForm(props) {
       return (
         <View>
           <PhotosSection title={title} navigation={navigation} styles={styles} 
-          onMainPhotoOpen = {onMainPhotoOpen} photoMain={photoMain} photoLabel={photoLabel} onLabelPhotoOpen ={onLabelPhotoOpen} photos={photos} backward = {backward} forward={forward} type={type} onOpenPreviewPhoto={onOpenPreviewPhoto}/>
+          onMainPhotoOpen = {onMainPhotoOpen} photoMain={photoMain} photoLabel={photoLabel} onLabelPhotoOpen ={onLabelPhotoOpen} photos={photos} backward = {backward} forward={forward} type={type} onOpenPreviewPhoto={onOpenPreviewPhoto} onOpenEditPhoto={onOpenEditPhoto} />
 
           
 
@@ -338,6 +390,50 @@ export default function AddListingForm(props) {
         </Camera>)
 
 
+       } else if (editPhotoOpen !== ''){
+        return (
+          <Camera style ={styles.container} ref={cameraRef}>           
+            
+
+            <SegmentedButtons
+             density='medium'
+             style={styles.previewCameraControl}
+             onValueChange={()=>console.log('Change value')}
+             buttons={[
+               {
+                 value: 'close',
+                 label: 'Close',
+                 icon: 'close',
+                 onPress: ()=>closePic(),
+                 style: styles.buttonPreviewCameraControl,
+               },
+               {
+                 value: 'next',
+                 label: 'Take photo',
+                 icon: 'camera',
+                 onPress: ()=>takeEditPic(),
+                 style: styles.buttonPreviewCameraControl,
+                 //disabled: photoMain && photoLabel ? false : true 
+               },
+               {
+                value: 'delete',
+                label: 'Delete',
+                icon: 'delete',
+                onPress: ()=>deleteEditPic(),
+                style: styles.buttonPreviewCameraControl,
+                //disabled: photoLabel ? false : true 
+                //disabled: photoMain && photoLabel ? false : true 
+              },
+               ]}
+              
+             />
+
+
+          
+          
+        </Camera>)
+
+        
        }
       }
 
@@ -353,7 +449,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     
     width: '100%',
-    height: 300,
+    height: 350,
     marginTop: '40%',
     //marginBottom: '55%',  
     position: 'absolute',
@@ -378,7 +474,7 @@ const styles = StyleSheet.create({
 
 
   surface: {    
-    height: 105,
+    height: 115,
     width: 130,
     alignItems: 'center',
     justifyContent: 'center',

@@ -61,7 +61,7 @@ Now I need some good photos. I would need the main photo and a photo of the prod
               return (
                 <View key={item.id} style={props.styles.imageList}>
               
-              <Pressable  onPress={()=>console.log(item.id)}>
+              <Pressable  onPress={()=>props.onOpenEditPhoto(item.id)}>
                 <Surface style={props.styles.surfaceSmall} elevation={4} >
                   
                   
