@@ -27,7 +27,8 @@
     "recoil": "^0.7.6",
     "expo-image-picker": "~13.3.1",
     "expo-camera": "~12.3.0",
-    "react-native-svg": "12.3.0"
+    "react-native-svg": "12.3.0",
+    "expo-barcode-scanner": "~11.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

@@ -103,7 +103,7 @@ Now I need some good photos. I would need the main photo and a photo of the prod
                   label: 'Next',
                   icon: 'arrow-right',
                   onPress: ()=>props.forward(),
-                  disabled: props.photoMain && props.photoLabel ? false : true 
+                  disabled: props.photoMain ? false : true 
                 },
                 ]}
                

@@ -5,27 +5,34 @@ import Svg, { Circle, Rect } from 'react-native-svg';
 import { StyleSheet, View, Image, Platform, SafeAreaView } from 'react-native';
 //import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
+
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import Header from './Header';
 import SearchProduct from './CreateProductWizard/SearchProduct';
 import PhotosSection from './CreateProductWizard/PhotosSection';
+import BarcodeStage from './CreateProductWizard/BarcodeStage';
 
 export default function AddListingForm(props) {
 
   let cameraRef = useRef();
   const [hasCameraPermission, setHasCameraPermission] = useState();
+  //const [hasBarcodePermission, setHasBarcodePermission] = useState();
   const [searchCategories, setSearchCategories] = useState('');
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
   const [photos, setPhotos] = useState([]);
   const [photoMain, setPhotoMain] = useState();
   const [photoLabel, setPhotoLabel] = useState();
+  const [barcodeValue, setBarcodeValue] = useState();
+  
   
   const [openCamera, setOpenCamera] = useState(false);
   const [mainPhotoOpen, setMainPhotoOpen] = useState(false);
   const [labelPhotoOpen, setLabelPhotoOpen] = useState(false);
   const [morePhotosOpen, setMorePhotosOpen] = useState(false);
   const [editPhotoOpen, setEditPhotoOpen] = useState('');
+
+  const [barcodeOpen, setBarcodeOpen] = useState(false);
 
   
   const [listPhotoOpen, setListPhotoOpen] = useState(0);
@@ -47,6 +54,7 @@ export default function AddListingForm(props) {
         const cameraPermission = await Camera.requestCameraPermissionsAsync();
         setHasCameraPermission(cameraPermission.status === "granted");       
       })();
+      
       }, []);
 
       if (hasCameraPermission === undefined) {
@@ -54,6 +62,8 @@ export default function AddListingForm(props) {
       } else if (!hasCameraPermission) {
         return <Text>Permission for camera not granted. Please change this in settings.</Text>
       }
+
+      
 
       let forward = async () => {
         setStep((old)=>old+1);
@@ -86,6 +96,17 @@ export default function AddListingForm(props) {
         };
       };
 
+      const handleBarCodeScanned = ({ type, data }) => {
+        console.log(type);
+        console.log(data);
+        setBarcodeValue({type, data});
+        setBarcodeOpen(false);
+      }
+
+      const deleteBarcodeValue = () => {
+        setBarcodeValue()
+      }
+
       const onOpenPreviewPhoto = async = () => {
         console.log('ADD NEW PHOTO!!!!');
         setOpenCamera(true);
@@ -98,6 +119,10 @@ export default function AddListingForm(props) {
         setOpenCamera(true);
         setEditPhotoOpen(id);
 
+      }
+
+      const onOpenBarcode = async = (value) => {
+        setBarcodeOpen(value);
       }
 
 
@@ -438,6 +463,15 @@ export default function AddListingForm(props) {
       }
 
     }
+
+    if (step === 2){
+      return (
+        <BarcodeStage title={title} navigation={navigation} styles={styles} backward = {backward} forward={forward} barcodeOpen={barcodeOpen} onOpenBarcode = {onOpenBarcode} handleBarCodeScanned = {handleBarCodeScanned} barcodeValue = {barcodeValue} deleteBarcodeValue={deleteBarcodeValue} />
+      
+      
+      )
+
+    }
       
     
 }
@@ -453,6 +487,26 @@ const styles = StyleSheet.create({
     marginTop: '40%',
     //marginBottom: '55%',  
     position: 'absolute',
+    
+    
+    
+  },
+
+  containerBarcode: {
+    /*flex: 1,
+    justifyContent: 'flex-end',
+    //height: '50%',
+    //marginTop: 100,
+    //marginBottom: 200,
+    width: '100%',
+    //marginTop: 150,
+    //marginBottom: 150,
+    height: 250,
+    //marginTop: '50%',
+    position: 'absolute',*/
+
+    height:  '80%', //window.height / 2,
+    width: '80%', //window.height,
     
     
     
