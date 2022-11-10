@@ -73,7 +73,7 @@ const DATA = [
     image: 'https://picsum.photos/200',
     title: 'Second Item',
     price: 0,
-    type: 'AUTOPARTS',
+    type: 'BOOKS',
   },
   {
     id: '58694a0f-3da1-471f-bd96-145571e29d726',
@@ -117,6 +117,8 @@ export default function ListingsToRevise() {
       return 'shoe-formal';
     } else if (type === 'AUTOPARTS') {
       return 'car-side';
+    } else if (type === 'BOOKS') {
+      return 'book-open-variant';
     }
     return 'tag';
   };

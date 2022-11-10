@@ -45,6 +45,11 @@ export default function Listings() {
                 onPress: () => { navigation.navigate('AddListing', {title: 'Add Auto Parts', type:'autoparts'}) }
               },
               {
+                icon: 'book-open-variant',
+                label: 'Books',
+                onPress: () => { navigation.navigate('AddListing', {title: 'Add Books', type:'books'}) }
+              },
+              {
                 icon: 'tag-multiple',
                 label: 'Everything else',
                 onPress: () => { navigation.navigate('AddListing', {title: 'Add Listing', type:'other'}) }
