@@ -10,7 +10,7 @@ export default function PhotosSection(props) {
         <View>
           <Header title={props.title} type='createListing' actionBack={props.navigation.goBack} />
 
-          { props.type === 'clothing' || props.type === 'shoes' ? 
+          
           <View>
             <Banner
       visible={true}
@@ -18,7 +18,7 @@ export default function PhotosSection(props) {
       icon={'camera'}
       >
 
-Now I need some good photos. I would need the main photo and a photo of the product label. It would be nice if product label has the brand name. Additionally you can add up to 8 more photos.
+{ props.type === 'clothing' || props.type === 'shoes' ? 'Now I need some good photos. I would need the main photo and a photo of the product label. It would be nice if product label has the brand name. Additionally you can add up to 8 more photos.' : 'Now I need some good photos. I would need the main photo. Additionally you can add up to 8 more photos'}
     </Banner>
             
             <View style={props.styles.clothingButtons}>
@@ -33,6 +33,8 @@ Now I need some good photos. I would need the main photo and a photo of the prod
                 
                 </Surface>
               </Pressable >
+              { props.type === 'clothing' || props.type === 'shoes' ? 
+              
               <Pressable onPress={()=>props.onLabelPhotoOpen()}>
                 <Surface style={props.styles.surface} elevation={4} >
                 {props.photoLabel ? <Image style={props.styles.preview} source={{ uri: "data:image/jpg;base64," + props.photoLabel.base64 }} />
@@ -43,7 +45,7 @@ Now I need some good photos. I would need the main photo and a photo of the prod
                 
                 : <Text>Photo Label</Text>}
                 </Surface>
-              </Pressable>
+              </Pressable>: ''}
 
               
               
@@ -84,7 +86,7 @@ Now I need some good photos. I would need the main photo and a photo of the prod
             </View>
             
           
-          : ''}
+          
         
         <SegmentedButtons
              
