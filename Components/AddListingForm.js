@@ -12,6 +12,7 @@ import Header from './Header';
 import SearchProduct from './CreateProductWizard/SearchProduct';
 import PhotosSection from './CreateProductWizard/PhotosSection';
 import BarcodeStage from './CreateProductWizard/BarcodeStage';
+import CategoryStage from './CreateProductWizard/CategoryStage';
 
 export default function AddListingForm(props) {
 
@@ -471,6 +472,12 @@ export default function AddListingForm(props) {
       
       )
 
+    }
+
+    if (step === 3){
+      return (
+      <CategoryStage title={title} navigation={navigation} styles={styles} backward = {backward} forward={forward} />
+      )
     }
       
     

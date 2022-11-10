@@ -50,7 +50,7 @@ export default function BarcodeStage(props) {
                 icon={'barcode'}
                 >
 
-            If this product contains a barcode (UPC, EAIN, ISBN), it might be useful to get that information to create a better listing.
+            If this product contains a barcode (UPC, EAN, ISBN), it might be useful to get that information to create a better listing.
         </Banner>
 
         <View style={{marginLeft: 60, marginRight: 60, marginTop: 20}}>
