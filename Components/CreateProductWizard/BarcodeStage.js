@@ -70,7 +70,7 @@ export default function BarcodeStage(props) {
 
         <SegmentedButtons              
             style={props.styles.nextBackControl}
-            onValueChange={()=>console.log('Change value')}
+            onValueChange={()=>console.log('Change value2')}
             buttons={[
               {
                 value: 'back',
@@ -83,7 +83,7 @@ export default function BarcodeStage(props) {
                 value: 'next',
                 label: 'Next',
                 icon: 'arrow-right',
-                onPress: ()=>props.forward(),                
+                onPress: ()=>{props.forward(), props.getCategories()},                
               },
               ]}                
             />

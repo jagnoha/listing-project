@@ -1,5 +1,9 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { useTheme, Text, Card, Surface, Button, Searchbar, SegmentedButtons, Banner } from 'react-native-paper';
+import { useTheme, Text, Card, Surface, Button, Searchbar, SegmentedButtons, 
+  Banner } from 'react-native-paper';
+
+import { useRecoilState } from 'recoil';  
+  
 import { Pressable } from 'react-native';
 import Svg, { Circle, Rect } from 'react-native-svg';
 import { StyleSheet, View, Image, Platform, SafeAreaView } from 'react-native';
@@ -7,17 +11,22 @@ import { StyleSheet, View, Image, Platform, SafeAreaView } from 'react-native';
 import { Camera } from 'expo-camera';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
+import usernameAtom from '../Store/atoms/usernameAtom';
 
 import Header from './Header';
 import SearchProduct from './CreateProductWizard/SearchProduct';
 import PhotosSection from './CreateProductWizard/PhotosSection';
 import BarcodeStage from './CreateProductWizard/BarcodeStage';
 import CategoryStage from './CreateProductWizard/CategoryStage';
+import ItemSpecificsStage from './CreateProductWizard/ItemSpecificsStage';
 
 export default function AddListingForm(props) {
 
   let cameraRef = useRef();
   const [hasCameraPermission, setHasCameraPermission] = useState();
+
+  const [username, setUsername] = useRecoilState(usernameAtom);
+
   //const [hasBarcodePermission, setHasBarcodePermission] = useState();
   const [searchCategories, setSearchCategories] = useState('');
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
@@ -25,6 +34,18 @@ export default function AddListingForm(props) {
   const [photoMain, setPhotoMain] = useState();
   const [photoLabel, setPhotoLabel] = useState();
   const [barcodeValue, setBarcodeValue] = useState();
+  const [categories, setCategories] = useState([]);
+
+  const [category, setCategory] = useState('');
+
+  const [processingCategories, setProcessingCategories] = useState(false);
+
+  const [aspects, setAspects] = useState([]);
+  const [processingAspects, setProcessingAspects] = useState(false);
+
+  
+
+
   
   
   const [openCamera, setOpenCamera] = useState(false);
@@ -62,6 +83,93 @@ export default function AddListingForm(props) {
         return <Text>Requesting permissions...</Text>
       } else if (!hasCameraPermission) {
         return <Text>Permission for camera not granted. Please change this in settings.</Text>
+      }
+
+      const getTypeProductCode = (typeName) => {
+        if (typeName === 'autoparts'){
+          return 1
+        }
+        return 0
+      }
+
+
+      const getItemAspects = async (categoryId) => {
+        try {
+          setProcessingAspects(true);
+          const response = await fetch(
+            `https://listerfast.com/api/ebay/aspectsbycategory/${username}/${getTypeProductCode(type)}/${categoryId}`
+          )
+
+          const json = await response.json();
+
+          
+
+          /*const aspects = json.filter(item => item.aspectConstraint.aspectUsage === 'RECOMMENDED').map(itemProduct => {
+            return (
+              {
+                localizedAspectName: itemProduct.localizedAspectName,
+                aspectValues: itemProduct.aspectConstraint.aspectMode !== 'FREE_TEXT' || itemProduct.localizedAspectName === 'Type' ? itemProduct.aspectValues.map(value => value.localizedValue) : []                  
+              }
+            )
+          })*/
+
+          const aspects = json.filter(item => item.aspectConstraint.aspectUsage === 'RECOMMENDED').map(itemProduct => {
+            return (
+              {
+                localizedAspectName: itemProduct.localizedAspectName,
+                aspectValues: itemProduct.aspectValues.map(value => value.localizedValue),
+                require: itemProduct.aspectConstraint.aspectRequired ? true : false,
+                /*itemProduct.aspectConstraint.aspectMode !== 'FREE_TEXT' || itemProduct.localizedAspectName === 'Type' ? itemProduct.aspectValues.map(value => value.localizedValue) : []*/                  
+              }
+            )
+          })
+
+          console.log(aspects);
+          
+          setAspects(aspects);
+          setProcessingAspects(false);
+          
+
+
+        } catch(error){
+          console.log(error);
+        }
+
+      }
+
+      const getCategories = async () => {
+        try {
+          setProcessingCategories(true);
+          const response = await fetch(
+            `https://listerfast.com/api/ebay/categorysuggestions/${username}/${getTypeProductCode(type)}/${searchCategories}`
+          )
+
+          const json = await response.json();
+
+          const categories = json.categorySuggestions.map(item => {
+            return {
+              categoryId: item.category.categoryId,
+              title: item.category.categoryName,
+              subtitle: item.categoryTreeNodeAncestors[0].categoryName,
+            }
+          })
+
+          setCategory('');
+          setCategories(categories);
+          console.log(categories);
+          setProcessingCategories(false);
+
+        } catch(error){
+          setProcessingCategories(false);
+          console.log(error);
+        }
+      }
+
+      const onSelectedCategory = (id) => {
+        setCategory(id);
+        console.log(id);
+        forward();
+        getItemAspects(id);
       }
 
       
@@ -467,7 +575,7 @@ export default function AddListingForm(props) {
 
     if (step === 2){
       return (
-        <BarcodeStage title={title} navigation={navigation} styles={styles} backward = {backward} forward={forward} barcodeOpen={barcodeOpen} onOpenBarcode = {onOpenBarcode} handleBarCodeScanned = {handleBarCodeScanned} barcodeValue = {barcodeValue} deleteBarcodeValue={deleteBarcodeValue} />
+        <BarcodeStage title={title} navigation={navigation} styles={styles} backward = {backward} forward={forward} barcodeOpen={barcodeOpen} onOpenBarcode = {onOpenBarcode} handleBarCodeScanned = {handleBarCodeScanned} barcodeValue = {barcodeValue} deleteBarcodeValue={deleteBarcodeValue} getCategories = {getCategories} />
       
       
       )
@@ -476,7 +584,13 @@ export default function AddListingForm(props) {
 
     if (step === 3){
       return (
-      <CategoryStage title={title} navigation={navigation} styles={styles} backward = {backward} forward={forward} />
+      <CategoryStage title={title} navigation={navigation} styles={styles} backward = {backward} forward={forward} processingCategories={processingCategories} categories = {categories} onSelectedCategory = {onSelectedCategory} category = {category} />
+      )
+    }
+
+    if (step === 4) {
+      return (
+        <ItemSpecificsStage title={title} navigation={navigation} styles={styles} backward = {backward} forward={forward} processingAspects = {processingAspects} aspects = {aspects} />
       )
     }
       

@@ -1,6 +1,6 @@
 import React from 'react';
-import {View} from 'react-native';
-import { useTheme, Text, Card, Surface, Button, Searchbar, SegmentedButtons, Banner } from 'react-native-paper';
+import {Pressable, ScrollView, View} from 'react-native';
+import { useTheme, Text, Card, Title, Surface, Button, Searchbar, SegmentedButtons, Banner, Paragraph, ActivityIndicator } from 'react-native-paper';
 import Header from '../Header';
 
 export default function CategoryStage(props) {
@@ -21,7 +21,30 @@ Choose the category that corresponds to your product.
   </Banner>
 
 
-        
+        {
+            props.processingCategories ? <View><ActivityIndicator size='large' style={{marginTop:'20%', marginBottom: '20%'}}   /></View> : <ScrollView style={{height: '65%'}}>
+
+            {
+                props.categories.map(item => {
+                    return (
+                        <View key={item.categoryId}>
+                        <Pressable onPress={()=>props.onSelectedCategory(item.categoryId)}>
+                            
+                                <Card>
+                                    <Card.Content>
+                                        <Title>{item.title}</Title>
+                                        <Paragraph>{item.subtitle}</Paragraph>
+                                    </Card.Content>
+                                </Card>
+                            
+                        </Pressable>
+                        </View>
+                    )
+                })
+            }
+
+            </ScrollView>
+        }
       
 
         <SegmentedButtons              
@@ -40,6 +63,7 @@ Choose the category that corresponds to your product.
                 label: 'Next',
                 icon: 'arrow-right',
                 onPress: ()=>props.forward(),
+                disabled: 'true',
               },
               ]}                
             />
