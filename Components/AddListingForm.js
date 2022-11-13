@@ -1,9 +1,17 @@
-import React, {useState, useEffect, useRef} from 'react';
-import { useTheme, Text, Card, Surface, Button, Searchbar, SegmentedButtons, 
-  Banner } from 'react-native-paper';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  useTheme,
+  Text,
+  Card,
+  Surface,
+  Button,
+  Searchbar,
+  SegmentedButtons,
+  Banner,
+} from 'react-native-paper';
 
-import { useRecoilState } from 'recoil';  
-  
+import { useRecoilState } from 'recoil';
+
 import { Pressable } from 'react-native';
 import Svg, { Circle, Rect } from 'react-native-svg';
 import { StyleSheet, View, Image, Platform, SafeAreaView } from 'react-native';
@@ -21,7 +29,6 @@ import CategoryStage from './CreateProductWizard/CategoryStage';
 import ItemSpecificsStage from './CreateProductWizard/ItemSpecificsStage';
 
 export default function AddListingForm(props) {
-
   let cameraRef = useRef();
   const [hasCameraPermission, setHasCameraPermission] = useState();
 
@@ -36,6 +43,8 @@ export default function AddListingForm(props) {
   const [barcodeValue, setBarcodeValue] = useState();
   const [categories, setCategories] = useState([]);
 
+  const [checkedAllAspects, setCheckedAllAspects] = useState(false);
+
   const [category, setCategory] = useState('');
 
   const [processingCategories, setProcessingCategories] = useState(false);
@@ -43,11 +52,6 @@ export default function AddListingForm(props) {
   const [aspects, setAspects] = useState([]);
   const [processingAspects, setProcessingAspects] = useState(false);
 
-  
-
-
-  
-  
   const [openCamera, setOpenCamera] = useState(false);
   const [mainPhotoOpen, setMainPhotoOpen] = useState(false);
   const [labelPhotoOpen, setLabelPhotoOpen] = useState(false);
@@ -56,55 +60,50 @@ export default function AddListingForm(props) {
 
   const [barcodeOpen, setBarcodeOpen] = useState(false);
 
-  
   const [listPhotoOpen, setListPhotoOpen] = useState(0);
-  
-
-  
-  
-  
 
   const [step, setStep] = useState(0);
 
   const navigation = useNavigation();
   const route = useRoute();
   const { title, type } = route.params;
-    
 
-    useEffect(() => {
-      (async () => {
-        const cameraPermission = await Camera.requestCameraPermissionsAsync();
-        setHasCameraPermission(cameraPermission.status === "granted");       
-      })();
-      
-      }, []);
+  useEffect(() => {
+    (async () => {
+      const cameraPermission = await Camera.requestCameraPermissionsAsync();
+      setHasCameraPermission(cameraPermission.status === 'granted');
+    })();
+  }, []);
 
-      if (hasCameraPermission === undefined) {
-        return <Text>Requesting permissions...</Text>
-      } else if (!hasCameraPermission) {
-        return <Text>Permission for camera not granted. Please change this in settings.</Text>
-      }
+  if (hasCameraPermission === undefined) {
+    return <Text>Requesting permissions...</Text>;
+  } else if (!hasCameraPermission) {
+    return (
+      <Text>
+        Permission for camera not granted. Please change this in settings.
+      </Text>
+    );
+  }
 
-      const getTypeProductCode = (typeName) => {
-        if (typeName === 'autoparts'){
-          return 1
-        }
-        return 0
-      }
+  const getTypeProductCode = (typeName) => {
+    if (typeName === 'autoparts') {
+      return 1;
+    }
+    return 0;
+  };
 
+  const getItemAspects = async (categoryId) => {
+    try {
+      setProcessingAspects(true);
+      const response = await fetch(
+        `https://listerfast.com/api/ebay/aspectsbycategory/${username}/${getTypeProductCode(
+          type
+        )}/${categoryId}`
+      );
 
-      const getItemAspects = async (categoryId) => {
-        try {
-          setProcessingAspects(true);
-          const response = await fetch(
-            `https://listerfast.com/api/ebay/aspectsbycategory/${username}/${getTypeProductCode(type)}/${categoryId}`
-          )
+      const json = await response.json();
 
-          const json = await response.json();
-
-          
-
-          /*const aspects = json.filter(item => item.aspectConstraint.aspectUsage === 'RECOMMENDED').map(itemProduct => {
+      /*const aspects = json.filter(item => item.aspectConstraint.aspectUsage === 'RECOMMENDED').map(itemProduct => {
             return (
               {
                 localizedAspectName: itemProduct.localizedAspectName,
@@ -113,399 +112,403 @@ export default function AddListingForm(props) {
             )
           })*/
 
-          const aspects = json.filter(item => item.aspectConstraint.aspectUsage === 'RECOMMENDED').map(itemProduct => {
-            return (
-              {
-                localizedAspectName: itemProduct.localizedAspectName,
-                aspectValues: itemProduct.aspectValues.map(value => value.localizedValue),
-                require: itemProduct.aspectConstraint.aspectRequired ? true : false,
-                /*itemProduct.aspectConstraint.aspectMode !== 'FREE_TEXT' || itemProduct.localizedAspectName === 'Type' ? itemProduct.aspectValues.map(value => value.localizedValue) : []*/                  
-              }
-            )
-          })
+      const aspects = json
+        .filter((item) => item.aspectConstraint.aspectUsage === 'RECOMMENDED')
+        .map((itemProduct) => {
+          return {
+            localizedAspectName: itemProduct.localizedAspectName,
+            aspectValues: itemProduct.aspectValues
+              ? itemProduct.aspectValues.map((value) => value.localizedValue)
+              : [],
+            value: '',
+            require: itemProduct.aspectConstraint.aspectRequired ? true : false,
+            /*itemProduct.aspectConstraint.aspectMode !== 'FREE_TEXT' || itemProduct.localizedAspectName === 'Type' ? itemProduct.aspectValues.map(value => value.localizedValue) : []*/
+          };
+        });
 
-          console.log(aspects);
-          
-          setAspects(aspects);
-          setProcessingAspects(false);
-          
+      console.log(aspects);
 
+      setAspects(aspects);
+      setProcessingAspects(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-        } catch(error){
-          console.log(error);
+  const changeValueItemAspect = (itm, value) => {
+    console.log(itm);
+    console.log(value);
+    const newAspects = aspects.map((item) => {
+      if (item.localizedAspectName === itm) {
+        return {
+          aspectValues: item.aspectValues,
+          localizedAspectName: item.localizedAspectName,
+          require: item.require,
+          value: value,
+        };
+      }
+
+      return item;
+    });
+
+    const aspectList = newAspects.filter(
+      (item) => item.require === true && item.value === ''
+    );
+
+    setCheckedAllAspects(aspectList.length > 0 ? false : true);
+
+    setAspects(newAspects);
+  };
+
+  const getCategories = async () => {
+    try {
+      setProcessingCategories(true);
+
+      const searchCategoriesLarge =
+        type !== 'autoparts' && type !== 'others'
+          ? `${searchCategories} ${type}`
+          : searchCategories;
+
+      const response = await fetch(
+        `https://listerfast.com/api/ebay/categorysuggestions/${username}/${getTypeProductCode(
+          type
+        )}/${searchCategoriesLarge}`
+      );
+
+      const json = await response.json();
+
+      const categories = json.categorySuggestions.map((item) => {
+        return {
+          categoryId: item.category.categoryId,
+          title: item.category.categoryName,
+          subtitle: item.categoryTreeNodeAncestors[0].categoryName,
+        };
+      });
+
+      setCategory('');
+      setCategories(categories);
+      console.log(categories);
+      setProcessingCategories(false);
+    } catch (error) {
+      setProcessingCategories(false);
+      console.log(error);
+    }
+  };
+
+  const onSelectedCategory = (id) => {
+    setCategory(id);
+    console.log(id);
+    forward();
+    getItemAspects(id);
+  };
+
+  let forward = async () => {
+    setStep((old) => old + 1);
+  };
+
+  let backward = async () => {
+    setStep((old) => old - 1);
+  };
+
+  let takePicMain = async () => {
+    let options = {
+      quality: 0.7,
+      base64: true,
+      skipProcessing: true,
+      exif: false,
+    };
+
+    let newPhoto = await cameraRef.current.takePictureAsync(options);
+    setPhotoMain(newPhoto);
+
+    const source = newPhoto.uri;
+    if (source) {
+      await cameraRef.current.pausePreview();
+      setOpenCamera(false);
+      setMainPhotoOpen(false);
+      console.log('picture source', source);
+    }
+  };
+
+  const handleBarCodeScanned = ({ type, data }) => {
+    console.log(type);
+    console.log(data);
+    setBarcodeValue({ type, data });
+    setBarcodeOpen(false);
+  };
+
+  const deleteBarcodeValue = () => {
+    setBarcodeValue();
+  };
+
+  const onOpenPreviewPhoto = (async = () => {
+    console.log('ADD NEW PHOTO!!!!');
+    setOpenCamera(true);
+    setMorePhotosOpen(true);
+  });
+
+  const onOpenEditPhoto = (async = (id) => {
+    console.log('EDIT PHOTO: ', id);
+    setOpenCamera(true);
+    setEditPhotoOpen(id);
+  });
+
+  const onOpenBarcode = (async = (value) => {
+    setBarcodeOpen(value);
+  });
+
+  const takeNewPic = async () => {
+    let options = {
+      quality: 0.7,
+      base64: true,
+      skipProcessing: true,
+      exif: false,
+    };
+
+    let newPhoto = await cameraRef.current.takePictureAsync(options);
+    setPhotos((old) => [...old, { id: newPhoto.uri, value: newPhoto }]);
+
+    const source = newPhoto.uri;
+
+    if (source) {
+      await cameraRef.current.pausePreview();
+      setMorePhotosOpen(false);
+      setOpenCamera(false);
+      console.log('picture source', source);
+    }
+  };
+
+  const takeEditPic = async () => {
+    let options = {
+      quality: 0.7,
+      base64: true,
+      skipProcessing: true,
+      exif: false,
+    };
+
+    let newPhoto = await cameraRef.current.takePictureAsync(options);
+    setPhotos((old) =>
+      old.map((item) => {
+        if (item.id === editPhotoOpen) {
+          return {
+            id: item.id,
+            value: newPhoto,
+          };
         }
+        return item;
+      })
+    );
+    //setPhotos((old) => [...old, { id: newPhoto.uri, value: newPhoto }]);
 
-      }
+    const source = newPhoto.uri;
 
-      const getCategories = async () => {
-        try {
-          setProcessingCategories(true);
-          const response = await fetch(
-            `https://listerfast.com/api/ebay/categorysuggestions/${username}/${getTypeProductCode(type)}/${searchCategories}`
-          )
+    if (source) {
+      await cameraRef.current.pausePreview();
+      //setMorePhotosOpen(false);
+      setEditPhotoOpen('');
+      setOpenCamera(false);
+      console.log('picture source', source);
+    }
+  };
 
-          const json = await response.json();
+  const takePicLabel = async () => {
+    let options = {
+      quality: 0.7,
+      base64: true,
+      skipProcessing: true,
+      exif: false,
+    };
 
-          const categories = json.categorySuggestions.map(item => {
-            return {
-              categoryId: item.category.categoryId,
-              title: item.category.categoryName,
-              subtitle: item.categoryTreeNodeAncestors[0].categoryName,
-            }
-          })
+    let newPhoto = await cameraRef.current.takePictureAsync(options);
+    setPhotoLabel(newPhoto);
 
-          setCategory('');
-          setCategories(categories);
-          console.log(categories);
-          setProcessingCategories(false);
+    const source = newPhoto.uri;
 
-        } catch(error){
-          setProcessingCategories(false);
-          console.log(error);
-        }
-      }
+    if (source) {
+      await cameraRef.current.pausePreview();
+      setLabelPhotoOpen(false);
+      setOpenCamera(false);
+      console.log('picture source', source);
+    }
+  };
 
-      const onSelectedCategory = (id) => {
-        setCategory(id);
-        console.log(id);
-        forward();
-        getItemAspects(id);
-      }
+  const closePic = async () => {
+    setLabelPhotoOpen(false);
+    setMainPhotoOpen(false);
+    setMorePhotosOpen(false);
+    setEditPhotoOpen('');
+    setOpenCamera(false);
+  };
 
-      
+  const deleteEditPic = async () => {
+    setPhotos((old) => old.filter((item) => item.id !== editPhotoOpen));
+    setEditPhotoOpen('');
+    setOpenCamera(false);
+  };
 
-      let forward = async () => {
-        setStep((old)=>old+1);
-      }
+  const deleteMainPic = async () => {
+    setLabelPhotoOpen(false);
+    setMainPhotoOpen(false);
+    setOpenCamera(false);
+    setPhotoMain(undefined);
+  };
 
-      let backward = async () => {
-        setStep((old)=>old-1);
-      }
-      
+  const deleteLabelPic = async () => {
+    setLabelPhotoOpen(false);
+    setMainPhotoOpen(false);
+    setOpenCamera(false);
+    setPhotoLabel(undefined);
+  };
 
-      let takePicMain = async () => {
-        let options = {
-          quality: 0.7,
-          base64: true,
-          skipProcessing: true,          
-          exif: false,          
-        };
+  const onOpenCamera = async () => {
+    setOpenCamera((old) => !old);
+  };
 
-        
-        
-        let newPhoto = await cameraRef.current.takePictureAsync(options);
-        setPhotoMain(newPhoto);
+  const onMainPhotoOpen = async () => {
+    setMainPhotoOpen(true);
+    setOpenCamera(true);
+  };
 
-        const source = newPhoto.uri;
-        if (source) {
-          await cameraRef.current.pausePreview();
-          setOpenCamera(false);
-          setMainPhotoOpen(false);
-          console.log("picture source", source);          
-        };
-      };
+  const onLabelPhotoOpen = async () => {
+    setLabelPhotoOpen(true);
+    setOpenCamera(true);
+  };
 
-      const handleBarCodeScanned = ({ type, data }) => {
-        console.log(type);
-        console.log(data);
-        setBarcodeValue({type, data});
-        setBarcodeOpen(false);
-      }
+  const onSearchCategories = async (query) => {
+    setSearchCategories(query);
+  };
 
-      const deleteBarcodeValue = () => {
-        setBarcodeValue()
-      }
+  if (step === 0) {
+    return (
+      <SearchProduct
+        title={title}
+        navigation={navigation}
+        onSearchCategories={onSearchCategories}
+        searchCategories={searchCategories}
+        styles={styles}
+        backward={backward}
+        forward={forward}
+      />
+    );
+  }
 
-      const onOpenPreviewPhoto = async = () => {
-        console.log('ADD NEW PHOTO!!!!');
-        setOpenCamera(true);
-        setMorePhotosOpen(true);
-
-      }
-
-      const onOpenEditPhoto = async = (id) => {
-        console.log('EDIT PHOTO: ', id );
-        setOpenCamera(true);
-        setEditPhotoOpen(id);
-
-      }
-
-      const onOpenBarcode = async = (value) => {
-        setBarcodeOpen(value);
-      }
-
-
-      const takeNewPic = async () => {
-        let options = {
-          quality: 0.7,
-          base64: true,
-          skipProcessing: true,          
-          exif: false, 
-        };
-
-        let newPhoto = await cameraRef.current.takePictureAsync(options);
-        setPhotos((old) => [...old, { id: newPhoto.uri, value: newPhoto }]);
-
-        const source = newPhoto.uri;
-
-        if (source) {
-          await cameraRef.current.pausePreview();
-          setMorePhotosOpen(false);
-          setOpenCamera(false);
-          console.log("picture source", source);          
-        };
-
-      }
-
-      const takeEditPic = async () => {
-        let options = {
-          quality: 0.7,
-          base64: true,
-          skipProcessing: true,          
-          exif: false, 
-        };
-
-        let newPhoto = await cameraRef.current.takePictureAsync(options);
-        setPhotos((old) => old.map(item => {
-          if (item.id === editPhotoOpen){
-            return (
-              {
-                id: item.id,
-                value: newPhoto,
-              }
-            )            
-          }
-          return item
-        }))
-        //setPhotos((old) => [...old, { id: newPhoto.uri, value: newPhoto }]);
-
-        const source = newPhoto.uri;
-
-        if (source) {
-          await cameraRef.current.pausePreview();
-          //setMorePhotosOpen(false);
-          setEditPhotoOpen('');
-          setOpenCamera(false);
-          console.log("picture source", source);          
-        };
-
-      }
-
-      const takePicLabel = async () => {
-        let options = {
-          quality: 0.7,
-          base64: true,
-          skipProcessing: true,          
-          exif: false, 
-        };
-
-        let newPhoto = await cameraRef.current.takePictureAsync(options);
-        setPhotoLabel(newPhoto);
-
-        const source = newPhoto.uri;
-
-        if (source) {
-          await cameraRef.current.pausePreview();
-          setLabelPhotoOpen(false);
-          setOpenCamera(false);
-          console.log("picture source", source);          
-        };
-
-        
-      };
-
-      const closePic = async () => {
-        setLabelPhotoOpen(false);
-        setMainPhotoOpen(false);
-        setMorePhotosOpen(false);
-        setEditPhotoOpen('');
-        setOpenCamera(false);
-      }
-
-      const deleteEditPic = async () => {
-        setPhotos((old)=>old.filter(item => item.id !== editPhotoOpen));
-        setEditPhotoOpen('');
-        setOpenCamera(false);
-      }
-
-      const deleteMainPic = async () => {
-        setLabelPhotoOpen(false);
-        setMainPhotoOpen(false);
-        setOpenCamera(false);
-        setPhotoMain(undefined);
-      }
-
-      
-
-      const deleteLabelPic = async () => {
-        setLabelPhotoOpen(false);
-        setMainPhotoOpen(false);
-        setOpenCamera(false);
-        setPhotoLabel(undefined)
-      }
-
-      const onOpenCamera = async () => {
-        setOpenCamera((old)=>!old);
-      }
-
-      const onMainPhotoOpen = async () => {
-        setMainPhotoOpen(true);
-        setOpenCamera(true);
-      }
-
-      const onLabelPhotoOpen = async () => {
-        setLabelPhotoOpen(true);
-        setOpenCamera(true);
-      }
-
-
-
-      const onSearchCategories = async (query) => {
-        setSearchCategories(query)
-      }
-
-      
-
-      if (step === 0){
-
-        return (
-          <SearchProduct title={title} navigation={navigation} onSearchCategories={onSearchCategories} searchCategories={searchCategories} styles={styles} backward = {backward} forward={forward} />
-        
-        
-        )
-      }
-
-    if (step === 1){
-
-      if (!openCamera){
+  if (step === 1) {
+    if (!openCamera) {
       return (
         <View>
-          <PhotosSection title={title} navigation={navigation} styles={styles} 
-          onMainPhotoOpen = {onMainPhotoOpen} photoMain={photoMain} photoLabel={photoLabel} onLabelPhotoOpen ={onLabelPhotoOpen} photos={photos} backward = {backward} forward={forward} type={type} onOpenPreviewPhoto={onOpenPreviewPhoto} onOpenEditPhoto={onOpenEditPhoto} />
-
-          
-
+          <PhotosSection
+            title={title}
+            navigation={navigation}
+            styles={styles}
+            onMainPhotoOpen={onMainPhotoOpen}
+            photoMain={photoMain}
+            photoLabel={photoLabel}
+            onLabelPhotoOpen={onLabelPhotoOpen}
+            photos={photos}
+            backward={backward}
+            forward={forward}
+            type={type}
+            onOpenPreviewPhoto={onOpenPreviewPhoto}
+            onOpenEditPhoto={onOpenEditPhoto}
+          />
         </View>
-        
-      
-      
-      
-      
-      )} else {
-        
-        if (mainPhotoOpen) {
-
+      );
+    } else {
+      if (mainPhotoOpen) {
         return (
-          
-          <Camera style ={styles.container} ref={cameraRef}> 
-          
-
-          <SegmentedButtons
-             density='medium'
-             style={styles.previewCameraControl}
-             onValueChange={()=>console.log('Change value')}
-             buttons={[
-               {
-                 value: 'close',
-                 label: 'Close',
-                 icon: 'close',
-                 onPress: ()=>closePic(),
-                 style: styles.buttonPreviewCameraControl,
-               },
-               {
-                 value: 'next',
-                 label: 'Take photo',
-                 icon: 'camera',
-                 onPress: ()=>takePicMain(),
-                 style: styles.buttonPreviewCameraControl,
-                 //disabled: photoMain && photoLabel ? false : true 
-               },
-               {  
-                value: 'delete',
-                label: 'Delete',
-                icon: 'delete',
-                onPress: ()=>deleteMainPic(),
-                style: styles.buttonPreviewCameraControl,
-                disabled: photoMain ? false : true 
-              },
-               ]}
-              
-             />
-
-
-        </Camera>
-        
-        );  
-       } else if (labelPhotoOpen) {
-        return (
-          
-        <Camera style ={styles.container} ref={cameraRef}>           
-            
-
+          <Camera style={styles.container} ref={cameraRef}>
             <SegmentedButtons
-             density='medium'
-             style={styles.previewCameraControl}
-             onValueChange={()=>console.log('Change value')}
-             buttons={[
-               {
-                 value: 'close',
-                 label: 'Close',
-                 icon: 'close',
-                 onPress: ()=>closePic(),
-                 style: styles.buttonPreviewCameraControl,
-               },
-               {
-                 value: 'next',
-                 label: 'Take photo',
-                 icon: 'camera',
-                 onPress: ()=>takePicLabel(),
-                 style: styles.buttonPreviewCameraControl,
-                 //disabled: photoMain && photoLabel ? false : true 
-               },
-               {
-                value: 'delete',
-                label: 'Delete',
-                icon: 'delete',
-                onPress: ()=>deleteLabelPic(),
-                style: styles.buttonPreviewCameraControl,
-                disabled: photoLabel ? false : true 
-                //disabled: photoMain && photoLabel ? false : true 
-              },
-               ]}
-              
-             />
-
-
-          
-          
-        </Camera>
-        )
-       } else if (morePhotosOpen){
+              density='medium'
+              style={styles.previewCameraControl}
+              onValueChange={() => console.log('Change value')}
+              buttons={[
+                {
+                  value: 'close',
+                  label: 'Close',
+                  icon: 'close',
+                  onPress: () => closePic(),
+                  style: styles.buttonPreviewCameraControl,
+                },
+                {
+                  value: 'next',
+                  label: 'Take photo',
+                  icon: 'camera',
+                  onPress: () => takePicMain(),
+                  style: styles.buttonPreviewCameraControl,
+                  //disabled: photoMain && photoLabel ? false : true
+                },
+                {
+                  value: 'delete',
+                  label: 'Delete',
+                  icon: 'delete',
+                  onPress: () => deleteMainPic(),
+                  style: styles.buttonPreviewCameraControl,
+                  disabled: photoMain ? false : true,
+                },
+              ]}
+            />
+          </Camera>
+        );
+      } else if (labelPhotoOpen) {
         return (
-        <Camera style ={styles.container} ref={cameraRef}>           
-            
-
+          <Camera style={styles.container} ref={cameraRef}>
             <SegmentedButtons
-             density='medium'
-             style={styles.previewCameraControl}
-             onValueChange={()=>console.log('Change value')}
-             buttons={[
-               {
-                 value: 'close',
-                 label: 'Close',
-                 icon: 'close',
-                 onPress: ()=>closePic(),
-                 style: styles.buttonPreviewCameraControl,
-               },
-               {
-                 value: 'next',
-                 label: 'Take photo',
-                 icon: 'camera',
-                 onPress: ()=>takeNewPic(),
-                 style: styles.buttonPreviewCameraControl,
-                 //disabled: photoMain && photoLabel ? false : true 
-               },
-               /*{
+              density='medium'
+              style={styles.previewCameraControl}
+              onValueChange={() => console.log('Change value')}
+              buttons={[
+                {
+                  value: 'close',
+                  label: 'Close',
+                  icon: 'close',
+                  onPress: () => closePic(),
+                  style: styles.buttonPreviewCameraControl,
+                },
+                {
+                  value: 'next',
+                  label: 'Take photo',
+                  icon: 'camera',
+                  onPress: () => takePicLabel(),
+                  style: styles.buttonPreviewCameraControl,
+                  //disabled: photoMain && photoLabel ? false : true
+                },
+                {
+                  value: 'delete',
+                  label: 'Delete',
+                  icon: 'delete',
+                  onPress: () => deleteLabelPic(),
+                  style: styles.buttonPreviewCameraControl,
+                  disabled: photoLabel ? false : true,
+                  //disabled: photoMain && photoLabel ? false : true
+                },
+              ]}
+            />
+          </Camera>
+        );
+      } else if (morePhotosOpen) {
+        return (
+          <Camera style={styles.container} ref={cameraRef}>
+            <SegmentedButtons
+              density='medium'
+              style={styles.previewCameraControl}
+              onValueChange={() => console.log('Change value')}
+              buttons={[
+                {
+                  value: 'close',
+                  label: 'Close',
+                  icon: 'close',
+                  onPress: () => closePic(),
+                  style: styles.buttonPreviewCameraControl,
+                },
+                {
+                  value: 'next',
+                  label: 'Take photo',
+                  icon: 'camera',
+                  onPress: () => takeNewPic(),
+                  style: styles.buttonPreviewCameraControl,
+                  //disabled: photoMain && photoLabel ? false : true
+                },
+                /*{
                 value: 'delete',
                 label: 'Delete',
                 icon: 'delete',
@@ -514,87 +517,99 @@ export default function AddListingForm(props) {
                 disabled: photoLabel ? false : true 
                 //disabled: photoMain && photoLabel ? false : true 
               },*/
-               ]}
-              
-             />
-
-
-          
-          
-        </Camera>)
-
-
-       } else if (editPhotoOpen !== ''){
+              ]}
+            />
+          </Camera>
+        );
+      } else if (editPhotoOpen !== '') {
         return (
-          <Camera style ={styles.container} ref={cameraRef}>           
-            
-
+          <Camera style={styles.container} ref={cameraRef}>
             <SegmentedButtons
-             density='medium'
-             style={styles.previewCameraControl}
-             onValueChange={()=>console.log('Change value')}
-             buttons={[
-               {
-                 value: 'close',
-                 label: 'Close',
-                 icon: 'close',
-                 onPress: ()=>closePic(),
-                 style: styles.buttonPreviewCameraControl,
-               },
-               {
-                 value: 'next',
-                 label: 'Take photo',
-                 icon: 'camera',
-                 onPress: ()=>takeEditPic(),
-                 style: styles.buttonPreviewCameraControl,
-                 //disabled: photoMain && photoLabel ? false : true 
-               },
-               {
-                value: 'delete',
-                label: 'Delete',
-                icon: 'delete',
-                onPress: ()=>deleteEditPic(),
-                style: styles.buttonPreviewCameraControl,
-                //disabled: photoLabel ? false : true 
-                //disabled: photoMain && photoLabel ? false : true 
-              },
-               ]}
-              
-             />
-
-
-          
-          
-        </Camera>)
-
-        
-       }
+              density='medium'
+              style={styles.previewCameraControl}
+              onValueChange={() => console.log('Change value')}
+              buttons={[
+                {
+                  value: 'close',
+                  label: 'Close',
+                  icon: 'close',
+                  onPress: () => closePic(),
+                  style: styles.buttonPreviewCameraControl,
+                },
+                {
+                  value: 'next',
+                  label: 'Take photo',
+                  icon: 'camera',
+                  onPress: () => takeEditPic(),
+                  style: styles.buttonPreviewCameraControl,
+                  //disabled: photoMain && photoLabel ? false : true
+                },
+                {
+                  value: 'delete',
+                  label: 'Delete',
+                  icon: 'delete',
+                  onPress: () => deleteEditPic(),
+                  style: styles.buttonPreviewCameraControl,
+                  //disabled: photoLabel ? false : true
+                  //disabled: photoMain && photoLabel ? false : true
+                },
+              ]}
+            />
+          </Camera>
+        );
       }
-
     }
+  }
 
-    if (step === 2){
-      return (
-        <BarcodeStage title={title} navigation={navigation} styles={styles} backward = {backward} forward={forward} barcodeOpen={barcodeOpen} onOpenBarcode = {onOpenBarcode} handleBarCodeScanned = {handleBarCodeScanned} barcodeValue = {barcodeValue} deleteBarcodeValue={deleteBarcodeValue} getCategories = {getCategories} />
-      
-      
-      )
+  if (step === 2) {
+    return (
+      <BarcodeStage
+        title={title}
+        navigation={navigation}
+        styles={styles}
+        backward={backward}
+        forward={forward}
+        barcodeOpen={barcodeOpen}
+        onOpenBarcode={onOpenBarcode}
+        handleBarCodeScanned={handleBarCodeScanned}
+        barcodeValue={barcodeValue}
+        deleteBarcodeValue={deleteBarcodeValue}
+        getCategories={getCategories}
+      />
+    );
+  }
 
-    }
+  if (step === 3) {
+    return (
+      <CategoryStage
+        title={title}
+        navigation={navigation}
+        styles={styles}
+        backward={backward}
+        forward={forward}
+        processingCategories={processingCategories}
+        categories={categories}
+        onSelectedCategory={onSelectedCategory}
+        category={category}
+      />
+    );
+  }
 
-    if (step === 3){
-      return (
-      <CategoryStage title={title} navigation={navigation} styles={styles} backward = {backward} forward={forward} processingCategories={processingCategories} categories = {categories} onSelectedCategory = {onSelectedCategory} category = {category} />
-      )
-    }
-
-    if (step === 4) {
-      return (
-        <ItemSpecificsStage title={title} navigation={navigation} styles={styles} backward = {backward} forward={forward} processingAspects = {processingAspects} aspects = {aspects} />
-      )
-    }
-      
-    
+  if (step === 4) {
+    return (
+      <ItemSpecificsStage
+        title={title}
+        navigation={navigation}
+        styles={styles}
+        backward={backward}
+        forward={forward}
+        processingAspects={processingAspects}
+        aspects={aspects}
+        changeValueItemAspect={changeValueItemAspect}
+        checkedAllAspects={checkedAllAspects}
+      />
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -602,15 +617,12 @@ const styles = StyleSheet.create({
     flex: 1,
     //alignItems:'flex-end',
     justifyContent: 'flex-end',
-    
+
     width: '100%',
     height: 350,
     marginTop: '40%',
-    //marginBottom: '55%',  
+    //marginBottom: '55%',
     position: 'absolute',
-    
-    
-    
   },
 
   containerBarcode: {
@@ -626,41 +638,37 @@ const styles = StyleSheet.create({
     //marginTop: '50%',
     position: 'absolute',*/
 
-    height:  '80%', //window.height / 2,
+    height: '80%', //window.height / 2,
     width: '80%', //window.height,
-    
-    
-    
   },
-  
+
   clothingButtons: {
-    marginTop: 15,    
+    marginTop: 15,
     flexDirection: 'row',
-    flexWrap:'wrap',
+    flexWrap: 'wrap',
     justifyContent: 'space-around',
   },
 
   imageList: {
-    //marginTop: 15,    
+    //marginTop: 15,
     flexDirection: 'row',
-    flexWrap:'wrap',
+    flexWrap: 'wrap',
     justifyContent: 'space-around',
   },
 
-
-  surface: {    
+  surface: {
     height: 115,
     width: 130,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
-  surfaceSmall: {    
+  surfaceSmall: {
     height: 70,
     width: 90,
     marginLeft: 10,
     marginRight: 10,
-    marginBottom: 10, 
+    marginBottom: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -670,27 +678,24 @@ const styles = StyleSheet.create({
     //alignSelf: 'flex-end',
   },
 
-  nextBackControl: {   
+  nextBackControl: {
     justifyContent: 'center',
     marginTop: 25,
   },
 
   buttonPreviewCameraControl: {
     backgroundColor: 'white',
-    
-        
   },
 
-  previewCameraControl: {   
+  previewCameraControl: {
     justifyContent: 'center',
     padding: 10,
-    
-    
+
     //marginTop: 25,
   },
-  
+
   preview: {
     alignSelf: 'stretch',
-    flex: 1
-  }
+    flex: 1,
+  },
 });
