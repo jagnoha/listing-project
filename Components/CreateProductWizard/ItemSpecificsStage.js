@@ -151,11 +151,12 @@ export default function ItemSpecificsStage(props) {
 
         <Surface elevation={4}>
           <Searchbar
-            placeholder='Search'
+            placeholder={wheelItems.length > 0 ? 'Search' : 'Edit information'}
             onChangeText={onChangeSearch}
             value={searchQuery}
             icon={wheelItems.length > 0 ? 'magnify' : 'pencil'}
           />
+
           <WheelPickerExpo
             //initialSelectedIndex={1}
             haptics={true}
