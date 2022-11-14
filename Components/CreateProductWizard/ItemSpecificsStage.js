@@ -30,10 +30,12 @@ export default function ItemSpecificsStage(props) {
 
   const onChangeSearch = (query) => {
     setSearchQuery(query);
-    console.log(query);
+    /*console.log(query);
     console.log(
       wheelItems.filter((itm) => itm.value.includes(query.toUpperCase()))
-    );
+    );*/
+
+    if (selectedItem !== 'Brand'){
 
     const wheelItemsList = props.aspects
       .find((itm) => itm.localizedAspectName === selectedItem)
@@ -42,9 +44,15 @@ export default function ItemSpecificsStage(props) {
         value: name.toUpperCase(),
       }));
 
-    setWheelItems(
-      wheelItemsList.filter((itm) => itm.value.includes(query.toUpperCase()))
-    );
+    
+
+        setWheelItems(
+          wheelItemsList.filter((itm) => itm.value.includes(query.toUpperCase()))
+        );
+
+    }
+
+    
 
     /*setWheelItems(
       wheelItems.filter((itm) => itm.value.includes(query.toUpperCase()))
@@ -63,6 +71,9 @@ export default function ItemSpecificsStage(props) {
     setSelectedItem(item);
     //console.log(props.aspects);
 
+
+    if (item !== 'Brand'){
+
     const wheelItemsList = props.aspects
       .find((itm) => itm.localizedAspectName === item)
       .aspectValues.map((name) => ({
@@ -70,8 +81,21 @@ export default function ItemSpecificsStage(props) {
         value: name.toUpperCase(),
       }));
 
-    setWheelItems(wheelItemsList);
-    setValueWheel(wheelItemsList[0].label);
+      console.log(wheelItemsList);
+
+      setWheelItems(wheelItemsList);
+      
+      if (wheelItemsList.length > 0) {
+        setValueWheel(wheelItemsList[0].label)
+       
+      }
+
+    } else {
+      setWheelItems([]);
+      setValueWheel('Brand');
+      setSearchQuery('Unbranded')
+    }
+
     setOpenWheel(true);
   };
 
@@ -109,7 +133,7 @@ export default function ItemSpecificsStage(props) {
 
     console.log(list);
 
-    console.log(valueWheel);
+    console.log('VALUE WHEEL: ', valueWheel);
     props.changeValueItemAspect(
       selectedItem,
       list.length === 1
@@ -125,7 +149,7 @@ export default function ItemSpecificsStage(props) {
     setWheelItems([]);
   };
 
-  console.log('***********************************');
+  //console.log('***********************************');
 
   /*console.log(props.aspects.filter(item => item.localizedAspectName === 'Size')[0].aspectValues.map(name => ({
         label: name,
@@ -146,10 +170,10 @@ export default function ItemSpecificsStage(props) {
         }}
       >
         <Text style={{ fontSize: 20, paddingBottom: 20 }}>
-          Select {selectedItem}
+          Add {selectedItem}
         </Text>
 
-        <Surface elevation={4}>
+        <Surface style={{width: 300}} elevation={4}>
           <Searchbar
             placeholder={wheelItems.length > 0 ? 'Search' : 'Edit information'}
             onChangeText={onChangeSearch}
@@ -157,25 +181,15 @@ export default function ItemSpecificsStage(props) {
             icon={wheelItems.length > 0 ? 'magnify' : 'pencil'}
           />
 
-          <WheelPickerExpo
-            //initialSelectedIndex={1}
+          {wheelItems.length > 0 ? <WheelPickerExpo
             haptics={true}
             width={300}
             height={200}
             items={
               wheelItems
-              /*searchQuery.length === 0
-                ? wheelItems
-                : wheelItems.filter((itm) =>
-                    itm.value.includes(searchQuery.toUpperCase())
-                  ).length === 0
-                ? []
-                : wheelItems.filter((itm) =>
-                    itm.value.includes(searchQuery.toUpperCase())
-                  )*/
             }
             onChange={({ item }) => setValueWheel(item.label)}
-          />
+          />: ''}
         </Surface>
         <View
           style={{
@@ -266,7 +280,7 @@ export default function ItemSpecificsStage(props) {
                                     backgroundColor: 'lightgray',
                                   }}
                                 >
-                                  Optional
+                                  Recommended
                                 </Chip>
                               )}
                             </Paragraph>

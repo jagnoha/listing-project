@@ -22,7 +22,8 @@ I'd like to know a little bit about the item you want to create. Tell me somethi
 
 
         <Searchbar
-            placeholder='About this item'
+            icon='pencil'
+            placeholder='What is this item?'
             onChangeText={props.onSearchCategories}
             value={props.searchCategories}
           />
@@ -43,7 +44,7 @@ I'd like to know a little bit about the item you want to create. Tell me somethi
                 value: 'next',
                 label: 'Next',
                 icon: 'arrow-right',
-                onPress: ()=>props.forward(),
+                onPress: ()=>{ props.setCategory('');props.forward() },
                 disabled: props.searchCategories.length > 0 ? false : true,
               },
               ]}                

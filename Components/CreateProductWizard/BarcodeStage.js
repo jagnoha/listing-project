@@ -9,6 +9,15 @@ import Header from '../Header';
 export default function BarcodeStage(props) {
     //const theme = useTheme();
   
+    const processCategories = () => {
+        console.log("CATEGORY: ", props.category)
+        props.forward();
+        
+        if (props.category === '' ){
+            props.getCategories();
+        }
+        
+    }
     
     if (props.barcodeOpen) {
         return (
@@ -83,7 +92,7 @@ export default function BarcodeStage(props) {
                 value: 'next',
                 label: 'Next',
                 icon: 'arrow-right',
-                onPress: ()=>{props.forward(), props.getCategories()},                
+                onPress: ()=>processCategories(),                
               },
               ]}                
             />

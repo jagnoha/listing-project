@@ -388,6 +388,7 @@ export default function AddListingForm(props) {
         styles={styles}
         backward={backward}
         forward={forward}
+        setCategory={setCategory}
       />
     );
   }
@@ -575,6 +576,8 @@ export default function AddListingForm(props) {
         barcodeValue={barcodeValue}
         deleteBarcodeValue={deleteBarcodeValue}
         getCategories={getCategories}
+        category={category}
+        searchCategories={searchCategories}
       />
     );
   }

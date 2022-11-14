@@ -12,6 +12,7 @@ import {
   Banner,
   Paragraph,
   ActivityIndicator,
+  IconButton,
 } from 'react-native-paper';
 import Header from '../Header';
 
@@ -47,8 +48,24 @@ export default function CategoryStage(props) {
                   >
                     <Card>
                       <Card.Content>
-                        <Title>{item.title}</Title>
-                        <Paragraph>{item.subtitle}</Paragraph>
+                      <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                          }}
+                        >
+                          <View>
+                            <Title>{item.title}</Title>
+                            <Paragraph>{item.subtitle}</Paragraph>
+                          </View>
+                          {props.category === item.categoryId ? <View>
+                          <IconButton
+                              icon='check-outline'
+                              iconColor={'green'}
+                              size={20}
+                            />
+                          </View> : ''}
+                        </View>
                       </Card.Content>
                     </Card>
                   </Pressable>
@@ -67,14 +84,16 @@ export default function CategoryStage(props) {
               label: 'Back',
               icon: 'arrow-left',
               onPress: () => props.backward(),
-              //disabled: 'true'
+              //disabled: 'false'
+              //disabled: categoryId
             },
             {
               value: 'next',
               label: 'Next',
               icon: 'arrow-right',
               onPress: () => props.forward(),
-              disabled: 'true',
+              disabled: props.category !== '' ? false : true,
+
             },
           ]}
         />
