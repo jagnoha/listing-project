@@ -71,7 +71,7 @@ export default function ItemSpecificsStage(props) {
       }));
 
     setWheelItems(wheelItemsList);
-    //setValueWheel(wheelItemsList[0].label);
+    setValueWheel(wheelItemsList[0].label);
     setOpenWheel(true);
   };
 
@@ -250,7 +250,9 @@ export default function ItemSpecificsStage(props) {
                             justifyContent: 'space-between',
                           }}
                         >
-                          <Title>{item.localizedAspectName}</Title>
+                          <Title style={{ fontSize: 15 }}>
+                            {item.localizedAspectName}
+                          </Title>
                           {item.value === '' ? (
                             <Paragraph>
                               {item.require ? (
