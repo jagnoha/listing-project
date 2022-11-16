@@ -10,6 +10,7 @@ import {
   SegmentedButtons,
   ActivityIndicator,
   Banner,
+  TextInput,
   Title,
 } from 'react-native-paper';
 import Header from '../Header';
@@ -40,8 +41,10 @@ export default function ConditionStage(props) {
             />
           </View>
         ) : (
-          <View>
-            <ScrollView style={{ height: '58%' }}>
+          <View
+            style={{ flexDirection: 'column', justifyContent: 'space-between' }}
+          >
+            <ScrollView style={{ height: '60%' }}>
               {props.categoryFeatures.conditions.map((item) => {
                 return (
                   <View key={item.ID}>
@@ -75,12 +78,17 @@ export default function ConditionStage(props) {
                 );
               })}
             </ScrollView>
-            <Searchbar
+            <TextInput
+              //mode='outlined'
+              label='Condition Description'
+              placeholder='Add Condition Description'
+            />
+            {/*<Searchbar
               icon='pencil'
               placeholder='Condition Description'
-              //onChangeText={props.onSearchCategories}
-              //value={props.searchCategories}
-            />
+              onChangeText={props.onSearchCategories}
+              value={props.searchCategories}
+            />*/}
           </View>
         )}
 
