@@ -35,24 +35,18 @@ export default function ItemSpecificsStage(props) {
       wheelItems.filter((itm) => itm.value.includes(query.toUpperCase()))
     );*/
 
-    if (selectedItem !== 'Brand'){
+    if (selectedItem !== 'Brand') {
+      const wheelItemsList = props.aspects
+        .find((itm) => itm.localizedAspectName === selectedItem)
+        .aspectValues.map((name) => ({
+          label: name,
+          value: name.toUpperCase(),
+        }));
 
-    const wheelItemsList = props.aspects
-      .find((itm) => itm.localizedAspectName === selectedItem)
-      .aspectValues.map((name) => ({
-        label: name,
-        value: name.toUpperCase(),
-      }));
-
-    
-
-        setWheelItems(
-          wheelItemsList.filter((itm) => itm.value.includes(query.toUpperCase()))
-        );
-
+      setWheelItems(
+        wheelItemsList.filter((itm) => itm.value.includes(query.toUpperCase()))
+      );
     }
-
-    
 
     /*setWheelItems(
       wheelItems.filter((itm) => itm.value.includes(query.toUpperCase()))
@@ -71,29 +65,25 @@ export default function ItemSpecificsStage(props) {
     setSelectedItem(item);
     //console.log(props.aspects);
 
-
-    if (item !== 'Brand'){
-
-    const wheelItemsList = props.aspects
-      .find((itm) => itm.localizedAspectName === item)
-      .aspectValues.map((name) => ({
-        label: name,
-        value: name.toUpperCase(),
-      }));
+    if (item !== 'Brand') {
+      const wheelItemsList = props.aspects
+        .find((itm) => itm.localizedAspectName === item)
+        .aspectValues.map((name) => ({
+          label: name,
+          value: name.toUpperCase(),
+        }));
 
       console.log(wheelItemsList);
 
       setWheelItems(wheelItemsList);
-      
-      if (wheelItemsList.length > 0) {
-        setValueWheel(wheelItemsList[0].label)
-       
-      }
 
+      if (wheelItemsList.length > 0) {
+        setValueWheel(wheelItemsList[0].label);
+      }
     } else {
       setWheelItems([]);
       setValueWheel('Brand');
-      setSearchQuery('Unbranded')
+      setSearchQuery('Unbranded');
     }
 
     setOpenWheel(true);
@@ -173,7 +163,7 @@ export default function ItemSpecificsStage(props) {
           Add {selectedItem}
         </Text>
 
-        <Surface style={{width: 300}} elevation={4}>
+        <Surface style={{ width: 300 }} elevation={4}>
           <Searchbar
             placeholder={wheelItems.length > 0 ? 'Search' : 'Edit information'}
             onChangeText={onChangeSearch}
@@ -181,15 +171,17 @@ export default function ItemSpecificsStage(props) {
             icon={wheelItems.length > 0 ? 'magnify' : 'pencil'}
           />
 
-          {wheelItems.length > 0 ? <WheelPickerExpo
-            haptics={true}
-            width={300}
-            height={200}
-            items={
-              wheelItems
-            }
-            onChange={({ item }) => setValueWheel(item.label)}
-          />: ''}
+          {wheelItems.length > 0 ? (
+            <WheelPickerExpo
+              haptics={true}
+              width={300}
+              height={200}
+              items={wheelItems}
+              onChange={({ item }) => setValueWheel(item.label)}
+            />
+          ) : (
+            ''
+          )}
         </Surface>
         <View
           style={{
@@ -339,7 +331,10 @@ export default function ItemSpecificsStage(props) {
               label: 'Next',
               icon: 'arrow-right',
               disabled: !props.checkedAllAspects,
-              onPress: () => props.forward(),
+              onPress: () => {
+                props.forward();
+                props.getCategoriesFeatures(props.category);
+              },
             },
           ]}
         />

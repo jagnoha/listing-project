@@ -11,6 +11,7 @@ import {
 } from 'react-native-paper';
 
 import { useRecoilState } from 'recoil';
+import axios from 'axios';
 
 import { Pressable } from 'react-native';
 import Svg, { Circle, Rect } from 'react-native-svg';
@@ -27,6 +28,7 @@ import PhotosSection from './CreateProductWizard/PhotosSection';
 import BarcodeStage from './CreateProductWizard/BarcodeStage';
 import CategoryStage from './CreateProductWizard/CategoryStage';
 import ItemSpecificsStage from './CreateProductWizard/ItemSpecificsStage';
+import ConditionStage from './CreateProductWizard/ConditionStage';
 
 export default function AddListingForm(props) {
   let cameraRef = useRef();
@@ -42,6 +44,11 @@ export default function AddListingForm(props) {
   const [photoLabel, setPhotoLabel] = useState();
   const [barcodeValue, setBarcodeValue] = useState();
   const [categories, setCategories] = useState([]);
+
+  const [categoryFeatures, setCategoryFeatures] = useState();
+
+  const [processingCategoryFeatures, setProcessingCategoryFeatures] =
+    useState();
 
   const [checkedAllAspects, setCheckedAllAspects] = useState(false);
 
@@ -90,6 +97,77 @@ export default function AddListingForm(props) {
       return 1;
     }
     return 0;
+  };
+
+  const getCategoriesFeatures = async (categoryId) => {
+    try {
+      setProcessingCategoryFeatures(true);
+      const response = await fetch(
+        `https://listerfast.com/api/ebay/categoryfeatures/${username}/${categoryId}`
+      );
+
+      const json = await response.json();
+      let result;
+
+      if (json.Category.ConditionEnabled) {
+        console.log('conditions!');
+        result = json;
+        result.conditions = result.Category.ConditionValues.Condition;
+      } else {
+        console.log('No conditions!');
+        result = json;
+        result.conditions = [
+          {
+            ID: 1000,
+            DisplayName: 'New',
+          },
+          {
+            ID: 1500,
+            DisplayName: 'New other',
+          },
+          {
+            ID: 2500,
+            DisplayName: 'Remanufactured',
+          },
+          {
+            ID: 3000,
+            DisplayName: 'Used',
+          },
+          {
+            ID: 7000,
+            DisplayName: 'For parts or not working',
+          },
+        ];
+      }
+
+      //console.log(JSON.stringify(json.Category.ConditionValues));
+
+      /*const url = `https://listerfast.com/api/ebay/categoryfeatures/${username}/${categoryId}`;
+
+      const response = await axios.get(url);
+
+      console.log(response.data.Category);*/
+
+      /*const url = `https://listerfast.com/api/ebay/categoryfeatures/${username}/${categoryId}`;
+      const res = await axios.get(url, {
+        //responseType: 'arraybuffer',
+        headers: { 'Access-Control-Allow-Origin': '*' },
+      });*/
+
+      //console.log(res);
+      /*console.log(
+          res.data.filter((item) => item.localizedAspectName !== 'Brand')
+        );*/
+      //console.log('CATEGORY FEATURES >>>>>>>>>>>>>>>>>>>>>>>>', res.data);
+      //setCategoryFeatures(res.data);
+
+      //console.log(res.data.Category.BestOfferEnabled);
+      console.log(result.conditions);
+      setCategoryFeatures(result);
+      setProcessingCategoryFeatures(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getItemAspects = async (categoryId) => {
@@ -610,6 +688,25 @@ export default function AddListingForm(props) {
         aspects={aspects}
         changeValueItemAspect={changeValueItemAspect}
         checkedAllAspects={checkedAllAspects}
+        category={category}
+        getCategoriesFeatures={getCategoriesFeatures}
+      />
+    );
+  }
+
+  if (step === 5) {
+    return (
+      <ConditionStage
+        title={title}
+        navigation={navigation}
+        styles={styles}
+        backward={backward}
+        forward={forward}
+        processingCategoryFeatures={processingCategoryFeatures}
+        categoryFeatures={categoryFeatures}
+
+        //changeValueItemAspect={changeValueItemAspect}
+        //checkedAllAspects={checkedAllAspects}
       />
     );
   }
