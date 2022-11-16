@@ -15,19 +15,41 @@ import {
   Paragraph,
   ActivityIndicator,
   IconButton,
+  TextInput,
 } from 'react-native-paper';
 import Header from '../Header';
 
 //const CITIES = 'Jakarta,Bandung,Sumbawa,Taliwang,Lombok,Bima'.split(',');
 
+
+
+
+
+
+
 export default function ItemSpecificsStage(props) {
   const [openWheel, setOpenWheel] = useState(false);
-  const [selectedItem, setSelectedItem] = useState('');
+  const [selectedItem, setSelectedItem] = useState();
+  const [multiSelected, setMultiSelected] = useState([]);
   const [wheelItems, setWheelItems] = useState([]);
   const [valueWheel, setValueWheel] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+
+  
+
   //const [checkedAllRequired, setCheckedAllRequired] = useState(false);
 
+  const onChangeInput = (value) => {
+    setSearchQuery(value);
+  }
+
+  const onAddMultiItem = () => {
+    if (!multiSelected.find(item => item === valueWheel)){
+      setMultiSelected((old)=>[...old, valueWheel])
+    }
+
+  }
+  
   const onChangeSearch = (query) => {
     setSearchQuery(query);
     /*console.log(query);
@@ -35,9 +57,9 @@ export default function ItemSpecificsStage(props) {
       wheelItems.filter((itm) => itm.value.includes(query.toUpperCase()))
     );*/
 
-    if (selectedItem !== 'Brand') {
+    if (selectedItem.name !== 'Brand') {
       const wheelItemsList = props.aspects
-        .find((itm) => itm.localizedAspectName === selectedItem)
+        .find((itm) => itm.localizedAspectName === selectedItem.name)
         .aspectValues.map((name) => ({
           label: name,
           value: name.toUpperCase(),
@@ -61,13 +83,29 @@ export default function ItemSpecificsStage(props) {
 
   /*const size = props.aspects.filter(item => item.localizedAspectName === 'Size');*/
 
+  const onClickItem = (item) => {
+
+    //if (item.cardinality === 'SINGLE' ) {
+
+        //onOpenWheel(item.localizedAspectName);
+        onOpenWheel(item);
+        //console.log(item);
+     
+        
+
+    /*} else {
+        console.log('Multiple!');
+    }*/
+
+  }
+
   const onOpenWheel = (item) => {
-    setSelectedItem(item);
+    setSelectedItem({ name: item.localizedAspectName, cardinality: item.cardinality, mode: item.mode });
     //console.log(props.aspects);
 
-    if (item !== 'Brand') {
+    if (item.localizedAspectName !== 'Brand') {
       const wheelItemsList = props.aspects
-        .find((itm) => itm.localizedAspectName === item)
+        .find((itm) => itm.localizedAspectName === item.localizedAspectName)
         .aspectValues.map((name) => ({
           label: name,
           value: name.toUpperCase(),
@@ -83,7 +121,7 @@ export default function ItemSpecificsStage(props) {
     } else {
       setWheelItems([]);
       setValueWheel('Brand');
-      setSearchQuery('Unbranded');
+      setSearchQuery('');
     }
 
     setOpenWheel(true);
@@ -100,18 +138,20 @@ export default function ItemSpecificsStage(props) {
   }
 
   const onCloseWheel = () => {
-    setSelectedItem('');
+    setSelectedItem();
     setOpenWheel(false);
     setSearchQuery('');
     setWheelItems([]);
+    setMultiSelected([]);
   };
 
   const onResetWheel = () => {
-    props.changeValueItemAspect(selectedItem, '');
-    setSelectedItem('');
+    props.changeValueItemAspect(selectedItem.name, '');
+    setSelectedItem();
     setOpenWheel(false);
     setSearchQuery('');
     setWheelItems([]);
+    setMultiSelected([]);
   };
 
   const onApplyWheel = () => {
@@ -125,16 +165,17 @@ export default function ItemSpecificsStage(props) {
 
     console.log('VALUE WHEEL: ', valueWheel);
     props.changeValueItemAspect(
-      selectedItem,
+      selectedItem.name,
       list.length === 1
         ? list[0].label
         : wheelItems.length === 0
         ? searchQuery
         : valueWheel
     );
-    setSelectedItem('');
+    setSelectedItem();
     setValueWheel('');
     setSearchQuery('');
+    setMultiSelected([]);
     setOpenWheel(false);
     setWheelItems([]);
   };
@@ -146,7 +187,7 @@ export default function ItemSpecificsStage(props) {
         value: name,
     })));*/
 
-  if (openWheel) {
+  if (openWheel && selectedItem.cardinality === 'SINGLE') {
     return (
       <View
         style={{
@@ -160,19 +201,37 @@ export default function ItemSpecificsStage(props) {
         }}
       >
         <Text style={{ fontSize: 20, paddingBottom: 20 }}>
-          Add {selectedItem}
+          Add {selectedItem.name}
         </Text>
 
         <Surface style={{ width: 300 }} elevation={4}>
-          <Searchbar
+          
+        {selectedItem.mode !== 'SELECTION_ONLY' ?  
+        <>
+          {wheelItems.length > 0 ?<Searchbar
             placeholder={wheelItems.length > 0 ? 'Search' : 'Edit information'}
             onChangeText={onChangeSearch}
             value={searchQuery}
-            icon={wheelItems.length > 0 ? 'magnify' : 'pencil'}
+            icon={'magnify'}
           />
+            :
+         
+          <TextInput
+            placeholder='Edit information'
+            left={<TextInput.Icon icon='pencil' />}
+            onChangeText={onChangeInput}
+            value={searchQuery}
+        />}
+
+        </> : ''
+      }
+
+          
 
           {wheelItems.length > 0 ? (
             <WheelPickerExpo
+              initialSelectedIndex={Math.ceil(wheelItems.length / 2)-1}
+            
               haptics={true}
               width={300}
               height={200}
@@ -182,7 +241,9 @@ export default function ItemSpecificsStage(props) {
           ) : (
             ''
           )}
+          
         </Surface>
+        
         <View
           style={{
             paddingTop: 30,
@@ -219,6 +280,103 @@ export default function ItemSpecificsStage(props) {
     );
   }
 
+  if (openWheel && selectedItem.cardinality === 'MULTI') {
+    return (
+      <View
+        style={{
+          flex: 1,
+          //justifyContent: 'space-between',
+          alignItems: 'center',
+          alignContent: 'center',
+          alignSelf: 'center',
+          paddingTop: 100,
+          //paddingBottom: 100,
+        }}
+      >
+        <Text style={{ fontSize: 20, paddingBottom: 20 }}>
+          Add {selectedItem.name}
+        </Text>
+
+        
+          {/*multiSelected.map(item => {
+            return (              
+              <View key={item}><Chip icon='information'>{item}</Chip></View>
+            )
+          })*/}
+       
+
+        <Surface style={{ width: 300 }} elevation={4}>
+          
+          {wheelItems.length > 0 ?<Searchbar
+            placeholder={wheelItems.length > 0 ? 'Search' : 'Edit information'}
+            onChangeText={onChangeSearch}
+            value={searchQuery}
+            icon={'magnify'}
+          />
+            :
+         
+          <TextInput
+            placeholder='Edit information'
+            left={<TextInput.Icon icon='pencil' />}
+            onChangeText={onChangeInput}
+            value={searchQuery}
+        />}
+
+        {/*<MultipleItems items = {wheelItems} renderItem = {renderItem} />*/}
+
+          {wheelItems.length > 0 ? (
+            <WheelPickerExpo
+            initialSelectedIndex={Math.ceil(wheelItems.length / 2)-1}
+              haptics={true}
+              width={300}
+              height={200}
+              items={wheelItems}
+              onChange={({ item }) => setValueWheel(item.label)}
+            />
+          ) : (
+            ''
+          )}
+        </Surface>
+        
+        <View
+          style={{
+            paddingTop: 30,
+            flexDirection: 'row',
+          }}
+        >
+          
+          <SegmentedButtons
+            style={props.styles.nextBackControl}
+            onValueChange={() => console.log('Change value')}
+            buttons={[
+              {
+                value: 'close',
+                label: 'Close',
+                icon: 'close',
+                onPress: () => onCloseWheel(),
+              },
+              {
+                value: 'reset',
+                label: 'Reset',
+                icon: 'cancel',
+                onPress: () => onResetWheel(),
+              },
+
+              {
+                value: 'Add',
+                label: 'Add',
+                icon: 'plus',
+                onPress: () => onAddMultiItem(),
+              },              
+            ]}
+          />
+          
+        </View>
+        <Button style={{marginTop: 15}} mode='contained'  onPress={() => onApplyWheel()}>Apply</Button>
+      </View>
+    );
+  }
+
   return (
     <View>
       <Header
@@ -246,7 +404,7 @@ export default function ItemSpecificsStage(props) {
                 <View key={item.localizedAspectName}>
                   <Pressable
                     //onPress={() => props.onSelectedCategory(item.categoryId)}
-                    onPress={() => onOpenWheel(item.localizedAspectName)}
+                    onPress={() => onClickItem(item)}
                   >
                     <Card>
                       <Card.Content>

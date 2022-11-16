@@ -213,19 +213,10 @@ export default function AddListingForm(props) {
                 : [],
               value: '',
               require: true,
+              cardinality: itemProduct.aspectConstraint.itemToAspectCardinality,
+              mode: itemProduct.aspectConstraint.aspectMode,
             };
           }
-
-          /*if (n < 5){
-            return {
-              localizedAspectName: itemProduct.localizedAspectName,
-              aspectValues: itemProduct.aspectValues
-                ? itemProduct.aspectValues.map((value) => value.localizedValue)
-                : [],
-              value: '',
-              require: true,
-            };
-          }*/
           
 
           return {
@@ -234,7 +225,9 @@ export default function AddListingForm(props) {
               ? itemProduct.aspectValues.map((value) => value.localizedValue)
               : [],
             value: '',
-            require: itemProduct.aspectConstraint.aspectRequired ? true : false,            
+            require: itemProduct.aspectConstraint.aspectRequired ? true : false,
+            cardinality: itemProduct.aspectConstraint.itemToAspectCardinality,
+            mode: itemProduct.aspectConstraint.aspectMode,            
           };
         });
 
@@ -257,6 +250,8 @@ export default function AddListingForm(props) {
           localizedAspectName: item.localizedAspectName,
           require: item.require,
           value: value,
+          cardinality: item.cardinality,
+          mode: item.mode,
         };
       }
 
