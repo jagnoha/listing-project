@@ -12,6 +12,7 @@ import {
   Banner,
   TextInput,
   Title,
+  IconButton,
 } from 'react-native-paper';
 import Header from '../Header';
 
@@ -33,6 +34,12 @@ export default function ConditionStage(props) {
           details or defects, you can add it in the condition description.
         </Banner>
 
+        <TextInput
+              //mode='outlined'
+              label='Condition Description'
+              placeholder='Add Condition Description'
+            />
+
         {props.processingCategoryFeatures ? (
           <View>
             <ActivityIndicator
@@ -44,13 +51,14 @@ export default function ConditionStage(props) {
           <View
             style={{ flexDirection: 'column', justifyContent: 'space-between' }}
           >
-            <ScrollView style={{ height: '60%' }}>
+            <ScrollView style={{ height: 350 }}>
               {props.categoryFeatures.conditions.map((item) => {
                 return (
                   <View key={item.ID}>
                     <Pressable
                       //onPress={() => props.onSelectedCategory(item.categoryId)}
-                      onPress={() => console.log(item.ID)}
+                      //onPress={() => console.log(item.ID)}
+                        onPress={()=>props.onSelectedCondition(item.ID)}
                     >
                       <Card>
                         <Card.Content>
@@ -63,13 +71,13 @@ export default function ConditionStage(props) {
                             <View>
                               <Title>{item.DisplayName}</Title>
                             </View>
-                            {/*props.category === item.categoryId ? <View>
+                            {props.condition === item.ID ? <View>
                           <IconButton
                               icon='check-outline'
                               iconColor={'green'}
                               size={20}
                             />
-                        </View> : ''*/}
+                        </View> : ''}
                           </View>
                         </Card.Content>
                       </Card>
@@ -78,17 +86,8 @@ export default function ConditionStage(props) {
                 );
               })}
             </ScrollView>
-            <TextInput
-              //mode='outlined'
-              label='Condition Description'
-              placeholder='Add Condition Description'
-            />
-            {/*<Searchbar
-              icon='pencil'
-              placeholder='Condition Description'
-              onChangeText={props.onSearchCategories}
-              value={props.searchCategories}
-            />*/}
+            
+            
           </View>
         )}
 
@@ -111,7 +110,7 @@ export default function ConditionStage(props) {
                 props.setCategory('');
                 props.forward();
               },
-              disabled: true,
+              disabled: props.condition !== '' ? false : true,
               //disabled: props.searchCategories.length > 0 ? false : true,
             },
           ]}

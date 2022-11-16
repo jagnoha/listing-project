@@ -65,6 +65,8 @@ export default function AddListingForm(props) {
   const [morePhotosOpen, setMorePhotosOpen] = useState(false);
   const [editPhotoOpen, setEditPhotoOpen] = useState('');
 
+  const [condition, setCondition] = useState('');
+
   const [barcodeOpen, setBarcodeOpen] = useState(false);
 
   const [listPhotoOpen, setListPhotoOpen] = useState(0);
@@ -169,6 +171,12 @@ export default function AddListingForm(props) {
       console.log(error);
     }
   };
+
+  const onSelectedCondition = (conditionId) => {
+
+    setCondition(conditionId);
+    
+  }
 
   const getItemAspects = async (categoryId) => {
     try {
@@ -704,6 +712,8 @@ export default function AddListingForm(props) {
         forward={forward}
         processingCategoryFeatures={processingCategoryFeatures}
         categoryFeatures={categoryFeatures}
+        condition={condition}
+        onSelectedCondition={onSelectedCondition}
 
         //changeValueItemAspect={changeValueItemAspect}
         //checkedAllAspects={checkedAllAspects}
