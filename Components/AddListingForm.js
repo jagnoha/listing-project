@@ -197,24 +197,50 @@ export default function AddListingForm(props) {
               }
             )
           })*/
+      let n = 0;
 
       const aspects = json
         .filter((item) => item.aspectConstraint.aspectUsage === 'RECOMMENDED')
         .map((itemProduct) => {
+
+          n++;
+
+          if (itemProduct.localizedAspectName === 'Type' || itemProduct.localizedAspectName === 'Manufacturer Part Number' || itemProduct.localizedAspectName === 'Color' || itemProduct.localizedAspectName === 'Placement on Vehicle' || itemProduct.localizedAspectName === 'Connector Type' || itemProduct.localizedAspectName === 'Model' || itemProduct.localizedAspectName === 'Vintage' || itemProduct.localizedAspectName === 'Format' || itemProduct.localizedAspectName === 'Edition' || itemProduct.localizedAspectName === 'Publication Year' || itemProduct.localizedAspectName === 'MPN'){
+            return {
+              localizedAspectName: itemProduct.localizedAspectName,
+              aspectValues: itemProduct.aspectValues
+                ? itemProduct.aspectValues.map((value) => value.localizedValue)
+                : [],
+              value: '',
+              require: true,
+            };
+          }
+
+          /*if (n < 5){
+            return {
+              localizedAspectName: itemProduct.localizedAspectName,
+              aspectValues: itemProduct.aspectValues
+                ? itemProduct.aspectValues.map((value) => value.localizedValue)
+                : [],
+              value: '',
+              require: true,
+            };
+          }*/
+          
+
           return {
             localizedAspectName: itemProduct.localizedAspectName,
             aspectValues: itemProduct.aspectValues
               ? itemProduct.aspectValues.map((value) => value.localizedValue)
               : [],
             value: '',
-            require: itemProduct.aspectConstraint.aspectRequired ? true : false,
-            /*itemProduct.aspectConstraint.aspectMode !== 'FREE_TEXT' || itemProduct.localizedAspectName === 'Type' ? itemProduct.aspectValues.map(value => value.localizedValue) : []*/
+            require: itemProduct.aspectConstraint.aspectRequired ? true : false,            
           };
         });
 
       console.log(aspects);
 
-      setAspects(aspects);
+      setAspects(aspects.sort((a,b) => b.require - a.require));
       setProcessingAspects(false);
     } catch (error) {
       console.log(error);

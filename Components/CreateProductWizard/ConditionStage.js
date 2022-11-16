@@ -72,11 +72,15 @@ export default function ConditionStage(props) {
                               <Title>{item.DisplayName}</Title>
                             </View>
                             {props.condition === item.ID ? <View>
-                          <IconButton
+                          {/*<IconButton
                               icon='check-outline'
                               iconColor={'green'}
                               size={20}
-                            />
+                            />*/}<Text><IconButton
+                              icon='check-outline'
+                              iconColor={'green'}
+                              size={15}
+                            /></Text>
                         </View> : ''}
                           </View>
                         </Card.Content>

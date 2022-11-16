@@ -277,11 +277,13 @@ export default function ItemSpecificsStage(props) {
                               )}
                             </Paragraph>
                           ) : (
+                            <Text>
                             <IconButton
                               icon='check-outline'
                               iconColor={'green'}
-                              size={20}
+                              size={15}
                             />
+                            </Text>
                           )}
                         </View>
 
