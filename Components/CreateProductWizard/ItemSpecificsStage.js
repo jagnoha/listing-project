@@ -21,12 +21,6 @@ import Header from '../Header';
 
 //const CITIES = 'Jakarta,Bandung,Sumbawa,Taliwang,Lombok,Bima'.split(',');
 
-
-
-
-
-
-
 export default function ItemSpecificsStage(props) {
   const [openWheel, setOpenWheel] = useState(false);
   const [selectedItem, setSelectedItem] = useState();
@@ -35,21 +29,27 @@ export default function ItemSpecificsStage(props) {
   const [valueWheel, setValueWheel] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
-  
-
   //const [checkedAllRequired, setCheckedAllRequired] = useState(false);
 
   const onChangeInput = (value) => {
     setSearchQuery(value);
-  }
+  };
+
+  const onCloseMultiItem = (item) => {
+    setMultiSelected((old) => old.filter((itm) => itm !== item));
+  };
 
   const onAddMultiItem = () => {
-    if (!multiSelected.find(item => item === valueWheel)){
-      setMultiSelected((old)=>[...old, valueWheel])
+    if (valueWheel.length > 0) {
+      if (!multiSelected.find((item) => item === valueWheel)) {
+        setMultiSelected((old) => [...old, valueWheel]);
+      }
+    } else {
+      setMultiSelected((old) => [...old, searchQuery]);
+      setSearchQuery('');
     }
+  };
 
-  }
-  
   const onChangeSearch = (query) => {
     setSearchQuery(query);
     /*console.log(query);
@@ -84,23 +84,28 @@ export default function ItemSpecificsStage(props) {
   /*const size = props.aspects.filter(item => item.localizedAspectName === 'Size');*/
 
   const onClickItem = (item) => {
-
     //if (item.cardinality === 'SINGLE' ) {
 
-        //onOpenWheel(item.localizedAspectName);
-        onOpenWheel(item);
-        //console.log(item);
-     
-        
+    //onOpenWheel(item.localizedAspectName);
+    onOpenWheel(item);
+    //console.log(item);
 
     /*} else {
         console.log('Multiple!');
     }*/
-
-  }
+  };
 
   const onOpenWheel = (item) => {
-    setSelectedItem({ name: item.localizedAspectName, cardinality: item.cardinality, mode: item.mode });
+    setSelectedItem({
+      name: item.localizedAspectName,
+      cardinality: item.cardinality,
+      mode: item.mode,
+    });
+
+    if (Array.isArray(item.value)) {
+      setMultiSelected(item.value);
+    }
+
     //console.log(props.aspects);
 
     if (item.localizedAspectName !== 'Brand') {
@@ -154,6 +159,16 @@ export default function ItemSpecificsStage(props) {
     setMultiSelected([]);
   };
 
+  const onApplyMultiWheel = () => {
+    props.changeValueItemAspect(selectedItem.name, multiSelected);
+    setSelectedItem();
+    setValueWheel('');
+    setSearchQuery('');
+    setMultiSelected([]);
+    setOpenWheel(false);
+    setWheelItems([]);
+  };
+
   const onApplyWheel = () => {
     //setSelectedItem('');
 
@@ -205,33 +220,33 @@ export default function ItemSpecificsStage(props) {
         </Text>
 
         <Surface style={{ width: 300 }} elevation={4}>
-          
-        {selectedItem.mode !== 'SELECTION_ONLY' ?  
-        <>
-          {wheelItems.length > 0 ?<Searchbar
-            placeholder={wheelItems.length > 0 ? 'Search' : 'Edit information'}
-            onChangeText={onChangeSearch}
-            value={searchQuery}
-            icon={'magnify'}
-          />
-            :
-         
-          <TextInput
-            placeholder='Edit information'
-            left={<TextInput.Icon icon='pencil' />}
-            onChangeText={onChangeInput}
-            value={searchQuery}
-        />}
-
-        </> : ''
-      }
-
-          
+          {selectedItem.mode !== 'SELECTION_ONLY' ? (
+            <>
+              {wheelItems.length > 0 ? (
+                <Searchbar
+                  placeholder={
+                    wheelItems.length > 0 ? 'Search' : 'Edit information'
+                  }
+                  onChangeText={onChangeSearch}
+                  value={searchQuery}
+                  icon={'magnify'}
+                />
+              ) : (
+                <TextInput
+                  placeholder='Edit information'
+                  left={<TextInput.Icon icon='pencil' />}
+                  onChangeText={onChangeInput}
+                  value={searchQuery}
+                />
+              )}
+            </>
+          ) : (
+            ''
+          )}
 
           {wheelItems.length > 0 ? (
             <WheelPickerExpo
-              initialSelectedIndex={Math.ceil(wheelItems.length / 2)-1}
-            
+              initialSelectedIndex={Math.ceil(wheelItems.length / 2) - 1}
               haptics={true}
               width={300}
               height={200}
@@ -241,9 +256,8 @@ export default function ItemSpecificsStage(props) {
           ) : (
             ''
           )}
-          
         </Surface>
-        
+
         <View
           style={{
             paddingTop: 30,
@@ -297,36 +311,36 @@ export default function ItemSpecificsStage(props) {
           Add {selectedItem.name}
         </Text>
 
-        
-          {/*multiSelected.map(item => {
+        {/*multiSelected.map(item => {
             return (              
               <View key={item}><Chip icon='information'>{item}</Chip></View>
             )
           })*/}
-       
 
         <Surface style={{ width: 300 }} elevation={4}>
-          
-          {wheelItems.length > 0 ?<Searchbar
-            placeholder={wheelItems.length > 0 ? 'Search' : 'Edit information'}
-            onChangeText={onChangeSearch}
-            value={searchQuery}
-            icon={'magnify'}
-          />
-            :
-         
-          <TextInput
-            placeholder='Edit information'
-            left={<TextInput.Icon icon='pencil' />}
-            onChangeText={onChangeInput}
-            value={searchQuery}
-        />}
+          {wheelItems.length > 0 ? (
+            <Searchbar
+              placeholder={
+                wheelItems.length > 0 ? 'Search' : 'Edit information'
+              }
+              onChangeText={onChangeSearch}
+              value={searchQuery}
+              icon={'magnify'}
+            />
+          ) : (
+            <TextInput
+              placeholder='Edit information'
+              left={<TextInput.Icon icon='pencil' />}
+              onChangeText={onChangeInput}
+              value={searchQuery}
+            />
+          )}
 
-        {/*<MultipleItems items = {wheelItems} renderItem = {renderItem} />*/}
+          {/*<MultipleItems items = {wheelItems} renderItem = {renderItem} />*/}
 
           {wheelItems.length > 0 ? (
             <WheelPickerExpo
-            initialSelectedIndex={Math.ceil(wheelItems.length / 2)-1}
+              initialSelectedIndex={Math.ceil(wheelItems.length / 2) - 1}
               haptics={true}
               width={300}
               height={200}
@@ -336,15 +350,32 @@ export default function ItemSpecificsStage(props) {
           ) : (
             ''
           )}
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+            {multiSelected.map((item) => {
+              return (
+                <View key={item}>
+                  <Chip
+                    style={{ margin: 5 }}
+                    closeIcon='close'
+                    compact={true}
+                    mode='outlined'
+                    //icon='information'
+                    onClose={() => onCloseMultiItem(item)}
+                  >
+                    {item}
+                  </Chip>
+                </View>
+              );
+            })}
+          </View>
         </Surface>
-        
+
         <View
           style={{
             paddingTop: 30,
             flexDirection: 'row',
           }}
         >
-          
           <SegmentedButtons
             style={props.styles.nextBackControl}
             onValueChange={() => console.log('Change value')}
@@ -367,12 +398,18 @@ export default function ItemSpecificsStage(props) {
                 label: 'Add',
                 icon: 'plus',
                 onPress: () => onAddMultiItem(),
-              },              
+              },
             ]}
           />
-          
         </View>
-        <Button style={{marginTop: 15}} mode='contained'  onPress={() => onApplyWheel()}>Apply</Button>
+        <Button
+          style={{ marginTop: 15 }}
+          mode='contained'
+          onPress={() => onApplyMultiWheel()}
+          disabled={multiSelected.length > 0 ? false : true}
+        >
+          Apply
+        </Button>
       </View>
     );
   }
@@ -436,11 +473,11 @@ export default function ItemSpecificsStage(props) {
                             </Paragraph>
                           ) : (
                             <Text>
-                            <IconButton
-                              icon='check-outline'
-                              iconColor={'green'}
-                              size={15}
-                            />
+                              <IconButton
+                                icon='check-outline'
+                                iconColor={'green'}
+                                size={15}
+                              />
                             </Text>
                           )}
                         </View>
@@ -451,7 +488,9 @@ export default function ItemSpecificsStage(props) {
                           </Paragraph>
                         ) : (
                           <Paragraph style={{ fontWeight: 'bold' }}>
-                            {item.value}
+                            {Array.isArray(item.value)
+                              ? item.value.join(' | ')
+                              : item.value}
                           </Paragraph>
                         )}
                       </Card.Content>
