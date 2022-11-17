@@ -33,6 +33,21 @@ export default function ItemSpecificsStage(props) {
 
   const onChangeInput = (value) => {
     setSearchQuery(value);
+
+    if (value === '') {
+
+      const wheelItemsList = props.aspects
+        .find((itm) => itm.localizedAspectName === selectedItem.name)
+        .aspectValues.map((name) => ({
+          label: name,
+          value: name.toUpperCase(),
+        }));
+
+      console.log(wheelItemsList);  
+      setWheelItems(wheelItemsList);
+
+    }
+
   };
 
   const onCloseMultiItem = (item) => {
@@ -40,14 +55,31 @@ export default function ItemSpecificsStage(props) {
   };
 
   const onAddMultiItem = () => {
-    if (valueWheel.length > 0) {
+    if (wheelItems.length > 0) {
       if (!multiSelected.find((item) => item === valueWheel)) {
         setMultiSelected((old) => [...old, valueWheel]);
+        
+        
+        
+
       }
     } else {
       setMultiSelected((old) => [...old, searchQuery]);
-      setSearchQuery('');
+      //setSearchQuery('');
     }
+
+    const wheelItemsList = props.aspects
+        .find((itm) => itm.localizedAspectName === selectedItem.name)
+        .aspectValues.map((name) => ({
+          label: name,
+          value: name.toUpperCase(),
+        }));
+
+      console.log(wheelItemsList);  
+      setWheelItems(wheelItemsList);
+
+    setSearchQuery('');
+    
   };
 
   const onChangeSearch = (query) => {
@@ -285,6 +317,7 @@ export default function ItemSpecificsStage(props) {
                 value: 'apply',
                 label: 'Apply',
                 icon: 'check',
+                //disabled: searchQuery.length > 0 && wheelItems.length > 0 ? false : true,
                 onPress: () => onApplyWheel(),
               },
             ]}
@@ -397,6 +430,7 @@ export default function ItemSpecificsStage(props) {
                 value: 'Add',
                 label: 'Add',
                 icon: 'plus',
+                disabled: searchQuery.length > 0 || valueWheel.length > 0 ? false : true,
                 onPress: () => onAddMultiItem(),
               },
             ]}
@@ -423,8 +457,7 @@ export default function ItemSpecificsStage(props) {
       />
       <View>
         <Banner visible={true} icon={'star-circle-outline'}>
-          It's time to add the item specifics. Some of them are required to
-          continue to the next step.
+        Add item details. Some of them are required to continue to the next step. 
         </Banner>
 
         {props.processingAspects ? (

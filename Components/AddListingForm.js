@@ -29,6 +29,8 @@ import BarcodeStage from './CreateProductWizard/BarcodeStage';
 import CategoryStage from './CreateProductWizard/CategoryStage';
 import ItemSpecificsStage from './CreateProductWizard/ItemSpecificsStage';
 import ConditionStage from './CreateProductWizard/ConditionStage';
+import DimensionStage from './CreateProductWizard/DimensionStage';
+import PolicyStage from './CreateProductWizard/PolicyStage';
 
 export default function AddListingForm(props) {
   let cameraRef = useRef();
@@ -52,6 +54,13 @@ export default function AddListingForm(props) {
 
   const [checkedAllAspects, setCheckedAllAspects] = useState(false);
 
+  /*const [dimensions, setDimensions] = useState({length: '6', height: '6', width: '6'});*/
+
+  const [length, setLength] = useState('6');
+  const [height, setHeight] = useState('6');
+  const [width, setWidth] = useState('6');
+  const [weight, setWeight] = useState('6');
+
   const [category, setCategory] = useState('');
 
   const [processingCategories, setProcessingCategories] = useState(false);
@@ -66,6 +75,7 @@ export default function AddListingForm(props) {
   const [editPhotoOpen, setEditPhotoOpen] = useState('');
 
   const [condition, setCondition] = useState('');
+  const [conditionDescription, setConditionDescription] = useState('');
 
   const [barcodeOpen, setBarcodeOpen] = useState(false);
 
@@ -100,6 +110,35 @@ export default function AddListingForm(props) {
     }
     return 0;
   };
+
+  const onChangeConditionDescription = async (value) => {
+    setConditionDescription(value);
+  }
+
+  /*const onChangeDimensions = async (value, dimension) => {
+    
+    //setDimensions({...old,  })
+console.log('Hola');
+
+  }*/
+
+  const onChangeLength = async (value) => {
+    setLength(value);
+  }
+
+  const onChangeWidth = async (value) => {
+    setWidth(value);
+  }
+
+  const onChangeHeight = async (value) => {
+    setHeight(value);
+  }
+
+  const onChangeWeight = async (value) => {
+    setWeight(value);
+  }
+
+  
 
   const getCategoriesFeatures = async (categoryId) => {
     try {
@@ -735,12 +774,68 @@ export default function AddListingForm(props) {
         categoryFeatures={categoryFeatures}
         condition={condition}
         onSelectedCondition={onSelectedCondition}
+        conditionDescription={conditionDescription}
+        onChangeConditionDescription={onChangeConditionDescription}
 
         //changeValueItemAspect={changeValueItemAspect}
         //checkedAllAspects={checkedAllAspects}
       />
     );
   }
+
+  if (step === 6) {
+    return (
+      <DimensionStage
+        title={title}
+        navigation={navigation}
+        styles={styles}
+        backward={backward}
+        forward={forward}
+        //onChangeDimensions={onChangeDimensions}
+        onChangeLength={onChangeLength}
+        onChangeHeight={onChangeHeight}
+        onChangeWidth={onChangeWidth}
+        onChangeWeight={onChangeWeight}
+        length={length}
+        height={height}
+        width={width}
+        weight={weight}
+        //processingCategoryFeatures={processingCategoryFeatures}
+        //categoryFeatures={categoryFeatures}
+        //condition={condition}
+        //onSelectedCondition={onSelectedCondition}
+
+      />
+    );
+  }
+
+  if (step === 7) {
+    return (
+      <PolicyStage
+        title={title}
+        navigation={navigation}
+        styles={styles}
+        backward={backward}
+        forward={forward}
+        //onChangeDimensions={onChangeDimensions}
+        /*onChangeLength={onChangeLength}
+        onChangeHeight={onChangeHeight}
+        onChangeWidth={onChangeWidth}
+        onChangeWeight={onChangeWeight}
+        length={length}
+        height={height}
+        width={width}
+        weight={weight}*/
+        //processingCategoryFeatures={processingCategoryFeatures}
+        //categoryFeatures={categoryFeatures}
+        //condition={condition}
+        //onSelectedCondition={onSelectedCondition}
+
+      />
+    );
+  }
+
+
 }
 
 const styles = StyleSheet.create({

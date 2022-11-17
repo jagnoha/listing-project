@@ -23,7 +23,7 @@ export default function ListingStatusTab() {
   const [selected, setSelected] = useRecoilState(selectedAtom);
   const [routes] = useState([
     { key: 'toRevise', title: 'To Revise' },
-    { key: 'readyToGo', title: 'Ready to Go' },
+    //{ key: 'readyToGo', title: 'Ready to Go' },
   ]);
   const theme = useTheme();
 

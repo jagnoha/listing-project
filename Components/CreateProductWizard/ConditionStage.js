@@ -38,6 +38,11 @@ export default function ConditionStage(props) {
               //mode='outlined'
               label='Condition Description'
               placeholder='Add Condition Description'
+              onChangeText={props.onChangeConditionDescription}
+              value={props.conditionDescription}
+              mode='outlined'
+                style={{margin: 10}}
+              
             />
 
         {props.processingCategoryFeatures ? (
@@ -111,7 +116,6 @@ export default function ConditionStage(props) {
               label: 'Next',
               icon: 'arrow-right',
               onPress: () => {
-                props.setCategory('');
                 props.forward();
               },
               disabled: props.condition !== '' ? false : true,

@@ -25,8 +25,7 @@ export default function SearchProduct(props) {
       />
       <View>
         <Banner visible={true} icon={'head-lightbulb-outline'}>
-          I'd like to know a little bit about the item you want to create. Tell
-          me something about it. What is it?
+        We'd like to know a little bit about the item you'd like to create. Tell us something about it. What is it?
         </Banner>
 
         {/*<Searchbar
@@ -36,6 +35,8 @@ export default function SearchProduct(props) {
           value={props.searchCategories}
         />*/}
         <TextInput
+        mode='outlined'
+        style={{margin: 10}}
           placeholder='What is this item?'
           left={<TextInput.Icon icon='pencil' />}
           onChangeText={props.onSearchCategories}

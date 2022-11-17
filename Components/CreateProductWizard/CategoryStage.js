@@ -28,7 +28,7 @@ export default function CategoryStage(props) {
       />
       <View>
         <Banner visible={true} icon={'shape'}>
-          Choose the category that corresponds to your product.
+          Choose the category that corresponds to this item.
         </Banner>
 
         {props.processingCategories ? (
