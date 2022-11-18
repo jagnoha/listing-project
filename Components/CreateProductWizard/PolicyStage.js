@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, ScrollView, Pressable } from 'react-native';
 import {
   useTheme,
@@ -13,6 +13,7 @@ import {
   TextInput,
   Title,
   IconButton,
+  Paragraph,
 } from 'react-native-paper';
 import Header from '../Header';
 
@@ -20,6 +21,62 @@ export default function PolicyStage(props) {
   //const theme = useTheme();
 
   //console.log(props.categoryFeatures);
+
+  const [openPaymentList, setOpenPaymentList] = useState(false);
+
+  const onOpenPaymentList = () => {
+    setOpenPaymentList(true);
+  };
+
+  const onCloseList = () => {
+    setOpenPaymentList(false);
+  };
+
+  if (openPaymentList) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          //justifyContent: 'space-between',
+          alignItems: 'center',
+          alignContent: 'center',
+          alignSelf: 'center',
+          paddingTop: 100,
+          //paddingBottom: 100,
+        }}
+      >
+        <Text style={{ fontSize: 20, paddingBottom: 20 }}>
+          Select an eBay Payment Policy
+        </Text>
+        <ScrollView style={{ height: '50%' }}>
+          {props.paymentPolicies.map((item) => (
+            <View key={item.paymentPolicyId} style={{ margin: 10 }}>
+              <Pressable
+                //onPress={() => props.onSelectedCategory(item.categoryId)}
+                onPress={() => console.log(item)}
+              >
+                <Card>
+                  <Card.Content>
+                    <View
+                    /*style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}*/
+                    >
+                      <Title>{item.name}</Title>
+                      <Paragraph>{item.description}</Paragraph>
+                    </View>
+                  </Card.Content>
+                </Card>
+              </Pressable>
+            </View>
+          ))}
+        </ScrollView>
+
+        <Button onPress={() => onCloseList()}>Close</Button>
+      </View>
+    );
+  }
 
   return (
     <View>
@@ -30,8 +87,71 @@ export default function PolicyStage(props) {
       />
       <View>
         <Banner visible={true} icon={'postage-stamp'}>
-        Select eBay's Shipping, Payment and Return Policies.
+          Select eBay's Fulfillment, Payment and Return Policies.
         </Banner>
+
+        {props.processingPolicies ? (
+          <View>
+            <ActivityIndicator
+              size='large'
+              style={{ marginTop: '20%', marginBottom: '20%' }}
+            />
+          </View>
+        ) : (
+          <View>
+            <Pressable
+              //onPress={() => props.onSelectedCategory(item.categoryId)}
+              onPress={() => console.log('Fulfillment!')}
+            >
+              <Card>
+                <Card.Content>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Title style={{ fontSize: 15 }}>Fulfillment Policy</Title>
+                  </View>
+                </Card.Content>
+              </Card>
+            </Pressable>
+            <Pressable
+              //onPress={() => props.onSelectedCategory(item.categoryId)}
+              onPress={() => onOpenPaymentList()}
+            >
+              <Card>
+                <Card.Content>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Title style={{ fontSize: 15 }}>Payment Policy</Title>
+                  </View>
+                </Card.Content>
+              </Card>
+            </Pressable>
+            <Pressable
+              //onPress={() => props.onSelectedCategory(item.categoryId)}
+              onPress={() => console.log('Return!')}
+            >
+              <Card>
+                <Card.Content>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Title style={{ fontSize: 15 }}>Return Policy</Title>
+                  </View>
+                </Card.Content>
+              </Card>
+            </Pressable>
+          </View>
+        )}
 
         {/*<View>
           <View>
@@ -80,8 +200,6 @@ export default function PolicyStage(props) {
            </View>
 
   </View>*/}
-
-        
 
         <SegmentedButtons
           style={props.styles.nextBackControl}

@@ -20,7 +20,11 @@ import { StyleSheet, View, Image, Platform, SafeAreaView } from 'react-native';
 import { Camera } from 'expo-camera';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
+
 import usernameAtom from '../Store/atoms/usernameAtom';
+import fulfillmentPoliciesAtom from '../Store/atoms/fulfillmentPoliciesAtom';
+import paymentPoliciesAtom from '../Store/atoms/paymentPoliciesAtom';
+import returnPoliciesAtom from '../Store/atoms/returnPoliciesAtom';
 
 import Header from './Header';
 import SearchProduct from './CreateProductWizard/SearchProduct';
@@ -38,6 +42,14 @@ export default function AddListingForm(props) {
 
   const [username, setUsername] = useRecoilState(usernameAtom);
 
+  const [fulfillmentPolicies, setFulfillmentPolicies] = useRecoilState(
+    fulfillmentPoliciesAtom
+  );
+  const [paymentPolicies, setPaymentPolicies] =
+    useRecoilState(paymentPoliciesAtom);
+  const [returnPolicies, setReturnPoliciesAtom] =
+    useRecoilState(returnPoliciesAtom);
+
   //const [hasBarcodePermission, setHasBarcodePermission] = useState();
   const [searchCategories, setSearchCategories] = useState('');
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
@@ -48,6 +60,12 @@ export default function AddListingForm(props) {
   const [categories, setCategories] = useState([]);
 
   const [categoryFeatures, setCategoryFeatures] = useState();
+
+  //const [fulfillmentPolicies, setFulfillmentPolicies] = useState([]);
+  //const [paymentPolicies, setPaymentPolicies] = useState([]);
+  //const [returnPolicies, setReturnPolicies] = useState([]);
+
+  const [processingPolicies, setProcessingPolicies] = useState(false);
 
   const [processingCategoryFeatures, setProcessingCategoryFeatures] =
     useState();
@@ -113,7 +131,7 @@ export default function AddListingForm(props) {
 
   const onChangeConditionDescription = async (value) => {
     setConditionDescription(value);
-  }
+  };
 
   /*const onChangeDimensions = async (value, dimension) => {
     
@@ -124,21 +142,19 @@ console.log('Hola');
 
   const onChangeLength = async (value) => {
     setLength(value);
-  }
+  };
 
   const onChangeWidth = async (value) => {
     setWidth(value);
-  }
+  };
 
   const onChangeHeight = async (value) => {
     setHeight(value);
-  }
+  };
 
   const onChangeWeight = async (value) => {
     setWeight(value);
-  }
-
-  
+  };
 
   const getCategoriesFeatures = async (categoryId) => {
     try {
@@ -208,14 +224,13 @@ console.log('Hola');
       setProcessingCategoryFeatures(false);
     } catch (error) {
       console.log(error);
+      setProcessingCategoryFeatures(false);
     }
   };
 
   const onSelectedCondition = (conditionId) => {
-
     setCondition(conditionId);
-    
-  }
+  };
 
   const getItemAspects = async (categoryId) => {
     try {
@@ -241,10 +256,21 @@ console.log('Hola');
       const aspects = json
         .filter((item) => item.aspectConstraint.aspectUsage === 'RECOMMENDED')
         .map((itemProduct) => {
-
           n++;
 
-          if (itemProduct.localizedAspectName === 'Type' || itemProduct.localizedAspectName === 'Manufacturer Part Number' || itemProduct.localizedAspectName === 'Color' || itemProduct.localizedAspectName === 'Placement on Vehicle' || itemProduct.localizedAspectName === 'Connector Type' || itemProduct.localizedAspectName === 'Model' || itemProduct.localizedAspectName === 'Vintage' || itemProduct.localizedAspectName === 'Format' || itemProduct.localizedAspectName === 'Edition' || itemProduct.localizedAspectName === 'Publication Year' || itemProduct.localizedAspectName === 'MPN'){
+          if (
+            itemProduct.localizedAspectName === 'Type' ||
+            itemProduct.localizedAspectName === 'Manufacturer Part Number' ||
+            itemProduct.localizedAspectName === 'Color' ||
+            itemProduct.localizedAspectName === 'Placement on Vehicle' ||
+            itemProduct.localizedAspectName === 'Connector Type' ||
+            itemProduct.localizedAspectName === 'Model' ||
+            itemProduct.localizedAspectName === 'Vintage' ||
+            itemProduct.localizedAspectName === 'Format' ||
+            itemProduct.localizedAspectName === 'Edition' ||
+            itemProduct.localizedAspectName === 'Publication Year' ||
+            itemProduct.localizedAspectName === 'MPN'
+          ) {
             return {
               localizedAspectName: itemProduct.localizedAspectName,
               aspectValues: itemProduct.aspectValues
@@ -256,7 +282,6 @@ console.log('Hola');
               mode: itemProduct.aspectConstraint.aspectMode,
             };
           }
-          
 
           return {
             localizedAspectName: itemProduct.localizedAspectName,
@@ -266,16 +291,17 @@ console.log('Hola');
             value: '',
             require: itemProduct.aspectConstraint.aspectRequired ? true : false,
             cardinality: itemProduct.aspectConstraint.itemToAspectCardinality,
-            mode: itemProduct.aspectConstraint.aspectMode,            
+            mode: itemProduct.aspectConstraint.aspectMode,
           };
         });
 
       console.log(aspects);
 
-      setAspects(aspects.sort((a,b) => b.require - a.require));
+      setAspects(aspects.sort((a, b) => b.require - a.require));
       setProcessingAspects(false);
     } catch (error) {
       console.log(error);
+      setProcessingAspects(false);
     }
   };
 
@@ -304,6 +330,50 @@ console.log('Hola');
     setCheckedAllAspects(aspectList.length > 0 ? false : true);
 
     setAspects(newAspects);
+  };
+
+  const getPolicies = async () => {
+    try {
+      if (
+        fulfillmentPolicies.length === 0 &&
+        paymentPolicies.length === 0 &&
+        returnPolicies.length === 0
+      ) {
+        setProcessingPolicies(true);
+
+        const responseFulfillment = await fetch(
+          `https://listerfast.com/api/ebay/policies/fulfillment/${username}/${getTypeProductCode(
+            type
+          )}`
+        );
+
+        const responsePayment = await fetch(
+          `https://listerfast.com/api/ebay/policies/payment/${username}/${getTypeProductCode(
+            type
+          )}`
+        );
+
+        const responseReturn = await fetch(
+          `https://listerfast.com/api/ebay/policies/return/${username}/${getTypeProductCode(
+            type
+          )}`
+        );
+
+        const jsonFulfillment = await responseFulfillment.json();
+        const jsonPayment = await responsePayment.json();
+        const jsonReturn = await responseReturn.json();
+
+        setFulfillmentPolicies(jsonFulfillment);
+        setPaymentPolicies(jsonPayment);
+        setReturnPolicies(jsonReturn);
+
+        console.log(jsonFulfillment);
+        setProcessingPolicies(false);
+      }
+    } catch (error) {
+      setProcessingPolicies(false);
+      console.log(error);
+    }
   };
 
   const getCategories = async () => {
@@ -800,11 +870,11 @@ console.log('Hola');
         height={height}
         width={width}
         weight={weight}
+        //getPolicies={getPolicies}
         //processingCategoryFeatures={processingCategoryFeatures}
         //categoryFeatures={categoryFeatures}
         //condition={condition}
         //onSelectedCondition={onSelectedCondition}
-
       />
     );
   }
@@ -817,6 +887,11 @@ console.log('Hola');
         styles={styles}
         backward={backward}
         forward={forward}
+        processingPolicies={processingPolicies}
+        fulfillmentPolicies={fulfillmentPolicies}
+        paymentPolicies={paymentPolicies}
+        returnPolicies={returnPolicies}
+
         //onChangeDimensions={onChangeDimensions}
         /*onChangeLength={onChangeLength}
         onChangeHeight={onChangeHeight}
@@ -830,12 +905,9 @@ console.log('Hola');
         //categoryFeatures={categoryFeatures}
         //condition={condition}
         //onSelectedCondition={onSelectedCondition}
-
       />
     );
   }
-
-
 }
 
 const styles = StyleSheet.create({

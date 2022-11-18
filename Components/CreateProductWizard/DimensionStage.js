@@ -30,58 +30,59 @@ export default function DimensionStage(props) {
       />
       <View>
         <Banner visible={true} icon={'tape-measure'}>
-        Add the measurements and weight of the item. Weight is in ounces and measurements are in inches.
+          Add the measurements and weight of the item. Weight is in ounces and
+          measurements are in inches.
         </Banner>
 
         <View>
           <View>
-            <Surface elevation={4} style={{margin: 10, marginTop: 20, padding: 10}}>
-            <TextInput            
+            <Surface
+              elevation={4}
+              style={{ margin: 10, marginTop: 20, padding: 10 }}
+            >
+              <TextInput
                 mode='outlined'
-                style={{margin: 10}}
+                style={{ margin: 10 }}
                 label='Length'
-                right={<TextInput.Affix text="inches" />}
+                right={<TextInput.Affix text='inches' />}
                 keyboardType='decimal-pad'
                 onChangeText={props.onChangeLength}
                 value={props.length}
-            />
-            <TextInput
+              />
+              <TextInput
                 mode='outlined'
-                style={{margin: 10}}
-                right={<TextInput.Affix text="inches" />}
+                style={{ margin: 10 }}
+                right={<TextInput.Affix text='inches' />}
                 label='Width'
                 keyboardType='decimal-pad'
                 onChangeText={props.onChangeWidth}
                 value={props.width}
-            />
-            <TextInput
+              />
+              <TextInput
                 mode='outlined'
-                style={{margin: 10}}
-                right={<TextInput.Affix text="inches" />}
+                style={{ margin: 10 }}
+                right={<TextInput.Affix text='inches' />}
                 label='Height'
                 keyboardType='decimal-pad'
                 onChangeText={props.onChangeHeight}
                 value={props.height}
-            />
+              />
             </Surface>
-           </View>
-           <View>
-            <Surface elevation={4} style={{margin: 10, padding: 10}}>
-            <TextInput
+          </View>
+          <View>
+            <Surface elevation={4} style={{ margin: 10, padding: 10 }}>
+              <TextInput
                 mode='outlined'
-                style={{margin: 10}}
-                right={<TextInput.Affix text="oz" />}
+                style={{ margin: 10 }}
+                right={<TextInput.Affix text='oz' />}
                 label='Weight'
                 keyboardType='decimal-pad'
-                onChangeText={props.onChangeWeight} 
+                onChangeText={props.onChangeWeight}
                 value={props.weight}
-            />
+              />
             </Surface>
-           </View>
-
+          </View>
         </View>
-
-        
 
         <SegmentedButtons
           style={props.styles.nextBackControl}
@@ -100,6 +101,7 @@ export default function DimensionStage(props) {
               icon: 'arrow-right',
               onPress: () => {
                 props.forward();
+                //props.getPolicies();
               },
               //disabled: props.condition !== '' ? false : true,
               //disabled: props.searchCategories.length > 0 ? false : true,
