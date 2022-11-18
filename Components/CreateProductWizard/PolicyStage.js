@@ -331,6 +331,8 @@ if (openFulfillmentList) {
               icon: 'arrow-right',
               onPress: () => {
                 props.forward();
+                props.onProcessingTitle();
+
               },
               disabled: props.paymentPolicyId === '' || props.returnPolicyId === '' || props.fulfillmentPolicyId === '' ? true : false
               //disabled: props.condition !== '' ? false : true,

@@ -36,6 +36,9 @@ import ConditionStage from './CreateProductWizard/ConditionStage';
 import DimensionStage from './CreateProductWizard/DimensionStage';
 import PolicyStage from './CreateProductWizard/PolicyStage';
 
+import TitleRevisionStage from './CreateProductWizard/TitleRevisionStage';
+import { ConsoleLogger } from '@aws-amplify/core';
+
 export default function AddListingForm(props) {
   let cameraRef = useRef();
   const [hasCameraPermission, setHasCameraPermission] = useState();
@@ -137,12 +140,139 @@ export default function AddListingForm(props) {
     setConditionDescription(value);
   };
 
-  /*const onChangeDimensions = async (value, dimension) => {
-    
-    //setDimensions({...old,  })
-console.log('Hola');
+  const getCategoryName = () => {
 
-  }*/
+    const categoryName = categories.find(item => item.categoryId === category)
+
+    return categoryName.title;
+
+  }
+
+  const getImportantAspectsValues = () => {
+
+    const brand = aspects.find(item => item.localizedAspectName === 'Brand');
+    const size = aspects.find(item => item.localizedAspectName === 'Size');
+    const style = aspects.find(item => item.localizedAspectName === 'Style');
+    const sizeType = aspects.find(item => item.localizedAspectName === 'Size Type');
+    const color = aspects.find(item => item.localizedAspectName === 'Color');
+    const type = aspects.find(item => item.localizedAspectName === 'Type');
+    const department = aspects.find(item => item.localizedAspectName === 'Department');
+    const vintage = aspects.find(item => item.localizedAspectName === 'Vintage');
+    const model = aspects.find(item => item.localizedAspectName === 'Model');
+
+    const skirtLength = aspects.find(item => item.localizedAspectName === 'Skirt Length');
+
+    const dressLength = aspects.find(item => item.localizedAspectName === 'Dress Length');
+
+    const material = aspects.find(item => item.localizedAspectName === 'Material');
+
+    const sleeveLength = aspects.find(item => item.localizedAspectName === 'Sleeve Length');
+
+    const pattern = aspects.find(item => item.localizedAspectName === 'Pattern');
+
+    const neckline = aspects.find(item => item.localizedAspectName === 'Neckline');
+
+    const occasion = aspects.find(item => item.localizedAspectName === 'Occasion');
+
+    const features = aspects.find(item => item.localizedAspectName === 'Features');
+
+    const fit = aspects.find(item => item.localizedAspectName === 'Fit');
+
+    const characterFamily = aspects.find(item => item.localizedAspectName === 'Character Family');
+
+    const categoryNew = categories.find(item => item.categoryId === category);
+
+    
+
+    let importantAspects = {
+      brand: brand ? brand.value === 'Unbranded' ? '' : brand.value : '',
+      size: size ? size.value : '',
+      style: style ? style.value : '',
+      model: model ? model.value : '',
+      sizeType: sizeType ? sizeType.value : '',
+      type: type ? type.value : '',
+      color: color ? color.value : '',
+      sleeveLength: sleeveLength ? sleeveLength.value : '',
+      occasion: occasion ? occasion.value : '',
+
+      neckline: neckline ? neckline.value : '',
+      fit: fit ? fit.value : '',
+
+      department: department ? department.value : '',
+      vintage: vintage ? vintage.value === 'Yes' ? 'Vintage' : '' : '',
+      model: model ? model.value : '',
+      category: categoryNew.title,
+      features: features ? features.value : '',
+      material: material ? material.value : '',
+      skirtLength: skirtLength ? skirtLength.value : '',
+      pattern: pattern ? pattern.value : '',
+      dressLength: dressLength ? dressLength.value : '',
+      characterFamily: characterFamily ? characterFamily.value : ''
+    };
+
+    return importantAspects;    
+
+  }
+
+  
+  
+  const processingTitle = async () => {
+
+    let pendingTitle = [];
+    
+    const keywords = getImportantAspectsValues() ;
+    
+    if (type === 'clothing'){
+        
+      // step 1
+
+      pendingTitle.push(keywords['vintage']);
+      
+      if (!keywords['model'].includes(keywords['brand'])){
+        pendingTitle.push(keywords['brand']);
+      }      
+      
+      pendingTitle.push(keywords['model']);
+      
+      if (!keywords['category'].includes(keywords['type'])){
+        pendingTitle.push(keywords['category']);
+      }      
+      pendingTitle.push(keywords['type']);
+      pendingTitle.push(keywords['color']);
+      pendingTitle.push(keywords['style']);
+      pendingTitle.push(keywords['features']);      
+      pendingTitle.push(keywords['characterFamily']);
+      pendingTitle.push(keywords['neckline']);   
+      pendingTitle.push(keywords['fit']);
+      pendingTitle.push(keywords['sleeveLength']);
+      pendingTitle.push(keywords['skirtLength']);
+      pendingTitle.push(keywords['dressLength']);
+      pendingTitle.push(keywords['occasion']);
+      pendingTitle.push(keywords['department']);
+      pendingTitle.push(keywords['sizeType']);
+      pendingTitle.push(keywords['size']);
+
+
+    }
+
+    console.log(pendingTitle);
+
+
+    
+  
+  
+  }
+
+  const onProcessingTitle = async () => {
+
+    console.log('Processing Title and Description!!!');
+    //processingTitle()
+    processingTitle();
+
+
+
+
+  } 
 
 
   const onClickPaymentPolicy = (value) => {
@@ -914,6 +1044,7 @@ console.log('Hola');
         paymentPolicyId={paymentPolicyId}
         fulfillmentPolicyId={fulfillmentPolicyId}
         returnPolicyId={returnPolicyId}
+        onProcessingTitle={onProcessingTitle}
 
         //onChangeDimensions={onChangeDimensions}
         /*onChangeLength={onChangeLength}
@@ -931,7 +1062,47 @@ console.log('Hola');
       />
     );
   }
+
+  if (step === 8) {
+    return (
+      <TitleRevisionStage
+        title={title}
+        navigation={navigation}
+        styles={styles}
+        backward={backward}
+        forward={forward}
+        /*processingPolicies={processingPolicies}
+        fulfillmentPolicies={fulfillmentPolicies}
+        paymentPolicies={paymentPolicies}
+        returnPolicies={returnPolicies}
+        onClickPaymentPolicy={onClickPaymentPolicy}
+        onClickFulfillmentPolicy={onClickFulfillmentPolicy}
+        onClickReturnPolicy={onClickReturnPolicy}
+        paymentPolicyId={paymentPolicyId}
+        fulfillmentPolicyId={fulfillmentPolicyId}
+        returnPolicyId={returnPolicyId}*/
+
+        //onChangeDimensions={onChangeDimensions}
+        /*onChangeLength={onChangeLength}
+        onChangeHeight={onChangeHeight}
+        onChangeWidth={onChangeWidth}
+        onChangeWeight={onChangeWeight}
+        length={length}
+        height={height}
+        width={width}
+        weight={weight}*/
+        //processingCategoryFeatures={processingCategoryFeatures}
+        //categoryFeatures={categoryFeatures}
+        //condition={condition}
+        //onSelectedCondition={onSelectedCondition}
+      />
+    );
+  }
+
+
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
