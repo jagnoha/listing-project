@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Pressable } from 'react-native';
+import { View, ScrollView, Pressable, FlatList } from 'react-native';
 import {
   useTheme,
   Text,
@@ -15,7 +15,112 @@ import {
   IconButton,
   Paragraph,
 } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../Header';
+
+const PolicyCard = ({item, onPress}) => {
+    return (
+        <View style={{margin: 7}}>
+            <Pressable                
+                onPress={onPress}
+              >
+                <Card>
+                  <Card.Content>
+                    <View                    
+                    >
+                      <Title style={{fontSize: 17}}>{item.name}</Title>
+                      <Paragraph style={{fontSize: 14}}>{item.description}</Paragraph>
+                    </View>
+                  </Card.Content>
+                </Card>
+
+              </Pressable>
+
+        </View>
+    )
+}
+
+const PolicyCardScrollList = ({ policyList, onCloseList, title, onClickItem }) => {
+
+    const [searchQuery, setSearchQuery] = useState('');
+    const [list, setList] = useState(policyList);
+
+    const onChangeSearch = (query) => {
+        
+        setSearchQuery(query);
+
+        const tempPolicyList = policyList.map(item =>{
+            return (
+            {
+                id: item.id,
+                name: item.name,
+                upperName: item.name.toUpperCase(),
+                description: item.description,
+
+
+            })
+        }
+        )
+
+        setList(tempPolicyList.filter(item => item.upperName.includes(query.toUpperCase())))
+
+    }
+
+    const renderItem = ({item}) => {
+        return (
+            <PolicyCard item={item} onPress={()=>{ onClickItem(item.id); onCloseList()  }} />
+        )
+    }
+
+    return (
+    <View
+        style={{
+          flex: 1,
+          
+          alignItems: 'center',
+          alignContent: 'center',
+          alignSelf: 'center',
+          paddingTop: 100,
+          
+          
+        }}
+      >
+        <Text style={{ fontSize: 20, paddingBottom: 20 }}>
+          {title}
+        </Text>
+
+        <Surface style={{ width: 300, height: 450 }} elevation={4}>
+            <Searchbar
+              placeholder={
+                'Search'
+              }
+              onChangeText={onChangeSearch}
+              value={searchQuery}
+              icon={'magnify'}
+            />
+            
+            <FlatList 
+                data={list}
+                renderItem={renderItem}
+                keyExtractor={(item)=>item.id}
+                //onEndReachedThreshold={50}
+            />
+            
+            
+        </Surface>
+        <Button
+          icon='close'
+          style={{ marginTop: 20 }}
+          mode='contained'
+          onPress={() => onCloseList()}
+        >
+          Close
+        </Button>
+
+      </View>)
+}
+
+
 
 export default function PolicyStage(props) {
   //const theme = useTheme();
@@ -23,60 +128,86 @@ export default function PolicyStage(props) {
   //console.log(props.categoryFeatures);
 
   const [openPaymentList, setOpenPaymentList] = useState(false);
+  const [openReturnList, setOpenReturnList] = useState(false);
+  const [openFulfillmentList, setOpenFulfillmentList] = useState(false);
 
   const onOpenPaymentList = () => {
     setOpenPaymentList(true);
   };
 
-  const onCloseList = () => {
-    setOpenPaymentList(false);
+  const onOpenReturnList = () => {
+    setOpenReturnList(true);
   };
 
-  if (openPaymentList) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          //justifyContent: 'space-between',
-          alignItems: 'center',
-          alignContent: 'center',
-          alignSelf: 'center',
-          paddingTop: 100,
-          //paddingBottom: 100,
-        }}
-      >
-        <Text style={{ fontSize: 20, paddingBottom: 20 }}>
-          Select an eBay Payment Policy
-        </Text>
-        <ScrollView style={{ height: '50%' }}>
-          {props.paymentPolicies.map((item) => (
-            <View key={item.paymentPolicyId} style={{ margin: 10 }}>
-              <Pressable
-                //onPress={() => props.onSelectedCategory(item.categoryId)}
-                onPress={() => console.log(item)}
-              >
-                <Card>
-                  <Card.Content>
-                    <View
-                    /*style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}*/
-                    >
-                      <Title>{item.name}</Title>
-                      <Paragraph>{item.description}</Paragraph>
-                    </View>
-                  </Card.Content>
-                </Card>
-              </Pressable>
-            </View>
-          ))}
-        </ScrollView>
+  const onOpenFulfillmentList = () => {
+    setOpenFulfillmentList(true);
+  };
 
-        <Button onPress={() => onCloseList()}>Close</Button>
-      </View>
-    );
+  const onCloseList = () => {
+    setOpenPaymentList(false);
+    setOpenReturnList(false);
+    setOpenFulfillmentList(false);
+  };
+
+  const getPaymentName = (id) => {
+    const policy = props.paymentPolicies.find(item => item.id === id);
+
+    
+    if (policy){
+        return policy.name;
+    }
+
+    return ''
+    
+    
   }
+
+  const getFulfillmentName = (id) => {
+    const policy = props.fulfillmentPolicies.find(item => item.id === id);
+
+    
+    if (policy){
+        return policy.name;
+    }
+
+    return ''
+    
+    
+  }
+
+  const getReturnName = (id) => {
+    const policy = props.returnPolicies.find(item => item.id === id);
+
+    
+    if (policy){
+        return policy.name;
+    }
+
+    return ''
+    
+    
+  }
+
+
+if (openPaymentList) {
+    return (
+        <PolicyCardScrollList policyList={props.paymentPolicies} onCloseList={onCloseList} title={'Select eBay Payment Policy'} onClickItem={props.onClickPaymentPolicy}  />
+    )
+}
+
+if (openReturnList) {
+    return (
+        <PolicyCardScrollList policyList={props.returnPolicies} onCloseList={onCloseList} title={'Select eBay Return Policy'} onClickItem={props.onClickReturnPolicy}  />
+    )
+}
+
+if (openFulfillmentList) {
+    return (
+        <PolicyCardScrollList policyList={props.fulfillmentPolicies} onCloseList={onCloseList} title={'Select eBay Fulfillment Policy'} 
+        onClickItem={props.onClickFulfillmentPolicy}  />
+    )
+}
+
 
   return (
     <View>
@@ -101,7 +232,7 @@ export default function PolicyStage(props) {
           <View>
             <Pressable
               //onPress={() => props.onSelectedCategory(item.categoryId)}
-              onPress={() => console.log('Fulfillment!')}
+              onPress={() => onOpenFulfillmentList()}
             >
               <Card>
                 <Card.Content>
@@ -112,7 +243,17 @@ export default function PolicyStage(props) {
                     }}
                   >
                     <Title style={{ fontSize: 15 }}>Fulfillment Policy</Title>
+                              
+                    {props.fulfillmentPolicyId !== '' ? <Text><IconButton
+                                icon='check-outline'
+                                iconColor={'green'}
+                                size={15}
+                              /></Text> : ''}
+                    
                   </View>
+                  <Paragraph style={{fontWeight:'bold'}}>
+                        {getFulfillmentName(props.fulfillmentPolicyId)}
+                    </Paragraph>
                 </Card.Content>
               </Card>
             </Pressable>
@@ -129,13 +270,22 @@ export default function PolicyStage(props) {
                     }}
                   >
                     <Title style={{ fontSize: 15 }}>Payment Policy</Title>
+                    {props.paymentPolicyId !== '' ? <Text><IconButton
+                                icon='check-outline'
+                                iconColor={'green'}
+                                size={15}
+                              /></Text> : ''}
+                   
                   </View>
+                  <Paragraph style={{fontWeight:'bold'}}>
+                        {getPaymentName(props.paymentPolicyId)}
+                    </Paragraph>
                 </Card.Content>
               </Card>
             </Pressable>
             <Pressable
               //onPress={() => props.onSelectedCategory(item.categoryId)}
-              onPress={() => console.log('Return!')}
+              onPress={() => onOpenReturnList()}
             >
               <Card>
                 <Card.Content>
@@ -146,60 +296,23 @@ export default function PolicyStage(props) {
                     }}
                   >
                     <Title style={{ fontSize: 15 }}>Return Policy</Title>
+                    {props.returnPolicyId !== '' ? <Text><IconButton
+                                icon='check-outline'
+                                iconColor={'green'}
+                                size={15}
+                              /></Text> : ''}
+                    
                   </View>
+                  <Paragraph style={{fontWeight:'bold'}}>
+                    {getReturnName(props.returnPolicyId)}
+                  </Paragraph>
                 </Card.Content>
               </Card>
             </Pressable>
           </View>
         )}
 
-        {/*<View>
-          <View>
-            <Surface elevation={4} style={{margin: 10, marginTop: 20, padding: 10}}>
-            <TextInput            
-                mode='outlined'
-                style={{margin: 10}}
-                label='Length'
-                right={<TextInput.Affix text="inches" />}
-                keyboardType='decimal-pad'
-                onChangeText={props.onChangeLength}
-                value={props.length}
-            />
-            <TextInput
-                mode='outlined'
-                style={{margin: 10}}
-                right={<TextInput.Affix text="inches" />}
-                label='Width'
-                keyboardType='decimal-pad'
-                onChangeText={props.onChangeWidth}
-                value={props.width}
-            />
-            <TextInput
-                mode='outlined'
-                style={{margin: 10}}
-                right={<TextInput.Affix text="inches" />}
-                label='Height'
-                keyboardType='decimal-pad'
-                onChangeText={props.onChangeHeight}
-                value={props.height}
-            />
-            </Surface>
-           </View>
-           <View>
-            <Surface elevation={4} style={{margin: 10, padding: 10}}>
-            <TextInput
-                mode='outlined'
-                style={{margin: 10}}
-                right={<TextInput.Affix text="oz" />}
-                label='Weight'
-                keyboardType='decimal-pad'
-                onChangeText={props.onChangeWeight} 
-                value={props.weight}
-            />
-            </Surface>
-           </View>
-
-  </View>*/}
+        
 
         <SegmentedButtons
           style={props.styles.nextBackControl}
@@ -219,6 +332,7 @@ export default function PolicyStage(props) {
               onPress: () => {
                 props.forward();
               },
+              disabled: props.paymentPolicyId === '' || props.returnPolicyId === '' || props.fulfillmentPolicyId === '' ? true : false
               //disabled: props.condition !== '' ? false : true,
               //disabled: props.searchCategories.length > 0 ? false : true,
             },

@@ -42,12 +42,16 @@ export default function AddListingForm(props) {
 
   const [username, setUsername] = useRecoilState(usernameAtom);
 
+  const [fulfillmentPolicyId, setFulfillmentPolicyId] = useState('');
+  const [paymentPolicyId, setPaymentPolicyId] = useState('');
+  const [returnPolicyId, setReturnPolicyId] = useState('');
+
   const [fulfillmentPolicies, setFulfillmentPolicies] = useRecoilState(
     fulfillmentPoliciesAtom
   );
   const [paymentPolicies, setPaymentPolicies] =
     useRecoilState(paymentPoliciesAtom);
-  const [returnPolicies, setReturnPoliciesAtom] =
+  const [returnPolicies, setReturnPolicies] =
     useRecoilState(returnPoliciesAtom);
 
   //const [hasBarcodePermission, setHasBarcodePermission] = useState();
@@ -139,6 +143,19 @@ export default function AddListingForm(props) {
 console.log('Hola');
 
   }*/
+
+
+  const onClickPaymentPolicy = (value) => {
+    setPaymentPolicyId(value);
+  }
+
+  const onClickReturnPolicy = (value) => {
+    setReturnPolicyId(value);
+  }
+
+  const onClickFulfillmentPolicy = (value) => {
+    setFulfillmentPolicyId(value);
+  }
 
   const onChangeLength = async (value) => {
     setLength(value);
@@ -891,6 +908,12 @@ console.log('Hola');
         fulfillmentPolicies={fulfillmentPolicies}
         paymentPolicies={paymentPolicies}
         returnPolicies={returnPolicies}
+        onClickPaymentPolicy={onClickPaymentPolicy}
+        onClickFulfillmentPolicy={onClickFulfillmentPolicy}
+        onClickReturnPolicy={onClickReturnPolicy}
+        paymentPolicyId={paymentPolicyId}
+        fulfillmentPolicyId={fulfillmentPolicyId}
+        returnPolicyId={returnPolicyId}
 
         //onChangeDimensions={onChangeDimensions}
         /*onChangeLength={onChangeLength}
