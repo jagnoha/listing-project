@@ -35,6 +35,7 @@ import ItemSpecificsStage from './CreateProductWizard/ItemSpecificsStage';
 import ConditionStage from './CreateProductWizard/ConditionStage';
 import DimensionStage from './CreateProductWizard/DimensionStage';
 import PolicyStage from './CreateProductWizard/PolicyStage';
+import PriceStage from './CreateProductWizard/PriceStage';
 
 import TitleRevisionStage from './CreateProductWizard/TitleRevisionStage';
 import { ConsoleLogger } from '@aws-amplify/core';
@@ -207,7 +208,19 @@ export default function AddListingForm(props) {
       (item) => item.localizedAspectName === 'Character Family'
     );
 
+    const character = aspects.find(
+      (item) => item.localizedAspectName === 'Character'
+    );
+
     const categoryNew = categories.find((item) => item.categoryId === category);
+
+    const usShoeSize = aspects.find((item) => item.localizedAspectName === 'US Shoe Size');
+
+    const customized = aspects.find((item) => item.localizedAspectName === 'Customized');
+
+    const upperMaterial = aspects.find((item) => item.localizedAspectName === 'Upper Material');
+
+
 
     let importantAspects = {
       brand: brand ? (brand.value === 'Unbranded' ? '' : brand.value) : '',
@@ -233,6 +246,10 @@ export default function AddListingForm(props) {
       pattern: pattern ? pattern.value : '',
       dressLength: dressLength ? dressLength.value : '',
       characterFamily: characterFamily ? characterFamily.value : '',
+      character: character ? character.value : '',
+      usShoeSize: usShoeSize ? usShoeSize.value : '',
+      customized: customized ? (customized.value === 'Yes' ? 'Customized' : '') : '',
+      upperMaterial: upperMaterial ? upperMaterial.value : '',
     };
 
     return importantAspects;
@@ -306,11 +323,6 @@ ${aspects
 
       pendingTitle.push(keywords['model']);
 
-      //console.log('TYPE: ', keywords['type']);
-      /*if (keywords['type'] !== '' && !keywords['category'].includes(keywords['type'])) {
-        pendingTitle.push(keywords['category']);
-      }*/
-
       if (keywords['type'] === ''){
         if (keywords['category'].slice(keywords['category'].length - 2) === 'es'){
         pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 2));
@@ -332,6 +344,9 @@ ${aspects
       pendingTitle.push(keywords['style']);
       pendingTitle.push(keywords['features']);
       pendingTitle.push(keywords['characterFamily']);
+      pendingTitle.push(keywords['character']);
+      
+      
       pendingTitle.push(keywords['neckline']);
       pendingTitle.push(keywords['fit']);
       pendingTitle.push(keywords['sleeveLength']);
@@ -363,10 +378,100 @@ ${aspects
       );
 
       console.log(filtetedTitle.join(' ').length);
+      
+        let uniqueFilteredTitle = filtetedTitle.join(' ').split(' ');
+        uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)]; 
 
-      setTitleProcessed(filtetedTitle.join(' '));
+      
+      setTitleProcessed(uniqueFilteredTitle.join(' '));
 
-      processingDescription(filtetedTitle.join(' '));
+      processingDescription(uniqueFilteredTitle.join(' '));
+
+
+      
+    } else if (type === 'shoes') {
+      // step 1
+
+      pendingTitle.push(keywords['vintage']);
+
+      pendingTitle.push(keywords['customized']);
+
+      if (!keywords['model'].includes(keywords['brand'])) {
+        pendingTitle.push(keywords['brand']);
+      }
+
+      pendingTitle.push(keywords['model']);
+
+      if (keywords['type'] === ''){
+        /*if (keywords['category'].slice(keywords['category'].length - 2) === 'es'){
+        pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 2));
+      } else {
+        pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 1))
+      }*/
+      pendingTitle.push(keywords['category']);
+      } else if (!keywords['category'].includes(keywords['type'])) {
+        /*if (keywords['category'].slice(keywords['category'].length - 2) === 'es'){
+          pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 2));
+        } else {
+          pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 1))
+        }*/
+        pendingTitle.push(keywords['category']);
+      };
+
+      
+      
+      pendingTitle.push(keywords['type']);
+      pendingTitle.push(keywords['color']);
+      pendingTitle.push(keywords['style']);
+      //pendingTitle.push('Shoe');
+      pendingTitle.push(keywords['features']);
+      pendingTitle.push(keywords['upperMaterial']);
+      pendingTitle.push(keywords['characterFamily']);
+      pendingTitle.push(keywords['character']);
+      //pendingTitle.push(keywords['neckline']);
+      //pendingTitle.push(keywords['fit']);
+      //pendingTitle.push(keywords['sleeveLength']);
+      //pendingTitle.push(keywords['skirtLength']);
+      //pendingTitle.push(keywords['dressLength']);
+      pendingTitle.push(keywords['occasion']);
+      pendingTitle.push(keywords['department']);
+      //pendingTitle.push(keywords['sizeType']);
+      pendingTitle.push(`Size ${keywords['usShoeSize']}`);
+
+      let expandTitle = [];
+
+      for (let item of pendingTitle) {
+        if (Array.isArray(item)) {
+          //for (let itemMulti of item) {
+          let checkItem = item[0].split(' ');
+          checkItem.filter((chk) => !chk.includes(keywords['brand']));
+          expandTitle.push(checkItem.join(' '));
+          //}
+        } else {
+          if (item !== ''){
+            expandTitle.push(item);
+          }
+        }
+      }
+
+      let filtetedTitle = expandTitle.filter(
+        (item) => item !== '' && item !== 'Regular'
+      );
+
+      console.log(filtetedTitle.join(' ').length);
+
+      let uniqueFilteredTitle = filtetedTitle.join(' ').split(' ');
+      uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)]; 
+
+    
+    setTitleProcessed(uniqueFilteredTitle.join(' '));
+
+    processingDescription(uniqueFilteredTitle.join(' '));
+
+
+      /*setTitleProcessed(filtetedTitle.join(' '));
+
+      processingDescription(filtetedTitle.join(' '));*/
 
       //setDescriptionProcessed(filtetedTitle.join(' '));
     }
@@ -1206,6 +1311,48 @@ ${aspects
       />
     );
   }
+
+  if (step === 9) {
+    return (
+      <PriceStage
+        title={title}
+        navigation={navigation}
+        styles={styles}
+        backward={backward}
+        forward={forward}
+        /*titleProcessed={titleProcessed}
+        descriptionProcessed={descriptionProcessed}
+        onChangeTitle={onChangeTitle}
+        onChangeDescription={onChangeDescription}*/
+
+        /*processingPolicies={processingPolicies}
+        fulfillmentPolicies={fulfillmentPolicies}
+        paymentPolicies={paymentPolicies}
+        returnPolicies={returnPolicies}
+        onClickPaymentPolicy={onClickPaymentPolicy}
+        onClickFulfillmentPolicy={onClickFulfillmentPolicy}
+        onClickReturnPolicy={onClickReturnPolicy}
+        paymentPolicyId={paymentPolicyId}
+        fulfillmentPolicyId={fulfillmentPolicyId}
+        returnPolicyId={returnPolicyId}*/
+
+        //onChangeDimensions={onChangeDimensions}
+        /*onChangeLength={onChangeLength}
+        onChangeHeight={onChangeHeight}
+        onChangeWidth={onChangeWidth}
+        onChangeWeight={onChangeWeight}
+        length={length}
+        height={height}
+        width={width}
+        weight={weight}*/
+        //processingCategoryFeatures={processingCategoryFeatures}
+        //categoryFeatures={categoryFeatures}
+        //condition={condition}
+        //onSelectedCondition={onSelectedCondition}
+      />
+    );
+  }
+
 }
 
 const styles = StyleSheet.create({

@@ -259,7 +259,7 @@ export default function TitleRevisionStage(props) {
               label: 'Next',
               icon: 'arrow-right',
               onPress: () => props.forward(),
-              disabled: true, //props.category !== '' ? false : true,
+              //disabled: true, //props.category !== '' ? false : true,
             },
           ]}
         />
