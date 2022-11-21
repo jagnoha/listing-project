@@ -238,6 +238,14 @@ export default function AddListingForm(props) {
     return importantAspects;
   };
 
+  const onChangeTitle = (newTitle) => {
+    setTitleProcessed(newTitle)
+  }
+
+  const onChangeDescription = (newDescription) => {
+    setDescriptionProcessed(newDescription)
+  }
+
   const processingDescription = async (title) => {
     //let pendingDescription = [];
 
@@ -298,9 +306,27 @@ ${aspects
 
       pendingTitle.push(keywords['model']);
 
-      if (!keywords['category'].includes(keywords['type'])) {
+      //console.log('TYPE: ', keywords['type']);
+      /*if (keywords['type'] !== '' && !keywords['category'].includes(keywords['type'])) {
         pendingTitle.push(keywords['category']);
+      }*/
+
+      if (keywords['type'] === ''){
+        if (keywords['category'].slice(keywords['category'].length - 2) === 'es'){
+        pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 2));
+      } else {
+        pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 1))
       }
+      } else if (!keywords['category'].includes(keywords['type'])) {
+        if (keywords['category'].slice(keywords['category'].length - 2) === 'es'){
+          pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 2));
+        } else {
+          pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 1))
+        }
+      };
+
+      
+
       pendingTitle.push(keywords['type']);
       pendingTitle.push(keywords['color']);
       pendingTitle.push(keywords['style']);
@@ -326,7 +352,9 @@ ${aspects
           expandTitle.push(checkItem.join(' '));
           //}
         } else {
-          expandTitle.push(item);
+          if (item !== ''){
+            expandTitle.push(item);
+          }
         }
       }
 
@@ -1148,6 +1176,8 @@ ${aspects
         forward={forward}
         titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}
+        onChangeTitle={onChangeTitle}
+        onChangeDescription={onChangeDescription}
 
         /*processingPolicies={processingPolicies}
         fulfillmentPolicies={fulfillmentPolicies}

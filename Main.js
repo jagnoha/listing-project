@@ -40,6 +40,7 @@ export default function Main() {
       const jsonPayment = await responsePayment.json();
       const jsonReturn = await responseReturn.json();
 
+      
       setFulfillmentPolicies(jsonFulfillment);
       setPaymentPolicies(jsonPayment);
       setReturnPolicies(jsonReturn);
