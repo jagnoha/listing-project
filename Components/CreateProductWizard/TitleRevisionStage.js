@@ -8,6 +8,7 @@ import {
   Surface,
   Button,
   Searchbar,
+  TextInput,
   SegmentedButtons,
   Banner,
   Paragraph,
@@ -28,10 +29,73 @@ export default function TitleRevisionStage(props) {
       />
       <View>
         <Banner visible={true} icon={'draw'}>
-        A <Text style={{fontWeight:'bold'}}>Title</Text> and <Text style={{fontWeight:'bold'}}>Description</Text> for your new listing was processed and built. You can review it and make any changes you want before continuing.            
+          A <Text style={{ fontWeight: 'bold' }}>Title</Text> and{' '}
+          <Text style={{ fontWeight: 'bold' }}>Description</Text> for your new
+          listing was processed and built. You can review it and make any
+          changes you want before continuing.
         </Banner>
 
-        
+        <View>
+          <Pressable
+            //onPress={() => props.onSelectedCategory(item.categoryId)}
+            onPress={() => console.log('Edit title')}
+          >
+            <Surface elevation={4}>
+              <Card style={{ padding: 10 }}>
+                <Card.Content>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Title style={{ fontSize: 20, fontWeight: 'bold' }}>
+                      Title
+                    </Title>
+
+                    <Text>
+                      <IconButton icon='pencil' iconColor={'green'} />
+                    </Text>
+                  </View>
+                  <Paragraph style={{ fontSize: 15 }}>
+                    {props.titleProcessed}
+                  </Paragraph>
+                </Card.Content>
+              </Card>
+            </Surface>
+          </Pressable>
+          <ScrollView style={{ height: '40%' }}>
+            <Pressable
+              //onPress={() => props.onSelectedCategory(item.categoryId)}
+              onPress={() => console.log('Edit description')}
+            >
+              <Surface elevation={4}>
+                <Card style={{ padding: 10 }}>
+                  <Card.Content>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Title style={{ fontSize: 20, fontWeight: 'bold' }}>
+                        Description
+                      </Title>
+
+                      <Text>
+                        <IconButton icon='pencil' iconColor={'green'} />
+                      </Text>
+                    </View>
+
+                    <Paragraph style={{ fontSize: 15 }}>
+                      {props.descriptionProcessed}
+                    </Paragraph>
+                  </Card.Content>
+                </Card>
+              </Surface>
+            </Pressable>
+          </ScrollView>
+        </View>
 
         <SegmentedButtons
           style={props.styles.nextBackControl}
@@ -51,7 +115,6 @@ export default function TitleRevisionStage(props) {
               icon: 'arrow-right',
               onPress: () => props.forward(),
               disabled: true, //props.category !== '' ? false : true,
-
             },
           ]}
         />

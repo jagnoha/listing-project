@@ -86,6 +86,10 @@ export default function AddListingForm(props) {
   const [width, setWidth] = useState('6');
   const [weight, setWeight] = useState('6');
 
+  const [titleProcessed, setTitleProcessed] = useState('');
+
+  const [descriptionProcessed, setDescriptionProcessed] = useState('');
+
   const [category, setCategory] = useState('');
 
   const [processingCategories, setProcessingCategories] = useState(false);
@@ -141,51 +145,72 @@ export default function AddListingForm(props) {
   };
 
   const getCategoryName = () => {
-
-    const categoryName = categories.find(item => item.categoryId === category)
+    const categoryName = categories.find(
+      (item) => item.categoryId === category
+    );
 
     return categoryName.title;
-
-  }
+  };
 
   const getImportantAspectsValues = () => {
+    const brand = aspects.find((item) => item.localizedAspectName === 'Brand');
+    const size = aspects.find((item) => item.localizedAspectName === 'Size');
+    const style = aspects.find((item) => item.localizedAspectName === 'Style');
+    const sizeType = aspects.find(
+      (item) => item.localizedAspectName === 'Size Type'
+    );
+    const color = aspects.find((item) => item.localizedAspectName === 'Color');
+    const type = aspects.find((item) => item.localizedAspectName === 'Type');
+    const department = aspects.find(
+      (item) => item.localizedAspectName === 'Department'
+    );
+    const vintage = aspects.find(
+      (item) => item.localizedAspectName === 'Vintage'
+    );
+    const model = aspects.find((item) => item.localizedAspectName === 'Model');
 
-    const brand = aspects.find(item => item.localizedAspectName === 'Brand');
-    const size = aspects.find(item => item.localizedAspectName === 'Size');
-    const style = aspects.find(item => item.localizedAspectName === 'Style');
-    const sizeType = aspects.find(item => item.localizedAspectName === 'Size Type');
-    const color = aspects.find(item => item.localizedAspectName === 'Color');
-    const type = aspects.find(item => item.localizedAspectName === 'Type');
-    const department = aspects.find(item => item.localizedAspectName === 'Department');
-    const vintage = aspects.find(item => item.localizedAspectName === 'Vintage');
-    const model = aspects.find(item => item.localizedAspectName === 'Model');
+    const skirtLength = aspects.find(
+      (item) => item.localizedAspectName === 'Skirt Length'
+    );
 
-    const skirtLength = aspects.find(item => item.localizedAspectName === 'Skirt Length');
+    const dressLength = aspects.find(
+      (item) => item.localizedAspectName === 'Dress Length'
+    );
 
-    const dressLength = aspects.find(item => item.localizedAspectName === 'Dress Length');
+    const material = aspects.find(
+      (item) => item.localizedAspectName === 'Material'
+    );
 
-    const material = aspects.find(item => item.localizedAspectName === 'Material');
+    const sleeveLength = aspects.find(
+      (item) => item.localizedAspectName === 'Sleeve Length'
+    );
 
-    const sleeveLength = aspects.find(item => item.localizedAspectName === 'Sleeve Length');
+    const pattern = aspects.find(
+      (item) => item.localizedAspectName === 'Pattern'
+    );
 
-    const pattern = aspects.find(item => item.localizedAspectName === 'Pattern');
+    const neckline = aspects.find(
+      (item) => item.localizedAspectName === 'Neckline'
+    );
 
-    const neckline = aspects.find(item => item.localizedAspectName === 'Neckline');
+    const occasion = aspects.find(
+      (item) => item.localizedAspectName === 'Occasion'
+    );
 
-    const occasion = aspects.find(item => item.localizedAspectName === 'Occasion');
+    const features = aspects.find(
+      (item) => item.localizedAspectName === 'Features'
+    );
 
-    const features = aspects.find(item => item.localizedAspectName === 'Features');
+    const fit = aspects.find((item) => item.localizedAspectName === 'Fit');
 
-    const fit = aspects.find(item => item.localizedAspectName === 'Fit');
+    const characterFamily = aspects.find(
+      (item) => item.localizedAspectName === 'Character Family'
+    );
 
-    const characterFamily = aspects.find(item => item.localizedAspectName === 'Character Family');
-
-    const categoryNew = categories.find(item => item.categoryId === category);
-
-    
+    const categoryNew = categories.find((item) => item.categoryId === category);
 
     let importantAspects = {
-      brand: brand ? brand.value === 'Unbranded' ? '' : brand.value : '',
+      brand: brand ? (brand.value === 'Unbranded' ? '' : brand.value) : '',
       size: size ? size.value : '',
       style: style ? style.value : '',
       model: model ? model.value : '',
@@ -199,7 +224,7 @@ export default function AddListingForm(props) {
       fit: fit ? fit.value : '',
 
       department: department ? department.value : '',
-      vintage: vintage ? vintage.value === 'Yes' ? 'Vintage' : '' : '',
+      vintage: vintage ? (vintage.value === 'Yes' ? 'Vintage' : '') : '',
       model: model ? model.value : '',
       category: categoryNew.title,
       features: features ? features.value : '',
@@ -207,42 +232,81 @@ export default function AddListingForm(props) {
       skirtLength: skirtLength ? skirtLength.value : '',
       pattern: pattern ? pattern.value : '',
       dressLength: dressLength ? dressLength.value : '',
-      characterFamily: characterFamily ? characterFamily.value : ''
+      characterFamily: characterFamily ? characterFamily.value : '',
     };
 
-    return importantAspects;    
+    return importantAspects;
+  };
 
-  }
+  const processingDescription = async (title) => {
+    //let pendingDescription = [];
 
-  
-  
+    //const keywords = getImportantAspectsValues();
+    let pendingDescription = `${title}
+
+Item Specifics & Features:
+==========================
+Condition: ${
+      categoryFeatures.conditions.find((item) => item.ID === condition)
+        .DisplayName
+    }     
+`;
+
+    /*${JSON.stringify(aspects[0].localizedAspectName)}
+${aspects
+  .filter((i) => i.value !== '')
+  .map((it) => ({ test: it.localizedAspectName }))}*/
+
+    /*let itemSpecText = '';
+
+    for (let itm of aspects.filter((i) => i.value !== '')) {
+      itemSpecText.push(`${itm.localizedAspectName}: ${itm.value}\n`);
+    }*/
+
+    let aspectsFil = aspects.filter((item) => item.value !== '');
+
+    for (let itm of aspectsFil) {
+      console.log(itm.localizedAspectName + ': ' + itm.value + '\n');
+      pendingDescription = pendingDescription.concat(
+        itm.localizedAspectName + ': ' + itm.value + '\n'
+      );
+    }
+
+    //pendingDescription.push(itemSpecText);
+
+    pendingDescription = pendingDescription.concat(
+      '\n' +
+        'Welcome to my store, it is a pleasure for me to assist you, if you need anything or have any questions do not hesitate to write me'
+    );
+
+    setDescriptionProcessed(pendingDescription);
+  };
+
   const processingTitle = async () => {
-
     let pendingTitle = [];
-    
-    const keywords = getImportantAspectsValues() ;
-    
-    if (type === 'clothing'){
-        
+
+    const keywords = getImportantAspectsValues();
+
+    if (type === 'clothing') {
       // step 1
 
       pendingTitle.push(keywords['vintage']);
-      
-      if (!keywords['model'].includes(keywords['brand'])){
+
+      if (!keywords['model'].includes(keywords['brand'])) {
         pendingTitle.push(keywords['brand']);
-      }      
-      
+      }
+
       pendingTitle.push(keywords['model']);
-      
-      if (!keywords['category'].includes(keywords['type'])){
+
+      if (!keywords['category'].includes(keywords['type'])) {
         pendingTitle.push(keywords['category']);
-      }      
+      }
       pendingTitle.push(keywords['type']);
       pendingTitle.push(keywords['color']);
       pendingTitle.push(keywords['style']);
-      pendingTitle.push(keywords['features']);      
+      pendingTitle.push(keywords['features']);
       pendingTitle.push(keywords['characterFamily']);
-      pendingTitle.push(keywords['neckline']);   
+      pendingTitle.push(keywords['neckline']);
       pendingTitle.push(keywords['fit']);
       pendingTitle.push(keywords['sleeveLength']);
       pendingTitle.push(keywords['skirtLength']);
@@ -250,42 +314,53 @@ export default function AddListingForm(props) {
       pendingTitle.push(keywords['occasion']);
       pendingTitle.push(keywords['department']);
       pendingTitle.push(keywords['sizeType']);
-      pendingTitle.push(keywords['size']);
+      pendingTitle.push(`Size ${keywords['size']}`);
 
+      let expandTitle = [];
 
+      for (let item of pendingTitle) {
+        if (Array.isArray(item)) {
+          //for (let itemMulti of item) {
+          let checkItem = item[0].split(' ');
+          checkItem.filter((chk) => !chk.includes(keywords['brand']));
+          expandTitle.push(checkItem.join(' '));
+          //}
+        } else {
+          expandTitle.push(item);
+        }
+      }
+
+      let filtetedTitle = expandTitle.filter(
+        (item) => item !== '' && item !== 'Regular'
+      );
+
+      console.log(filtetedTitle.join(' ').length);
+
+      setTitleProcessed(filtetedTitle.join(' '));
+
+      processingDescription(filtetedTitle.join(' '));
+
+      //setDescriptionProcessed(filtetedTitle.join(' '));
     }
-
-    console.log(pendingTitle);
-
-
-    
-  
-  
-  }
+  };
 
   const onProcessingTitle = async () => {
-
     console.log('Processing Title and Description!!!');
     //processingTitle()
     processingTitle();
-
-
-
-
-  } 
-
+  };
 
   const onClickPaymentPolicy = (value) => {
     setPaymentPolicyId(value);
-  }
+  };
 
   const onClickReturnPolicy = (value) => {
     setReturnPolicyId(value);
-  }
+  };
 
   const onClickFulfillmentPolicy = (value) => {
     setFulfillmentPolicyId(value);
-  }
+  };
 
   const onChangeLength = async (value) => {
     setLength(value);
@@ -1071,6 +1146,9 @@ export default function AddListingForm(props) {
         styles={styles}
         backward={backward}
         forward={forward}
+        titleProcessed={titleProcessed}
+        descriptionProcessed={descriptionProcessed}
+
         /*processingPolicies={processingPolicies}
         fulfillmentPolicies={fulfillmentPolicies}
         paymentPolicies={paymentPolicies}
@@ -1098,11 +1176,7 @@ export default function AddListingForm(props) {
       />
     );
   }
-
-
 }
-
-
 
 const styles = StyleSheet.create({
   container: {

@@ -35,7 +35,6 @@ export default function ItemSpecificsStage(props) {
     setSearchQuery(value);
 
     if (value === '') {
-
       const wheelItemsList = props.aspects
         .find((itm) => itm.localizedAspectName === selectedItem.name)
         .aspectValues.map((name) => ({
@@ -43,11 +42,9 @@ export default function ItemSpecificsStage(props) {
           value: name.toUpperCase(),
         }));
 
-      console.log(wheelItemsList);  
+      console.log(wheelItemsList);
       setWheelItems(wheelItemsList);
-
     }
-
   };
 
   const onCloseMultiItem = (item) => {
@@ -58,10 +55,6 @@ export default function ItemSpecificsStage(props) {
     if (wheelItems.length > 0) {
       if (!multiSelected.find((item) => item === valueWheel)) {
         setMultiSelected((old) => [...old, valueWheel]);
-        
-        
-        
-
       }
     } else {
       setMultiSelected((old) => [...old, searchQuery]);
@@ -69,17 +62,27 @@ export default function ItemSpecificsStage(props) {
     }
 
     const wheelItemsList = props.aspects
-        .find((itm) => itm.localizedAspectName === selectedItem.name)
-        .aspectValues.map((name) => ({
-          label: name,
-          value: name.toUpperCase(),
-        }));
+      .find((itm) => itm.localizedAspectName === selectedItem.name)
+      .aspectValues.map((name) => ({
+        label: name,
+        value: name.toUpperCase(),
+      }));
 
-      console.log(wheelItemsList);  
-      setWheelItems(wheelItemsList);
+    console.log(wheelItemsList);
+    setWheelItems(wheelItemsList);
 
     setSearchQuery('');
-    
+  };
+
+  const getValueAspect = () => {
+    const aspect = props.aspects.find(
+      (item) => item.localizedAspectName === selectedItem.name
+    );
+    const value = aspect ? aspect.value : '';
+
+    //setSearchQuery(value);
+
+    return value;
   };
 
   const onChangeSearch = (query) => {
@@ -101,30 +104,10 @@ export default function ItemSpecificsStage(props) {
         wheelItemsList.filter((itm) => itm.value.includes(query.toUpperCase()))
       );
     }
-
-    /*setWheelItems(
-      wheelItems.filter((itm) => itm.value.includes(query.toUpperCase()))
-    );*/
-    /*setWheelItems((old) =>
-      old.filter((itm) => itm.value.includes(query.toUpperCase().trim()))
-    );*/
   };
-  //const theme = useTheme();
-
-  /*console.log(props.aspects.filter(item => item.localizedAspectName === 'Size')[0].aspectValues);*/
-
-  /*const size = props.aspects.filter(item => item.localizedAspectName === 'Size');*/
 
   const onClickItem = (item) => {
-    //if (item.cardinality === 'SINGLE' ) {
-
-    //onOpenWheel(item.localizedAspectName);
     onOpenWheel(item);
-    //console.log(item);
-
-    /*} else {
-        console.log('Multiple!');
-    }*/
   };
 
   const onOpenWheel = (item) => {
@@ -137,8 +120,6 @@ export default function ItemSpecificsStage(props) {
     if (Array.isArray(item.value)) {
       setMultiSelected(item.value);
     }
-
-    //console.log(props.aspects);
 
     if (item.localizedAspectName !== 'Brand') {
       const wheelItemsList = props.aspects
@@ -163,16 +144,6 @@ export default function ItemSpecificsStage(props) {
 
     setOpenWheel(true);
   };
-
-  {
-    /*const isAllCheckRequired = () => {
-    const aspectList = props.aspects.filter(
-      (item) => item.require === true && item.value !== ''
-    );
-
-    return aspectList.length > 0 ? false : true;
-  };*/
-  }
 
   const onCloseWheel = () => {
     setSelectedItem();
@@ -202,8 +173,6 @@ export default function ItemSpecificsStage(props) {
   };
 
   const onApplyWheel = () => {
-    //setSelectedItem('');
-
     const list = wheelItems.filter((itm) =>
       itm.value.includes(searchQuery.toUpperCase().trim())
     );
@@ -226,13 +195,6 @@ export default function ItemSpecificsStage(props) {
     setOpenWheel(false);
     setWheelItems([]);
   };
-
-  //console.log('***********************************');
-
-  /*console.log(props.aspects.filter(item => item.localizedAspectName === 'Size')[0].aspectValues.map(name => ({
-        label: name,
-        value: name,
-    })));*/
 
   if (openWheel && selectedItem.cardinality === 'SINGLE') {
     return (
@@ -260,7 +222,10 @@ export default function ItemSpecificsStage(props) {
                     wheelItems.length > 0 ? 'Search' : 'Edit information'
                   }
                   onChangeText={onChangeSearch}
-                  value={searchQuery}
+                  value={
+                    searchQuery
+                    //getValueAspect() === '' ? searchQuery : getValueAspect()
+                  }
                   icon={'magnify'}
                 />
               ) : (
@@ -268,7 +233,10 @@ export default function ItemSpecificsStage(props) {
                   placeholder='Edit information'
                   left={<TextInput.Icon icon='pencil' />}
                   onChangeText={onChangeInput}
-                  value={searchQuery}
+                  value={
+                    searchQuery
+                    //getValueAspect() === '' ? searchQuery : getValueAspect()
+                  }
                 />
               )}
             </>
@@ -344,12 +312,6 @@ export default function ItemSpecificsStage(props) {
           Add {selectedItem.name}
         </Text>
 
-        {/*multiSelected.map(item => {
-            return (              
-              <View key={item}><Chip icon='information'>{item}</Chip></View>
-            )
-          })*/}
-
         <Surface style={{ width: 300 }} elevation={4}>
           {wheelItems.length > 0 ? (
             <Searchbar
@@ -368,8 +330,6 @@ export default function ItemSpecificsStage(props) {
               value={searchQuery}
             />
           )}
-
-          {/*<MultipleItems items = {wheelItems} renderItem = {renderItem} />*/}
 
           {wheelItems.length > 0 ? (
             <WheelPickerExpo
@@ -430,7 +390,10 @@ export default function ItemSpecificsStage(props) {
                 value: 'Add',
                 label: 'Add',
                 icon: 'plus',
-                disabled: searchQuery.length > 0 || valueWheel.length > 0 ? false : true,
+                disabled:
+                  searchQuery.length > 0 || valueWheel.length > 0
+                    ? false
+                    : true,
                 onPress: () => onAddMultiItem(),
               },
             ]}
@@ -457,7 +420,8 @@ export default function ItemSpecificsStage(props) {
       />
       <View>
         <Banner visible={true} icon={'star-circle-outline'}>
-        Add item details. Some of them are required to continue to the next step. 
+          Add item details. Some of them are required to continue to the next
+          step.
         </Banner>
 
         {props.processingAspects ? (
@@ -534,19 +498,6 @@ export default function ItemSpecificsStage(props) {
             })}
           </ScrollView>
         )}
-
-        {/*<WheelPickerExpo
-  
-  //haptics={true}
-    
-  width={125}
-    //initialSelectedIndex={3}
-    items={props.aspects.filter(item => item.localizedAspectName === 'Size')[0].aspectValues.map(name => ({
-        label: name,
-        value: name,
-    }))}
-        onChange={()=>console.log('Good')}
-  />*/}
 
         <SegmentedButtons
           style={props.styles.nextBackControl}
