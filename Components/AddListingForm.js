@@ -82,6 +82,12 @@ export default function AddListingForm(props) {
 
   /*const [dimensions, setDimensions] = useState({length: '6', height: '6', width: '6'});*/
 
+  const [processingPrices, setProcessingPrices] = useState(false);
+
+  const [prices, setPrices] = useState([]);
+
+  const [pricingList, setPricingList] = useState([]);
+
   const [length, setLength] = useState('6');
   const [height, setHeight] = useState('6');
   const [width, setWidth] = useState('6');
@@ -133,6 +139,8 @@ export default function AddListingForm(props) {
       </Text>
     );
   }
+
+  
 
   const getTypeProductCode = (typeName) => {
     if (typeName === 'autoparts') {
@@ -686,6 +694,166 @@ ${aspects
 
     setAspects(newAspects);
   };
+
+  const getAvgPrice = (list) => {
+    const n = list.length;
+    let sum = 0;
+    for (let item of list){
+      sum+=item;
+    }
+    return sum / n;
+  }
+
+  const processPrices = async (items) => {
+    
+    
+    let listings = items.itemSummaries;
+    setPricingList(listings.map(item => (
+      {
+        itemId: item.itemId,
+        title: item.title,
+        image: item.thumbnailImages[0].imageUrl,
+        price: item.price.value,
+        condition: item.condition,
+        freeShipping: 'No',
+        freeShipping: Array.isArray(item.shippingOptions) ? Number(item.shippingOptions[0].shippingCost.value) > 0 ? 'No' : 'Yes' : 'Yes'
+      }
+    )).slice(0,10));
+
+    console.log(listings.map(item => (
+      {
+        itemId: item.itemId,
+        title: item.title,
+        image: item.thumbnailImages[0].imageUrl,
+        price: item.price.value,
+        condition: item.condition,
+        freeShipping: Array.isArray(item.shippingOptions) ? Number(item.shippingOptions[0].shippingCost.value) > 0 ? 'No' : 'Yes' : 'Yes'
+      }
+    )))
+    //.slice(0,10))
+    //.filter(item => item.title.includes('Polo Ralph Lauren'));    
+
+      let prices = listings.map(item => Number(item.price.value))
+      
+      //.filter(item => item.title.includes('Polo Ralph Lauren'));
+      let priceTitles = listings.map(item => item.title)
+      
+      //.filter(item => item.title.includes('Polo Ralph Lauren'));
+      
+      console.log(prices.length);
+
+    console.log(prices);
+    console.log(priceTitles);
+    console.log('AVG Price: ', getAvgPrice(prices).toFixed(2));
+    console.log('Minimum Price: ', prices[0]);
+    
+
+    setPrices([prices[0], getAvgPrice(prices).toFixed(2)]);
+
+  }
+
+  const getPrices = async () => {
+    try {
+
+      let pendingTitle=[];
+
+      const keywords = getImportantAspectsValues();
+
+      setProcessingPrices(true);
+
+      console.log('Get Prices!');
+      console.log('Title: ', titleProcessed);
+      console.log('Barcode: ', barcodeValue);
+      console.log('Category: ', category);
+      console.log('Condition: ', condition);
+
+
+      if (barcodeValue){
+
+        const response = await fetch(
+          `https://listerfast.com/api/ebay/search/${barcodeValue}/${category}/US/33020/${condition}/lisnardayi`
+        );     
+
+        const jsonResponse = await response.json();
+
+        processPrices(jsonResponse);
+      
+      
+      } else {
+
+      
+
+      if (type === 'clothing') {
+
+        if (!keywords['model'].includes(keywords['brand'])) {
+          pendingTitle.push(keywords['brand']);
+        }
+
+        pendingTitle.push(keywords['type']);
+
+        if (keywords['type'] === ''){
+          if (keywords['category'].slice(keywords['category'].length - 2) === 'es'){
+          pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 2));
+        } else {
+          pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 1))
+        }
+        } else if (!keywords['category'].includes(keywords['type'])) {
+          if (keywords['category'].slice(keywords['category'].length - 2) === 'es'){
+            pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 2));
+          } else {
+            pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 1))
+          }
+        };
+
+
+        pendingTitle.push(keywords['vintage']);
+
+      
+
+      pendingTitle.push(keywords['model']);
+
+      
+
+      
+      pendingTitle.push(keywords['style']);
+      pendingTitle.push(keywords['characterFamily']);
+      pendingTitle.push(keywords['character']);
+      
+      
+      pendingTitle.push(keywords['neckline']);
+      pendingTitle.push(keywords['fit']);
+      pendingTitle.push(keywords['sleeveLength']);
+      pendingTitle.push(keywords['skirtLength']);
+      pendingTitle.push(keywords['dressLength']);
+      pendingTitle.push(keywords['department']);
+      //pendingTitle.push(keywords['sizeType']);
+      //pendingTitle.push(`Size ${keywords['size']}`);
+
+      
+      
+      
+      }
+
+      console.log('PENDING TITLE***********************************: ', pendingTitle);
+
+      const response = await fetch(
+        `https://listerfast.com/api/ebay/search/${pendingTitle.join(' ')}/${category}/US/33020/${condition}/lisnardayi`
+      );
+
+      const jsonResponse = await response.json();
+
+      processPrices(jsonResponse);
+
+      
+      
+      }
+      setProcessingPrices(false);
+      
+    } catch(error){
+      console.log(error);
+      setProcessingPrices(false);
+    }
+  }
 
   const getPolicies = async () => {
     try {
@@ -1320,6 +1488,10 @@ ${aspects
         styles={styles}
         backward={backward}
         forward={forward}
+        getPrices={getPrices}
+        prices={prices}
+        processingPrices={processingPrices}
+        pricingList={pricingList}
         /*titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}
         onChangeTitle={onChangeTitle}
