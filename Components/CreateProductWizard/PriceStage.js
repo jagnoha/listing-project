@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
-import { Pressable, ScrollView, View, Image } from 'react-native';
+import { Pressable, ScrollView, View, Image, FlatList } from 'react-native';
 import {
   useTheme,
   Text,
   Card,
+  Chip,
   Title,
   Surface,
   Button,
@@ -14,8 +15,41 @@ import {
   ActivityIndicator,
   IconButton,
   TextInput,
+  List,
 } from 'react-native-paper';
 import Header from '../Header';
+
+const PriceCard = ({item, onPress}) => {
+    return (
+        <View style={{margin: 10}}>
+        <View>
+        <Card.Title
+        titleStyle={{fontSize: 12, paddingLeft: 10}}
+        subtitleStyle={{fontSize: 12, paddingLeft: 10, fontWeight:'bold'}}
+        style={{padding: 7}} 
+        title={item.title}
+        subtitle={item.condition + ' | FreeShipping: ' + item.freeShipping }
+        //subtitle={(props) => {<Text>Hola</Text>}}
+        titleNumberOfLines={4}
+        subtitleNumberOfLines={2}
+        
+        //subtitle="Card Subtitle"
+        left={(props) => <List.Image variant='image' source={{ uri: item.image }} />}
+        /*right={(props) => <Chip icon='currency-usd' onPress={() => console.log('Pressed')}>{item.price}</Chip>}*/
+      />
+      {/*<Text style={{textAlign: 'center'}}>{item.price}</Text>*/}
+      
+            
+        {/*<List.Image variant='image' source={{ uri: item.image }} />*/}
+            </View>
+            <View style={{marginLeft: '30%', marginRight: '30%'}}>
+            <Chip mode={'outlined'} icon='currency-usd' onPress={() => onPress(item.itemId)}>{item.price}</Chip>
+            </View>
+            </View>
+
+        
+    )
+}
 
 export default function PriceStage(props) {
   //const theme = useTheme();
@@ -34,80 +68,50 @@ export default function PriceStage(props) {
     setOpenPriceList(false);
   }
 
+  const renderItem = ({item}) => {
+    return (
+        <PriceCard item={item} onPress={()=>{ props.onChangeProductPrice(item.price); onClosePriceList()  }} />
+    )
+}
+
   if (openPriceList){
     return (
         <View
         style={{
             flex: 1,
-            //justifyContent: 'space-between',
+            
             alignItems: 'center',
             alignContent: 'center',
             alignSelf: 'center',
-            paddingTop: 50,
-            //paddingBottom: 100,
+            paddingTop: 100,
+            
+            
           }}
       >
         <Text style={{ fontSize: 20, paddingBottom: 20 }}>
           Price List
         </Text>
+        <Surface style={{ width: 325, height: '75%' }} elevation={4}>
         
-        <ScrollView style={{ height: 400 }}>
+        <FlatList 
+                data={props.pricingList}
+                renderItem={renderItem}
+                keyExtractor={(item)=>item.itemId}
+                //onEndReachedThreshold={50}
+            />
 
-          {
-            props.pricingList.map(item => (
-                
-                    <Pressable
-                    onPress={() => console.log(item.itemId)}
-                  >
-                    <Card key={item.itemId}>
-                      <Card.Content>
-                      <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                          }}
-                        >
-                          <View>
-                             
-
-                            
-
-                            <Title style={{fontSize: 15}}>{item.title}</Title>
-                            
-                            <Paragraph style={{fontSize: 20}}>{item.price}</Paragraph>
-
-                            <Paragraph>Free Shipping: {item.freeShipping}</Paragraph>
-                            
-                            <Paragraph>{item.condition}</Paragraph>
-
-                            {/*<Paragraph>{item.subtitle}</Paragraph>*/}
-                          </View>
-                          {/*props.category === item.categoryId ? <View>
-                          <IconButton
-                              icon='check-outline'
-                              iconColor={'green'}
-                              size={20}
-                            />
-                        </View> : ''*/}
-                        </View>
-                      </Card.Content>
-
-                        
-
-                    </Card>
-                  </Pressable>
-                
-            ))
-          }
-       
-
-       
-
-            
-            
-        </ScrollView>
+</Surface>
         
-        <Button onPress={()=>onClosePriceList()}>Close</Button>
+        
+
+        <Button
+          icon='close'
+          style={{ marginTop: 20 }}
+          mode='contained'
+          onPress={() => onClosePriceList()}
+        >
+          Close
+        </Button>
         </View>
     
     )
@@ -130,16 +134,14 @@ export default function PriceStage(props) {
         </Surface>   
 
         <Surface elevation={4} style={{padding: 20, margin: 20}}>
-                <TextInput style={{fontSize: 40}} label='Price' value='0.00' keyboardType='decimal-pad' mode='outlined' />
+                <TextInput style={{fontSize: 40}} label='Price' value={props.priceProduct} keyboardType='decimal-pad' onChangeText={(value)=>props.onChangeProductPrice(value)} mode='outlined' />
         </Surface>    
 
-        {!props.processingPrices ? <Button onPress={()=>props.getPrices()}>Get Recommended Price</Button>: <Text>Processing Prices</Text>}
+        {!props.processingPrices ? <Button icon={'reload'} onPress={()=>props.getPrices()}>Process Recommended Prices</Button>: <ActivityIndicator animating={true} />}
 
         {props.prices.length > 0 ?
             <View>
-            <Text>Lower Price: {props.prices[0]}</Text>
-            <Text>Avg Price: {props.prices[1]}</Text>
-            <Button onPress={()=>onOpenPriceList()}>Pricing List</Button>            
+            <Button icon = 'format-list-text' onPress={()=>onOpenPriceList()}>Open list of products</Button>            
             </View> : ''
     
         }    
