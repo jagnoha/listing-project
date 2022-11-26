@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import {
   useTheme,
@@ -27,34 +27,33 @@ export default function TitleRevisionStage(props) {
   const onOpenTitle = () => {
     setTextForm(props.titleProcessed);
     setOpenTitle(true);
-    
-  } 
+  };
 
   const onOpenDescription = () => {
     setTextForm(props.descriptionProcessed);
     setOpenDescription(true);
-  } 
+  };
 
   const onCloseForm = () => {
     setOpenTitle(false);
     setOpenDescription(false);
     setTextForm('');
-  }
+  };
 
   const onApplyTitle = () => {
     props.onChangeTitle(textForm);
+
     onCloseForm();
-  }
+  };
 
   const onApplyDescription = () => {
     props.onChangeDescription(textForm);
-    onCloseForm()
-  }
+    onCloseForm();
+  };
 
-  if (openTitle === true){
+  if (openTitle === true) {
     return (
-
-        <View
+      <View
         style={{
           flex: 1,
           //padding: 30,
@@ -70,47 +69,42 @@ export default function TitleRevisionStage(props) {
           Edit Title
         </Text>
         <Surface style={{ padding: 25 }} elevation={4}>
-        <TextInput mode='outlined' label='Title' value={textForm} onChangeText={value => setTextForm(value)} />
+          <TextInput
+            mode='outlined'
+            label='Title'
+            value={textForm}
+            onChangeText={(value) => setTextForm(value)}
+          />
         </Surface>
-        
-
 
         <SegmentedButtons
-            style={props.styles.nextBackControl}
-            onValueChange={() => console.log('Change value')}
-            buttons={[
-              {
-                value: 'close',
-                label: 'Close',
-                icon: 'close',
-                onPress: () => onCloseForm(),
-              },
-             
+          style={props.styles.nextBackControl}
+          onValueChange={() => console.log('Change value')}
+          buttons={[
+            {
+              value: 'close',
+              label: 'Close',
+              icon: 'close',
+              onPress: () => onCloseForm(),
+            },
 
-              {
-                value: 'apply',
-                label: 'Apply',
-                icon: 'check',
-                //disabled: searchQuery.length > 0 && wheelItems.length > 0 ? false : true,
-                onPress: () => onApplyTitle(),
-                //onPress: () => onApplyWheel(),
-              },
-            ]}
-          />
-
-        </View>
-        
-       
-
-
-        
-    )
+            {
+              value: 'apply',
+              label: 'Apply',
+              icon: 'check',
+              //disabled: searchQuery.length > 0 && wheelItems.length > 0 ? false : true,
+              onPress: () => onApplyTitle(),
+              //onPress: () => onApplyWheel(),
+            },
+          ]}
+        />
+      </View>
+    );
   }
 
-  if (openDescription === true){
+  if (openDescription === true) {
     return (
-
-        <View
+      <View
         style={{
           flex: 1,
           //padding: 30,
@@ -126,43 +120,40 @@ export default function TitleRevisionStage(props) {
           Edit Description
         </Text>
         <Surface style={{ padding: 25 }} elevation={4}>
-        <ScrollView style={{ height: '65%' }}>
-        <TextInput multiline={true}  mode='outlined' label='Description' value={textForm} onChangeText={value => setTextForm(value)} />
-        </ScrollView>
+          <ScrollView style={{ height: '65%' }}>
+            <TextInput
+              multiline={true}
+              mode='outlined'
+              label='Description'
+              value={textForm}
+              onChangeText={(value) => setTextForm(value)}
+            />
+          </ScrollView>
         </Surface>
-        
-
 
         <SegmentedButtons
-            style={props.styles.nextBackControl}
-            onValueChange={() => console.log('Change value')}
-            buttons={[
-              {
-                value: 'close',
-                label: 'Close',
-                icon: 'close',
-                onPress: () => onCloseForm(),
-              },
-             
+          style={props.styles.nextBackControl}
+          onValueChange={() => console.log('Change value')}
+          buttons={[
+            {
+              value: 'close',
+              label: 'Close',
+              icon: 'close',
+              onPress: () => onCloseForm(),
+            },
 
-              {
-                value: 'apply',
-                label: 'Apply',
-                icon: 'check',
-                //disabled: searchQuery.length > 0 && wheelItems.length > 0 ? false : true,
-                onPress: () => onApplyDescription(), 
-                //onPress: () => onApplyWheel(),
-              },
-            ]}
-          />
-
-        </View>
-        
-       
-
-
-        
-    )
+            {
+              value: 'apply',
+              label: 'Apply',
+              icon: 'check',
+              //disabled: searchQuery.length > 0 && wheelItems.length > 0 ? false : true,
+              onPress: () => onApplyDescription(),
+              //onPress: () => onApplyWheel(),
+            },
+          ]}
+        />
+      </View>
+    );
   }
 
   return (
@@ -258,7 +249,10 @@ export default function TitleRevisionStage(props) {
               value: 'next',
               label: 'Next',
               icon: 'arrow-right',
-              onPress: () => props.forward(),
+              onPress: () => {
+                props.forward();
+                props.getPrices();
+              },
               //disabled: true, //props.category !== '' ? false : true,
             },
           ]}

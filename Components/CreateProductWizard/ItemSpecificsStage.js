@@ -185,7 +185,7 @@ export default function ItemSpecificsStage(props) {
       list.length === 1
         ? list[0].label
         : wheelItems.length === 0
-        ? searchQuery
+        ? searchQuery.trim()
         : valueWheel
     );
     setSelectedItem();
