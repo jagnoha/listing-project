@@ -192,7 +192,7 @@ export default function PriceStage(props) {
             },
             {
               value: 'next',
-              label: 'Publish on Ebay',
+              label: 'Publish on eBay',
 
               icon: 'publish',
               onPress: () => props.forward(),

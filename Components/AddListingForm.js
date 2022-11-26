@@ -60,7 +60,6 @@ export default function AddListingForm(props) {
   const [returnPolicies, setReturnPolicies] =
     useRecoilState(returnPoliciesAtom);
 
-  //const [hasBarcodePermission, setHasBarcodePermission] = useState();
   const [searchCategories, setSearchCategories] = useState('');
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
   const [photos, setPhotos] = useState([]);
@@ -71,18 +70,12 @@ export default function AddListingForm(props) {
 
   const [categoryFeatures, setCategoryFeatures] = useState();
 
-  //const [fulfillmentPolicies, setFulfillmentPolicies] = useState([]);
-  //const [paymentPolicies, setPaymentPolicies] = useState([]);
-  //const [returnPolicies, setReturnPolicies] = useState([]);
-
   const [processingPolicies, setProcessingPolicies] = useState(false);
 
   const [processingCategoryFeatures, setProcessingCategoryFeatures] =
     useState();
 
   const [checkedAllAspects, setCheckedAllAspects] = useState(false);
-
-  /*const [dimensions, setDimensions] = useState({length: '6', height: '6', width: '6'});*/
 
   const [processingPrices, setProcessingPrices] = useState(false);
 
@@ -119,7 +112,7 @@ export default function AddListingForm(props) {
 
   const [barcodeOpen, setBarcodeOpen] = useState(false);
 
-  const [listPhotoOpen, setListPhotoOpen] = useState(0);
+  //const [listPhotoOpen, setListPhotoOpen] = useState(0);
 
   const [step, setStep] = useState(0);
 
@@ -817,6 +810,17 @@ ${aspects
             };
           }
 
+          if (itemProduct.localizedAspectName === 'Brand') {
+            return {
+              localizedAspectName: itemProduct.localizedAspectName,
+              aspectValues: [],
+              value: '',
+              require: true,
+              cardinality: itemProduct.aspectConstraint.itemToAspectCardinality,
+              mode: itemProduct.aspectConstraint.aspectMode,
+            };
+          }
+
           return {
             localizedAspectName: itemProduct.localizedAspectName,
             aspectValues: itemProduct.aspectValues
@@ -1197,6 +1201,13 @@ ${aspects
       setProcessingPrices(false);
     }
   };
+
+  //******************************************************** */
+
+  console.log('Aspects!: ');
+  console.log(aspects);
+
+  //********************************************************* */
 
   const getPolicies = async () => {
     try {
