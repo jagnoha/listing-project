@@ -276,7 +276,7 @@ export default function ItemSpecificsStage(props) {
               },
               {
                 value: 'reset',
-                label: 'Reset',
+                label: 'Delete',
                 icon: 'cancel',
                 onPress: () => onResetWheel(),
               },
@@ -381,7 +381,7 @@ export default function ItemSpecificsStage(props) {
               },
               {
                 value: 'reset',
-                label: 'Reset',
+                label: 'Delete',
                 icon: 'cancel',
                 onPress: () => onResetWheel(),
               },

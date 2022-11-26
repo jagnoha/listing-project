@@ -95,6 +95,8 @@ export default function AddListingForm(props) {
   const [width, setWidth] = useState('6');
   const [weight, setWeight] = useState('6');
 
+  const [lastStep, setLastStep] = useState(0);
+
   const [titleProcessed, setTitleProcessed] = useState('');
 
   const [descriptionProcessed, setDescriptionProcessed] = useState('');
@@ -187,7 +189,10 @@ export default function AddListingForm(props) {
         item.localizedAspectName !== 'Gender' &&
         item.localizedAspectName !== 'Fit' &&
         item.localizedAspectName !== 'Features' &&
-        item.localizedAspectName !== 'US Shoe Size'
+        item.localizedAspectName !== 'US Shoe Size' &&
+        item.localizedAspectName !== 'UK Shoe Size' &&
+        item.localizedAspectName !== 'EU Shoe Size' &&
+        item.localizedAspectName !== 'Country/Region of Manufacture'
     );
 
     let values = require.map((item) => {
@@ -367,6 +372,7 @@ ${aspects
 
   const processingTitle = async () => {
     let pendingTitle = [];
+    let shortPendingTitle = [];
 
     const keywords = getImportantAspectsValues();
     const extraAspects = getExtraAspectsValuesClothing().filter(
@@ -377,15 +383,18 @@ ${aspects
       // step 1
 
       pendingTitle.push(keywords['vintage']);
+      shortPendingTitle.push(keywords['vintage']);
 
       let tempBrand = keywords['brand'].toUpperCase();
       let tempModel = keywords['model'].toUpperCase();
 
       if (!tempModel.includes(tempBrand)) {
         pendingTitle.push(keywords['brand']);
+        shortPendingTitle.push(keywords['brand']);
       }
 
       pendingTitle.push(keywords['model']);
+      shortPendingTitle.push(keywords['model']);
 
       if (keywords['type'] === '') {
         if (
@@ -394,8 +403,14 @@ ${aspects
           pendingTitle.push(
             keywords['category'].slice(0, keywords['category'].length - 2)
           );
+          shortPendingTitle.push(
+            keywords['category'].slice(0, keywords['category'].length - 2)
+          );
         } else {
           pendingTitle.push(
+            keywords['category'].slice(0, keywords['category'].length - 1)
+          );
+          shortPendingTitle.push(
             keywords['category'].slice(0, keywords['category'].length - 1)
           );
         }
@@ -406,51 +421,58 @@ ${aspects
           pendingTitle.push(
             keywords['category'].slice(0, keywords['category'].length - 2)
           );
+          shortPendingTitle.push(
+            keywords['category'].slice(0, keywords['category'].length - 2)
+          );
         } else {
           pendingTitle.push(
+            keywords['category'].slice(0, keywords['category'].length - 1)
+          );
+          shortPendingTitle.push(
             keywords['category'].slice(0, keywords['category'].length - 1)
           );
         }
       }
 
       pendingTitle.push(keywords['type']);
+      shortPendingTitle.push(keywords['type']);
       pendingTitle.push(keywords['color']);
+      shortPendingTitle.push(keywords['color']);
       pendingTitle.push(keywords['style']);
+      shortPendingTitle.push(keywords['style']);
+
       pendingTitle.push(keywords['features']);
-      //pendingTitle.push(keywords['characterFamily']);
-      //pendingTitle.push(keywords['character']);
 
       pendingTitle.push(extraAspects.join(' '));
-
-      //pendingTitle.push(keywords['neckline']);
-
-      //keywords['fit'] !== '' ? pendingTitle.push(`${keywords['fit']} Fit`) : '';
+      console.log('Extra aspects: ', extraAspects.slice(0, 2));
+      shortPendingTitle.push(extraAspects.slice(0, 2).join(' '));
 
       if (keywords['fit'] !== '') {
         if (keywords['fit'] !== 'Regular') {
           pendingTitle.push(`${keywords['fit']} Fit`);
+          shortPendingTitle.push(`${keywords['fit']} Fit`);
         }
       }
 
-      //pendingTitle.push(keywords['sleeveLength']);
-      //pendingTitle.push(keywords['skirtLength']);
-      //pendingTitle.push(keywords['dressLength']);
-      //pendingTitle.push(keywords['occasion']);
-
       if (keywords['department'] === '') {
         pendingTitle.push(keywords['gender']);
+        shortPendingTitle.push(keywords['gender']);
       } else {
         pendingTitle.push(keywords['department']);
+        shortPendingTitle.push(keywords['department']);
       }
 
       pendingTitle.push(keywords['sizeType']);
+      shortPendingTitle.push(keywords['sizeType']);
       pendingTitle.push(`Size ${keywords['size']}`);
+      shortPendingTitle.push(`Size ${keywords['size']}`);
+
+      // Long Title processing
 
       let expandTitle = [];
 
       for (let item of pendingTitle) {
         if (Array.isArray(item)) {
-          //for (let itemMulti of item) {
           let checkItem = item[0].split(' ');
           checkItem.filter((chk) => !chk.includes(keywords['brand']));
           expandTitle.push(checkItem.join(' '));
@@ -466,8 +488,31 @@ ${aspects
         (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
       );
 
-      console.log(filtetedTitle.join(' ').length);
+      // Short title processing
 
+      let expandTitleShort = [];
+
+      for (let item of shortPendingTitle) {
+        if (Array.isArray(item)) {
+          let checkItem = item[0].split(' ');
+          checkItem.filter((chk) => !chk.includes(keywords['brand']));
+          expandTitleShort.push(checkItem.join(' '));
+          //}
+        } else {
+          if (item !== '') {
+            expandTitleShort.push(item);
+          }
+        }
+      }
+
+      let filtetedTitleShort = expandTitleShort.filter(
+        (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
+      );
+
+      console.log(filtetedTitle.join(' ').length);
+      console.log(filtetedTitleShort.join(' ').length);
+
+      // processing long title
       let uniqueFilteredTitle = filtetedTitle.join(' ').split(' ');
       uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)];
 
@@ -475,76 +520,80 @@ ${aspects
         .join(' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
-      setTitleProcessed(uniqueFilteredTitle.trim());
+      // processing short title
+      let uniqueFilteredTitleShort = filtetedTitleShort.join(' ').split(' ');
+      uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)];
+
+      uniqueFilteredTitleShort = uniqueFilteredTitleShort
+        .join(' ')
+        .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
+
+      if (uniqueFilteredTitle.trim().length <= 80) {
+        setTitleProcessed(uniqueFilteredTitle.trim());
+      } else {
+        setTitleProcessed(uniqueFilteredTitleShort.trim());
+      }
 
       processingDescription(uniqueFilteredTitle.trim());
     } else if (type === 'shoes') {
-      // step 1
-
       pendingTitle.push(keywords['vintage']);
-
-      //pendingTitle.push(keywords['customized']);
+      shortPendingTitle.push(keywords['vintage']);
 
       let tempBrand = keywords['brand'].toUpperCase();
       let tempModel = keywords['model'].toUpperCase();
 
       if (!tempModel.includes(tempBrand)) {
         pendingTitle.push(keywords['brand']);
+        shortPendingTitle.push(keywords['brand']);
       }
 
       pendingTitle.push(keywords['model']);
+      shortPendingTitle.push(keywords['model']);
 
       if (keywords['type'] === '') {
-        /*if (keywords['category'].slice(keywords['category'].length - 2) === 'es'){
-        pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 2));
-      } else {
-        pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 1))
-      }*/
         pendingTitle.push(keywords['category']);
+        shortPendingTitle.push(keywords['category']);
       } else if (!keywords['category'].includes(keywords['type'])) {
-        /*if (keywords['category'].slice(keywords['category'].length - 2) === 'es'){
-          pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 2));
-        } else {
-          pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 1))
-        }*/
         pendingTitle.push(keywords['category']);
+        shortPendingTitle.push(keywords['category']);
       }
 
       pendingTitle.push(keywords['type']);
+      shortPendingTitle.push(keywords['type']);
 
       pendingTitle.push(keywords['style']);
-      pendingTitle.push(type);
-      pendingTitle.push(keywords['color']);
+      shortPendingTitle.push(keywords['style']);
 
-      //pendingTitle.push('Shoe');
+      pendingTitle.push(type);
+      shortPendingTitle.push(type);
+
+      pendingTitle.push(keywords['color']);
+      shortPendingTitle.push(keywords['color']);
+
       pendingTitle.push(keywords['features']);
+
       pendingTitle.push(extraAspects.join(' '));
-      //pendingTitle.push(keywords['upperMaterial']);
-      //pendingTitle.push(keywords['characterFamily']);
-      //pendingTitle.push(keywords['character']);
-      //pendingTitle.push(keywords['neckline']);
-      //pendingTitle.push(keywords['fit']);
-      //pendingTitle.push(keywords['sleeveLength']);
-      //pendingTitle.push(keywords['skirtLength']);
-      //pendingTitle.push(keywords['dressLength']);
-      //pendingTitle.push(keywords['occasion']);
+      shortPendingTitle.push(extraAspects.slice(0, 2).join(' '));
+
       if (keywords['department'] === '') {
         pendingTitle.push(keywords['gender']);
+        shortPendingTitle.push(keywords['gender']);
       } else {
         pendingTitle.push(keywords['department']);
+        shortPendingTitle.push(keywords['department']);
       }
-      //pendingTitle.push(keywords['sizeType']);
       pendingTitle.push(`Size ${keywords['usShoeSize']}`);
+      shortPendingTitle.push(`Size ${keywords['usShoeSize']}`);
+
+      // long title
 
       let expandTitle = [];
 
       for (let item of pendingTitle) {
         if (Array.isArray(item)) {
-          //for (let itemMulti of item) {
           let checkItem = item[0].split(' ');
           checkItem.filter((chk) => !chk.includes(keywords['brand']));
           expandTitle.push(checkItem.join(' '));
-          //}
         } else {
           if (item !== '') {
             expandTitle.push(item);
@@ -565,15 +614,42 @@ ${aspects
         .join(' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
-      setTitleProcessed(uniqueFilteredTitle.trim());
+      // short title
+
+      let expandTitleShort = [];
+
+      for (let item of shortPendingTitle) {
+        if (Array.isArray(item)) {
+          let checkItem = item[0].split(' ');
+          checkItem.filter((chk) => !chk.includes(keywords['brand']));
+          expandTitleShort.push(checkItem.join(' '));
+        } else {
+          if (item !== '') {
+            expandTitleShort.push(item);
+          }
+        }
+      }
+
+      let filtetedTitleShort = expandTitleShort.filter(
+        (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
+      );
+
+      console.log(filtetedTitleShort.join(' ').length);
+
+      let uniqueFilteredTitleShort = filtetedTitleShort.join(' ').split(' ');
+      uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)];
+
+      uniqueFilteredTitleShort = uniqueFilteredTitleShort
+        .join(' ')
+        .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
+
+      if (uniqueFilteredTitle.trim().length <= 80) {
+        setTitleProcessed(uniqueFilteredTitle.trim());
+      } else {
+        setTitleProcessed(uniqueFilteredTitleShort.trim());
+      }
 
       processingDescription(uniqueFilteredTitle);
-
-      /*setTitleProcessed(filtetedTitle.join(' '));
-
-      processingDescription(filtetedTitle.join(' '));*/
-
-      //setDescriptionProcessed(filtetedTitle.join(' '));
     }
   };
 
@@ -855,6 +931,7 @@ ${aspects
   const getPrices = async () => {
     try {
       let pendingTitle = [];
+      let shortPendingTitle = [];
 
       const keywords = getImportantAspectsValues();
       const extraAspects = getExtraAspectsValuesClothing().filter(
@@ -869,24 +946,35 @@ ${aspects
       console.log('Category: ', category);
       console.log('Condition: ', condition);
 
+      let jsonResponse;
+
       if (barcodeValue) {
         const response = await fetch(
-          `https://listerfast.com/api/ebay/search/${barcodeValue}/${category}/US/33020/${condition}/lisnardayi`
+          `https://listerfast.com/api/ebay/search/${barcodeValue.data}/${category}/US/33020/${condition}/lisnardayi`
         );
 
-        const jsonResponse = await response.json();
+        jsonResponse = await response.json();
+        console.log(barcodeValue.data);
 
         processPrices(jsonResponse);
-      } else {
+      }
+
+      if (
+        !barcodeValue ||
+        (barcodeValue && !(jsonResponse && jsonResponse.itemSummaries))
+      ) {
+        //if (!barcodeValue) {
         if (type === 'clothing') {
           let tempBrand = keywords['brand'].toUpperCase();
           let tempModel = keywords['model'].toUpperCase();
 
           if (!tempModel.includes(tempBrand)) {
             pendingTitle.push(keywords['brand']);
+            shortPendingTitle.push(keywords['brand']);
           }
 
           pendingTitle.push(keywords['model']);
+          shortPendingTitle.push(keywords['model']);
 
           if (keywords['type'] === '') {
             if (
@@ -896,8 +984,14 @@ ${aspects
               pendingTitle.push(
                 keywords['category'].slice(0, keywords['category'].length - 2)
               );
+              shortPendingTitle.push(
+                keywords['category'].slice(0, keywords['category'].length - 2)
+              );
             } else {
               pendingTitle.push(
+                keywords['category'].slice(0, keywords['category'].length - 1)
+              );
+              shortPendingTitle.push(
                 keywords['category'].slice(0, keywords['category'].length - 1)
               );
             }
@@ -909,14 +1003,22 @@ ${aspects
               pendingTitle.push(
                 keywords['category'].slice(0, keywords['category'].length - 2)
               );
+              shortPendingTitle.push(
+                keywords['category'].slice(0, keywords['category'].length - 2)
+              );
             } else {
               pendingTitle.push(
+                keywords['category'].slice(0, keywords['category'].length - 1)
+              );
+              shortPendingTitle.push(
                 keywords['category'].slice(0, keywords['category'].length - 1)
               );
             }
           }
 
           pendingTitle.push(keywords['vintage']);
+
+          shortPendingTitle.push(keywords['vintage']);
 
           pendingTitle.push(extraAspects.join(' '));
 
@@ -991,9 +1093,11 @@ ${aspects
 
           if (!tempModel.includes(tempBrand)) {
             pendingTitle.push(keywords['brand']);
+            shortPendingTitle.push(keywords['brand']);
           }
 
           pendingTitle.push(keywords['model']);
+          shortPendingTitle.push(keywords['model']);
 
           if (keywords['type'] === '') {
             if (
@@ -1003,8 +1107,14 @@ ${aspects
               pendingTitle.push(
                 keywords['category'].slice(0, keywords['category'].length - 2)
               );
+              shortPendingTitle.push(
+                keywords['category'].slice(0, keywords['category'].length - 2)
+              );
             } else {
               pendingTitle.push(
+                keywords['category'].slice(0, keywords['category'].length - 1)
+              );
+              shortPendingTitle.push(
                 keywords['category'].slice(0, keywords['category'].length - 1)
               );
             }
@@ -1016,14 +1126,21 @@ ${aspects
               pendingTitle.push(
                 keywords['category'].slice(0, keywords['category'].length - 2)
               );
+              shortPendingTitle.push(
+                keywords['category'].slice(0, keywords['category'].length - 2)
+              );
             } else {
               pendingTitle.push(
+                keywords['category'].slice(0, keywords['category'].length - 1)
+              );
+              shortPendingTitle.push(
                 keywords['category'].slice(0, keywords['category'].length - 1)
               );
             }
           }
 
           pendingTitle.push(keywords['vintage']);
+          shortPendingTitle.push(keywords['vintage']);
 
           //pendingTitle.push(extraAspects.join(' '));
 
@@ -1031,8 +1148,10 @@ ${aspects
 
           if (keywords['department'] === '') {
             pendingTitle.push(keywords['gender']);
+            shortPendingTitle.push(keywords['gender']);
           } else {
             pendingTitle.push(keywords['department']);
+            shortPendingTitle.push(keywords['department']);
           }
 
           //pendingTitle.push(`Size ${keywords['usShoeSize']}`);
@@ -1054,7 +1173,21 @@ ${aspects
 
         const jsonResponse = await response.json();
 
-        processPrices(jsonResponse);
+        if (jsonResponse && jsonResponse.itemSummaries) {
+          processPrices(jsonResponse);
+        } else {
+          const response = await fetch(
+            `https://listerfast.com/api/ebay/search/${shortPendingTitle
+              .join(' ')
+              .replace(
+                /[^a-zA-Z0-9 ]/g,
+                ''
+              )}/${category}/US/33020/[${condition}]/lisnardayi`
+          );
+
+          const jsonResponse = await response.json();
+          processPrices(jsonResponse);
+        }
       }
       setProcessingPrices(false);
     } catch (error) {
@@ -1151,6 +1284,13 @@ ${aspects
 
   let forward = async () => {
     setStep((old) => old + 1);
+
+    if (step + 1 > lastStep) {
+      setLastStep(step + 1);
+      console.log(step + 1);
+    } else {
+      console.log(lastStep);
+    }
   };
 
   let backward = async () => {
@@ -1745,7 +1885,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
 
     width: '100%',
-    height: 350,
+    height: 400,
     marginTop: '40%',
     //marginBottom: '55%',
     position: 'absolute',
@@ -1764,8 +1904,9 @@ const styles = StyleSheet.create({
     //marginTop: '50%',
     position: 'absolute',*/
 
-    height: '80%', //window.height / 2,
-    width: '80%', //window.height,
+    height: '70%', //window.height / 2,
+    width: '100%', //window.height,
+    marginBottom: 20,
   },
 
   clothingButtons: {
