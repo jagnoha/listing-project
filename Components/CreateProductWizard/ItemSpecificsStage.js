@@ -432,7 +432,7 @@ export default function ItemSpecificsStage(props) {
             />
           </View>
         ) : (
-          <ScrollView style={{ height: '65%' }}>
+          <ScrollView style={{ height: '55%' }}>
             {props.aspects.map((item) => {
               return (
                 <View key={item.localizedAspectName}>
@@ -521,6 +521,9 @@ export default function ItemSpecificsStage(props) {
             },
           ]}
         />
+        <Button style={{ marginTop: 15 }} icon='clock-edit-outline'>
+          Finish this listing later
+        </Button>
       </View>
     </View>
   );

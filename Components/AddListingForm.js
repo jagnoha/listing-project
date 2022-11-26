@@ -332,6 +332,8 @@ export default function AddListingForm(props) {
     //const keywords = getImportantAspectsValues();
     let pendingDescription = `${title}
 
+${conditionDescription.length > 0 ? conditionDescription : ''}    
+
 Item Specifics & Features:
 ==========================
 Condition: ${

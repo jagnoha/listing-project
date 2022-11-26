@@ -39,7 +39,7 @@ export default function CategoryStage(props) {
             />
           </View>
         ) : (
-          <ScrollView style={{ height: '65%' }}>
+          <ScrollView style={{ height: '55%' }}>
             {props.categories.map((item) => {
               return (
                 <View key={item.categoryId}>
@@ -48,7 +48,7 @@ export default function CategoryStage(props) {
                   >
                     <Card>
                       <Card.Content>
-                      <View
+                        <View
                           style={{
                             flexDirection: 'row',
                             justifyContent: 'space-between',
@@ -58,13 +58,17 @@ export default function CategoryStage(props) {
                             <Title>{item.title}</Title>
                             <Paragraph>{item.subtitle}</Paragraph>
                           </View>
-                          {props.category === item.categoryId ? <View>
-                          <IconButton
-                              icon='check-outline'
-                              iconColor={'green'}
-                              size={20}
-                            />
-                          </View> : ''}
+                          {props.category === item.categoryId ? (
+                            <View>
+                              <IconButton
+                                icon='check-outline'
+                                iconColor={'green'}
+                                size={20}
+                              />
+                            </View>
+                          ) : (
+                            ''
+                          )}
                         </View>
                       </Card.Content>
                     </Card>
@@ -93,10 +97,12 @@ export default function CategoryStage(props) {
               icon: 'arrow-right',
               onPress: () => props.forward(),
               disabled: props.category !== '' ? false : true,
-
             },
           ]}
         />
+        <Button style={{ marginTop: 15 }} icon='clock-edit-outline'>
+          Finish this listing later
+        </Button>
       </View>
     </View>
   );

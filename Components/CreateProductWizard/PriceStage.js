@@ -192,13 +192,17 @@ export default function PriceStage(props) {
             },
             {
               value: 'next',
-              label: 'Next',
-              icon: 'arrow-right',
+              label: 'Publish on Ebay',
+
+              icon: 'publish',
               onPress: () => props.forward(),
-              disabled: true,
+              disabled: Number(props.priceProduct) > 0 ? false : true,
             },
           ]}
         />
+        <Button style={{ marginTop: 15 }} icon='clock-edit-outline'>
+          Finish this listing later
+        </Button>
       </View>
     </View>
   );

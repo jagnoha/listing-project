@@ -18,109 +18,102 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../Header';
 
-const PolicyCard = ({item, onPress}) => {
+const PolicyCard = ({ item, onPress }) => {
+  return (
+    <View style={{ margin: 7 }}>
+      <Pressable onPress={onPress}>
+        <Card>
+          <Card.Content>
+            <View>
+              <Title style={{ fontSize: 17 }}>{item.name}</Title>
+              <Paragraph style={{ fontSize: 14 }}>{item.description}</Paragraph>
+            </View>
+          </Card.Content>
+        </Card>
+      </Pressable>
+    </View>
+  );
+};
+
+const PolicyCardScrollList = ({
+  policyList,
+  onCloseList,
+  title,
+  onClickItem,
+}) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [list, setList] = useState(policyList);
+
+  const onChangeSearch = (query) => {
+    setSearchQuery(query);
+
+    const tempPolicyList = policyList.map((item) => {
+      return {
+        id: item.id,
+        name: item.name,
+        upperName: item.name.toUpperCase(),
+        description: item.description,
+      };
+    });
+
+    setList(
+      tempPolicyList.filter((item) =>
+        item.upperName.includes(query.toUpperCase())
+      )
+    );
+  };
+
+  const renderItem = ({ item }) => {
     return (
-        <View style={{margin: 7}}>
-            <Pressable                
-                onPress={onPress}
-              >
-                <Card>
-                  <Card.Content>
-                    <View                    
-                    >
-                      <Title style={{fontSize: 17}}>{item.name}</Title>
-                      <Paragraph style={{fontSize: 14}}>{item.description}</Paragraph>
-                    </View>
-                  </Card.Content>
-                </Card>
-
-              </Pressable>
-
-        </View>
-    )
-}
-
-const PolicyCardScrollList = ({ policyList, onCloseList, title, onClickItem }) => {
-
-    const [searchQuery, setSearchQuery] = useState('');
-    const [list, setList] = useState(policyList);
-
-    const onChangeSearch = (query) => {
-        
-        setSearchQuery(query);
-
-        const tempPolicyList = policyList.map(item =>{
-            return (
-            {
-                id: item.id,
-                name: item.name,
-                upperName: item.name.toUpperCase(),
-                description: item.description,
-
-
-            })
-        }
-        )
-
-        setList(tempPolicyList.filter(item => item.upperName.includes(query.toUpperCase())))
-
-    }
-
-    const renderItem = ({item}) => {
-        return (
-            <PolicyCard item={item} onPress={()=>{ onClickItem(item.id); onCloseList()  }} />
-        )
-    }
-
-    return (
-    <View
-        style={{
-          flex: 1,
-          
-          alignItems: 'center',
-          alignContent: 'center',
-          alignSelf: 'center',
-          paddingTop: 100,
-          
-          
+      <PolicyCard
+        item={item}
+        onPress={() => {
+          onClickItem(item.id);
+          onCloseList();
         }}
+      />
+    );
+  };
+
+  return (
+    <View
+      style={{
+        flex: 1,
+
+        alignItems: 'center',
+        alignContent: 'center',
+        alignSelf: 'center',
+        paddingTop: 100,
+      }}
+    >
+      <Text style={{ fontSize: 20, paddingBottom: 20 }}>{title}</Text>
+
+      <Surface style={{ width: 300, height: 450 }} elevation={4}>
+        <Searchbar
+          placeholder={'Search'}
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+          icon={'magnify'}
+        />
+
+        <FlatList
+          data={list}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          //onEndReachedThreshold={50}
+        />
+      </Surface>
+      <Button
+        icon='close'
+        style={{ marginTop: 20 }}
+        mode='contained'
+        onPress={() => onCloseList()}
       >
-        <Text style={{ fontSize: 20, paddingBottom: 20 }}>
-          {title}
-        </Text>
-
-        <Surface style={{ width: 300, height: 450 }} elevation={4}>
-            <Searchbar
-              placeholder={
-                'Search'
-              }
-              onChangeText={onChangeSearch}
-              value={searchQuery}
-              icon={'magnify'}
-            />
-            
-            <FlatList 
-                data={list}
-                renderItem={renderItem}
-                keyExtractor={(item)=>item.id}
-                //onEndReachedThreshold={50}
-            />
-            
-            
-        </Surface>
-        <Button
-          icon='close'
-          style={{ marginTop: 20 }}
-          mode='contained'
-          onPress={() => onCloseList()}
-        >
-          Close
-        </Button>
-
-      </View>)
-}
-
-
+        Close
+      </Button>
+    </View>
+  );
+};
 
 export default function PolicyStage(props) {
   //const theme = useTheme();
@@ -150,64 +143,67 @@ export default function PolicyStage(props) {
   };
 
   const getPaymentName = (id) => {
-    const policy = props.paymentPolicies.find(item => item.id === id);
+    const policy = props.paymentPolicies.find((item) => item.id === id);
 
-    
-    if (policy){
-        return policy.name;
+    if (policy) {
+      return policy.name;
     }
 
-    return ''
-    
-    
-  }
+    return '';
+  };
 
   const getFulfillmentName = (id) => {
-    const policy = props.fulfillmentPolicies.find(item => item.id === id);
+    const policy = props.fulfillmentPolicies.find((item) => item.id === id);
 
-    
-    if (policy){
-        return policy.name;
+    if (policy) {
+      return policy.name;
     }
 
-    return ''
-    
-    
-  }
+    return '';
+  };
 
   const getReturnName = (id) => {
-    const policy = props.returnPolicies.find(item => item.id === id);
+    const policy = props.returnPolicies.find((item) => item.id === id);
 
-    
-    if (policy){
-        return policy.name;
+    if (policy) {
+      return policy.name;
     }
 
-    return ''
-    
-    
+    return '';
+  };
+
+  if (openPaymentList) {
+    return (
+      <PolicyCardScrollList
+        policyList={props.paymentPolicies}
+        onCloseList={onCloseList}
+        title={'Select eBay Payment Policy'}
+        onClickItem={props.onClickPaymentPolicy}
+      />
+    );
   }
 
-
-if (openPaymentList) {
+  if (openReturnList) {
     return (
-        <PolicyCardScrollList policyList={props.paymentPolicies} onCloseList={onCloseList} title={'Select eBay Payment Policy'} onClickItem={props.onClickPaymentPolicy}  />
-    )
-}
+      <PolicyCardScrollList
+        policyList={props.returnPolicies}
+        onCloseList={onCloseList}
+        title={'Select eBay Return Policy'}
+        onClickItem={props.onClickReturnPolicy}
+      />
+    );
+  }
 
-if (openReturnList) {
+  if (openFulfillmentList) {
     return (
-        <PolicyCardScrollList policyList={props.returnPolicies} onCloseList={onCloseList} title={'Select eBay Return Policy'} onClickItem={props.onClickReturnPolicy}  />
-    )
-}
-
-if (openFulfillmentList) {
-    return (
-        <PolicyCardScrollList policyList={props.fulfillmentPolicies} onCloseList={onCloseList} title={'Select eBay Fulfillment Policy'} 
-        onClickItem={props.onClickFulfillmentPolicy}  />
-    )
-}
-
+      <PolicyCardScrollList
+        policyList={props.fulfillmentPolicies}
+        onCloseList={onCloseList}
+        title={'Select eBay Fulfillment Policy'}
+        onClickItem={props.onClickFulfillmentPolicy}
+      />
+    );
+  }
 
   return (
     <View>
@@ -243,17 +239,22 @@ if (openFulfillmentList) {
                     }}
                   >
                     <Title style={{ fontSize: 15 }}>Fulfillment Policy</Title>
-                              
-                    {props.fulfillmentPolicyId !== '' ? <Text><IconButton
-                                icon='check-outline'
-                                iconColor={'green'}
-                                size={15}
-                              /></Text> : ''}
-                    
+
+                    {props.fulfillmentPolicyId !== '' ? (
+                      <Text>
+                        <IconButton
+                          icon='check-outline'
+                          iconColor={'green'}
+                          size={15}
+                        />
+                      </Text>
+                    ) : (
+                      ''
+                    )}
                   </View>
-                  <Paragraph style={{fontWeight:'bold'}}>
-                        {getFulfillmentName(props.fulfillmentPolicyId)}
-                    </Paragraph>
+                  <Paragraph style={{ fontWeight: 'bold' }}>
+                    {getFulfillmentName(props.fulfillmentPolicyId)}
+                  </Paragraph>
                 </Card.Content>
               </Card>
             </Pressable>
@@ -270,16 +271,21 @@ if (openFulfillmentList) {
                     }}
                   >
                     <Title style={{ fontSize: 15 }}>Payment Policy</Title>
-                    {props.paymentPolicyId !== '' ? <Text><IconButton
-                                icon='check-outline'
-                                iconColor={'green'}
-                                size={15}
-                              /></Text> : ''}
-                   
+                    {props.paymentPolicyId !== '' ? (
+                      <Text>
+                        <IconButton
+                          icon='check-outline'
+                          iconColor={'green'}
+                          size={15}
+                        />
+                      </Text>
+                    ) : (
+                      ''
+                    )}
                   </View>
-                  <Paragraph style={{fontWeight:'bold'}}>
-                        {getPaymentName(props.paymentPolicyId)}
-                    </Paragraph>
+                  <Paragraph style={{ fontWeight: 'bold' }}>
+                    {getPaymentName(props.paymentPolicyId)}
+                  </Paragraph>
                 </Card.Content>
               </Card>
             </Pressable>
@@ -296,14 +302,19 @@ if (openFulfillmentList) {
                     }}
                   >
                     <Title style={{ fontSize: 15 }}>Return Policy</Title>
-                    {props.returnPolicyId !== '' ? <Text><IconButton
-                                icon='check-outline'
-                                iconColor={'green'}
-                                size={15}
-                              /></Text> : ''}
-                    
+                    {props.returnPolicyId !== '' ? (
+                      <Text>
+                        <IconButton
+                          icon='check-outline'
+                          iconColor={'green'}
+                          size={15}
+                        />
+                      </Text>
+                    ) : (
+                      ''
+                    )}
                   </View>
-                  <Paragraph style={{fontWeight:'bold'}}>
+                  <Paragraph style={{ fontWeight: 'bold' }}>
                     {getReturnName(props.returnPolicyId)}
                   </Paragraph>
                 </Card.Content>
@@ -311,8 +322,6 @@ if (openFulfillmentList) {
             </Pressable>
           </View>
         )}
-
-        
 
         <SegmentedButtons
           style={props.styles.nextBackControl}
@@ -332,14 +341,21 @@ if (openFulfillmentList) {
               onPress: () => {
                 props.forward();
                 props.onProcessingTitle();
-
               },
-              disabled: props.paymentPolicyId === '' || props.returnPolicyId === '' || props.fulfillmentPolicyId === '' ? true : false
+              disabled:
+                props.paymentPolicyId === '' ||
+                props.returnPolicyId === '' ||
+                props.fulfillmentPolicyId === ''
+                  ? true
+                  : false,
               //disabled: props.condition !== '' ? false : true,
               //disabled: props.searchCategories.length > 0 ? false : true,
             },
           ]}
         />
+        <Button style={{ marginTop: 15 }} icon='clock-edit-outline'>
+          Finish this listing later
+        </Button>
       </View>
     </View>
   );

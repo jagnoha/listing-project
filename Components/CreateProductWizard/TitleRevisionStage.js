@@ -65,8 +65,22 @@ export default function TitleRevisionStage(props) {
           //paddingBottom: 100,
         }}
       >
-        <Text style={{ fontSize: 20, paddingBottom: 20, textAlign: 'center' }}>
-          Edit Title
+        <Text style={{ fontSize: 20, paddingBottom: 10, textAlign: 'center' }}>
+          Edit Title{' '}
+          <Text style={{ color: textForm.length > 80 ? 'red' : 'black' }}>
+            ({textForm.length}
+          </Text>{' '}
+          chars)
+        </Text>
+        <Text
+          style={{
+            fontSize: 15,
+            color: 'gray',
+            textAlign: 'center',
+            paddingBottom: 10,
+          }}
+        >
+          Max 80 characters length
         </Text>
         <Surface style={{ padding: 25 }} elevation={4}>
           <TextInput
@@ -94,6 +108,7 @@ export default function TitleRevisionStage(props) {
               icon: 'check',
               //disabled: searchQuery.length > 0 && wheelItems.length > 0 ? false : true,
               onPress: () => onApplyTitle(),
+              disabled: textForm.length > 80 ? true : false,
               //onPress: () => onApplyWheel(),
             },
           ]}
@@ -200,7 +215,7 @@ export default function TitleRevisionStage(props) {
               </Card>
             </Surface>
           </Pressable>
-          <ScrollView style={{ height: '40%' }}>
+          <ScrollView style={{ height: 250 }}>
             <Pressable
               //onPress={() => props.onSelectedCategory(item.categoryId)}
               onPress={() => onOpenDescription()}
@@ -257,6 +272,9 @@ export default function TitleRevisionStage(props) {
             },
           ]}
         />
+        <Button style={{ marginTop: 15 }} icon='clock-edit-outline'>
+          Finish this listing later
+        </Button>
       </View>
     </View>
   );

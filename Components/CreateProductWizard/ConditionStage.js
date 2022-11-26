@@ -35,15 +35,14 @@ export default function ConditionStage(props) {
         </Banner>
 
         <TextInput
-              //mode='outlined'
-              label='Condition Description'
-              placeholder='Add Condition Description'
-              onChangeText={props.onChangeConditionDescription}
-              value={props.conditionDescription}
-              mode='outlined'
-                style={{margin: 10}}
-              
-            />
+          //mode='outlined'
+          label='Condition Description'
+          placeholder='Add Condition Description'
+          onChangeText={props.onChangeConditionDescription}
+          value={props.conditionDescription}
+          mode='outlined'
+          style={{ margin: 10 }}
+        />
 
         {props.processingCategoryFeatures ? (
           <View>
@@ -56,14 +55,14 @@ export default function ConditionStage(props) {
           <View
             style={{ flexDirection: 'column', justifyContent: 'space-between' }}
           >
-            <ScrollView style={{ height: 350 }}>
+            <ScrollView style={{ height: 300 }}>
               {props.categoryFeatures.conditions.map((item) => {
                 return (
                   <View key={item.ID}>
                     <Pressable
                       //onPress={() => props.onSelectedCategory(item.categoryId)}
                       //onPress={() => console.log(item.ID)}
-                        onPress={()=>props.onSelectedCondition(item.ID)}
+                      onPress={() => props.onSelectedCondition(item.ID)}
                     >
                       <Card>
                         <Card.Content>
@@ -76,17 +75,24 @@ export default function ConditionStage(props) {
                             <View>
                               <Title>{item.DisplayName}</Title>
                             </View>
-                            {props.condition === item.ID ? <View>
-                          {/*<IconButton
+                            {props.condition === item.ID ? (
+                              <View>
+                                {/*<IconButton
                               icon='check-outline'
                               iconColor={'green'}
                               size={20}
-                            />*/}<Text><IconButton
-                              icon='check-outline'
-                              iconColor={'green'}
-                              size={15}
-                            /></Text>
-                        </View> : ''}
+                            />*/}
+                                <Text>
+                                  <IconButton
+                                    icon='check-outline'
+                                    iconColor={'green'}
+                                    size={15}
+                                  />
+                                </Text>
+                              </View>
+                            ) : (
+                              ''
+                            )}
                           </View>
                         </Card.Content>
                       </Card>
@@ -95,8 +101,6 @@ export default function ConditionStage(props) {
                 );
               })}
             </ScrollView>
-            
-            
           </View>
         )}
 
@@ -123,6 +127,9 @@ export default function ConditionStage(props) {
             },
           ]}
         />
+        <Button style={{ marginTop: 15 }} icon='clock-edit-outline'>
+          Finish this listing later
+        </Button>
       </View>
     </View>
   );
