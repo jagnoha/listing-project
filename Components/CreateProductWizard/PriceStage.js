@@ -143,7 +143,8 @@ export default function PriceStage(props) {
           <TextInput
             style={{ fontSize: 40 }}
             label='Quantity'
-            value='1'
+            value={props.quantity}
+            onChangeText={(value) => props.onChangeQuantity(value)}
             keyboardType='numeric'
             mode='outlined'
           />
@@ -196,7 +197,10 @@ export default function PriceStage(props) {
 
               icon: 'publish',
               onPress: () => props.forward(),
-              disabled: Number(props.priceProduct) > 0 ? false : true,
+              disabled:
+                Number(props.priceProduct) > 0 && Number(props.quantity > 0)
+                  ? false
+                  : true,
             },
           ]}
         />

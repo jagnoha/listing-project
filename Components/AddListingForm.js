@@ -10,6 +10,9 @@ import {
   Banner,
 } from 'react-native-paper';
 
+import { DataStore } from 'aws-amplify';
+import { Listing } from '../src/models';
+
 import { useRecoilState } from 'recoil';
 import axios from 'axios';
 
@@ -47,6 +50,8 @@ export default function AddListingForm(props) {
   const [username, setUsername] = useRecoilState(usernameAtom);
 
   const [priceProduct, setPriceProduct] = useState('0.00');
+
+  const [quantity, setQuantity] = useState('1');
 
   const [fulfillmentPolicyId, setFulfillmentPolicyId] = useState('');
   const [paymentPolicyId, setPaymentPolicyId] = useState('');
@@ -139,6 +144,10 @@ export default function AddListingForm(props) {
 
   const onChangeProductPrice = (price) => {
     setPriceProduct(price);
+  };
+
+  const onChangeQuantity = (quantity) => {
+    setQuantity(quantity);
   };
 
   const getTypeProductCode = (typeName) => {
@@ -1857,6 +1866,8 @@ ${aspects
         pricingList={pricingList}
         onChangeProductPrice={onChangeProductPrice}
         priceProduct={priceProduct}
+        onChangeQuantity={onChangeQuantity}
+        quantity={quantity}
         /*titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}
         onChangeTitle={onChangeTitle}

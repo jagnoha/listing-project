@@ -68,10 +68,11 @@ export const schema = {
                 },
                 "itemsSpecifics": {
                     "name": "itemsSpecifics",
-                    "isArray": false,
+                    "isArray": true,
                     "type": "AWSJSON",
                     "isRequired": false,
-                    "attributes": []
+                    "attributes": [],
+                    "isArrayNullable": true
                 },
                 "manufacturerPartNumber": {
                     "name": "manufacturerPartNumber",
@@ -114,14 +115,6 @@ export const schema = {
                     "type": "String",
                     "isRequired": false,
                     "attributes": []
-                },
-                "images": {
-                    "name": "images",
-                    "isArray": true,
-                    "type": "AWSURL",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true
                 },
                 "conditionCode": {
                     "name": "conditionCode",
@@ -220,6 +213,43 @@ export const schema = {
                     "type": {
                         "enum": "ListingType"
                     },
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "categoryList": {
+                    "name": "categoryList",
+                    "isArray": true,
+                    "type": "AWSJSON",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "photoMain": {
+                    "name": "photoMain",
+                    "isArray": false,
+                    "type": "AWSURL",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "photoLabel": {
+                    "name": "photoLabel",
+                    "isArray": false,
+                    "type": "AWSURL",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "photos": {
+                    "name": "photos",
+                    "isArray": true,
+                    "type": "AWSURL",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "lastStep": {
+                    "name": "lastStep",
+                    "isArray": false,
+                    "type": "Int",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -1590,6 +1620,6 @@ export const schema = {
         }
     },
     "nonModels": {},
-    "codegenVersion": "3.3.1",
-    "version": "825352a92daec50456123b312d432b25"
+    "codegenVersion": "3.3.2",
+    "version": "61593674b384c04112c29628dc4a1322"
 };
