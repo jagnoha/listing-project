@@ -408,7 +408,6 @@ export declare const EbayOrders: (new (init: ModelInit<EbayOrders, EbayOrdersMet
 
 type EagerAccounts = {
   readonly id: string;
-  readonly EbayAccounts?: (EbayAccounts | null)[] | null;
   readonly isNewAccount?: boolean | null;
   readonly plan?: Plans | keyof typeof Plans | null;
   readonly EbayOrders?: (EbayOrders | null)[] | null;
@@ -416,13 +415,14 @@ type EagerAccounts = {
   readonly Brands?: (Brands | null)[] | null;
   readonly Products?: (Products | null)[] | null;
   readonly Listings?: (Listing | null)[] | null;
+  readonly ebayAccountId?: string | null;
+  readonly postalCode?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
 type LazyAccounts = {
   readonly id: string;
-  readonly EbayAccounts: AsyncCollection<EbayAccounts>;
   readonly isNewAccount?: boolean | null;
   readonly plan?: Plans | keyof typeof Plans | null;
   readonly EbayOrders: AsyncCollection<EbayOrders>;
@@ -430,6 +430,8 @@ type LazyAccounts = {
   readonly Brands: AsyncCollection<Brands>;
   readonly Products: AsyncCollection<Products>;
   readonly Listings: AsyncCollection<Listing>;
+  readonly ebayAccountId?: string | null;
+  readonly postalCode?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -448,7 +450,6 @@ type EagerEbayAccounts = {
   readonly refreshTokenUAT?: string | null;
   readonly refreshTokenExpiresInUAT?: number | null;
   readonly refreshTokenExpirationDate?: string | null;
-  readonly accountsID: string;
   readonly tokenTypeUAT?: string | null;
   readonly EbayOrders?: (EbayOrders | null)[] | null;
   readonly returnPolicy?: string | null;
@@ -466,7 +467,6 @@ type LazyEbayAccounts = {
   readonly refreshTokenUAT?: string | null;
   readonly refreshTokenExpiresInUAT?: number | null;
   readonly refreshTokenExpirationDate?: string | null;
-  readonly accountsID: string;
   readonly tokenTypeUAT?: string | null;
   readonly EbayOrders: AsyncCollection<EbayOrders>;
   readonly returnPolicy?: string | null;

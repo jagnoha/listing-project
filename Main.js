@@ -20,6 +20,9 @@ import paymentPoliciesAtom from './Store/atoms/paymentPoliciesAtom';
 import returnPoliciesAtom from './Store/atoms/returnPoliciesAtom';
 import usernameAtom from './Store/atoms/usernameAtom';
 import userAccountAtom from './Store/atoms/userAccountAtom';
+import ebayUserAtom from './Store/atoms/ebayUserAtom';
+
+import NewAccountWizard from './Components/NewAccountWizard';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,23 +37,67 @@ export default function Main() {
 
   const [username, setUsername] = useRecoilState(usernameAtom);
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
+  const [ebayUser, setEbayUser] = useRecoilState(ebayUserAtom);
+
+  
+
   const { user, signOut } = useAuthenticator((context) => [context.user]);
 
   useEffect(() => {
+
+    try {
+    
     (async () => {
       const account = await DataStore.query(
         Accounts,
         user.username.toLowerCase()
       );
+
+      if (account) {
+
+
+
+
       console.log(account);
       setUserAccount(account);
+      setEbayUser(account.ebayAccountId)
+
+      } else {
+
+        const newAccount = await DataStore.save(
+          new Accounts({
+          "id": user.username.toLowerCase(),
+          "EbayAccounts": [],
+          "isNewAccount": true,
+          "plan": Plans.PERSONAL,
+          "EbayOrders": [],
+          "Locations": [],
+          "Brands": [],
+          "Products": [],
+          "Listings": [],
+          "ebayAccountId": "",
+          "postalCode": ""
+        })
+      );
+
+      console.log(newAccount);
+
+
+      }
     })();
+  
+    }catch(error){
+      console.log(error);
+    }
+  
   }, []);
 
   useEffect(() => {
+    try {  
+    if (userAccount && !userAccount.isNewAccount){
     (async () => {
       console.log('USER: ', user.username);
-      const tempUser = user.username.toLowerCase();
+      const tempUser = userAccount.ebayAccountId.toLowerCase();
       setUsername(user.username.toLowerCase());
       const responseFulfillment = await fetch(
         `https://listerfast.com/api/ebay/policies/fulfillment/${tempUser}/0`
@@ -72,6 +119,13 @@ export default function Main() {
       setPaymentPolicies(jsonPayment);
       setReturnPolicies(jsonReturn);
     })();
+    }
+  
+    } catch(error){
+      console.log(error);    
+    }
+  
+  
   }, []);
 
   const connectEbayAccount = async () => {
@@ -80,24 +134,14 @@ export default function Main() {
     );
   };
 
+  
+
   if (userAccount.isNewAccount) {
     return (
-      <View>
-        <Header
-          title={'Configure New Account'}
-          type='configureNewAccount'
-          onPress={signOut}
-          //actionBack={props.navigation.goBack}
-        />
-        <View>
-          <Banner visible={true} icon={'playlist-edit'}>
-            Connect to your eBay Account.
-          </Banner>
-          <A href='https://auth.ebay.com/oauth2/authorize?client_id=JavierGo-TestingB-PRD-7afc7dd70-7a19f64d&response_type=code&redirect_uri=Javier_Gonzalez-JavierGo-Testin-gaoaaxshm&scope=https://api.ebay.com/oauth/api_scope https://api.ebay.com/oauth/api_scope/sell.marketing.readonly https://api.ebay.com/oauth/api_scope/sell.marketing https://api.ebay.com/oauth/api_scope/sell.inventory.readonly https://api.ebay.com/oauth/api_scope/sell.inventory https://api.ebay.com/oauth/api_scope/sell.account.readonly https://api.ebay.com/oauth/api_scope/sell.account https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly https://api.ebay.com/oauth/api_scope/sell.fulfillment https://api.ebay.com/oauth/api_scope/sell.analytics.readonly https://api.ebay.com/oauth/api_scope/sell.finances https://api.ebay.com/oauth/api_scope/sell.payment.dispute https://api.ebay.com/oauth/api_scope/commerce.identity.readonly https://api.ebay.com/oauth/api_scope/commerce.notification.subscription https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly'>
-            Go to Google
-          </A>
-        </View>
-      </View>
+
+      <NewAccountWizard signOut={signOut} />
+
+      
     );
   }
 

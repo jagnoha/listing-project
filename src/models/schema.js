@@ -1299,20 +1299,6 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "EbayAccounts": {
-                    "name": "EbayAccounts",
-                    "isArray": true,
-                    "type": {
-                        "model": "EbayAccounts"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": "accountsID"
-                    }
-                },
                 "isNewAccount": {
                     "name": "isNewAccount",
                     "isArray": false,
@@ -1398,6 +1384,20 @@ export const schema = {
                         "connectionType": "HAS_MANY",
                         "associatedWith": "accountsID"
                     }
+                },
+                "ebayAccountId": {
+                    "name": "ebayAccountId",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "postalCode": {
+                    "name": "postalCode",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -1493,13 +1493,6 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "accountsID": {
-                    "name": "accountsID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
                 "tokenTypeUAT": {
                     "name": "tokenTypeUAT",
                     "isArray": false,
@@ -1574,15 +1567,6 @@ export const schema = {
                     "properties": {}
                 },
                 {
-                    "type": "key",
-                    "properties": {
-                        "name": "byAccounts",
-                        "fields": [
-                            "accountsID"
-                        ]
-                    }
-                },
-                {
                     "type": "auth",
                     "properties": {
                         "rules": [
@@ -1621,5 +1605,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "61593674b384c04112c29628dc4a1322"
+    "version": "020d2f8e4056c756d117b08e867e4bae"
 };
