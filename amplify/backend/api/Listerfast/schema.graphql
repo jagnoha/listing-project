@@ -1,0 +1,77 @@
+enum ListingType {
+  CLOTHING
+  SHOES
+  AUTOPARTS
+  OTHER
+}
+
+type Listing @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String
+  description: String
+  price: Float
+  categoryID: String
+  shippingProfileID: String
+  returnProfileID: String
+  paymentProfileID: String
+  ebayMotors: Boolean
+  itemsSpecifics: [AWSJSON]
+  manufacturerPartNumber: String
+  interchangePartNumber: String
+  otherPartNumber: String
+  UPC: String
+  EAN: String
+  ISBN: String
+  conditionCode: String
+  conditionDescription: String
+  length: Float
+  width: Float
+  depth: Float
+  weight: Float
+  quantity: Int
+  sku: String
+  isDraft: Boolean
+  brand: String
+  accountsID: ID! @index(name: "byAccounts")
+  ItemsCompatibility: ItemsCompatibility @hasOne
+  type: ListingType
+  categoryList: [AWSJSON]
+  photoMain: AWSURL
+  photoLabel: AWSURL
+  photos: [AWSURL]
+  lastStep: Int
+}
+
+type ItemsCompatibility @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  compatibilityList: AWSJSON
+}
+
+enum Plans {
+  PERSONAL
+  PROFESSIONAL
+}
+
+type Accounts @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  isNewAccount: Boolean
+  plan: Plans
+  Listings: [Listing] @hasMany(indexName: "byAccounts", fields: ["id"])
+  ebayAccountId: String
+  postalCode: String
+  username: String
+}
+
+type EbayAccounts @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  accessTokenUAT: String
+  expiresInUAT: Int
+  refreshTokenUAT: String
+  refreshTokenExpiresInUAT: Int
+  refreshTokenExpirationDate: String
+  tokenTypeUAT: String
+  returnPolicy: AWSJSON
+  postalCode: String
+}
+ 

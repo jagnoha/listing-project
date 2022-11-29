@@ -10,6 +10,14 @@
       "StackName": "amplify-listerfast-staging-161256",
       "StackId": "arn:aws:cloudformation:us-east-1:703873275846:stack/amplify-listerfast-staging-161256/9f423ed0-1f10-11ed-91c0-1259cc103caf",
       "AmplifyAppId": "d1omwwxvalmz1h"
+    },
+    "categories": {
+      "auth": {
+        "Listerfast": {}
+      },
+      "storage": {
+        "s3listerfaststoragef596989e": {}
+      }
     }
   }
 }

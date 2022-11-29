@@ -1,0 +1,11 @@
+{
+  "resourceName": "s3listerfaststoragef596989e",
+  "bucketName": "listerfast-storage-f596989e",
+  "policyUUID": "d74454ea",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ"
+  ]
+}

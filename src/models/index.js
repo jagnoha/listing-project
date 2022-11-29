@@ -14,17 +14,11 @@ const Plans = {
   "PROFESSIONAL": "PROFESSIONAL"
 };
 
-const { Listing, ItemsCompatibility, EbayItems, Products, InventoryLocations, Brands, Locations, EbayOrders, Accounts, EbayAccounts } = initSchema(schema);
+const { Listing, ItemsCompatibility, Accounts, EbayAccounts } = initSchema(schema);
 
 export {
   Listing,
   ItemsCompatibility,
-  EbayItems,
-  Products,
-  InventoryLocations,
-  Brands,
-  Locations,
-  EbayOrders,
   Accounts,
   EbayAccounts,
   ListingType,
