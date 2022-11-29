@@ -174,7 +174,6 @@ type EagerEbayItems = {
   readonly listingDuration?: string | null;
   readonly categoryID?: string | null;
   readonly bestOffer?: boolean | null;
-  readonly ebayaccountsID: string;
   readonly ItemsCompatibilities?: ItemsCompatibility | null;
   readonly shippingProfileID?: string | null;
   readonly returnProfileID?: string | null;
@@ -201,7 +200,6 @@ type LazyEbayItems = {
   readonly listingDuration?: string | null;
   readonly categoryID?: string | null;
   readonly bestOffer?: boolean | null;
-  readonly ebayaccountsID: string;
   readonly ItemsCompatibilities: AsyncItem<ItemsCompatibility | undefined>;
   readonly shippingProfileID?: string | null;
   readonly returnProfileID?: string | null;
@@ -378,7 +376,6 @@ type EagerEbayOrders = {
   readonly buyer?: string | null;
   readonly salesRecordReference?: string | null;
   readonly accountsID: string;
-  readonly ebayaccountsID: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -395,7 +392,6 @@ type LazyEbayOrders = {
   readonly buyer?: string | null;
   readonly salesRecordReference?: string | null;
   readonly accountsID: string;
-  readonly ebayaccountsID: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -417,6 +413,7 @@ type EagerAccounts = {
   readonly Listings?: (Listing | null)[] | null;
   readonly ebayAccountId?: string | null;
   readonly postalCode?: string | null;
+  readonly username?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -432,6 +429,7 @@ type LazyAccounts = {
   readonly Listings: AsyncCollection<Listing>;
   readonly ebayAccountId?: string | null;
   readonly postalCode?: string | null;
+  readonly username?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -451,10 +449,8 @@ type EagerEbayAccounts = {
   readonly refreshTokenExpiresInUAT?: number | null;
   readonly refreshTokenExpirationDate?: string | null;
   readonly tokenTypeUAT?: string | null;
-  readonly EbayOrders?: (EbayOrders | null)[] | null;
   readonly returnPolicy?: string | null;
   readonly postalCode?: string | null;
-  readonly EbayItems?: (EbayItems | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -468,10 +464,8 @@ type LazyEbayAccounts = {
   readonly refreshTokenExpiresInUAT?: number | null;
   readonly refreshTokenExpirationDate?: string | null;
   readonly tokenTypeUAT?: string | null;
-  readonly EbayOrders: AsyncCollection<EbayOrders>;
   readonly returnPolicy?: string | null;
   readonly postalCode?: string | null;
-  readonly EbayItems: AsyncCollection<EbayItems>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

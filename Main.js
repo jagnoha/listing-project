@@ -39,93 +39,77 @@ export default function Main() {
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
   const [ebayUser, setEbayUser] = useRecoilState(ebayUserAtom);
 
-  
-
   const { user, signOut } = useAuthenticator((context) => [context.user]);
 
   useEffect(() => {
-
     try {
-    
-    (async () => {
-      const account = await DataStore.query(
-        Accounts,
-        user.username.toLowerCase()
-      );
+      (async () => {
+        const account = await DataStore.query(Accounts, (c) =>
+          c.username.eq(user.username.toLowerCase())
+        );
 
-      if (account) {
+        console.log('Acccccccccount: ', account);
 
+        if (account.length > 0) {
+          console.log(account[0]);
+          setUserAccount(account[0]);
+          setEbayUser(account.ebayAccountId);
+        } else {
+          const newAccount = await DataStore.save(
+            new Accounts({
+              username: user.username.toLowerCase(),
+              EbayAccounts: [],
+              isNewAccount: true,
+              plan: 'PERSONAL',
+              EbayOrders: [],
+              Locations: [],
+              Brands: [],
+              Products: [],
+              Listings: [],
+              ebayAccountId: '',
+              postalCode: '',
+            })
+          );
 
-
-
-      console.log(account);
-      setUserAccount(account);
-      setEbayUser(account.ebayAccountId)
-
-      } else {
-
-        const newAccount = await DataStore.save(
-          new Accounts({
-          "id": user.username.toLowerCase(),
-          "EbayAccounts": [],
-          "isNewAccount": true,
-          "plan": Plans.PERSONAL,
-          "EbayOrders": [],
-          "Locations": [],
-          "Brands": [],
-          "Products": [],
-          "Listings": [],
-          "ebayAccountId": "",
-          "postalCode": ""
-        })
-      );
-
-      console.log(newAccount);
-
-
-      }
-    })();
-  
-    }catch(error){
+          console.log(newAccount);
+        }
+      })();
+    } catch (error) {
       console.log(error);
     }
-  
   }, []);
 
   useEffect(() => {
-    try {  
-    if (userAccount && !userAccount.isNewAccount){
-    (async () => {
-      console.log('USER: ', user.username);
-      const tempUser = userAccount.ebayAccountId.toLowerCase();
-      setUsername(user.username.toLowerCase());
-      const responseFulfillment = await fetch(
-        `https://listerfast.com/api/ebay/policies/fulfillment/${tempUser}/0`
-      );
+    try {
+      if (userAccount && !userAccount.isNewAccount) {
+        (async () => {
+          console.log('USER: ', user.username);
+          const tempUser = userAccount.ebayAccountId.toLowerCase();
+          setUsername(user.username.toLowerCase());
+          const responseFulfillment = await fetch(
+            `https://listerfast.com/api/ebay/policies/fulfillment/${tempUser}/0`
+          );
 
-      const responsePayment = await fetch(
-        `https://listerfast.com/api/ebay/policies/payment/${tempUser}/0`
-      );
+          const responsePayment = await fetch(
+            `https://listerfast.com/api/ebay/policies/payment/${tempUser}/0`
+          );
 
-      const responseReturn = await fetch(
-        `https://listerfast.com/api/ebay/policies/return/${tempUser}/0`
-      );
+          const responseReturn = await fetch(
+            `https://listerfast.com/api/ebay/policies/return/${tempUser}/0`
+          );
 
-      const jsonFulfillment = await responseFulfillment.json();
-      const jsonPayment = await responsePayment.json();
-      const jsonReturn = await responseReturn.json();
+          const jsonFulfillment = await responseFulfillment.json();
+          const jsonPayment = await responsePayment.json();
+          const jsonReturn = await responseReturn.json();
 
-      setFulfillmentPolicies(jsonFulfillment);
-      setPaymentPolicies(jsonPayment);
-      setReturnPolicies(jsonReturn);
-    })();
+          setFulfillmentPolicies(jsonFulfillment);
+          setPaymentPolicies(jsonPayment);
+          setReturnPolicies(jsonReturn);
+        })();
+      }
+    } catch (error) {
+      console.log(error);
     }
-  
-    } catch(error){
-      console.log(error);    
-    }
-  
-  
   }, []);
 
   const connectEbayAccount = async () => {
@@ -134,15 +118,8 @@ export default function Main() {
     );
   };
 
-  
-
   if (userAccount.isNewAccount) {
-    return (
-
-      <NewAccountWizard signOut={signOut} />
-
-      
-    );
+    return <NewAccountWizard signOut={signOut} />;
   }
 
   return (

@@ -464,13 +464,6 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "ebayaccountsID": {
-                    "name": "ebayaccountsID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
                 "ItemsCompatibilities": {
                     "name": "ItemsCompatibilities",
                     "isArray": false,
@@ -563,15 +556,6 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byEbayAccounts",
-                        "fields": [
-                            "ebayaccountsID"
-                        ]
-                    }
                 },
                 {
                     "type": "auth",
@@ -1222,13 +1206,6 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "ebayaccountsID": {
-                    "name": "ebayaccountsID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -1259,15 +1236,6 @@ export const schema = {
                         "name": "byAccounts",
                         "fields": [
                             "accountsID"
-                        ]
-                    }
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byEbayAccounts",
-                        "fields": [
-                            "ebayaccountsID"
                         ]
                     }
                 },
@@ -1399,6 +1367,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "username": {
+                    "name": "username",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -1500,20 +1475,6 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "EbayOrders": {
-                    "name": "EbayOrders",
-                    "isArray": true,
-                    "type": {
-                        "model": "EbayOrders"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": "ebayaccountsID"
-                    }
-                },
                 "returnPolicy": {
                     "name": "returnPolicy",
                     "isArray": false,
@@ -1527,20 +1488,6 @@ export const schema = {
                     "type": "String",
                     "isRequired": false,
                     "attributes": []
-                },
-                "EbayItems": {
-                    "name": "EbayItems",
-                    "isArray": true,
-                    "type": {
-                        "model": "EbayItems"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": "ebayaccountsID"
-                    }
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -1605,5 +1552,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "020d2f8e4056c756d117b08e867e4bae"
+    "version": "3c587e1e3bbd263d812dfc880b472004"
 };
