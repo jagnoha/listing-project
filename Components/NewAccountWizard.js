@@ -9,7 +9,12 @@ import { A } from '@expo/html-elements';
 import Header from './Header';
 import userAccountAtom from '../Store/atoms/userAccountAtom';
 import ebayUserAtom from '../Store/atoms/ebayUserAtom';
-import { useTheme, Text, Button, Banner, TextInput  } from 'react-native-paper';
+
+import fulfillmentPoliciesAtom from '../Store/atoms/fulfillmentPoliciesAtom';
+import paymentPoliciesAtom from '../Store/atoms/paymentPoliciesAtom';
+import returnPoliciesAtom from '../Store/atoms/returnPoliciesAtom';
+
+import { useTheme, Text, Button, Banner, TextInput,ActivityIndicator  } from 'react-native-paper';
 
 import awsconfig from '../src/aws-exports';
 
@@ -45,13 +50,28 @@ export default function NewAccountWizard({signOut}) {
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);  
   const [ebayUser, setEbayUser] = useRecoilState(ebayUserAtom);  
   const [ebayAccountText, setEbayAccountText] = useState(null);
+  const [postalCodeText, setPostalCodeText] = useState(null);
   const [processingEbayLink, setProcessingEbayLink] = useState(false);
+
+  const [fulfillmentPolicies, setFulfillmentPolicies] = useRecoilState(
+    fulfillmentPoliciesAtom
+  );
+  const [paymentPolicies, setPaymentPolicies] =
+    useRecoilState(paymentPoliciesAtom);
+  const [returnPolicies, setReturnPolicies] =
+    useRecoilState(returnPoliciesAtom);
 
   const onChangeInput = (value) => {
     setEbayAccountText(value)
   }
 
+  const onChangePostalCode = (value) => {
+    setPostalCodeText(value)
+  }
+
   const fetchEbayAccount = async () => {
+
+    try {
 
     setProcessingEbayLink(true);
 
@@ -67,7 +87,8 @@ export default function NewAccountWizard({signOut}) {
 
         const accountDetails = {
             id: userAccount.id,
-            ebayAccountId: ebayAccountText, 
+            ebayAccountId: ebayAccountText.toLowerCase(),
+            postalCode: postalCodeText, 
             isNewAccount: false,
             _version: userAccount._version,
           };
@@ -76,6 +97,30 @@ export default function NewAccountWizard({signOut}) {
           
           const updatedAccount = await API.graphql({ query: mutations.updateAccounts, variables: {input: accountDetails}});
           console.log(updatedAccount);
+          
+
+          // FETCH policies
+
+          /*const responseFulfillment = await fetch(
+            `https://listerfast.com/api/ebay/policies/fulfillment/${ebayAccountText.toLowerCase()}/0`
+          );
+    
+          const responsePayment = await fetch(
+            `https://listerfast.com/api/ebay/policies/payment/${ebayAccountText.toLowerCase()}/0`
+          );
+    
+          const responseReturn = await fetch(
+            `https://listerfast.com/api/ebay/policies/return/${ebayAccountText.toLowerCase()}/0`
+          );
+    
+          const jsonFulfillment = await responseFulfillment.json();
+          const jsonPayment = await responsePayment.json();
+          const jsonReturn = await responseReturn.json();
+    
+          setFulfillmentPolicies(jsonFulfillment);
+          setPaymentPolicies(jsonPayment);
+          setReturnPolicies(jsonReturn);*/
+
           setUserAccount(updatedAccount.data.updateAccounts);
 
 
@@ -85,6 +130,11 @@ export default function NewAccountWizard({signOut}) {
     }
 
     setProcessingEbayLink(false);
+
+} catch(error){
+    console.log(error);
+    setProcessingEbayLink(false);
+}
 
   }
 
@@ -98,13 +148,16 @@ export default function NewAccountWizard({signOut}) {
          <Banner visible={true} icon={'playlist-edit'}>
             Connect to your eBay Account.
           </Banner>
-    <View style={{padding: 20}}>
+          {processingEbayLink ? <View><ActivityIndicator
+              size='large'
+              style={{ marginTop: '20%', marginBottom: '20%' }}
+            /></View> : <View style={{padding: 20}}>
       {/*<Text>{JSON.stringify(userAccount)}</Text>*/}
 
       <TextInput
       mode="outlined"
-      label="eBay Account"
-      placeholder="Enter the eBay Account"
+      label="eBay Account ID"
+      placeholder="Enter the eBay Account ID"
       onChangeText={onChangeInput}
       value={
         ebayAccountText
@@ -112,14 +165,27 @@ export default function NewAccountWizard({signOut}) {
       }
     />  
 
+    <TextInput
+      style={{marginTop: 20}}
+      mode="outlined"
+      label="Zip Code (Only USA)"
+      placeholder="Enter Zip Code"
+      onChangeText={onChangePostalCode}
+      autoComplete='postal-code'
+      value={
+        postalCodeText
+        
+      }
+    />  
+
     {<OpenURLButton url={URL}>Get eBay Credentials</OpenURLButton>}
 
-    <Button onPress={()=>fetchEbayAccount()} style={{marginTop: 25, marginLeft: '20%', marginRight: '20%'}} mode='contained' disabled={ebayAccountText && ebayAccountText.length > 0 ? false : true}  >Link eBay Account</Button>  
+    <Button onPress={()=>fetchEbayAccount()} style={{marginTop: 25, marginLeft: '20%', marginRight: '20%'}} mode='contained' disabled={ebayAccountText && ebayAccountText.length > 0 && postalCodeText && postalCodeText.length > 0 ? false : true}  >Link eBay Account</Button>  
 
 
 
       
-          </View>      
+          </View>}      
     </View>
   );
 }

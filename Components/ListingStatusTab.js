@@ -22,8 +22,8 @@ export default function ListingStatusTab() {
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useRecoilState(selectedAtom);
   const [routes] = useState([
-    { key: 'toRevise', title: 'To Revise' },
-    //{ key: 'readyToGo', title: 'Ready to Go' },
+    { key: 'toRevise', title: 'To Revise'},
+    { key: 'readyToGo', title: 'Ready to Go' },
   ]);
   const theme = useTheme();
 
@@ -49,7 +49,7 @@ export default function ListingStatusTab() {
         }}
         initialLayout={{ width: layout.width }}
         animationEnabled={false}
-        swipeEnabled={false}
+        swipeEnabled={false}       
       />
     </>
   );

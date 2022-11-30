@@ -24,7 +24,7 @@ import { Camera } from 'expo-camera';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-import usernameAtom from '../Store/atoms/usernameAtom';
+import userAccountAtom from '../Store/atoms/userAccountAtom';
 import ebayUserAtom from '../Store/atoms/ebayUserAtom';
 
 import fulfillmentPoliciesAtom from '../Store/atoms/fulfillmentPoliciesAtom';
@@ -49,7 +49,7 @@ export default function AddListingForm(props) {
   let cameraRef = useRef();
   const [hasCameraPermission, setHasCameraPermission] = useState();
 
-  const [username, setUsername] = useRecoilState(usernameAtom);
+  const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
 
   const [ebayUser, setEbayUser] = useRecoilState(ebayUserAtom);
 
@@ -78,6 +78,8 @@ export default function AddListingForm(props) {
   const [categories, setCategories] = useState([]);
 
   const [categoryFeatures, setCategoryFeatures] = useState();
+
+  const [fetchPoliciesProcessing, setFetchPoliciesProcessing] = useState(false);
 
   const [processingPolicies, setProcessingPolicies] = useState(false);
 
@@ -136,6 +138,49 @@ export default function AddListingForm(props) {
     })();
   }, []);
 
+
+  useEffect(()=>{
+    (async () => {
+
+      //console.log(userAccount.postalCode);
+
+
+      
+
+        setFetchPoliciesProcessing(true);
+    
+        const responseFulfillment = await fetch(
+            `https://listerfast.com/api/ebay/policies/fulfillment/${ebayUser}/0`
+          );
+    
+          const responsePayment = await fetch(
+            `https://listerfast.com/api/ebay/policies/payment/${ebayUser}/0`
+          );
+    
+          const responseReturn = await fetch(
+            `https://listerfast.com/api/ebay/policies/return/${ebayUser}/0`
+          );
+    
+          const jsonFulfillment = await responseFulfillment.json();
+          const jsonPayment = await responsePayment.json();
+          const jsonReturn = await responseReturn.json();
+    
+          setFulfillmentPolicies(jsonFulfillment);
+          setPaymentPolicies(jsonPayment);
+          setReturnPolicies(jsonReturn);
+
+          console.log(fulfillmentPolicies);
+    
+          setFetchPoliciesProcessing(false);
+    
+    
+    
+
+
+    })();
+  }, [])
+
+
   if (hasCameraPermission === undefined) {
     return <Text>Requesting permissions...</Text>;
   } else if (!hasCameraPermission) {
@@ -172,6 +217,34 @@ export default function AddListingForm(props) {
 
     return categoryName.title;
   };
+
+  const fetchPolicies = async () => {
+
+    setFetchPoliciesProcessing(true);
+
+    const responseFulfillment = await fetch(
+        `https://listerfast.com/api/ebay/policies/fulfillment/${ebayUser}/0`
+      );
+
+      const responsePayment = await fetch(
+        `https://listerfast.com/api/ebay/policies/payment/${ebayUser}/0`
+      );
+
+      const responseReturn = await fetch(
+        `https://listerfast.com/api/ebay/policies/return/${ebayUser}/0`
+      );
+
+      const jsonFulfillment = await responseFulfillment.json();
+      const jsonPayment = await responsePayment.json();
+      const jsonReturn = await responseReturn.json();
+
+      setFulfillmentPolicies(jsonFulfillment);
+      setPaymentPolicies(jsonPayment);
+      setReturnPolicies(jsonReturn);
+
+      setFetchPoliciesProcessing(false);
+
+}
 
   const getExtraAspectsValuesClothing = () => {
     let aspectList = aspects.map((item) => ({
@@ -892,8 +965,7 @@ ${aspects
     return sum / n;
   };
 
-  console.log('Payment Policies: ', paymentPolicies);
-
+  
   const processPrices = async (items) => {
     if (items && items.itemSummaries) {
       let listingsAll = items.itemSummaries;
@@ -971,7 +1043,7 @@ ${aspects
 
       if (barcodeValue) {
         const response = await fetch(
-          `https://listerfast.com/api/ebay/search/${barcodeValue.data}/${category}/US/33020/${condition}/lisnardayi`
+          `https://listerfast.com/api/ebay/search/${barcodeValue.data}/${category}/US/${userAccount.postalCode}/${condition}/${ebayUser}`
         );
 
         jsonResponse = await response.json();
@@ -1189,7 +1261,7 @@ ${aspects
             .replace(
               /[^a-zA-Z0-9 ]/g,
               ''
-            )}/${category}/US/33020/[${condition}]/lisnardayi`
+            )}/${category}/US/${userAccount.postalCode}/[${condition}]/${ebayUser}`
         );
 
         const jsonResponse = await response.json();
@@ -1203,7 +1275,7 @@ ${aspects
               .replace(
                 /[^a-zA-Z0-9 ]/g,
                 ''
-              )}/${category}/US/33020/[${condition}]/lisnardayi`
+              )}/${category}/US/${userAccount.postalCode}/[${condition}]/${ebayUser}`
           );
 
           const jsonResponse = await response.json();
@@ -1800,6 +1872,8 @@ ${aspects
         fulfillmentPolicyId={fulfillmentPolicyId}
         returnPolicyId={returnPolicyId}
         onProcessingTitle={onProcessingTitle}
+        fetchPolicies={fetchPolicies}
+        fetchPoliciesProcessing={fetchPoliciesProcessing}
 
         //onChangeDimensions={onChangeDimensions}
         /*onChangeLength={onChangeLength}

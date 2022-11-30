@@ -141,6 +141,9 @@ export default function Main() {
       const newAccount = await API.graphql({ query: mutations.createAccounts, variables: {input: accountDetails}});
       console.log(newAccount);
       setUserAccount(newAccount.data.createAccounts);
+      setFulfillmentPolicies([]);
+      setPaymentPolicies([]);
+      setReturnPolicies([]);
     }
 
     setProcessing(false);

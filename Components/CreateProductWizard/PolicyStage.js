@@ -171,6 +171,9 @@ const handlePressBusinessPolicies = async (url) => {
         Alert.alert(`Don't know how to open this URL: ${url}`);
     }
 }
+
+
+
   
     
   
@@ -258,7 +261,7 @@ const handlePressBusinessPolicies = async (url) => {
           Select eBay's Fulfillment, Payment and Return Policies.
         </Banner>
 
-        {props.processingPolicies ? (
+        {props.processingPolicies || props.fetchPoliciesProcessing ? (
           <View>
             <ActivityIndicator
               size='large'
@@ -332,7 +335,7 @@ const handlePressBusinessPolicies = async (url) => {
                     )}
                   </View>
                   { Array.isArray(props.paymentPolicies) ? <Paragraph style={{ fontWeight: 'bold' }}>
-                    {getReturnName(props.paymentPolicyId)}
+                    {getPaymentName(props.paymentPolicyId)}
                   </Paragraph> : 
                   <Paragraph style={{fontWeight: 'bold', color: 'red'}}>
                     Configure Business Policies on Ebay
@@ -388,6 +391,14 @@ const handlePressBusinessPolicies = async (url) => {
               onPress: () => props.backward(),
               //disabled: 'true'
             },
+            {
+                value: 'refresh', 
+                label: 'Refresh',
+                icon: 'reload',
+                onPress: () => props.fetchPolicies(),
+                //disabled: 'true'
+                
+              },
             {
               value: 'next',
               label: 'Next',
