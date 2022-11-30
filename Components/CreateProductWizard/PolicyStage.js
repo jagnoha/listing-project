@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, ScrollView, Pressable, FlatList } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, ScrollView, Pressable, FlatList, Linking } from 'react-native';
 import {
   useTheme,
   Text,
@@ -17,6 +17,8 @@ import {
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../Header';
+
+const URL_EBAY_BUSINESS = 'https://www.bizpolicy.ebay.com/businesspolicy/policyoptin';
 
 const PolicyCard = ({ item, onPress }) => {
   return (
@@ -74,6 +76,8 @@ const PolicyCardScrollList = ({
       />
     );
   };
+
+  //console.log(props.paymentPolicies);
 
   return (
     <View
@@ -142,18 +146,55 @@ export default function PolicyStage(props) {
     setOpenFulfillmentList(false);
   };
 
-  const getPaymentName = (id) => {
-    const policy = props.paymentPolicies.find((item) => item.id === id);
+  
 
-    if (policy) {
-      return policy.name;
+
+    /*const handlePressBusinessPolicies = useCallback(async (url) => {
+      // Checking if the link is supported for links with custom URL scheme.
+      const supported = await Linking.canOpenURL(url);
+  
+      if (supported) {
+        // Opening the link with some app, if the URL scheme is "http" the web link should be opened
+        // by some browser in the mobile
+        await Linking.openURL(url);
+      } else {
+        Alert.alert(`Don't know how to open this URL: ${url}`);
+      }
+    }, [url]);*/
+
+const handlePressBusinessPolicies = async (url) => {
+    const supported = await Linking.canOpenURL(url);
+
+    if (supported) {
+        await Linking.openURL(url);
+    } else {
+        Alert.alert(`Don't know how to open this URL: ${url}`);
     }
+}
+  
+    
+  
+  const getPaymentName = (id) => {
+
+    console.log(props.paymentPolicies);
+    
+    /*if (props.paymentPolicies && props.paymentPolicies.type === 'EbayError' ){
+        console.log('ERRRRRRRRRRRRRRRRRRRORRRRRRRRRR!');
+    } else {*/
+
+        const policy = Array.isArray(props.paymentPolicies) ? props.paymentPolicies.find((item) => item.id === id) : false;
+
+        if (policy) {
+        return policy.name;
+        }
+
+    //}
 
     return '';
   };
 
   const getFulfillmentName = (id) => {
-    const policy = props.fulfillmentPolicies.find((item) => item.id === id);
+    const policy = Array.isArray(props.fulfillmentPolicies) ? props.fulfillmentPolicies.find((item) => item.id === id) : false;
 
     if (policy) {
       return policy.name;
@@ -163,7 +204,7 @@ export default function PolicyStage(props) {
   };
 
   const getReturnName = (id) => {
-    const policy = props.returnPolicies.find((item) => item.id === id);
+    const policy = Array.isArray(props.returnPolicies) ? props.returnPolicies.find((item) => item.id === id) : false;
 
     if (policy) {
       return policy.name;
@@ -228,7 +269,8 @@ export default function PolicyStage(props) {
           <View>
             <Pressable
               //onPress={() => props.onSelectedCategory(item.categoryId)}
-              onPress={() => onOpenFulfillmentList()}
+              //onPress={() => onOpenFulfillmentList()}
+              onPress={ Array.isArray(props.fulfillmentPolicies) ? () => onOpenFulfillmentList() : () => handlePressBusinessPolicies(URL_EBAY_BUSINESS)      }
             >
               <Card>
                 <Card.Content>
@@ -252,15 +294,21 @@ export default function PolicyStage(props) {
                       ''
                     )}
                   </View>
-                  <Paragraph style={{ fontWeight: 'bold' }}>
+                  
+
+                  { Array.isArray(props.fulfillmentPolicies) ? <Paragraph style={{ fontWeight: 'bold' }}>
                     {getFulfillmentName(props.fulfillmentPolicyId)}
-                  </Paragraph>
+                  </Paragraph> : 
+                  <Paragraph style={{fontWeight: 'bold', color: 'red'}}>
+                    Configure Business Policies on Ebay
+                  </Paragraph>}
+
                 </Card.Content>
               </Card>
             </Pressable>
             <Pressable
               //onPress={() => props.onSelectedCategory(item.categoryId)}
-              onPress={() => onOpenPaymentList()}
+              onPress={ Array.isArray(props.paymentPolicies) ? () => onOpenPaymentList() : () => handlePressBusinessPolicies(URL_EBAY_BUSINESS)     }
             >
               <Card>
                 <Card.Content>
@@ -283,15 +331,18 @@ export default function PolicyStage(props) {
                       ''
                     )}
                   </View>
-                  <Paragraph style={{ fontWeight: 'bold' }}>
-                    {getPaymentName(props.paymentPolicyId)}
-                  </Paragraph>
+                  { Array.isArray(props.paymentPolicies) ? <Paragraph style={{ fontWeight: 'bold' }}>
+                    {getReturnName(props.paymentPolicyId)}
+                  </Paragraph> : 
+                  <Paragraph style={{fontWeight: 'bold', color: 'red'}}>
+                    Configure Business Policies on Ebay
+                  </Paragraph>}
                 </Card.Content>
               </Card>
             </Pressable>
             <Pressable
               //onPress={() => props.onSelectedCategory(item.categoryId)}
-              onPress={() => onOpenReturnList()}
+              onPress={ Array.isArray(props.returnPolicies) ? () => onOpenReturnList() : () => handlePressBusinessPolicies(URL_EBAY_BUSINESS)    }
             >
               <Card>
                 <Card.Content>
@@ -314,9 +365,12 @@ export default function PolicyStage(props) {
                       ''
                     )}
                   </View>
-                  <Paragraph style={{ fontWeight: 'bold' }}>
+                  { Array.isArray(props.returnPolicies) ? <Paragraph style={{ fontWeight: 'bold' }}>
                     {getReturnName(props.returnPolicyId)}
-                  </Paragraph>
+                  </Paragraph> : 
+                  <Paragraph style={{fontWeight: 'bold', color: 'red'}}>
+                    Configure Business Policies on Ebay
+                  </Paragraph>}
                 </Card.Content>
               </Card>
             </Pressable>

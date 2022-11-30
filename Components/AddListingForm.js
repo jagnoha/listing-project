@@ -25,6 +25,8 @@ import { Camera } from 'expo-camera';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import usernameAtom from '../Store/atoms/usernameAtom';
+import ebayUserAtom from '../Store/atoms/ebayUserAtom';
+
 import fulfillmentPoliciesAtom from '../Store/atoms/fulfillmentPoliciesAtom';
 import paymentPoliciesAtom from '../Store/atoms/paymentPoliciesAtom';
 import returnPoliciesAtom from '../Store/atoms/returnPoliciesAtom';
@@ -48,6 +50,8 @@ export default function AddListingForm(props) {
   const [hasCameraPermission, setHasCameraPermission] = useState();
 
   const [username, setUsername] = useRecoilState(usernameAtom);
+
+  const [ebayUser, setEbayUser] = useRecoilState(ebayUserAtom);
 
   const [priceProduct, setPriceProduct] = useState('0.00');
 
@@ -696,7 +700,7 @@ ${aspects
     try {
       setProcessingCategoryFeatures(true);
       const response = await fetch(
-        `https://listerfast.com/api/ebay/categoryfeatures/${username}/${categoryId}`
+        `https://listerfast.com/api/ebay/categoryfeatures/${ebayUser}/${categoryId}`
       );
 
       const json = await response.json();
@@ -772,7 +776,7 @@ ${aspects
     try {
       setProcessingAspects(true);
       const response = await fetch(
-        `https://listerfast.com/api/ebay/aspectsbycategory/${username}/${getTypeProductCode(
+        `https://listerfast.com/api/ebay/aspectsbycategory/${ebayUser}/${getTypeProductCode(
           type
         )}/${categoryId}`
       );
@@ -887,6 +891,8 @@ ${aspects
     }
     return sum / n;
   };
+
+  console.log('Payment Policies: ', paymentPolicies);
 
   const processPrices = async (items) => {
     if (items && items.itemSummaries) {
@@ -1228,19 +1234,19 @@ ${aspects
         setProcessingPolicies(true);
 
         const responseFulfillment = await fetch(
-          `https://listerfast.com/api/ebay/policies/fulfillment/${username}/${getTypeProductCode(
+          `https://listerfast.com/api/ebay/policies/fulfillment/${ebayUser}/${getTypeProductCode(
             type
           )}`
         );
 
         const responsePayment = await fetch(
-          `https://listerfast.com/api/ebay/policies/payment/${username}/${getTypeProductCode(
+          `https://listerfast.com/api/ebay/policies/payment/${ebayUser}/${getTypeProductCode(
             type
           )}`
         );
 
         const responseReturn = await fetch(
-          `https://listerfast.com/api/ebay/policies/return/${username}/${getTypeProductCode(
+          `https://listerfast.com/api/ebay/policies/return/${ebayUser}/${getTypeProductCode(
             type
           )}`
         );
@@ -1271,8 +1277,10 @@ ${aspects
           ? `${searchCategories} ${type}`
           : searchCategories;
 
+      console.log('Ebay User: ', ebayUser);
+
       const response = await fetch(
-        `https://listerfast.com/api/ebay/categorysuggestions/${username}/${getTypeProductCode(
+        `https://listerfast.com/api/ebay/categorysuggestions/${ebayUser}/${getTypeProductCode(
           type
         )}/${searchCategoriesLarge}`
       );
@@ -1747,6 +1755,7 @@ ${aspects
   }
 
   if (step === 6) {
+    
     return (
       <DimensionStage
         title={title}
