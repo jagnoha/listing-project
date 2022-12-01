@@ -56,7 +56,7 @@ export default function PhotosSection(props) {
                     }}
                   />
                 ) : (
-                  <Text>Photo Label</Text>
+                  <Text>Photo Tag</Text>
                 )}
               </Surface>
             </Pressable>

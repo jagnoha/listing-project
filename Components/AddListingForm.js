@@ -138,48 +138,37 @@ export default function AddListingForm(props) {
     })();
   }, []);
 
-
-  useEffect(()=>{
+  useEffect(() => {
     (async () => {
-
       //console.log(userAccount.postalCode);
 
+      setFetchPoliciesProcessing(true);
 
-      
+      const responseFulfillment = await fetch(
+        `https://listerfast.com/api/ebay/policies/fulfillment/${ebayUser}/0`
+      );
 
-        setFetchPoliciesProcessing(true);
-    
-        const responseFulfillment = await fetch(
-            `https://listerfast.com/api/ebay/policies/fulfillment/${ebayUser}/0`
-          );
-    
-          const responsePayment = await fetch(
-            `https://listerfast.com/api/ebay/policies/payment/${ebayUser}/0`
-          );
-    
-          const responseReturn = await fetch(
-            `https://listerfast.com/api/ebay/policies/return/${ebayUser}/0`
-          );
-    
-          const jsonFulfillment = await responseFulfillment.json();
-          const jsonPayment = await responsePayment.json();
-          const jsonReturn = await responseReturn.json();
-    
-          setFulfillmentPolicies(jsonFulfillment);
-          setPaymentPolicies(jsonPayment);
-          setReturnPolicies(jsonReturn);
+      const responsePayment = await fetch(
+        `https://listerfast.com/api/ebay/policies/payment/${ebayUser}/0`
+      );
 
-          console.log(fulfillmentPolicies);
-    
-          setFetchPoliciesProcessing(false);
-    
-    
-    
+      const responseReturn = await fetch(
+        `https://listerfast.com/api/ebay/policies/return/${ebayUser}/0`
+      );
 
+      const jsonFulfillment = await responseFulfillment.json();
+      const jsonPayment = await responsePayment.json();
+      const jsonReturn = await responseReturn.json();
 
+      setFulfillmentPolicies(jsonFulfillment);
+      setPaymentPolicies(jsonPayment);
+      setReturnPolicies(jsonReturn);
+
+      console.log(fulfillmentPolicies);
+
+      setFetchPoliciesProcessing(false);
     })();
-  }, [])
-
+  }, []);
 
   if (hasCameraPermission === undefined) {
     return <Text>Requesting permissions...</Text>;
@@ -219,32 +208,30 @@ export default function AddListingForm(props) {
   };
 
   const fetchPolicies = async () => {
-
     setFetchPoliciesProcessing(true);
 
     const responseFulfillment = await fetch(
-        `https://listerfast.com/api/ebay/policies/fulfillment/${ebayUser}/0`
-      );
+      `https://listerfast.com/api/ebay/policies/fulfillment/${ebayUser}/0`
+    );
 
-      const responsePayment = await fetch(
-        `https://listerfast.com/api/ebay/policies/payment/${ebayUser}/0`
-      );
+    const responsePayment = await fetch(
+      `https://listerfast.com/api/ebay/policies/payment/${ebayUser}/0`
+    );
 
-      const responseReturn = await fetch(
-        `https://listerfast.com/api/ebay/policies/return/${ebayUser}/0`
-      );
+    const responseReturn = await fetch(
+      `https://listerfast.com/api/ebay/policies/return/${ebayUser}/0`
+    );
 
-      const jsonFulfillment = await responseFulfillment.json();
-      const jsonPayment = await responsePayment.json();
-      const jsonReturn = await responseReturn.json();
+    const jsonFulfillment = await responseFulfillment.json();
+    const jsonPayment = await responsePayment.json();
+    const jsonReturn = await responseReturn.json();
 
-      setFulfillmentPolicies(jsonFulfillment);
-      setPaymentPolicies(jsonPayment);
-      setReturnPolicies(jsonReturn);
+    setFulfillmentPolicies(jsonFulfillment);
+    setPaymentPolicies(jsonPayment);
+    setReturnPolicies(jsonReturn);
 
-      setFetchPoliciesProcessing(false);
-
-}
+    setFetchPoliciesProcessing(false);
+  };
 
   const getExtraAspectsValuesClothing = () => {
     let aspectList = aspects.map((item) => ({
@@ -965,7 +952,6 @@ ${aspects
     return sum / n;
   };
 
-  
   const processPrices = async (items) => {
     if (items && items.itemSummaries) {
       let listingsAll = items.itemSummaries;
@@ -991,12 +977,15 @@ ${aspects
               image: item.thumbnailImages[0].imageUrl,
               price: item.price.value,
               condition: item.condition,
-              freeShipping: 'No',
-              freeShipping: Array.isArray(item.shippingOptions)
-                ? Number(item.shippingOptions[0].shippingCost.value) > 0
-                  ? 'No'
-                  : 'Yes'
-                : 'Yes',
+              //freeShipping: 'No',
+              freeShipping:
+                item.shippingOptions && Array.isArray(item.shippingOptions)
+                  ? item.shippingOptions[0] &&
+                    item.shippingOptions[0].shippingCost &&
+                    Number(item.shippingOptions[0].shippingCost.value) > 0
+                    ? 'No'
+                    : 'Yes'
+                  : 'Yes',
             }))
             .slice(0, 25)
         );
@@ -1258,10 +1247,9 @@ ${aspects
         const response = await fetch(
           `https://listerfast.com/api/ebay/search/${pendingTitle
             .join(' ')
-            .replace(
-              /[^a-zA-Z0-9 ]/g,
-              ''
-            )}/${category}/US/${userAccount.postalCode}/[${condition}]/${ebayUser}`
+            .replace(/[^a-zA-Z0-9 ]/g, '')}/${category}/US/${
+            userAccount.postalCode
+          }/[${condition}]/${ebayUser}`
         );
 
         const jsonResponse = await response.json();
@@ -1272,10 +1260,9 @@ ${aspects
           const response = await fetch(
             `https://listerfast.com/api/ebay/search/${shortPendingTitle
               .join(' ')
-              .replace(
-                /[^a-zA-Z0-9 ]/g,
-                ''
-              )}/${category}/US/${userAccount.postalCode}/[${condition}]/${ebayUser}`
+              .replace(/[^a-zA-Z0-9 ]/g, '')}/${category}/US/${
+              userAccount.postalCode
+            }/[${condition}]/${ebayUser}`
           );
 
           const jsonResponse = await response.json();
@@ -1827,7 +1814,6 @@ ${aspects
   }
 
   if (step === 6) {
-    
     return (
       <DimensionStage
         title={title}
