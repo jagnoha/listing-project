@@ -421,7 +421,7 @@ export default function ItemSpecificsStage(props) {
       <View>
         <Banner visible={true} icon={'star-circle-outline'}>
           Add item details. Some of them are required to continue to the next
-          step.
+          step. The more elements you add, the better for generating a better title and description.
         </Banner>
 
         {props.processingAspects ? (

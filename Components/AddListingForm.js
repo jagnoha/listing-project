@@ -8,7 +8,11 @@ import {
   Searchbar,
   SegmentedButtons,
   Banner,
+  ActivityIndicator,
 } from 'react-native-paper';
+
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Amplify, Storage } from 'aws-amplify';
 import { Listing } from '../src/models';
@@ -62,6 +66,8 @@ export default function AddListingForm(props) {
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
 
   const [ebayUser, setEbayUser] = useRecoilState(ebayUserAtom);
+
+  const [processingImage, setProcessingImage] = useState(false);
 
   const [priceProduct, setPriceProduct] = useState('0.00');
 
@@ -213,11 +219,12 @@ export default function AddListingForm(props) {
     return blob;
   };
 
-  const handleImage = async (photoResult) => {
+  const handleImage = async (photoResult, nameFile) => {
     try {
       const img = await fetchImageFromUri(photoResult.uri);
-      const uploadUrl = await uploadImage('demo.jpg', img);
+      const uploadUrl = await uploadImage(nameFile, img);
       console.log(uploadUrl);
+      return uploadUrl;
     } catch (error) {
       console.log(error);
     }
@@ -225,7 +232,8 @@ export default function AddListingForm(props) {
 
   const saveListing = async () => {
     try {
-      handleImage(photoMain);
+      console.log('Saving Listing');
+      //handleImage(photoMain);
       //console.log(photoMain);
     } catch (error) {
       console.log(error);
@@ -350,33 +358,7 @@ export default function AddListingForm(props) {
     );
     const model = aspects.find((item) => item.localizedAspectName === 'Model');
 
-    /*const skirtLength = aspects.find(
-      (item) => item.localizedAspectName === 'Skirt Length'
-    );*/
-
-    /*const dressLength = aspects.find(
-      (item) => item.localizedAspectName === 'Dress Length'
-    );*/
-
-    /*const material = aspects.find(
-      (item) => item.localizedAspectName === 'Material'
-    );*/
-
-    /*const sleeveLength = aspects.find(
-      (item) => item.localizedAspectName === 'Sleeve Length'
-    );*/
-
-    /*const pattern = aspects.find(
-      (item) => item.localizedAspectName === 'Pattern'
-    );*/
-
-    /*const neckline = aspects.find(
-      (item) => item.localizedAspectName === 'Neckline'
-    );*/
-
-    /*const occasion = aspects.find(
-      (item) => item.localizedAspectName === 'Occasion'
-    );*/
+    
 
     const features = aspects.find(
       (item) => item.localizedAspectName === 'Features'
@@ -384,13 +366,7 @@ export default function AddListingForm(props) {
 
     const fit = aspects.find((item) => item.localizedAspectName === 'Fit');
 
-    /*const characterFamily = aspects.find(
-      (item) => item.localizedAspectName === 'Character Family'
-    );*/
-
-    /*const character = aspects.find(
-      (item) => item.localizedAspectName === 'Character'
-    );*/
+   
 
     const categoryNew = categories.find((item) => item.categoryId === category);
 
@@ -398,9 +374,7 @@ export default function AddListingForm(props) {
       (item) => item.localizedAspectName === 'US Shoe Size'
     );
 
-    /*const customized = aspects.find((item) => item.localizedAspectName === 'Customized');*/
-
-    /*const upperMaterial = aspects.find((item) => item.localizedAspectName === 'Upper Material');*/
+    
 
     let importantAspects = {
       brand: brand ? (brand.value === 'Unbranded' ? '' : brand.value) : '',
@@ -410,10 +384,7 @@ export default function AddListingForm(props) {
       sizeType: sizeType ? sizeType.value : '',
       type: type ? type.value : '',
       color: color ? color.value : '',
-      //sleeveLength: sleeveLength ? sleeveLength.value : '',
-      //occasion: occasion ? occasion.value : '',
-
-      //neckline: neckline ? neckline.value : '',
+     
       fit: fit ? fit.value : '',
 
       department: department ? department.value : '',
@@ -422,15 +393,9 @@ export default function AddListingForm(props) {
       model: model ? model.value : '',
       category: categoryNew.title,
       features: features ? features.value : '',
-      //material: material ? material.value : '',
-      //skirtLength: skirtLength ? skirtLength.value : '',
-      //pattern: pattern ? pattern.value : '',
-      //dressLength: dressLength ? dressLength.value : '',
-      //characterFamily: characterFamily ? characterFamily.value : '',
-      //character: character ? character.value : '',
+      
       usShoeSize: usShoeSize ? usShoeSize.value : '',
-      //customized: customized ? (customized.value === 'Yes' ? 'Customized' : '') : '',
-      //upperMaterial: upperMaterial ? upperMaterial.value : '',
+      
     };
 
     return importantAspects;
@@ -460,16 +425,7 @@ Condition: ${
     }     
 `;
 
-    /*${JSON.stringify(aspects[0].localizedAspectName)}
-${aspects
-  .filter((i) => i.value !== '')
-  .map((it) => ({ test: it.localizedAspectName }))}*/
-
-    /*let itemSpecText = '';
-
-    for (let itm of aspects.filter((i) => i.value !== '')) {
-      itemSpecText.push(`${itm.localizedAspectName}: ${itm.value}\n`);
-    }*/
+    
 
     let aspectsFil = aspects.filter((item) => item.value !== '');
 
@@ -480,7 +436,7 @@ ${aspects
       );
     }
 
-    //pendingDescription.push(itemSpecText);
+    
 
     pendingDescription = pendingDescription.concat(
       '\n' +
@@ -1439,12 +1395,11 @@ ${aspects
   };
 
   let takePicMain = async () => {
-    //const availablePictureSizes = await Camera.getAvailablePictureSizesAsync('4:3')
 
-    console.log(Dimensions.get('window').height);
+    try {
+    
 
-    const sizes = await cameraRef.current.getAvailablePictureSizesAsync('1:1');
-    console.log('Sizes********************************************: ', sizes);
+    let nameFile = `${uuidv4()}.jpg`;
 
     let options = {
       quality: 0.7,
@@ -1453,16 +1408,36 @@ ${aspects
       exif: false,
     };
 
+    
     let newPhoto = await cameraRef.current.takePictureAsync(options);
-    setPhotoMain(newPhoto);
 
-    const source = newPhoto.uri;
+    
+    
+    
+   const source = newPhoto;
+
+    
+
+    console.log('Source: ', source);
+
     if (source) {
+      
       await cameraRef.current.pausePreview();
+      let newPhotoAWS = await handleImage(source, nameFile);
+      setPhotoMain(newPhotoAWS);
       setOpenCamera(false);
       setMainPhotoOpen(false);
+
+      
+
+
       console.log('picture source', source);
     }
+
+  } catch(error){
+    console.log(error);
+    setProcessingImage(false);
+  }
   };
 
   const handleBarCodeScanned = ({ type, data }) => {
@@ -1496,17 +1471,23 @@ ${aspects
     let options = {
       quality: 0.7,
       base64: true,
-      skipProcessing: true,
+      //skipProcessing: true,
       exif: false,
     };
 
-    let newPhoto = await cameraRef.current.takePictureAsync(options);
-    setPhotos((old) => [...old, { id: newPhoto.uri, value: newPhoto }]);
+    let nameFile = `${uuidv4()}.jpg`;
 
-    const source = newPhoto.uri;
+    let newPhoto = await cameraRef.current.takePictureAsync(options);
+    
+    //const source = newPhoto.uri;
+
+    const source = newPhoto;
 
     if (source) {
       await cameraRef.current.pausePreview();
+      let newPhotoAWS = await handleImage(source, nameFile);
+      setPhotos((old) => [...old, { id: newPhotoAWS, value: newPhotoAWS }]);
+
       setMorePhotosOpen(false);
       setOpenCamera(false);
       console.log('picture source', source);
@@ -1517,28 +1498,37 @@ ${aspects
     let options = {
       quality: 0.7,
       base64: true,
-      skipProcessing: true,
+      //skipProcessing: true,
       exif: false,
     };
 
+    let nameFile = `${uuidv4()}.jpg`;
+
     let newPhoto = await cameraRef.current.takePictureAsync(options);
-    setPhotos((old) =>
+
+   
+
+    
+
+    
+    //setPhotos((old) => [...old, { id: newPhoto.uri, value: newPhoto }]);
+
+    const source = newPhoto;
+
+    if (source) {
+      await cameraRef.current.pausePreview();
+      let newPhotoAWS = await handleImage(source, nameFile);
+      setPhotos((old) =>
       old.map((item) => {
         if (item.id === editPhotoOpen) {
           return {
             id: item.id,
-            value: newPhoto,
+            value: newPhotoAWS,
           };
         }
         return item;
       })
     );
-    //setPhotos((old) => [...old, { id: newPhoto.uri, value: newPhoto }]);
-
-    const source = newPhoto.uri;
-
-    if (source) {
-      await cameraRef.current.pausePreview();
       //setMorePhotosOpen(false);
       setEditPhotoOpen('');
       setOpenCamera(false);
@@ -1550,22 +1540,33 @@ ${aspects
     let options = {
       quality: 0.7,
       base64: true,
-      skipProcessing: true,
+      //skipProcessing: true,
       exif: false,
     };
 
+    let nameFile = `${uuidv4()}.jpg`;
+
     let newPhoto = await cameraRef.current.takePictureAsync(options);
 
-    setPhotoLabel(newPhoto);
+    const source = newPhoto;
 
-    const source = newPhoto.uri;
-    await cameraRef.current.pausePreview();
+    //setPhotoLabel(newPhoto);
+
+    //const source = newPhoto.uri;
+    //await cameraRef.current.pausePreview();
 
     if (source) {
-      //await cameraRef.current.pausePreview();
+
+      await cameraRef.current.pausePreview();
+      let newPhotoAWS = await handleImage(source, nameFile);
+      setPhotoLabel(newPhotoAWS);
       setLabelPhotoOpen(false);
       setOpenCamera(false);
-      console.log('picture source', source);
+
+      /*await cameraRef.current.pausePreview();
+      setLabelPhotoOpen(false);
+      setOpenCamera(false);
+      console.log('picture source', source);*/
     }
   };
 
@@ -1648,20 +1649,34 @@ ${aspects
             type={type}
             onOpenPreviewPhoto={onOpenPreviewPhoto}
             onOpenEditPhoto={onOpenEditPhoto}
+            saveListing={saveListing}
           />
         </View>
       );
     } else {
       if (mainPhotoOpen) {
+
+
+        /*if (processingImage) {
+          return (<View><Text>Processing</Text></View>)
+        } else {*/
+        /*if (processingImage) {
         return (
-          <Camera
-            pictureSize='1840x1840'
+          <View style={{flex: 1, alignItems: 'center', alignContent:'center', alignSelf:'center',   marginTop: '50%'}}><ActivityIndicator size='large' animating={true} /></View>
+        )
+        }*/
+
+        return (
+          <Camera            
             style={styles.container}
             ref={cameraRef}
+            pictureSize='1840x1840'
             ratio='1:1'
             //onCameraReady={() => setMainPhotoOpen(false)}
           >
+            
             <SegmentedButtons
+              
               density='medium'
               style={styles.previewCameraControl}
               onValueChange={() => console.log('Change value')}
@@ -1672,6 +1687,7 @@ ${aspects
                   icon: 'close',
                   onPress: () => closePic(),
                   style: styles.buttonPreviewCameraControl,
+                  //disabled : processingImage ? true : false,
                 },
                 {
                   value: 'next',
@@ -1680,6 +1696,7 @@ ${aspects
                   onPress: () => takePicMain(),
                   style: styles.buttonPreviewCameraControl,
                   //disabled: photoMain && photoLabel ? false : true
+                  //disabled : processingImage ? true : false,
                 },
                 {
                   value: 'delete',
@@ -1690,12 +1707,16 @@ ${aspects
                   disabled: photoMain ? false : true,
                 },
               ]}
-            />
+            /> 
+            
           </Camera>
-        );
+        )
       } else if (labelPhotoOpen) {
         return (
-          <Camera style={styles.container} ref={cameraRef}>
+          <Camera style={styles.container}
+          ref={cameraRef}
+          pictureSize='1840x1840'
+          ratio='1:1'>
             <SegmentedButtons
               density='medium'
               style={styles.previewCameraControl}
@@ -1731,7 +1752,10 @@ ${aspects
         );
       } else if (morePhotosOpen) {
         return (
-          <Camera style={styles.container} ref={cameraRef}>
+          <Camera style={styles.container}
+          ref={cameraRef}
+          pictureSize='1840x1840'
+          ratio='1:1'>
             <SegmentedButtons
               density='medium'
               style={styles.previewCameraControl}
@@ -1767,7 +1791,10 @@ ${aspects
         );
       } else if (editPhotoOpen !== '') {
         return (
-          <Camera style={styles.container} ref={cameraRef}>
+          <Camera style={styles.container}
+          ref={cameraRef}
+          pictureSize='1840x1840'
+          ratio='1:1'>
             <SegmentedButtons
               density='medium'
               style={styles.previewCameraControl}
@@ -1821,6 +1848,7 @@ ${aspects
         getCategories={getCategories}
         category={category}
         searchCategories={searchCategories}
+        saveListing={saveListing}
       />
     );
   }
@@ -1837,6 +1865,7 @@ ${aspects
         categories={categories}
         onSelectedCategory={onSelectedCategory}
         category={category}
+        saveListing={saveListing}
       />
     );
   }
@@ -1855,6 +1884,7 @@ ${aspects
         checkedAllAspects={checkedAllAspects}
         category={category}
         getCategoriesFeatures={getCategoriesFeatures}
+        saveListing={saveListing}
       />
     );
   }
@@ -1873,6 +1903,7 @@ ${aspects
         onSelectedCondition={onSelectedCondition}
         conditionDescription={conditionDescription}
         onChangeConditionDescription={onChangeConditionDescription}
+        saveListing={saveListing}
 
         //changeValueItemAspect={changeValueItemAspect}
         //checkedAllAspects={checkedAllAspects}
@@ -1897,6 +1928,7 @@ ${aspects
         height={height}
         width={width}
         weight={weight}
+        saveListing={saveListing}
         //getPolicies={getPolicies}
         //processingCategoryFeatures={processingCategoryFeatures}
         //categoryFeatures={categoryFeatures}
@@ -1927,6 +1959,7 @@ ${aspects
         onProcessingTitle={onProcessingTitle}
         fetchPolicies={fetchPolicies}
         fetchPoliciesProcessing={fetchPoliciesProcessing}
+        saveListing={saveListing}
 
         //onChangeDimensions={onChangeDimensions}
         /*onChangeLength={onChangeLength}
@@ -1959,6 +1992,7 @@ ${aspects
         onChangeDescription={onChangeDescription}
         processingPrices={processingPrices}
         getPrices={getPrices}
+        saveListing={saveListing}
 
         /*processingPolicies={processingPolicies}
         fulfillmentPolicies={fulfillmentPolicies}

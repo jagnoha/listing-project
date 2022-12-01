@@ -10,10 +10,14 @@ import {
   SegmentedButtons,
   Banner,
 } from 'react-native-paper';
+import { useRecoilState } from 'recoil';
+import urlImagesAtom from '../../Store/atoms/urlImagesAtom';
 import Header from '../Header';
 
 export default function PhotosSection(props) {
   //const theme = useTheme();
+
+  const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
 
   return (
     <View>
@@ -37,7 +41,8 @@ export default function PhotosSection(props) {
                 <Image
                   style={props.styles.preview}
                   source={{
-                    uri: 'data:image/jpg;base64,' + props.photoMain.base64,
+                    //uri: 'data:image/jpg;base64,' + props.photoMain.base64,
+                      uri: `${urlImages}${props.photoMain}`,
                   }}
                 />
               ) : (
@@ -52,7 +57,8 @@ export default function PhotosSection(props) {
                   <Image
                     style={props.styles.preview}
                     source={{
-                      uri: 'data:image/jpg;base64,' + props.photoLabel.base64,
+                      //uri: 'data:image/jpg;base64,' + props.photoLabel.base64,
+                      uri: `${urlImages}${props.photoLabel}`,
                     }}
                   />
                 ) : (
@@ -85,7 +91,8 @@ export default function PhotosSection(props) {
                     <Image
                       style={props.styles.preview}
                       source={{
-                        uri: 'data:image/jpg;base64,' + item.value.base64,
+                        //uri: 'data:image/jpg;base64,' + item.value.base64,
+                        uri: `${urlImages}${item.value}`,
                       }}
                     />
                   </Surface>
