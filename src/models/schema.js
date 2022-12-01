@@ -227,21 +227,21 @@ export const schema = {
                 "photoMain": {
                     "name": "photoMain",
                     "isArray": false,
-                    "type": "AWSURL",
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
                 "photoLabel": {
                     "name": "photoLabel",
                     "isArray": false,
-                    "type": "AWSURL",
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
                 "photos": {
                     "name": "photos",
                     "isArray": true,
-                    "type": "AWSURL",
+                    "type": "AWSJSON",
                     "isRequired": false,
                     "attributes": [],
                     "isArrayNullable": true
@@ -609,5 +609,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "0dbf6194f39b318e562e20ef5ddd66c4"
+    "version": "163763efb27661ab590c8793e7064971"
 };

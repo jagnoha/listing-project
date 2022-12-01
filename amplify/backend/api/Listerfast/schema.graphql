@@ -36,9 +36,9 @@ type Listing @model @auth(rules: [{allow: public}]) {
   ItemsCompatibility: ItemsCompatibility @hasOne
   type: ListingType
   categoryList: [AWSJSON]
-  photoMain: AWSURL
-  photoLabel: AWSURL
-  photos: [AWSURL]
+  photoMain: String
+  photoLabel: String
+  photos: [AWSJSON]
   lastStep: Int
 }
 

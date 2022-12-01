@@ -100,7 +100,7 @@ export default function CategoryStage(props) {
             },
           ]}
         />
-        <Button style={{ marginTop: 15 }} icon='clock-edit-outline'>
+        <Button style={{ marginTop: 15 }} icon='clock-edit-outline' onPress={()=>props.saveListing()}>
           Finish this listing later
         </Button>
       </View>

@@ -122,9 +122,9 @@ export default function PhotosSection(props) {
           },
         ]}
       />
-      <Button style={{ marginTop: 15 }} icon='clock-edit-outline'>
-        Finish this listing later
-      </Button>
+      <Button style={{ marginTop: 15 }} icon='clock-edit-outline' onPress={()=>props.saveListing()}>
+          Finish this listing later
+        </Button>
     </View>
   );
 }

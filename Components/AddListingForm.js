@@ -11,10 +11,12 @@ import {
   ActivityIndicator,
 } from 'react-native-paper';
 
+import { ListingType } from '../src/models';
+
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Amplify, Storage } from 'aws-amplify';
+import { Amplify, Storage, API } from 'aws-amplify';
 import { Listing } from '../src/models';
 
 import { useRecoilState } from 'recoil';
@@ -32,6 +34,10 @@ import {
 } from 'react-native';
 //import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
+
+import * as queries from '../src/graphql/queries';
+import * as mutations from '../src/graphql/mutations';
+
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -196,6 +202,55 @@ export default function AddListingForm(props) {
     );
   }
 
+  const createNewListingDraft = async () => {
+    try {
+      console.log('Saving Listing');
+      
+
+      const id = uuidv4();
+
+      console.log(id);
+
+      console.log(userAccount.id);
+
+      console.log(category);
+      console.log(categories);
+      
+      
+      const listingDetails = {
+        id: id,
+        sku: id,
+        accountsID: userAccount.id,
+        title: titleProcessed,
+        description: descriptionProcessed,
+        price: priceProduct,
+        itemsSpecifics: JSON.stringify(aspects), 
+        isDraft: true,
+        type: ListingType[type.toUpperCase()],
+        photoMain: photoMain,
+        photoLabel: photoLabel,
+        photos: JSON.stringify(photos),
+        lastStep: lastStep,
+        ebayMotors: ListingType[type.toUpperCase()] === 'AUTOPARTS'  ? true : false,
+        categoryID: category,
+        categoryList: JSON.stringify(categories),
+        shippingProfileID: fulfillmentPolicyId,        
+      };
+      
+      const newListing = await API.graphql({ query: mutations.createListing, variables: {input: listingDetails}});
+      console.log(newListing);
+
+      
+      
+      if (newListing) {
+        navigation.goBack();
+      }
+
+    } catch(error){
+      console.log(JSON.stringify(error));
+    }
+  }
+
   const uploadImage = async (filename, img) => {
     return Storage.put(filename, img, {
       level: 'public',
@@ -232,7 +287,8 @@ export default function AddListingForm(props) {
 
   const saveListing = async () => {
     try {
-      console.log('Saving Listing');
+      //console.log('Saving Listing');
+      await createNewListingDraft();
       //handleImage(photoMain);
       //console.log(photoMain);
     } catch (error) {
