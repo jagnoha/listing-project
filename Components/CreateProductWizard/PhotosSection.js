@@ -26,8 +26,8 @@ export default function PhotosSection(props) {
       <View>
         <Banner visible={true} icon={'camera'}>
           {props.type === 'clothing' || props.type === 'shoes'
-            ? 'Take some good photos. The main photo and a photo of the product label are required. It would be nice if the product label had the brand name on it. You can also add up to 8 more photos.'
-            : 'Take some good photos. The main photo is required. You can also add up to 8 more photos.'}
+            ? 'The main photo is required. Additionally you can take a photo of the product tag. It would be nice if the product tag had the brand name on it. You can also add up to 8 more photos.'
+            : 'The main photo is required. You can also add up to 8 more photos.'}
         </Banner>
 
         <View style={props.styles.clothingButtons}>

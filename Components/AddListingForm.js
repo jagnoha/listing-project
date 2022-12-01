@@ -10,7 +10,7 @@ import {
   Banner,
 } from 'react-native-paper';
 
-import { DataStore } from 'aws-amplify';
+import { Amplify, Storage } from 'aws-amplify';
 import { Listing } from '../src/models';
 
 import { useRecoilState } from 'recoil';
@@ -18,7 +18,14 @@ import axios from 'axios';
 
 import { Pressable } from 'react-native';
 import Svg, { Circle, Rect } from 'react-native-svg';
-import { StyleSheet, View, Image, Platform, SafeAreaView } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Image,
+  Platform,
+  SafeAreaView,
+  Dimensions,
+} from 'react-native';
 //import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
 
@@ -43,10 +50,13 @@ import PolicyStage from './CreateProductWizard/PolicyStage';
 import PriceStage from './CreateProductWizard/PriceStage';
 
 import TitleRevisionStage from './CreateProductWizard/TitleRevisionStage';
-import { ConsoleLogger } from '@aws-amplify/core';
+
+import awsconfig from '../src/aws-exports';
+Amplify.configure(awsconfig);
 
 export default function AddListingForm(props) {
   let cameraRef = useRef();
+
   const [hasCameraPermission, setHasCameraPermission] = useState();
 
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
@@ -179,6 +189,48 @@ export default function AddListingForm(props) {
       </Text>
     );
   }
+
+  const uploadImage = async (filename, img) => {
+    return Storage.put(filename, img, {
+      level: 'public',
+      contentType: 'image/jpeg',
+      /*progressCallback(progress) {
+        setLoading(progress);
+      },*/
+    })
+      .then((response) => {
+        return response.key;
+      })
+      .catch((error) => {
+        console.log(error);
+        return error.response;
+      });
+  };
+
+  const fetchImageFromUri = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    return blob;
+  };
+
+  const handleImage = async (photoResult) => {
+    try {
+      const img = await fetchImageFromUri(photoResult.uri);
+      const uploadUrl = await uploadImage('demo.jpg', img);
+      console.log(uploadUrl);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const saveListing = async () => {
+    try {
+      handleImage(photoMain);
+      //console.log(photoMain);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const onChangeProductPrice = (price) => {
     setPriceProduct(price);
@@ -1278,8 +1330,8 @@ ${aspects
 
   //******************************************************** */
 
-  console.log('Aspects!: ');
-  console.log(aspects);
+  //console.log('Aspects!: ');
+  //console.log(aspects);
 
   //********************************************************* */
 
@@ -1387,10 +1439,17 @@ ${aspects
   };
 
   let takePicMain = async () => {
+    //const availablePictureSizes = await Camera.getAvailablePictureSizesAsync('4:3')
+
+    console.log(Dimensions.get('window').height);
+
+    const sizes = await cameraRef.current.getAvailablePictureSizesAsync('1:1');
+    console.log('Sizes********************************************: ', sizes);
+
     let options = {
       quality: 0.7,
       base64: true,
-      skipProcessing: true,
+      //skipProcessing: true,
       exif: false,
     };
 
@@ -1496,12 +1555,14 @@ ${aspects
     };
 
     let newPhoto = await cameraRef.current.takePictureAsync(options);
+
     setPhotoLabel(newPhoto);
 
     const source = newPhoto.uri;
+    await cameraRef.current.pausePreview();
 
     if (source) {
-      await cameraRef.current.pausePreview();
+      //await cameraRef.current.pausePreview();
       setLabelPhotoOpen(false);
       setOpenCamera(false);
       console.log('picture source', source);
@@ -1593,7 +1654,13 @@ ${aspects
     } else {
       if (mainPhotoOpen) {
         return (
-          <Camera style={styles.container} ref={cameraRef}>
+          <Camera
+            pictureSize='1840x1840'
+            style={styles.container}
+            ref={cameraRef}
+            ratio='1:1'
+            //onCameraReady={() => setMainPhotoOpen(false)}
+          >
             <SegmentedButtons
               density='medium'
               style={styles.previewCameraControl}
@@ -1937,6 +2004,8 @@ ${aspects
         priceProduct={priceProduct}
         onChangeQuantity={onChangeQuantity}
         quantity={quantity}
+        saveListing={saveListing}
+
         /*titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}
         onChangeTitle={onChangeTitle}
@@ -1978,10 +2047,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
 
     width: '100%',
-    height: 400,
-    marginTop: '40%',
+    //height: Dimensions.get('window').height / 5,
+    marginTop:
+      (Dimensions.get('window').height - Dimensions.get('window').width) / 2,
+    marginBottom:
+      (Dimensions.get('window').height - Dimensions.get('window').width) / 2,
+    //marginBottom: 100,
     //marginBottom: '55%',
-    position: 'absolute',
+    //position: 'absolute',
   },
 
   containerBarcode: {
@@ -2018,14 +2091,14 @@ const styles = StyleSheet.create({
 
   surface: {
     height: 115,
-    width: 130,
+    width: 115,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   surfaceSmall: {
     height: 70,
-    width: 90,
+    width: 70,
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 10,

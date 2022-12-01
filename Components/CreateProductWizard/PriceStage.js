@@ -204,7 +204,11 @@ export default function PriceStage(props) {
             },
           ]}
         />
-        <Button style={{ marginTop: 15 }} icon='clock-edit-outline'>
+        <Button
+          onPress={() => props.saveListing()}
+          style={{ marginTop: 15 }}
+          icon='clock-edit-outline'
+        >
           Finish this listing later
         </Button>
       </View>
