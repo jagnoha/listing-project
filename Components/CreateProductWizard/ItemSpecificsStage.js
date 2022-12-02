@@ -238,15 +238,21 @@ export default function ItemSpecificsStage(props) {
                     //getValueAspect() === '' ? searchQuery : getValueAspect()
                   }
                 />
+                
               )}
+             
             </>
           ) : (
             ''
           )}
 
+
+
           {wheelItems.length > 0 ? (
             <WheelPickerExpo
-              initialSelectedIndex={Math.ceil(wheelItems.length / 2) - 1}
+              //initialSelectedIndex={Math.ceil(wheelItems.length / 2) - 1}
+              initialSelectedIndex={0}
+              
               haptics={true}
               width={300}
               height={200}
@@ -257,7 +263,8 @@ export default function ItemSpecificsStage(props) {
             ''
           )}
         </Surface>
-
+        {selectedItem.name === 'Brand' ?
+                <Button onPress={()=>setSearchQuery('Unbranded')}>Unbranded?</Button> : ''}
         <View
           style={{
             paddingTop: 30,
@@ -290,7 +297,9 @@ export default function ItemSpecificsStage(props) {
               },
             ]}
           />
+          
         </View>
+       
       </View>
     );
   }
@@ -333,7 +342,8 @@ export default function ItemSpecificsStage(props) {
 
           {wheelItems.length > 0 ? (
             <WheelPickerExpo
-              initialSelectedIndex={Math.ceil(wheelItems.length / 2) - 1}
+              //initialSelectedIndex={Math.ceil(wheelItems.length / 2) - 1}
+              initialSelectedIndex={0}
               haptics={true}
               width={300}
               height={200}
