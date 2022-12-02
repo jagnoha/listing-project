@@ -7,7 +7,14 @@ import { A } from '@expo/html-elements';
 
 import Header from './Components/Header';
 
-import { useTheme, Text, Button, Banner, ActivityIndicator } from 'react-native-paper';
+import {
+  useTheme,
+  Text,
+  Button,
+  Banner,
+  ActivityIndicator,
+  Snackbar,
+} from 'react-native-paper';
 
 import * as queries from './src/graphql/queries';
 import * as mutations from './src/graphql/mutations';
@@ -25,6 +32,7 @@ import returnPoliciesAtom from './Store/atoms/returnPoliciesAtom';
 import usernameAtom from './Store/atoms/usernameAtom';
 import userAccountAtom from './Store/atoms/userAccountAtom';
 import ebayUserAtom from './Store/atoms/ebayUserAtom';
+import snackBarAtom from './Store/atoms/snackBarAtom';
 
 import NewAccountWizard from './Components/NewAccountWizard';
 import awsconfig from './src/aws-exports';
@@ -41,6 +49,8 @@ export default function Main() {
     useRecoilState(paymentPoliciesAtom);
   const [returnPolicies, setReturnPolicies] =
     useRecoilState(returnPoliciesAtom);
+
+  const [snackBar, setSnackBar] = useRecoilState(snackBarAtom);
 
   const [username, setUsername] = useRecoilState(usernameAtom);
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
@@ -67,101 +77,76 @@ export default function Main() {
     }
   },[])*/
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  useEffect(()=>{
+  const onDismissSnackBar = () => {
+    setSnackBar({ visible: false, text: '' });
+  };
+
+  useEffect(() => {
     (async () => {
       console.log('Testing!!!!!!!!!!!!!!!');
       console.log(user.username.toLowerCase());
 
-    setUsername(user.username.toLowerCase());
-    
-    const oneAccount = await API.graphql({
-      query: queries.getAccounts,
-      variables: { id: user.username.toLowerCase() }
-    });
+      setUsername(user.username.toLowerCase());
 
-    console.log('Processing 1:', oneAccount);
-    setUserAccount(oneAccount.data.getAccounts);
+      const oneAccount = await API.graphql({
+        query: queries.getAccounts,
+        variables: { id: user.username.toLowerCase() },
+      });
 
-    if (oneAccount.data.getAccounts){
-      setEbayUser(oneAccount.data.getAccounts.ebayAccountId);
-    
-      
+      console.log('Processing 1:', oneAccount);
+      setUserAccount(oneAccount.data.getAccounts);
 
-      if (oneAccount.data.getAccounts.ebayAccountId){
+      if (oneAccount.data.getAccounts) {
+        setEbayUser(oneAccount.data.getAccounts.ebayAccountId);
 
-      (async () => {
-        console.log('USER: ', user.username);
-        //const tempUser = userAccount.ebayAccountId.toLowerCase();
-        setUsername(user.username.toLowerCase());
-        const responseFulfillment = await fetch(
-          `https://listerfast.com/api/ebay/policies/fulfillment/${oneAccount.data.getAccounts.ebayAccountId}/0`
-        );
+        if (oneAccount.data.getAccounts.ebayAccountId) {
+          (async () => {
+            console.log('USER: ', user.username);
+            //const tempUser = userAccount.ebayAccountId.toLowerCase();
+            setUsername(user.username.toLowerCase());
+            const responseFulfillment = await fetch(
+              `https://listerfast.com/api/ebay/policies/fulfillment/${oneAccount.data.getAccounts.ebayAccountId}/0`
+            );
 
-        const responsePayment = await fetch(
-          `https://listerfast.com/api/ebay/policies/payment/${oneAccount.data.getAccounts.ebayAccountId}/0`
-        );
+            const responsePayment = await fetch(
+              `https://listerfast.com/api/ebay/policies/payment/${oneAccount.data.getAccounts.ebayAccountId}/0`
+            );
 
-        const responseReturn = await fetch(
-          `https://listerfast.com/api/ebay/policies/return/${oneAccount.data.getAccounts.ebayAccountId}/0`
-        );
+            const responseReturn = await fetch(
+              `https://listerfast.com/api/ebay/policies/return/${oneAccount.data.getAccounts.ebayAccountId}/0`
+            );
 
-        const jsonFulfillment = await responseFulfillment.json();
-        const jsonPayment = await responsePayment.json();
-        const jsonReturn = await responseReturn.json();
+            const jsonFulfillment = await responseFulfillment.json();
+            const jsonPayment = await responsePayment.json();
+            const jsonReturn = await responseReturn.json();
 
-        setFulfillmentPolicies(jsonFulfillment);
-        setPaymentPolicies(jsonPayment);
-        setReturnPolicies(jsonReturn);
-      })();
+            setFulfillmentPolicies(jsonFulfillment);
+            setPaymentPolicies(jsonPayment);
+            setReturnPolicies(jsonReturn);
+          })();
+        }
+      } else {
+        const accountDetails = {
+          id: user.username.toLowerCase(),
+          username: user.username.toLowerCase(),
+          isNewAccount: true,
+          plan: Plans.PERSONAL,
+        };
 
-    }
-    
+        const newAccount = await API.graphql({
+          query: mutations.createAccounts,
+          variables: { input: accountDetails },
+        });
+        console.log(newAccount);
+        setUserAccount(newAccount.data.createAccounts);
+        setFulfillmentPolicies([]);
+        setPaymentPolicies([]);
+        setReturnPolicies([]);
+      }
 
-    
-    
-    
-    } else {
-      const accountDetails = {
-        id: user.username.toLowerCase(),
-        username: user.username.toLowerCase(),
-        isNewAccount: true,
-        plan: Plans.PERSONAL
-      };
-      
-      const newAccount = await API.graphql({ query: mutations.createAccounts, variables: {input: accountDetails}});
-      console.log(newAccount);
-      setUserAccount(newAccount.data.createAccounts);
-      setFulfillmentPolicies([]);
-      setPaymentPolicies([]);
-      setReturnPolicies([]);
-    }
-
-    setProcessing(false);
-
-
-    
-
-
-  })()
-
-
-  },[]);
-
-
-
-
-
-
+      setProcessing(false);
+    })();
+  }, []);
 
   /*useEffect(()=>{
     (async () => {
@@ -282,23 +267,26 @@ export default function Main() {
     );
   };
 
-  if (processing){
-    return (<View style={{
-      flex: 1,
-      //justifyContent: 'space-between',
-      alignItems: 'center',
-      alignContent: 'center',
-      alignSelf: 'center',
-      justifyContent: 'center',
-      
-      //paddingBottom: 100,
-    }}>
-    <ActivityIndicator
-    
-      size='large'
-      style={{ marginTop: '20%', marginBottom: '20%' }}
-    />
-  </View>)
+  if (processing) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          //justifyContent: 'space-between',
+          alignItems: 'center',
+          alignContent: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+
+          //paddingBottom: 100,
+        }}
+      >
+        <ActivityIndicator
+          size='large'
+          style={{ marginTop: '20%', marginBottom: '20%' }}
+        />
+      </View>
+    );
   }
 
   if (userAccount && userAccount.isNewAccount) {
@@ -319,6 +307,20 @@ export default function Main() {
             <Stack.Screen name='Home' component={Home} />
             <Stack.Screen name='AddListing' component={AddListingForm} />
           </Stack.Navigator>
+          <Snackbar
+            visible={snackBar.visible}
+            duration={2000}
+            onDismiss={onDismissSnackBar}
+            //onDismiss={onDismissSnackBar}
+            /*action={{
+          label: 'Undo',
+          onPress: () => {
+            
+          },
+        }}*/
+          >
+            {snackBar.text}
+          </Snackbar>
         </NavigationContainer>
       }
     </>

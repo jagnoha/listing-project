@@ -6,7 +6,8 @@ export enum ListingType {
   CLOTHING = "CLOTHING",
   SHOES = "SHOES",
   AUTOPARTS = "AUTOPARTS",
-  OTHER = "OTHER"
+  OTHER = "OTHER",
+  BOOKS = "BOOKS"
 }
 
 export enum Plans {
@@ -51,7 +52,7 @@ type EagerListing = {
   readonly conditionDescription?: string | null;
   readonly length?: number | null;
   readonly width?: number | null;
-  readonly depth?: number | null;
+  readonly height?: number | null;
   readonly weight?: number | null;
   readonly quantity?: number | null;
   readonly sku?: string | null;
@@ -65,6 +66,9 @@ type EagerListing = {
   readonly photoLabel?: string | null;
   readonly photos?: (string | null)[] | null;
   readonly lastStep?: number | null;
+  readonly conditionName?: string | null;
+  readonly isReadyToGo?: boolean | null;
+  readonly barcodeValue?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly listingItemsCompatibilityId?: string | null;
@@ -91,7 +95,7 @@ type LazyListing = {
   readonly conditionDescription?: string | null;
   readonly length?: number | null;
   readonly width?: number | null;
-  readonly depth?: number | null;
+  readonly height?: number | null;
   readonly weight?: number | null;
   readonly quantity?: number | null;
   readonly sku?: string | null;
@@ -105,6 +109,9 @@ type LazyListing = {
   readonly photoLabel?: string | null;
   readonly photos?: (string | null)[] | null;
   readonly lastStep?: number | null;
+  readonly conditionName?: string | null;
+  readonly isReadyToGo?: boolean | null;
+  readonly barcodeValue?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly listingItemsCompatibilityId?: string | null;

@@ -18,7 +18,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../Header';
 
-const URL_EBAY_BUSINESS = 'https://www.bizpolicy.ebay.com/businesspolicy/policyoptin';
+const URL_EBAY_BUSINESS =
+  'https://www.bizpolicy.ebay.com/businesspolicy/policyoptin';
 
 const PolicyCard = ({ item, onPress }) => {
   return (
@@ -146,10 +147,7 @@ export default function PolicyStage(props) {
     setOpenFulfillmentList(false);
   };
 
-  
-
-
-    /*const handlePressBusinessPolicies = useCallback(async (url) => {
+  /*const handlePressBusinessPolicies = useCallback(async (url) => {
       // Checking if the link is supported for links with custom URL scheme.
       const supported = await Linking.canOpenURL(url);
   
@@ -162,34 +160,30 @@ export default function PolicyStage(props) {
       }
     }, [url]);*/
 
-const handlePressBusinessPolicies = async (url) => {
+  const handlePressBusinessPolicies = async (url) => {
     const supported = await Linking.canOpenURL(url);
 
     if (supported) {
-        await Linking.openURL(url);
+      await Linking.openURL(url);
     } else {
-        Alert.alert(`Don't know how to open this URL: ${url}`);
+      Alert.alert(`Don't know how to open this URL: ${url}`);
     }
-}
+  };
 
-
-
-  
-    
-  
   const getPaymentName = (id) => {
+    //console.log(props.paymentPolicies);
 
-    console.log(props.paymentPolicies);
-    
     /*if (props.paymentPolicies && props.paymentPolicies.type === 'EbayError' ){
         console.log('ERRRRRRRRRRRRRRRRRRRORRRRRRRRRR!');
     } else {*/
 
-        const policy = Array.isArray(props.paymentPolicies) ? props.paymentPolicies.find((item) => item.id === id) : false;
+    const policy = Array.isArray(props.paymentPolicies)
+      ? props.paymentPolicies.find((item) => item.id === id)
+      : false;
 
-        if (policy) {
-        return policy.name;
-        }
+    if (policy) {
+      return policy.name;
+    }
 
     //}
 
@@ -197,7 +191,9 @@ const handlePressBusinessPolicies = async (url) => {
   };
 
   const getFulfillmentName = (id) => {
-    const policy = Array.isArray(props.fulfillmentPolicies) ? props.fulfillmentPolicies.find((item) => item.id === id) : false;
+    const policy = Array.isArray(props.fulfillmentPolicies)
+      ? props.fulfillmentPolicies.find((item) => item.id === id)
+      : false;
 
     if (policy) {
       return policy.name;
@@ -207,7 +203,9 @@ const handlePressBusinessPolicies = async (url) => {
   };
 
   const getReturnName = (id) => {
-    const policy = Array.isArray(props.returnPolicies) ? props.returnPolicies.find((item) => item.id === id) : false;
+    const policy = Array.isArray(props.returnPolicies)
+      ? props.returnPolicies.find((item) => item.id === id)
+      : false;
 
     if (policy) {
       return policy.name;
@@ -273,7 +271,11 @@ const handlePressBusinessPolicies = async (url) => {
             <Pressable
               //onPress={() => props.onSelectedCategory(item.categoryId)}
               //onPress={() => onOpenFulfillmentList()}
-              onPress={ Array.isArray(props.fulfillmentPolicies) ? () => onOpenFulfillmentList() : () => handlePressBusinessPolicies(URL_EBAY_BUSINESS)      }
+              onPress={
+                Array.isArray(props.fulfillmentPolicies)
+                  ? () => onOpenFulfillmentList()
+                  : () => handlePressBusinessPolicies(URL_EBAY_BUSINESS)
+              }
             >
               <Card>
                 <Card.Content>
@@ -297,21 +299,26 @@ const handlePressBusinessPolicies = async (url) => {
                       ''
                     )}
                   </View>
-                  
 
-                  { Array.isArray(props.fulfillmentPolicies) ? <Paragraph style={{ fontWeight: 'bold' }}>
-                    {getFulfillmentName(props.fulfillmentPolicyId)}
-                  </Paragraph> : 
-                  <Paragraph style={{fontWeight: 'bold', color: 'red'}}>
-                    Configure Business Policies on Ebay
-                  </Paragraph>}
-
+                  {Array.isArray(props.fulfillmentPolicies) ? (
+                    <Paragraph style={{ fontWeight: 'bold' }}>
+                      {getFulfillmentName(props.fulfillmentPolicyId)}
+                    </Paragraph>
+                  ) : (
+                    <Paragraph style={{ fontWeight: 'bold', color: 'red' }}>
+                      Configure Business Policies on Ebay
+                    </Paragraph>
+                  )}
                 </Card.Content>
               </Card>
             </Pressable>
             <Pressable
               //onPress={() => props.onSelectedCategory(item.categoryId)}
-              onPress={ Array.isArray(props.paymentPolicies) ? () => onOpenPaymentList() : () => handlePressBusinessPolicies(URL_EBAY_BUSINESS)     }
+              onPress={
+                Array.isArray(props.paymentPolicies)
+                  ? () => onOpenPaymentList()
+                  : () => handlePressBusinessPolicies(URL_EBAY_BUSINESS)
+              }
             >
               <Card>
                 <Card.Content>
@@ -334,18 +341,25 @@ const handlePressBusinessPolicies = async (url) => {
                       ''
                     )}
                   </View>
-                  { Array.isArray(props.paymentPolicies) ? <Paragraph style={{ fontWeight: 'bold' }}>
-                    {getPaymentName(props.paymentPolicyId)}
-                  </Paragraph> : 
-                  <Paragraph style={{fontWeight: 'bold', color: 'red'}}>
-                    Configure Business Policies on Ebay
-                  </Paragraph>}
+                  {Array.isArray(props.paymentPolicies) ? (
+                    <Paragraph style={{ fontWeight: 'bold' }}>
+                      {getPaymentName(props.paymentPolicyId)}
+                    </Paragraph>
+                  ) : (
+                    <Paragraph style={{ fontWeight: 'bold', color: 'red' }}>
+                      Configure Business Policies on Ebay
+                    </Paragraph>
+                  )}
                 </Card.Content>
               </Card>
             </Pressable>
             <Pressable
               //onPress={() => props.onSelectedCategory(item.categoryId)}
-              onPress={ Array.isArray(props.returnPolicies) ? () => onOpenReturnList() : () => handlePressBusinessPolicies(URL_EBAY_BUSINESS)    }
+              onPress={
+                Array.isArray(props.returnPolicies)
+                  ? () => onOpenReturnList()
+                  : () => handlePressBusinessPolicies(URL_EBAY_BUSINESS)
+              }
             >
               <Card>
                 <Card.Content>
@@ -368,12 +382,15 @@ const handlePressBusinessPolicies = async (url) => {
                       ''
                     )}
                   </View>
-                  { Array.isArray(props.returnPolicies) ? <Paragraph style={{ fontWeight: 'bold' }}>
-                    {getReturnName(props.returnPolicyId)}
-                  </Paragraph> : 
-                  <Paragraph style={{fontWeight: 'bold', color: 'red'}}>
-                    Configure Business Policies on Ebay
-                  </Paragraph>}
+                  {Array.isArray(props.returnPolicies) ? (
+                    <Paragraph style={{ fontWeight: 'bold' }}>
+                      {getReturnName(props.returnPolicyId)}
+                    </Paragraph>
+                  ) : (
+                    <Paragraph style={{ fontWeight: 'bold', color: 'red' }}>
+                      Configure Business Policies on Ebay
+                    </Paragraph>
+                  )}
                 </Card.Content>
               </Card>
             </Pressable>
@@ -392,13 +409,12 @@ const handlePressBusinessPolicies = async (url) => {
               //disabled: 'true'
             },
             {
-                value: 'refresh', 
-                label: 'Refresh',
-                icon: 'reload',
-                onPress: () => props.fetchPolicies(),
-                //disabled: 'true'
-                
-              },
+              value: 'refresh',
+              label: 'Refresh',
+              icon: 'reload',
+              onPress: () => props.fetchPolicies(),
+              //disabled: 'true'
+            },
             {
               value: 'next',
               label: 'Next',
@@ -418,7 +434,11 @@ const handlePressBusinessPolicies = async (url) => {
             },
           ]}
         />
-       <Button style={{ marginTop: 15 }} icon='clock-edit-outline' onPress={()=>props.saveListing()}>
+        <Button
+          style={{ marginTop: 15 }}
+          icon='clock-edit-outline'
+          onPress={() => props.saveListing()}
+        >
           Finish this listing later
         </Button>
       </View>

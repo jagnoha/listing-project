@@ -24,7 +24,7 @@ export const onCreateListing = /* GraphQL */ `
       conditionDescription
       length
       width
-      depth
+      height
       weight
       quantity
       sku
@@ -46,6 +46,9 @@ export const onCreateListing = /* GraphQL */ `
       photoLabel
       photos
       lastStep
+      conditionName
+      isReadyToGo
+      barcodeValue
       createdAt
       updatedAt
       _version
@@ -78,7 +81,7 @@ export const onUpdateListing = /* GraphQL */ `
       conditionDescription
       length
       width
-      depth
+      height
       weight
       quantity
       sku
@@ -100,6 +103,9 @@ export const onUpdateListing = /* GraphQL */ `
       photoLabel
       photos
       lastStep
+      conditionName
+      isReadyToGo
+      barcodeValue
       createdAt
       updatedAt
       _version
@@ -132,7 +138,7 @@ export const onDeleteListing = /* GraphQL */ `
       conditionDescription
       length
       width
-      depth
+      height
       weight
       quantity
       sku
@@ -154,6 +160,9 @@ export const onDeleteListing = /* GraphQL */ `
       photoLabel
       photos
       lastStep
+      conditionName
+      isReadyToGo
+      barcodeValue
       createdAt
       updatedAt
       _version

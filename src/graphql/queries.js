@@ -24,7 +24,7 @@ export const getListing = /* GraphQL */ `
       conditionDescription
       length
       width
-      depth
+      height
       weight
       quantity
       sku
@@ -46,6 +46,9 @@ export const getListing = /* GraphQL */ `
       photoLabel
       photos
       lastStep
+      conditionName
+      isReadyToGo
+      barcodeValue
       createdAt
       updatedAt
       _version
@@ -83,7 +86,7 @@ export const listListings = /* GraphQL */ `
         conditionDescription
         length
         width
-        depth
+        height
         weight
         quantity
         sku
@@ -96,6 +99,9 @@ export const listListings = /* GraphQL */ `
         photoLabel
         photos
         lastStep
+        conditionName
+        isReadyToGo
+        barcodeValue
         createdAt
         updatedAt
         _version
@@ -142,7 +148,7 @@ export const syncListings = /* GraphQL */ `
         conditionDescription
         length
         width
-        depth
+        height
         weight
         quantity
         sku
@@ -155,6 +161,9 @@ export const syncListings = /* GraphQL */ `
         photoLabel
         photos
         lastStep
+        conditionName
+        isReadyToGo
+        barcodeValue
         createdAt
         updatedAt
         _version

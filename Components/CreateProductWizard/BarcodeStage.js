@@ -18,7 +18,7 @@ export default function BarcodeStage(props) {
   //const theme = useTheme();
 
   const processCategories = () => {
-    console.log('CATEGORY: ', props.category);
+    //console.log('CATEGORY: ', props.category);
     props.forward();
 
     if (props.category === '') {
@@ -109,7 +109,11 @@ export default function BarcodeStage(props) {
             },
           ]}
         />
-        <Button style={{ marginTop: 15 }} icon='clock-edit-outline' onPress={()=>props.saveListing()}>
+        <Button
+          style={{ marginTop: 15 }}
+          icon='clock-edit-outline'
+          onPress={() => props.saveListing()}
+        >
           Finish this listing later
         </Button>
       </View>

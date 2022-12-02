@@ -14,6 +14,7 @@ import {
   Badge,
   MD3Colors,
   Button,
+  Snackbar,
 } from 'react-native-paper';
 import { StyleSheet, Image, FlatList } from 'react-native';
 
@@ -95,7 +96,7 @@ const listingStructure = (props) => {
 export default function ListingsToRevise() {
   const theme = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
-  //const navigation = useNavigation(); 
+  //const navigation = useNavigation();
   //const [selected, setSelected] = useState([]);
 
   const [selected, setSelected] = useRecoilState(selectedAtom);
@@ -131,10 +132,6 @@ export default function ListingsToRevise() {
   //console.log(selectedDemo);
 
   const renderItem = ({ item }) => (
-
-
-    
-
     <List.Item
       style={{ paddingLeft: 10 }}
       title={item.title}
@@ -142,7 +139,7 @@ export default function ListingsToRevise() {
       descriptionStyle={{ color: 'gray' }}
       description={'Nike | Preowned'}
       //onPress={() => navigation.navigate('AddListing')}
-      onPress={()=>console.log(item.id)}
+      onPress={() => console.log(item.id)}
       onLongPress={() => onSelectListing(item.id)}
       left={(props) =>
         selected.find((listing) => listing === item.id) ? (

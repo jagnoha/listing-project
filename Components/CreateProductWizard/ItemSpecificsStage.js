@@ -42,7 +42,7 @@ export default function ItemSpecificsStage(props) {
           value: name.toUpperCase(),
         }));
 
-      console.log(wheelItemsList);
+      //console.log(wheelItemsList);
       setWheelItems(wheelItemsList);
     }
   };
@@ -68,7 +68,7 @@ export default function ItemSpecificsStage(props) {
         value: name.toUpperCase(),
       }));
 
-    console.log(wheelItemsList);
+    //console.log(wheelItemsList);
     setWheelItems(wheelItemsList);
 
     setSearchQuery('');
@@ -129,7 +129,7 @@ export default function ItemSpecificsStage(props) {
           value: name.toUpperCase(),
         }));
 
-      console.log(wheelItemsList);
+      //console.log(wheelItemsList);
 
       setWheelItems(wheelItemsList);
 
@@ -177,9 +177,9 @@ export default function ItemSpecificsStage(props) {
       itm.value.includes(searchQuery.toUpperCase().trim())
     );
 
-    console.log(list);
+    //console.log(list);
 
-    console.log('VALUE WHEEL: ', valueWheel);
+    //console.log('VALUE WHEEL: ', valueWheel);
     props.changeValueItemAspect(
       selectedItem.name,
       list.length === 1
@@ -421,7 +421,8 @@ export default function ItemSpecificsStage(props) {
       <View>
         <Banner visible={true} icon={'star-circle-outline'}>
           Add item details. Some of them are required to continue to the next
-          step. The more elements you add, the better for generating a better title and description.
+          step. The more elements you add, the better for generating a better
+          title and description.
         </Banner>
 
         {props.processingAspects ? (
@@ -521,7 +522,11 @@ export default function ItemSpecificsStage(props) {
             },
           ]}
         />
-        <Button style={{ marginTop: 15 }} icon='clock-edit-outline' onPress={()=>props.saveListing()}>
+        <Button
+          style={{ marginTop: 15 }}
+          icon='clock-edit-outline'
+          onPress={() => props.saveListing()}
+        >
           Finish this listing later
         </Button>
       </View>

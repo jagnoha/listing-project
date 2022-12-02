@@ -144,8 +144,8 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "depth": {
-                    "name": "depth",
+                "height": {
+                    "name": "height",
                     "isArray": false,
                     "type": "Float",
                     "isRequired": false,
@@ -250,6 +250,27 @@ export const schema = {
                     "name": "lastStep",
                     "isArray": false,
                     "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "conditionName": {
+                    "name": "conditionName",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "isReadyToGo": {
+                    "name": "isReadyToGo",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "barcodeValue": {
+                    "name": "barcodeValue",
+                    "isArray": false,
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -596,7 +617,8 @@ export const schema = {
                 "CLOTHING",
                 "SHOES",
                 "AUTOPARTS",
-                "OTHER"
+                "OTHER",
+                "BOOKS"
             ]
         },
         "Plans": {
@@ -609,5 +631,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "163763efb27661ab590c8793e7064971"
+    "version": "1b93cd66c5d3bade83d1eb510930a119"
 };

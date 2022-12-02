@@ -6,7 +6,8 @@ const ListingType = {
   "CLOTHING": "CLOTHING",
   "SHOES": "SHOES",
   "AUTOPARTS": "AUTOPARTS",
-  "OTHER": "OTHER"
+  "OTHER": "OTHER",
+  "BOOKS": "BOOKS"
 };
 
 const Plans = {

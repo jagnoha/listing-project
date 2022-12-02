@@ -3,6 +3,7 @@ enum ListingType {
   SHOES
   AUTOPARTS
   OTHER
+  BOOKS
 }
 
 type Listing @model @auth(rules: [{allow: public}]) {
@@ -26,7 +27,7 @@ type Listing @model @auth(rules: [{allow: public}]) {
   conditionDescription: String
   length: Float
   width: Float
-  depth: Float
+  height: Float
   weight: Float
   quantity: Int
   sku: String
@@ -40,6 +41,9 @@ type Listing @model @auth(rules: [{allow: public}]) {
   photoLabel: String
   photos: [AWSJSON]
   lastStep: Int
+  conditionName: String
+  isReadyToGo: Boolean
+  barcodeValue: String
 }
 
 type ItemsCompatibility @model @auth(rules: [{allow: public}]) {

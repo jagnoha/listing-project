@@ -38,7 +38,6 @@ import { Camera } from 'expo-camera';
 import * as queries from '../src/graphql/queries';
 import * as mutations from '../src/graphql/mutations';
 
-
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import userAccountAtom from '../Store/atoms/userAccountAtom';
@@ -47,6 +46,8 @@ import ebayUserAtom from '../Store/atoms/ebayUserAtom';
 import fulfillmentPoliciesAtom from '../Store/atoms/fulfillmentPoliciesAtom';
 import paymentPoliciesAtom from '../Store/atoms/paymentPoliciesAtom';
 import returnPoliciesAtom from '../Store/atoms/returnPoliciesAtom';
+
+import snackBarAtom from '../Store/atoms/snackBarAtom';
 
 import Header from './Header';
 import SearchProduct from './CreateProductWizard/SearchProduct';
@@ -72,6 +73,8 @@ export default function AddListingForm(props) {
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
 
   const [ebayUser, setEbayUser] = useRecoilState(ebayUserAtom);
+
+  const [snackBar, setSnackBar] = useRecoilState(snackBarAtom);
 
   const [processingImage, setProcessingImage] = useState(false);
 
@@ -141,6 +144,9 @@ export default function AddListingForm(props) {
   const [editPhotoOpen, setEditPhotoOpen] = useState('');
 
   const [condition, setCondition] = useState('');
+
+  const [conditionName, setConditionName] = useState('');
+
   const [conditionDescription, setConditionDescription] = useState('');
 
   const [barcodeOpen, setBarcodeOpen] = useState(false);
@@ -202,10 +208,78 @@ export default function AddListingForm(props) {
     );
   }
 
+  const getUPC = () => {
+    if (
+      categoryFeatures &&
+      (categoryFeatures.Category.UPCEnabled === 'Required' ||
+        categoryFeatures.Category.UPCEnabled === 'Enabled')
+    ) {
+      if (categoryFeatures.Category.UPCEnabled === 'Required') {
+        if (barcodeValue) {
+          return barcodeValue.data;
+        } else {
+          return 'Does Not Apply';
+        }
+      } else {
+        if (barcodeValue) {
+          return barcodeValue.data;
+        } else {
+          return null;
+        }
+      }
+    }
+    return null;
+  };
+
+  const getISBN = () => {
+    if (
+      categoryFeatures &&
+      (categoryFeatures.Category.ISBNEnabled === 'Required' ||
+        categoryFeatures.Category.ISBNEnabled === 'Enabled')
+    ) {
+      if (categoryFeatures.Category.ISBNEnabled === 'Required') {
+        if (barcodeValue) {
+          return barcodeValue.data;
+        } else {
+          return 'Does Not Apply';
+        }
+      } else {
+        if (barcodeValue) {
+          return barcodeValue.data;
+        } else {
+          return null;
+        }
+      }
+    }
+    return null;
+  };
+
+  const getEAN = () => {
+    if (
+      categoryFeatures &&
+      (categoryFeatures.Category.EANEnabled === 'Required' ||
+        categoryFeatures.Category.EANEnabled === 'Enabled')
+    ) {
+      if (categoryFeatures.Category.EANEnabled === 'Required') {
+        if (barcodeValue) {
+          return barcodeValue.data;
+        } else {
+          return 'Does Not Apply';
+        }
+      } else {
+        if (barcodeValue) {
+          return barcodeValue.data;
+        } else {
+          return null;
+        }
+      }
+    }
+    return null;
+  };
+
   const createNewListingDraft = async () => {
     try {
       console.log('Saving Listing');
-      
 
       const id = uuidv4();
 
@@ -215,8 +289,7 @@ export default function AddListingForm(props) {
 
       console.log(category);
       console.log(categories);
-      
-      
+
       const listingDetails = {
         id: id,
         sku: id,
@@ -224,32 +297,57 @@ export default function AddListingForm(props) {
         title: titleProcessed,
         description: descriptionProcessed,
         price: priceProduct,
-        itemsSpecifics: JSON.stringify(aspects), 
+        itemsSpecifics: JSON.stringify(aspects),
         isDraft: true,
         type: ListingType[type.toUpperCase()],
         photoMain: photoMain,
         photoLabel: photoLabel,
         photos: JSON.stringify(photos),
         lastStep: lastStep,
-        ebayMotors: ListingType[type.toUpperCase()] === 'AUTOPARTS'  ? true : false,
+        ebayMotors:
+          ListingType[type.toUpperCase()] === 'AUTOPARTS' ? true : false,
         categoryID: category,
         categoryList: JSON.stringify(categories),
-        shippingProfileID: fulfillmentPolicyId,        
+        shippingProfileID: fulfillmentPolicyId,
+        returnProfileID: returnPolicyId,
+        paymentProfileID: paymentPolicyId,
+        conditionCode: condition,
+        conditionDescription: conditionDescription,
+        conditionName: conditionName,
+        UPC: getUPC(),
+        ISBN: getISBN(),
+        EAN: getEAN(),
+        barcodeValue: barcodeValue.data,
+        length: length ? Number(length) : 6,
+        width: width ? Number(width) : 6,
+        height: height ? Number(height) : 6,
+        weight: weight ? Number(weight) : 6,
+        quantity: quantity,
+        isReadyToGo: quantity > 0 && priceProduct > 0 ? true : false,
       };
-      
-      const newListing = await API.graphql({ query: mutations.createListing, variables: {input: listingDetails}});
+
+      //console.log('Get upc: ', getUPC());
+      //console.log('Get EAN: ', getEAN());
+      //console.log('Get ISBN: ', getISBN());
+
+      /*console.log('UPC: ', categoryFeatures);
+      console.log('ISBN: ', categoryFeatures);
+      console.log('EAN: ', categoryFeatures);*/
+
+      const newListing = await API.graphql({
+        query: mutations.createListing,
+        variables: { input: listingDetails },
+      });
       console.log(newListing);
 
-      
-      
       if (newListing) {
         navigation.goBack();
+        setSnackBar({ visible: true, text: 'Listing Saved as Draft' });
       }
-
-    } catch(error){
+    } catch (error) {
       console.log(JSON.stringify(error));
     }
-  }
+  };
 
   const uploadImage = async (filename, img) => {
     return Storage.put(filename, img, {
@@ -278,7 +376,7 @@ export default function AddListingForm(props) {
     try {
       const img = await fetchImageFromUri(photoResult.uri);
       const uploadUrl = await uploadImage(nameFile, img);
-      console.log(uploadUrl);
+      //console.log(uploadUrl);
       return uploadUrl;
     } catch (error) {
       console.log(error);
@@ -414,23 +512,17 @@ export default function AddListingForm(props) {
     );
     const model = aspects.find((item) => item.localizedAspectName === 'Model');
 
-    
-
     const features = aspects.find(
       (item) => item.localizedAspectName === 'Features'
     );
 
     const fit = aspects.find((item) => item.localizedAspectName === 'Fit');
 
-   
-
     const categoryNew = categories.find((item) => item.categoryId === category);
 
     const usShoeSize = aspects.find(
       (item) => item.localizedAspectName === 'US Shoe Size'
     );
-
-    
 
     let importantAspects = {
       brand: brand ? (brand.value === 'Unbranded' ? '' : brand.value) : '',
@@ -440,7 +532,7 @@ export default function AddListingForm(props) {
       sizeType: sizeType ? sizeType.value : '',
       type: type ? type.value : '',
       color: color ? color.value : '',
-     
+
       fit: fit ? fit.value : '',
 
       department: department ? department.value : '',
@@ -449,9 +541,8 @@ export default function AddListingForm(props) {
       model: model ? model.value : '',
       category: categoryNew.title,
       features: features ? features.value : '',
-      
+
       usShoeSize: usShoeSize ? usShoeSize.value : '',
-      
     };
 
     return importantAspects;
@@ -481,18 +572,14 @@ Condition: ${
     }     
 `;
 
-    
-
     let aspectsFil = aspects.filter((item) => item.value !== '');
 
     for (let itm of aspectsFil) {
-      console.log(itm.localizedAspectName + ': ' + itm.value + '\n');
+      //console.log(itm.localizedAspectName + ': ' + itm.value + '\n');
       pendingDescription = pendingDescription.concat(
         itm.localizedAspectName + ': ' + itm.value + '\n'
       );
     }
-
-    
 
     pendingDescription = pendingDescription.concat(
       '\n' +
@@ -576,7 +663,7 @@ Condition: ${
       pendingTitle.push(keywords['features']);
 
       pendingTitle.push(extraAspects.join(' '));
-      console.log('Extra aspects: ', extraAspects.slice(0, 2));
+      //console.log('Extra aspects: ', extraAspects.slice(0, 2));
       shortPendingTitle.push(extraAspects.slice(0, 2).join(' '));
 
       if (keywords['fit'] !== '') {
@@ -641,8 +728,8 @@ Condition: ${
         (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
       );
 
-      console.log(filtetedTitle.join(' ').length);
-      console.log(filtetedTitleShort.join(' ').length);
+      /*console.log(filtetedTitle.join(' ').length);
+      console.log(filtetedTitleShort.join(' ').length);*/
 
       // processing long title
       let uniqueFilteredTitle = filtetedTitle.join(' ').split(' ');
@@ -737,7 +824,7 @@ Condition: ${
         (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
       );
 
-      console.log(filtetedTitle.join(' ').length);
+      //console.log(filtetedTitle.join(' ').length);
 
       let uniqueFilteredTitle = filtetedTitle.join(' ').split(' ');
       uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)];
@@ -766,7 +853,7 @@ Condition: ${
         (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
       );
 
-      console.log(filtetedTitleShort.join(' ').length);
+      //console.log(filtetedTitleShort.join(' ').length);
 
       let uniqueFilteredTitleShort = filtetedTitleShort.join(' ').split(' ');
       uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)];
@@ -786,8 +873,8 @@ Condition: ${
   };
 
   const onProcessingTitle = async () => {
-    console.log('Processing Title and Description!!!');
-    console.log(getExtraAspectsValuesClothing());
+    /*console.log('Processing Title and Description!!!');
+    console.log(getExtraAspectsValuesClothing());*/
     //processingTitle()
     processingTitle();
   };
@@ -828,14 +915,15 @@ Condition: ${
       );
 
       const json = await response.json();
+
       let result;
 
       if (json.Category.ConditionEnabled) {
-        console.log('conditions!');
+        //console.log('conditions!');
         result = json;
         result.conditions = result.Category.ConditionValues.Condition;
       } else {
-        console.log('No conditions!');
+        //console.log('No conditions!');
         result = json;
         result.conditions = [
           {
@@ -883,7 +971,12 @@ Condition: ${
       //setCategoryFeatures(res.data);
 
       //console.log(res.data.Category.BestOfferEnabled);
-      console.log(result.conditions);
+      //console.log(result.conditions);
+
+      /*console.log(result.Category.UPCEnabled);
+      console.log(result.Category.ISBNEnabled);
+      console.log(result.Category.EANEnabled);*/
+
       setCategoryFeatures(result);
       setProcessingCategoryFeatures(false);
     } catch (error) {
@@ -892,8 +985,9 @@ Condition: ${
     }
   };
 
-  const onSelectedCondition = (conditionId) => {
+  const onSelectedCondition = (conditionId, conditionName) => {
     setCondition(conditionId);
+    setConditionName(conditionName);
   };
 
   const getItemAspects = async (categoryId) => {
@@ -970,7 +1064,7 @@ Condition: ${
           };
         });
 
-      console.log(aspects);
+      //console.log(aspects);
 
       setAspects(aspects.sort((a, b) => b.require - a.require));
       setProcessingAspects(false);
@@ -981,8 +1075,8 @@ Condition: ${
   };
 
   const changeValueItemAspect = (itm, value) => {
-    console.log(itm);
-    console.log(value);
+    //console.log(itm);
+    //console.log(value);
     const newAspects = aspects.map((item) => {
       if (item.localizedAspectName === itm) {
         return {
@@ -1058,12 +1152,12 @@ Condition: ${
 
         let priceTitles = listings.map((item) => item.title);
 
-        console.log(prices.length);
+        /*console.log(prices.length);
 
         console.log(prices);
         console.log(priceTitles);
         console.log('AVG Price: ', getAvgPrice(prices).toFixed(2));
-        console.log('Minimum Price: ', prices[0]);
+        console.log('Minimum Price: ', prices[0]);*/
 
         setPrices([prices[0], getAvgPrice(prices).toFixed(2)]);
       } else {
@@ -1086,11 +1180,11 @@ Condition: ${
 
       setProcessingPrices(true);
 
-      console.log('Get Prices!');
+      /*console.log('Get Prices!');
       console.log('Title: ', titleProcessed);
       console.log('Barcode: ', barcodeValue);
       console.log('Category: ', category);
-      console.log('Condition: ', condition);
+      console.log('Condition: ', condition);*/
 
       let jsonResponse;
 
@@ -1100,7 +1194,7 @@ Condition: ${
         );
 
         jsonResponse = await response.json();
-        console.log(barcodeValue.data);
+        //console.log(barcodeValue.data);
 
         processPrices(jsonResponse);
       }
@@ -1303,10 +1397,10 @@ Condition: ${
           //pendingTitle.push(`Size ${keywords['usShoeSize']}`);
         }
 
-        console.log(
+        /*console.log(
           'PENDING TITLE***********************************: ',
           pendingTitle
-        );
+        );*/
 
         const response = await fetch(
           `https://listerfast.com/api/ebay/search/${pendingTitle
@@ -1382,7 +1476,7 @@ Condition: ${
         setPaymentPolicies(jsonPayment);
         setReturnPolicies(jsonReturn);
 
-        console.log(jsonFulfillment);
+        //console.log(jsonFulfillment);
         setProcessingPolicies(false);
       }
     } catch (error) {
@@ -1400,7 +1494,7 @@ Condition: ${
           ? `${searchCategories} ${type}`
           : searchCategories;
 
-      console.log('Ebay User: ', ebayUser);
+      //console.log('Ebay User: ', ebayUser);
 
       const response = await fetch(
         `https://listerfast.com/api/ebay/categorysuggestions/${ebayUser}/${getTypeProductCode(
@@ -1420,7 +1514,7 @@ Condition: ${
 
       setCategory('');
       setCategories(categories);
-      console.log(categories);
+      //console.log(categories);
       setProcessingCategories(false);
     } catch (error) {
       setProcessingCategories(false);
@@ -1430,7 +1524,7 @@ Condition: ${
 
   const onSelectedCategory = (id) => {
     setCategory(id);
-    console.log(id);
+    //console.log(id);
     forward();
     getItemAspects(id);
   };
@@ -1440,7 +1534,7 @@ Condition: ${
 
     if (step + 1 > lastStep) {
       setLastStep(step + 1);
-      console.log(step + 1);
+      //console.log(step + 1);
     } else {
       console.log(lastStep);
     }
@@ -1451,54 +1545,40 @@ Condition: ${
   };
 
   let takePicMain = async () => {
-
     try {
-    
+      let nameFile = `${uuidv4()}.jpg`;
 
-    let nameFile = `${uuidv4()}.jpg`;
+      let options = {
+        quality: 0.7,
+        base64: true,
+        //skipProcessing: true,
+        exif: false,
+      };
 
-    let options = {
-      quality: 0.7,
-      base64: true,
-      //skipProcessing: true,
-      exif: false,
-    };
+      let newPhoto = await cameraRef.current.takePictureAsync(options);
 
-    
-    let newPhoto = await cameraRef.current.takePictureAsync(options);
+      const source = newPhoto;
 
-    
-    
-    
-   const source = newPhoto;
+      //console.log('Source: ', source);
 
-    
+      if (source) {
+        await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotoMain(newPhotoAWS);
+        setOpenCamera(false);
+        setMainPhotoOpen(false);
 
-    console.log('Source: ', source);
-
-    if (source) {
-      
-      await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotoMain(newPhotoAWS);
-      setOpenCamera(false);
-      setMainPhotoOpen(false);
-
-      
-
-
-      console.log('picture source', source);
+        //console.log('picture source', source);
+      }
+    } catch (error) {
+      console.log(error);
+      setProcessingImage(false);
     }
-
-  } catch(error){
-    console.log(error);
-    setProcessingImage(false);
-  }
   };
 
   const handleBarCodeScanned = ({ type, data }) => {
-    console.log(type);
-    console.log(data);
+    /*console.log(type);
+    console.log(data);*/
     setBarcodeValue({ type, data });
     setBarcodeOpen(false);
   };
@@ -1508,13 +1588,13 @@ Condition: ${
   };
 
   const onOpenPreviewPhoto = (async = () => {
-    console.log('ADD NEW PHOTO!!!!');
+    //console.log('ADD NEW PHOTO!!!!');
     setOpenCamera(true);
     setMorePhotosOpen(true);
   });
 
   const onOpenEditPhoto = (async = (id) => {
-    console.log('EDIT PHOTO: ', id);
+    //console.log('EDIT PHOTO: ', id);
     setOpenCamera(true);
     setEditPhotoOpen(id);
   });
@@ -1534,7 +1614,7 @@ Condition: ${
     let nameFile = `${uuidv4()}.jpg`;
 
     let newPhoto = await cameraRef.current.takePictureAsync(options);
-    
+
     //const source = newPhoto.uri;
 
     const source = newPhoto;
@@ -1546,7 +1626,7 @@ Condition: ${
 
       setMorePhotosOpen(false);
       setOpenCamera(false);
-      console.log('picture source', source);
+      //console.log('picture source', source);
     }
   };
 
@@ -1562,11 +1642,6 @@ Condition: ${
 
     let newPhoto = await cameraRef.current.takePictureAsync(options);
 
-   
-
-    
-
-    
     //setPhotos((old) => [...old, { id: newPhoto.uri, value: newPhoto }]);
 
     const source = newPhoto;
@@ -1575,20 +1650,20 @@ Condition: ${
       await cameraRef.current.pausePreview();
       let newPhotoAWS = await handleImage(source, nameFile);
       setPhotos((old) =>
-      old.map((item) => {
-        if (item.id === editPhotoOpen) {
-          return {
-            id: item.id,
-            value: newPhotoAWS,
-          };
-        }
-        return item;
-      })
-    );
+        old.map((item) => {
+          if (item.id === editPhotoOpen) {
+            return {
+              id: item.id,
+              value: newPhotoAWS,
+            };
+          }
+          return item;
+        })
+      );
       //setMorePhotosOpen(false);
       setEditPhotoOpen('');
       setOpenCamera(false);
-      console.log('picture source', source);
+      //console.log('picture source', source);
     }
   };
 
@@ -1612,7 +1687,6 @@ Condition: ${
     //await cameraRef.current.pausePreview();
 
     if (source) {
-
       await cameraRef.current.pausePreview();
       let newPhotoAWS = await handleImage(source, nameFile);
       setPhotoLabel(newPhotoAWS);
@@ -1711,8 +1785,6 @@ Condition: ${
       );
     } else {
       if (mainPhotoOpen) {
-
-
         /*if (processingImage) {
           return (<View><Text>Processing</Text></View>)
         } else {*/
@@ -1723,16 +1795,14 @@ Condition: ${
         }*/
 
         return (
-          <Camera            
+          <Camera
             style={styles.container}
             ref={cameraRef}
             pictureSize='1840x1840'
             ratio='1:1'
             //onCameraReady={() => setMainPhotoOpen(false)}
           >
-            
             <SegmentedButtons
-              
               density='medium'
               style={styles.previewCameraControl}
               onValueChange={() => console.log('Change value')}
@@ -1763,16 +1833,17 @@ Condition: ${
                   disabled: photoMain ? false : true,
                 },
               ]}
-            /> 
-            
+            />
           </Camera>
-        )
+        );
       } else if (labelPhotoOpen) {
         return (
-          <Camera style={styles.container}
-          ref={cameraRef}
-          pictureSize='1840x1840'
-          ratio='1:1'>
+          <Camera
+            style={styles.container}
+            ref={cameraRef}
+            pictureSize='1840x1840'
+            ratio='1:1'
+          >
             <SegmentedButtons
               density='medium'
               style={styles.previewCameraControl}
@@ -1808,10 +1879,12 @@ Condition: ${
         );
       } else if (morePhotosOpen) {
         return (
-          <Camera style={styles.container}
-          ref={cameraRef}
-          pictureSize='1840x1840'
-          ratio='1:1'>
+          <Camera
+            style={styles.container}
+            ref={cameraRef}
+            pictureSize='1840x1840'
+            ratio='1:1'
+          >
             <SegmentedButtons
               density='medium'
               style={styles.previewCameraControl}
@@ -1847,10 +1920,12 @@ Condition: ${
         );
       } else if (editPhotoOpen !== '') {
         return (
-          <Camera style={styles.container}
-          ref={cameraRef}
-          pictureSize='1840x1840'
-          ratio='1:1'>
+          <Camera
+            style={styles.container}
+            ref={cameraRef}
+            pictureSize='1840x1840'
+            ratio='1:1'
+          >
             <SegmentedButtons
               density='medium'
               style={styles.previewCameraControl}

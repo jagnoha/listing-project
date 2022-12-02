@@ -62,7 +62,9 @@ export default function ConditionStage(props) {
                     <Pressable
                       //onPress={() => props.onSelectedCategory(item.categoryId)}
                       //onPress={() => console.log(item.ID)}
-                      onPress={() => props.onSelectedCondition(item.ID)}
+                      onPress={() =>
+                        props.onSelectedCondition(item.ID, item.DisplayName)
+                      }
                     >
                       <Card>
                         <Card.Content>
@@ -127,7 +129,11 @@ export default function ConditionStage(props) {
             },
           ]}
         />
-        <Button style={{ marginTop: 15 }} icon='clock-edit-outline' onPress={()=>props.saveListing()}>
+        <Button
+          style={{ marginTop: 15 }}
+          icon='clock-edit-outline'
+          onPress={() => props.saveListing()}
+        >
           Finish this listing later
         </Button>
       </View>
