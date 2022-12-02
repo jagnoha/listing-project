@@ -15,12 +15,12 @@ export default function ListingsReadyToGo() {
     <>
       
       <Button
-        icon='upload'
+        icon='publish'
         mode='contained'
         onPress={() => console.log('Pressed')}
         style={styles.button}
       >
-        Upload all to eBay
+        Publish all to eBay
       </Button>
       <Divider />
       

@@ -34,6 +34,9 @@ import userAccountAtom from './Store/atoms/userAccountAtom';
 import ebayUserAtom from './Store/atoms/ebayUserAtom';
 import snackBarAtom from './Store/atoms/snackBarAtom';
 
+import toReviseListAtom from './Store/atoms/toReviseListAtom';
+import readyToGoListAtom from './Store/atoms/readyToGoListAtom';
+
 import NewAccountWizard from './Components/NewAccountWizard';
 import awsconfig from './src/aws-exports';
 
@@ -45,6 +48,10 @@ export default function Main() {
   const [fulfillmentPolicies, setFulfillmentPolicies] = useRecoilState(
     fulfillmentPoliciesAtom
   );
+
+  const [toReviseList, setToReviseList] = useRecoilState(toReviseListAtom)
+  const [readyToGoList, setReadyToGoList] = useRecoilState(readyToGoListAtom)
+
   const [paymentPolicies, setPaymentPolicies] =
     useRecoilState(paymentPoliciesAtom);
   const [returnPolicies, setReturnPolicies] =
@@ -80,6 +87,30 @@ export default function Main() {
   const onDismissSnackBar = () => {
     setSnackBar({ visible: false, text: '' });
   };
+
+  useEffect(() => {
+    (async () => {
+
+      const toReviseListResponse = await API.graphql({
+        query: queries.syncListings,
+        variables: { filter: {accountsID: {eq: user.username.toLowerCase()}, isReadyToGo: {eq: false}}, limit: 1000 },
+      });
+
+      setToReviseList(toReviseListResponse.data.syncListings.items);
+
+      const readyToGoListResponse = await API.graphql({
+        query: queries.syncListings,
+        variables: { filter: {accountsID: {eq: user.username.toLowerCase()}, isReadyToGo: {eq: true}}, limit: 1000 },
+      });
+
+      setReadyToGoList(readyToGoListResponse.data.syncListings.items);
+
+      //console.log('Listings to revise: ', toReviseList.data.syncListings );
+
+
+
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {

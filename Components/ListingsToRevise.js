@@ -14,9 +14,13 @@ import {
   Badge,
   MD3Colors,
   Button,
-  Snackbar,
+  Snackbar
+  
 } from 'react-native-paper';
 import { StyleSheet, Image, FlatList } from 'react-native';
+import toReviseListAtom from '../Store/atoms/toReviseListAtom';
+import readyToGoListAtom from '../Store/atoms/readyToGoListAtom';
+import urlImagesAtom from '../Store/atoms/urlImagesAtom';
 
 const DATA = [
   {
@@ -85,6 +89,8 @@ const DATA = [
   },
 ];
 
+const month = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
 const listingStructure = (props) => {
   return (
     <>
@@ -100,6 +106,11 @@ export default function ListingsToRevise() {
   //const [selected, setSelected] = useState([]);
 
   const [selected, setSelected] = useRecoilState(selectedAtom);
+  const [toReviseList, setToReviseList] = useRecoilState(toReviseListAtom)
+  const [readyToGoList, setReadyToGoList] = useRecoilState(readyToGoListAtom)
+  const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom)
+
+  console.log(toReviseList);
 
   const onChangeSearch = (query) => setSearchQuery(query);
 
@@ -110,6 +121,18 @@ export default function ListingsToRevise() {
       setSelected((oldSelected) => [...oldSelected, id]);
     }
   };
+
+  /*useEffect(() => {
+    (async () => {
+    
+
+    
+    })
+
+  
+  })*/
+
+
 
   const checkType = (type) => {
     if (type === 'CLOTHING') {
@@ -137,7 +160,7 @@ export default function ListingsToRevise() {
       title={item.title}
       titleNumberOfLines={2}
       descriptionStyle={{ color: 'gray' }}
-      description={'Nike | Preowned'}
+      description={item.conditionName}
       //onPress={() => navigation.navigate('AddListing')}
       onPress={() => console.log(item.id)}
       onLongPress={() => onSelectListing(item.id)}
@@ -149,13 +172,13 @@ export default function ListingsToRevise() {
             iconColor={theme.colors.primary}
           />
         ) : (
-          <List.Image variant='image' source={{ uri: item.image }} />
+          <List.Image variant='image' source={{ uri: urlImages + item.photoMain }} />
         )
       }
       right={() => (
         <>
           <List.Icon icon={checkType(item.type)} color={theme.colors.primary} />
-          <Text style={{ fontSize: 11 }}>Nov 4</Text>
+          <Text style={{ fontSize: 11 }}> {month[new Date(item.createdAt).getMonth()]} {new Date(item.createdAt).getDay()}</Text>
         </>
       )}
     />
@@ -170,12 +193,13 @@ export default function ListingsToRevise() {
         loading={false}
   />:''*/}
       <FlatList
-        data={DATA}
+        data={toReviseList}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshing={false}
         onRefresh={() => console.log('Refreshing')}
       />
+      
     </>
   );
 }

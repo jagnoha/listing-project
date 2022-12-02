@@ -72,6 +72,8 @@ export default function AddListingForm(props) {
 
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
 
+  const [processingSelectedAspectValue, setProcessingSelectedAspectValue] = useState(false);
+
   const [ebayUser, setEbayUser] = useRecoilState(ebayUserAtom);
 
   const [snackBar, setSnackBar] = useRecoilState(snackBarAtom);
@@ -317,7 +319,7 @@ export default function AddListingForm(props) {
         UPC: getUPC(),
         ISBN: getISBN(),
         EAN: getEAN(),
-        barcodeValue: barcodeValue.data,
+        barcodeValue: barcodeValue ? barcodeValue.data : null,
         length: length ? Number(length) : 6,
         width: width ? Number(width) : 6,
         height: height ? Number(height) : 6,
@@ -1077,6 +1079,7 @@ Condition: ${
   const changeValueItemAspect = (itm, value) => {
     //console.log(itm);
     //console.log(value);
+    setProcessingSelectedAspectValue(true);
     const newAspects = aspects.map((item) => {
       if (item.localizedAspectName === itm) {
         return {
@@ -1099,6 +1102,7 @@ Condition: ${
     setCheckedAllAspects(aspectList.length > 0 ? false : true);
 
     setAspects(newAspects);
+    setProcessingSelectedAspectValue(false);
   };
 
   const getAvgPrice = (list) => {
@@ -2016,6 +2020,7 @@ Condition: ${
         category={category}
         getCategoriesFeatures={getCategoriesFeatures}
         saveListing={saveListing}
+        processingSelectedAspectValue={processingSelectedAspectValue}
       />
     );
   }
