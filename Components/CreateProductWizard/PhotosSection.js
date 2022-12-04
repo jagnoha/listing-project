@@ -42,11 +42,11 @@ export default function PhotosSection(props) {
                   style={props.styles.preview}
                   source={{
                     //uri: 'data:image/jpg;base64,' + props.photoMain.base64,
-                      uri: `${urlImages}${props.photoMain}`,
+                    uri: `${urlImages}${props.photoMain}`,
                   }}
                 />
               ) : (
-                <Text>Main Photo</Text>
+                <Text style={{ fontSize: 12 }}>Main Photo</Text>
               )}
             </Surface>
           </Pressable>
@@ -62,7 +62,7 @@ export default function PhotosSection(props) {
                     }}
                   />
                 ) : (
-                  <Text>Photo Tag</Text>
+                  <Text style={{ fontSize: 12 }}>Photo Tag</Text>
                 )}
               </Surface>
             </Pressable>
@@ -122,9 +122,13 @@ export default function PhotosSection(props) {
           },
         ]}
       />
-      <Button style={{ marginTop: 15 }} icon='clock-edit-outline' onPress={()=>props.saveListing()}>
-          Finish this listing later
-        </Button>
+      <Button
+        style={{ marginTop: 15 }}
+        icon='clock-edit-outline'
+        onPress={() => props.saveListing()}
+      >
+        Finish this listing later
+      </Button>
     </View>
   );
 }

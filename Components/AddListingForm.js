@@ -72,7 +72,8 @@ export default function AddListingForm(props) {
 
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
 
-  const [processingSelectedAspectValue, setProcessingSelectedAspectValue] = useState(false);
+  const [processingSelectedAspectValue, setProcessingSelectedAspectValue] =
+    useState(false);
 
   const [ebayUser, setEbayUser] = useRecoilState(ebayUserAtom);
 
@@ -1553,11 +1554,15 @@ Condition: ${
       let nameFile = `${uuidv4()}.jpg`;
 
       let options = {
-        quality: 0.7,
+        quality: 0.6,
         base64: true,
         //skipProcessing: true,
         exif: false,
       };
+
+      //const ratios = await cameraRef.current.getSupportedRatiosAsync();
+      //console.log(ratios);
+      //console.log(await cameraRef.current.getAvailablePictureSizesAsync('4:3'));
 
       let newPhoto = await cameraRef.current.takePictureAsync(options);
 
@@ -1609,7 +1614,7 @@ Condition: ${
 
   const takeNewPic = async () => {
     let options = {
-      quality: 0.7,
+      quality: 0.6,
       base64: true,
       //skipProcessing: true,
       exif: false,
@@ -1636,7 +1641,7 @@ Condition: ${
 
   const takeEditPic = async () => {
     let options = {
-      quality: 0.7,
+      quality: 0.6,
       base64: true,
       //skipProcessing: true,
       exif: false,
@@ -1673,7 +1678,7 @@ Condition: ${
 
   const takePicLabel = async () => {
     let options = {
-      quality: 0.7,
+      quality: 0.6,
       base64: true,
       //skipProcessing: true,
       exif: false,
@@ -1802,8 +1807,8 @@ Condition: ${
           <Camera
             style={styles.container}
             ref={cameraRef}
-            pictureSize='1840x1840'
-            ratio='1:1'
+            pictureSize='1280x960'
+            //ratio='4:3'
             //onCameraReady={() => setMainPhotoOpen(false)}
           >
             <SegmentedButtons
@@ -1845,8 +1850,8 @@ Condition: ${
           <Camera
             style={styles.container}
             ref={cameraRef}
-            pictureSize='1840x1840'
-            ratio='1:1'
+            pictureSize='1280x960'
+            //ratio='1:1'
           >
             <SegmentedButtons
               density='medium'
@@ -1886,8 +1891,8 @@ Condition: ${
           <Camera
             style={styles.container}
             ref={cameraRef}
-            pictureSize='1840x1840'
-            ratio='1:1'
+            pictureSize='1280x960'
+            //ratio='1:1'
           >
             <SegmentedButtons
               density='medium'
@@ -1927,8 +1932,8 @@ Condition: ${
           <Camera
             style={styles.container}
             ref={cameraRef}
-            pictureSize='1840x1840'
-            ratio='1:1'
+            pictureSize='1280x960'
+            //ratio='1:1'
           >
             <SegmentedButtons
               density='medium'
@@ -2219,9 +2224,9 @@ const styles = StyleSheet.create({
     width: '100%',
     //height: Dimensions.get('window').height / 5,
     marginTop:
-      (Dimensions.get('window').height - Dimensions.get('window').width) / 2,
+      (Dimensions.get('window').height - Dimensions.get('window').width) / 4,
     marginBottom:
-      (Dimensions.get('window').height - Dimensions.get('window').width) / 2,
+      (Dimensions.get('window').height - Dimensions.get('window').width) / 3,
     //marginBottom: 100,
     //marginBottom: '55%',
     //position: 'absolute',
@@ -2261,14 +2266,14 @@ const styles = StyleSheet.create({
 
   surface: {
     height: 115,
-    width: 115,
+    width: 86.25,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   surfaceSmall: {
     height: 70,
-    width: 70,
+    width: 52.5,
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 10,

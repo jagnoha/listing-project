@@ -24,25 +24,23 @@ import snackBarAtom from '../../Store/atoms/snackBarAtom';
 
 //const CITIES = 'Jakarta,Bandung,Sumbawa,Taliwang,Lombok,Bima'.split(',');
 
-
 const AspectItemCard = ({ item, onPress }) => {
   return (
     <View style={{ margin: 7 }}>
-      <Pressable onPress={onPress} onPressOut={()=>console.log('Pressed!!!')}
-      
-      
-      >
+      <Pressable onPress={onPress} onPressOut={() => console.log('Pressed!!!')}>
         <Card>
           <Card.Content>
             <View>
-              <Title 
-        
-        style={{fontSize: 17, padding: 10, paddingTop: 5, paddingBottom: 5, textAlign:'center'}}
-        
-        >{item.name}
-              
-              
-              
+              <Title
+                style={{
+                  fontSize: 17,
+                  padding: 10,
+                  paddingTop: 5,
+                  paddingBottom: 5,
+                  textAlign: 'center',
+                }}
+              >
+                {item.name}
               </Title>
               {/*<Paragraph style={{ fontSize: 14 }}>{item.description}</Paragraph>*/}
             </View>
@@ -52,7 +50,6 @@ const AspectItemCard = ({ item, onPress }) => {
     </View>
   );
 };
-
 
 export default function ItemSpecificsStage(props) {
   const [openWheel, setOpenWheel] = useState(false);
@@ -140,40 +137,34 @@ export default function ItemSpecificsStage(props) {
   };*/
 
   const onChangeSearch = (query) => {
-    
     setSearchQuery(query);
-    
-   
-      /*const wheelItemsList = props.aspects
+
+    /*const wheelItemsList = props.aspects
         .find((itm) => itm.localizedAspectName === selectedItem.name)
         .aspectValues.map((value) => ({
           id: value,
           name: value.toUpperCase(),
         }));*/
 
-      /*setWheelItems(
+    /*setWheelItems(
         wheelItemsList.filter((itm) => itm.value.includes(query.toUpperCase()))
       );*/
 
-      const wheelItemsList = props.aspects
+    const wheelItemsList = props.aspects
       .find((itm) => itm.localizedAspectName === selectedItem.name)
       .aspectValues.map((value) => ({
         id: value.toUpperCase(),
         name: value,
-      }))
-      
-      /*setWheelItems((old) => old.filter((itm) => itm.name.includes(query.toUpperCase())))*/
+      }));
 
-      setWheelItems(
-        wheelItemsList.filter((itm) => itm.id.includes(query.toUpperCase()))
-      );
+    /*setWheelItems((old) => old.filter((itm) => itm.name.includes(query.toUpperCase())))*/
 
-      
+    setWheelItems(
+      wheelItemsList.filter((itm) => itm.id.includes(query.toUpperCase()))
+    );
 
-      console.log(wheelItems);
-    
+    console.log(wheelItems);
   };
-
 
   const onClickItem = (item) => {
     onOpenWheel(item);
@@ -214,14 +205,11 @@ export default function ItemSpecificsStage(props) {
     setOpenWheel(true);
   };*/
 
-
-   const onSelectedValue = async (value) => {
+  const onSelectedValue = async (value) => {
     console.log(value);
-   
-    props.changeValueItemAspect(selectedItem.name, value);
 
-   
-   }
+    props.changeValueItemAspect(selectedItem.name, value);
+  };
 
   /*const onSelectedValue = (id) => {
 
@@ -257,8 +245,6 @@ export default function ItemSpecificsStage(props) {
       mode: item.mode,
     });
 
-    
-
     /*if (Array.isArray(item.value)) {
       setMultiSelected(item.value);
     }*/
@@ -283,10 +269,12 @@ export default function ItemSpecificsStage(props) {
       setSearchQuery('');
     }*/
 
-    const wheelItemsList = props.aspects.find((itm) => itm.localizedAspectName === item.localizedAspectName).aspectValues.map(value => ({
-      id: value.toUpperCase(),
-      name: value,
-    }))
+    const wheelItemsList = props.aspects
+      .find((itm) => itm.localizedAspectName === item.localizedAspectName)
+      .aspectValues.map((value) => ({
+        id: value.toUpperCase(),
+        name: value,
+      }));
 
     setWheelItems(wheelItemsList);
 
@@ -337,6 +325,12 @@ export default function ItemSpecificsStage(props) {
         ? searchQuery.trim()
         : valueWheel
     );
+
+    setSnackBar({
+      visible: true,
+      text: `Edited ${selectedItem.name}: ${searchQuery.trim()}`,
+    });
+
     setSelectedItem();
     setValueWheel('');
     setSearchQuery('');
@@ -353,7 +347,10 @@ export default function ItemSpecificsStage(props) {
           //setProcessingSelectedValue(true);
           onSelectedValue(item.name);
           onCloseWheel();
-          setSnackBar({visible: true, text: `Picked ${selectedItem.name}: ${item.name}`})
+          setSnackBar({
+            visible: true,
+            text: `Picked ${selectedItem.name}: ${item.name}`,
+          });
         }}
         /*onPressIn={()=> { onSelectedValue(item.name);
           onCloseWheel();  }}*/
@@ -361,23 +358,20 @@ export default function ItemSpecificsStage(props) {
     );
   };
 
-
   if (openWheel && selectedItem.cardinality === 'SINGLE') {
     return (
       <View
-      style={{
-        flex: 1,
-        marginBottom: 50,
+        style={{
+          flex: 1,
+          marginBottom: 50,
 
-        alignItems: 'center',
-        alignContent: 'center',
-        alignSelf: 'center',
-        paddingTop: 75,
-      }}
-    >
-        
-        
-      {/*<View
+          alignItems: 'center',
+          alignContent: 'center',
+          alignSelf: 'center',
+          paddingTop: 75,
+        }}
+      >
+        {/*<View
           style={{
             //paddingTop: 10,
             flexDirection: 'row',
@@ -393,83 +387,161 @@ export default function ItemSpecificsStage(props) {
           
           
         </View>*/}
-        
-        { wheelItems.length > 0 ? <Text style={{fontSize: 20, marginBottom: 15}}>Pick a {selectedItem.name}</Text>:
-        <Text style={{fontSize: 20, marginBottom: 15}}>Edit {selectedItem.name}</Text>}
-          
-                <Searchbar
-                style={{margin: 25}}
-                  placeholder={ wheelItems.length > 0 ?
-                    'Search' : 'Edit'
-                  }
-                  onChangeText={onChangeSearch}
-                  value={
-                    searchQuery
-                  }
-                  icon={wheelItems.length > 0 ? 'magnify' : 'pencil'}
-                />
 
-                
-        
-        
+        {wheelItems.length > 0 ? (
+          <Text style={{ fontSize: 20, marginBottom: 15 }}>
+            Pick a {selectedItem.name}
+          </Text>
+        ) : (
+          <Text style={{ fontSize: 20, marginBottom: 15 }}>
+            Edit {selectedItem.name}
+          </Text>
+        )}
+
+        <Searchbar
+          style={{ margin: 25 }}
+          placeholder={wheelItems.length > 0 ? 'Search' : 'Edit'}
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+          icon={wheelItems.length > 0 ? 'magnify' : 'pencil'}
+        />
+
         <FlatList
-        data={wheelItems}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        //onEndReachedThreshold={50}
-      />
-        
-        
-        
-        
+          data={wheelItems}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          //onEndReachedThreshold={50}
+        />
+
         <SegmentedButtons
-            style={props.styles.nextBackControl}
-            onValueChange={() => console.log('Change value')}
-            buttons={ wheelItems.length > 0 ?
-              
-             [
-              {
-                value: 'close',
-                label: 'Close',
-                icon: 'close',
-                onPress: () => onCloseWheel(),
-              },
-              {
-                value: 'reset',
-                label: 'Delete',
-                icon: 'cancel',
-                onPress: () => onResetWheel(),
-              },
+          style={props.styles.nextBackControl}
+          onValueChange={() => console.log('Change value')}
+          buttons={
+            wheelItems.length > 0
+              ? [
+                  {
+                    value: 'close',
+                    label: 'Close',
+                    icon: 'close',
+                    onPress: () => onCloseWheel(),
+                  },
+                  {
+                    value: 'reset',
+                    label: 'Delete',
+                    icon: 'cancel',
+                    onPress: () => onResetWheel(),
+                  },
+                ]
+              : [
+                  {
+                    value: 'close',
+                    label: 'Close',
+                    icon: 'close',
+                    onPress: () => onCloseWheel(),
+                  },
+                  {
+                    value: 'reset',
+                    label: 'Delete',
+                    icon: 'cancel',
+                    onPress: () => onResetWheel(),
+                  },
 
-             
-            ] : 
-            [
-              {
-                value: 'close',
-                label: 'Close',
-                icon: 'close',
-                onPress: () => onCloseWheel(),
-              },
-              {
-                value: 'reset',
-                label: 'Delete',
-                icon: 'cancel',
-                onPress: () => onResetWheel(),
-              },
-
-              { 
-                value: 'add',
-                label: 'Add',
-                icon: 'plus',
-                onPress: () => onApplyWheel(),
-              }, 
-            ]   }
-          />
-
-    </View>
-    )
+                  {
+                    value: 'apply',
+                    label: 'Apply',
+                    icon: 'check',
+                    onPress: () => onApplyWheel(),
+                  },
+                ]
+          }
+        />
+      </View>
+    );
   }
 
+  if (openWheel && selectedItem.cardinality === 'MULTI') {
+    return (
+      <View
+        style={{
+          flex: 1,
+          marginBottom: 50,
+
+          alignItems: 'center',
+          alignContent: 'center',
+          alignSelf: 'center',
+          paddingTop: 75,
+        }}
+      >
+        {wheelItems.length > 0 ? (
+          <Text style={{ fontSize: 20, marginBottom: 15 }}>
+            Pick a {selectedItem.name}
+          </Text>
+        ) : (
+          <Text style={{ fontSize: 20, marginBottom: 15 }}>
+            Edit {selectedItem.name}
+          </Text>
+        )}
+
+        <Searchbar
+          style={{ margin: 25 }}
+          placeholder={wheelItems.length > 0 ? 'Search' : 'Edit'}
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+          icon={wheelItems.length > 0 ? 'magnify' : 'pencil'}
+        />
+
+        <FlatList
+          data={wheelItems}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          //onEndReachedThreshold={50}
+        />
+
+        <SegmentedButtons
+          style={props.styles.nextBackControl}
+          onValueChange={() => console.log('Change value')}
+          buttons={
+            wheelItems.length > 0
+              ? [
+                  {
+                    value: 'close',
+                    label: 'Close',
+                    icon: 'close',
+                    onPress: () => onCloseWheel(),
+                  },
+                  {
+                    value: 'reset',
+                    label: 'Delete',
+                    icon: 'cancel',
+                    onPress: () => onResetWheel(),
+                  },
+                ]
+              : [
+                  {
+                    value: 'close',
+                    label: 'Close',
+                    icon: 'close',
+                    onPress: () => onCloseWheel(),
+                  },
+                  {
+                    value: 'reset',
+                    label: 'Delete',
+                    icon: 'cancel',
+                    onPress: () => onResetWheel(),
+                  },
+
+                  {
+                    value: 'add',
+                    label: 'Add',
+                    icon: 'plus',
+                    onPress: () => onApplyWheel(),
+                  },
+                ]
+          }
+        />
+      </View>
+    );
+  }
   // *********************** Starting Open Wheel
 
   /*if (openWheel && selectedItem.cardinality === 'SINGLE') {
