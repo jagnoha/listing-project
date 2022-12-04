@@ -85,10 +85,10 @@ export default function ItemSpecificsStage(props) {
     setMultiSelected((old) => old.filter((itm) => itm !== item));
   };
 
-  const onAddMultiItem = () => {
+  const onAddMultiItem = (valueItem) => {
     if (wheelItems.length > 0) {
-      if (!multiSelected.find((item) => item === valueWheel)) {
-        setMultiSelected((old) => [...old, valueWheel]);
+      if (!multiSelected.find((item) => item === valueItem)) {
+        setMultiSelected((old) => [...old, valueItem]);
       }
     } else {
       setMultiSelected((old) => [...old, searchQuery]);
@@ -97,9 +97,9 @@ export default function ItemSpecificsStage(props) {
 
     const wheelItemsList = props.aspects
       .find((itm) => itm.localizedAspectName === selectedItem.name)
-      .aspectValues.map((name) => ({
-        label: name,
-        value: name.toUpperCase(),
+      .aspectValues.map((value) => ({
+        id: value,
+        name: value,
       }));
 
     //console.log(wheelItemsList);
@@ -243,6 +243,7 @@ export default function ItemSpecificsStage(props) {
       name: item.localizedAspectName,
       cardinality: item.cardinality,
       mode: item.mode,
+      value: item.value,
     });
 
     /*if (Array.isArray(item.value)) {
@@ -301,6 +302,12 @@ export default function ItemSpecificsStage(props) {
 
   const onApplyMultiWheel = () => {
     props.changeValueItemAspect(selectedItem.name, multiSelected);
+
+    setSnackBar({
+      visible: true,
+      text: `Edited ${selectedItem.name}: ${multiSelected.join(' | ')}`,
+    });
+
     setSelectedItem();
     setValueWheel('');
     setSearchQuery('');
@@ -358,6 +365,28 @@ export default function ItemSpecificsStage(props) {
     );
   };
 
+  const renderItemMulti = ({ item }) => {
+    return (
+      <AspectItemCard
+        item={item}
+        onPress={() => {
+          onAddMultiItem(item.name);
+        }}
+        /*onPress={() => {
+          //setProcessingSelectedValue(true);
+          onSelectedValue(item.name);
+          onCloseWheel();
+          setSnackBar({
+            visible: true,
+            text: `Picked ${selectedItem.name}: ${item.name}`,
+          });
+        }}*/
+        /*onPressIn={()=> { onSelectedValue(item.name);
+          onCloseWheel();  }}*/
+      />
+    );
+  };
+
   if (openWheel && selectedItem.cardinality === 'SINGLE') {
     return (
       <View
@@ -402,6 +431,7 @@ export default function ItemSpecificsStage(props) {
           style={{ margin: 25 }}
           placeholder={wheelItems.length > 0 ? 'Search' : 'Edit'}
           onChangeText={onChangeSearch}
+          //value={selectedItem.value !== '' ? selectedItem.value : searchQuery}
           value={searchQuery}
           icon={wheelItems.length > 0 ? 'magnify' : 'pencil'}
         />
@@ -492,10 +522,35 @@ export default function ItemSpecificsStage(props) {
 
         <FlatList
           data={wheelItems}
-          renderItem={renderItem}
+          renderItem={renderItemMulti}
           keyExtractor={(item) => item.id}
           //onEndReachedThreshold={50}
         />
+
+        <View
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            margin: 20,
+          }}
+        >
+          {multiSelected.map((item) => {
+            return (
+              <View key={item}>
+                <Chip
+                  style={{ margin: 5 }}
+                  closeIcon='close'
+                  compact={true}
+                  //mode='outlined'
+                  mode='flat'
+                  onClose={() => onCloseMultiItem(item)}
+                >
+                  {item}
+                </Chip>
+              </View>
+            );
+          })}
+        </View>
 
         <SegmentedButtons
           style={props.styles.nextBackControl}
@@ -514,6 +569,13 @@ export default function ItemSpecificsStage(props) {
                     label: 'Delete',
                     icon: 'cancel',
                     onPress: () => onResetWheel(),
+                  },
+                  {
+                    value: 'apply',
+                    label: 'Apply',
+                    icon: 'check',
+                    disabled: multiSelected.length > 0 ? false : true,
+                    onPress: () => onApplyMultiWheel(),
                   },
                 ]
               : [
@@ -534,7 +596,14 @@ export default function ItemSpecificsStage(props) {
                     value: 'add',
                     label: 'Add',
                     icon: 'plus',
-                    onPress: () => onApplyWheel(),
+                    onPress: () => onAddMultiItem(searchQuery),
+                  },
+                  {
+                    value: 'apply',
+                    label: 'Apply',
+                    icon: 'check',
+                    disabled: multiSelected.length > 0 ? false : true,
+                    onPress: () => onApplyMultiWheel(),
                   },
                 ]
           }
