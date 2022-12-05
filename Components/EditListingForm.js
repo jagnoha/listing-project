@@ -176,7 +176,7 @@ export default function EditListingForm(props) {
   const route = useRoute();
   //const { title } = route.params;
 
-  const titleHeader = `Edit Listing (${type})`;
+  const titleHeader = `Edit Listing`;
 
   useEffect(() => {
     (async () => {
@@ -1859,6 +1859,7 @@ Condition: ${
         <View>
           <PhotosSection
             title={titleHeader}
+            typeHeader={'editListing'}
             navigation={navigation}
             styles={styles}
             onMainPhotoOpen={onMainPhotoOpen}
@@ -2059,6 +2060,7 @@ Condition: ${
     return (
       <BarcodeStage
         title={titleHeader}
+        typeHeader={'editListing'}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2080,6 +2082,7 @@ Condition: ${
     return (
       <CategoryStage
         title={titleHeader}
+        typeHeader={'editListing'}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2097,6 +2100,7 @@ Condition: ${
     return (
       <ItemSpecificsStage
         title={titleHeader}
+        typeHeader={'editListing'}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2117,6 +2121,7 @@ Condition: ${
     return (
       <ConditionStage
         title={titleHeader}
+        typeHeader={'editListing'}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2140,6 +2145,7 @@ Condition: ${
     return (
       <DimensionStage
         title={titleHeader}
+        typeHeader={'editListing'}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2168,6 +2174,7 @@ Condition: ${
       <PolicyStage
         title={titleHeader}
         navigation={navigation}
+        typeHeader={'editListing'}
         styles={styles}
         backward={backward}
         forward={forward}
@@ -2207,6 +2214,7 @@ Condition: ${
     return (
       <TitleRevisionStage
         title={titleHeader}
+        typeHeader={'editListing'}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2251,6 +2259,7 @@ Condition: ${
     return (
       <PriceStage
         title={titleHeader}
+        typeHeader={'editListing'}
         navigation={navigation}
         styles={styles}
         backward={backward}

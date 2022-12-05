@@ -20,7 +20,8 @@ export default function SearchProduct(props) {
     <View>
       <Header
         title={props.title}
-        type='createListing'
+        type={props.typeHeader}
+        //type='createListing'
         actionBack={props.navigation.goBack}
       />
       <View>

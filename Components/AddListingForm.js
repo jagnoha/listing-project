@@ -1776,6 +1776,7 @@ Condition: ${
     return (
       <SearchProduct
         title={title}
+        typeHeader={'createListing'}
         navigation={navigation}
         onSearchCategories={onSearchCategories}
         searchCategories={searchCategories}
@@ -1793,6 +1794,7 @@ Condition: ${
         <View>
           <PhotosSection
             title={title}
+            typeHeader={'createListing'}
             navigation={navigation}
             styles={styles}
             onMainPhotoOpen={onMainPhotoOpen}
@@ -1993,6 +1995,7 @@ Condition: ${
     return (
       <BarcodeStage
         title={title}
+        typeHeader={'createListing'}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2014,6 +2017,7 @@ Condition: ${
     return (
       <CategoryStage
         title={title}
+        typeHeader={'createListing'}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2031,6 +2035,7 @@ Condition: ${
     return (
       <ItemSpecificsStage
         title={title}
+        typeHeader={'createListing'}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2073,6 +2078,7 @@ Condition: ${
     return (
       <DimensionStage
         title={title}
+        typeHeader={'createListing'}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2100,6 +2106,7 @@ Condition: ${
     return (
       <PolicyStage
         title={title}
+        typeHeader={'createListing'}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2140,6 +2147,7 @@ Condition: ${
     return (
       <TitleRevisionStage
         title={title}
+        typeHeader={'createListing'}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2184,6 +2192,7 @@ Condition: ${
     return (
       <PriceStage
         title={title}
+        typeHeader={'createListing'}
         navigation={navigation}
         styles={styles}
         backward={backward}

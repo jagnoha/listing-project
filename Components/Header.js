@@ -58,6 +58,16 @@ export default function Header(props) {
     );
   }
 
+  if (props.type === 'editListing') {
+    return (
+      <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
+        <Appbar.BackAction onPress={() => props.actionBack()} />
+        <Appbar.Content title={props.title} color={theme.colors.onBackground} />
+        <Appbar.Action icon='delete' onPress={()=>console.log('Delete item!')} />
+      </Appbar.Header>
+    );
+  }
+
   return (
     <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
       <Appbar.Content

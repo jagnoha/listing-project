@@ -23,7 +23,8 @@ export default function PhotosSection(props) {
     <View>
       <Header
         title={props.title}
-        type='createListing'
+        //type='createListing'
+        type={props.typeHeader}
         actionBack={props.navigation.goBack}
       />
 
