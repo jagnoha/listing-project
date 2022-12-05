@@ -321,8 +321,9 @@ export default function Main() {
           </Stack.Navigator>
           <Snackbar
             visible={snackBar.visible}
-            duration={2000}
+            duration={1500}
             onDismiss={onDismissSnackBar}
+            style={{backgroundColor:'green'}}
             //onDismiss={onDismissSnackBar}
             /*action={{
           label: 'Undo',

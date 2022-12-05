@@ -116,6 +116,7 @@ export default function ListingsToRevise() {
       //onPress={() => navigation.navigate('AddListing')}
       onPress={() => onOpenListing(item.id, item.type)}
       onLongPress={() => onSelectListing(item.id)}
+      delayLongPress={200}
       left={(props) =>
         selected.find((listing) => listing === item.id) ? (
           <IconButton

@@ -105,12 +105,14 @@ export default function ListingsReadyToGo() {
     <List.Item
       style={{ paddingLeft: 10 }}
       title={item.title}
-      titleNumberOfLines={2}
+      titleNumberOfLines={3}
       descriptionStyle={{ color: 'gray' }}
       description={item.conditionName}
       //onPress={() => navigation.navigate('AddListing')}
       onPress={() => onOpenListing(item.id, item.type)}
       onLongPress={() => onSelectListing(item.id)}
+      delayLongPress={200}
+      
       left={(props) =>
         selected.find((listing) => listing === item.id) ? (
           <IconButton
