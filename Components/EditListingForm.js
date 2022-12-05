@@ -16,7 +16,7 @@ import { ListingType } from '../src/models';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Amplify, Storage, API } from 'aws-amplify';
+import { Amplify, Storage, API, graphqlOperation } from 'aws-amplify';
 import { Listing } from '../src/models';
 
 import { useRecoilState } from 'recoil';
@@ -67,8 +67,12 @@ import TitleRevisionStage from './CreateProductWizard/TitleRevisionStage';
 import awsconfig from '../src/aws-exports';
 Amplify.configure(awsconfig);
 
-export default function AddListingForm(props) {
+export default function EditListingForm(props) {
   let cameraRef = useRef();
+
+  const { listingId, type } = props.route.params;
+
+  
 
   const [hasCameraPermission, setHasCameraPermission] = useState();
 
@@ -118,6 +122,8 @@ export default function AddListingForm(props) {
 
   const [checkedAllAspects, setCheckedAllAspects] = useState(false);
 
+  const [listing, setListing] = useState(null);
+
   const [processingPrices, setProcessingPrices] = useState(false);
 
   const [prices, setPrices] = useState([]);
@@ -158,13 +164,19 @@ export default function AddListingForm(props) {
 
   const [listings, setListings] = useRecoilState(listingsAtom);
 
+  //const [type, setType] = useState(null);
+
+  const [initializingListing, setInitializingListing] = useState(false);
+
   //const [listPhotoOpen, setListPhotoOpen] = useState(0);
 
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(1);
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { title, type } = route.params;
+  //const { title } = route.params;
+
+  const titleHeader = `Edit Listing (${type})`;
 
   useEffect(() => {
     (async () => {
@@ -172,6 +184,82 @@ export default function AddListingForm(props) {
       setHasCameraPermission(cameraPermission.status === 'granted');
     })();
   }, []);
+
+  useEffect(() => {
+
+    try {
+
+    (async () => {
+
+      setInitializingListing(true);
+
+      console.log('ESTE ES EL ID DEL LISTING', listingId);
+
+      const oneListing = await API.graphql({
+        query: queries.getListing,
+        variables: { id: listingId },
+      });
+
+      
+      const listing = oneListing.data.getListing;
+
+      setListing(listing);
+     
+      setPhotoMain(listing.photoMain);
+      setPhotoLabel(listing.photoLabel);
+      setPhotos(JSON.parse(listing.photos));
+      setBarcodeValue(listing.barcodeValue);
+      setCategories(JSON.parse(listing.categoryList));
+      setAspects(JSON.parse(listing.itemsSpecifics));
+      setCategory(listing.categoryID);
+
+      const aspectList = JSON.parse(listing.itemsSpecifics).filter(
+        (item) => item.require === true && item.value === ''
+      );
+  
+      setCheckedAllAspects(aspectList.length > 0 ? false : true);
+
+      setCondition(Number(listing.conditionCode));
+      setConditionDescription(listing.conditionDescription);
+      setConditionName(listing.conditionName);
+      setLength(listing.length.toString());
+      setHeight(listing.height.toString());
+      setWidth(listing.width.toString());
+      setWeight(listing.weight.toString());
+
+      setFulfillmentPolicyId(listing.shippingProfileID);
+      setReturnPolicyId(listing.returnProfileID);
+      setPaymentPolicyId(listing.paymentProfileID);
+      setTitleProcessed(listing.title);
+      setDescriptionProcessed(listing.description);
+      setQuantity(listing.quantity.toString());
+      setPriceProduct(listing.price.toString());
+      
+      setStep(listing.lastStep);
+      setLastStep(listing.lastStep);
+      
+
+      
+
+  
+      setInitializingListing(false)
+
+      //console.log(type);
+
+      
+      
+
+
+    })()
+    } catch(error){
+      console.log(error);
+      setInitializingListing(false);
+    }
+  
+  }
+    
+    
+    ,[]);
 
   useEffect(() => {
     (async () => {
@@ -214,6 +302,8 @@ export default function AddListingForm(props) {
       </Text>
     );
   }
+
+  
 
   const getUPC = () => {
     if (
@@ -284,22 +374,19 @@ export default function AddListingForm(props) {
     return null;
   };
 
-  const createNewListingDraft = async () => {
+  const updateListingDraft = async () => {
     try {
       console.log('Saving Listing');
 
-      const id = uuidv4();
+      const id = listingId;
 
-      //console.log(id);
+      const version = listing._version;
 
-      //console.log(userAccount.id);
-
-      //console.log(category);
-      //console.log(categories);
-
+      
       const listingDetails = {
         id: id,
-        sku: id,
+        sku: listing.sku,
+        _version: version,
         accountsID: userAccount.id,
         title: titleProcessed,
         description: descriptionProcessed,
@@ -333,16 +420,9 @@ export default function AddListingForm(props) {
         isReadyToGo: quantity > 0 && priceProduct > 0 ? true : false,
       };
 
-      //console.log('Get upc: ', getUPC());
-      //console.log('Get EAN: ', getEAN());
-      //console.log('Get ISBN: ', getISBN());
-
-      /*console.log('UPC: ', categoryFeatures);
-      console.log('ISBN: ', categoryFeatures);
-      console.log('EAN: ', categoryFeatures);*/
-
+      
       const newListing = await API.graphql({
-        query: mutations.createListing,
+        query: mutations.updateListing,
         variables: { input: listingDetails },
       });
 
@@ -359,10 +439,8 @@ export default function AddListingForm(props) {
       );
 
       if (newListing) {
-        //setListings((old) => [...old, newListing.data.createListing]);
         navigation.goBack();
-        
-        setSnackBar({ visible: true, text: 'Listing Saved as Draft' });
+        setSnackBar({ visible: true, text: 'Listing Saved' });
       }
     } catch (error) {
       console.log(JSON.stringify(error));
@@ -406,9 +484,7 @@ export default function AddListingForm(props) {
   const saveListing = async () => {
     try {
       //console.log('Saving Listing');
-      await createNewListingDraft();
-      //handleImage(photoMain);
-      //console.log(photoMain);
+      await updateListingDraft();
     } catch (error) {
       console.log(error);
     }
@@ -1563,7 +1639,11 @@ Condition: ${
   };
 
   let backward = async () => {
-    setStep((old) => old - 1);
+    if (step > 1){
+      setStep((old) => old - 1);
+      return true;
+    }
+    return false;
   };
 
   let takePicMain = async () => {
@@ -1772,6 +1852,8 @@ Condition: ${
     setSearchCategories(query);
   };
 
+  if (!initializingListing) {
+
   if (step === 0) {
     return (
       <SearchProduct
@@ -1792,7 +1874,7 @@ Condition: ${
       return (
         <View>
           <PhotosSection
-            title={title}
+            title={titleHeader}
             navigation={navigation}
             styles={styles}
             onMainPhotoOpen={onMainPhotoOpen}
@@ -1992,7 +2074,7 @@ Condition: ${
   if (step === 2) {
     return (
       <BarcodeStage
-        title={title}
+        title={titleHeader}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2013,7 +2095,7 @@ Condition: ${
   if (step === 3) {
     return (
       <CategoryStage
-        title={title}
+        title={titleHeader}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2030,7 +2112,7 @@ Condition: ${
   if (step === 4) {
     return (
       <ItemSpecificsStage
-        title={title}
+        title={titleHeader}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2050,7 +2132,7 @@ Condition: ${
   if (step === 5) {
     return (
       <ConditionStage
-        title={title}
+        title={titleHeader}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2072,7 +2154,7 @@ Condition: ${
   if (step === 6) {
     return (
       <DimensionStage
-        title={title}
+        title={titleHeader}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2099,7 +2181,7 @@ Condition: ${
   if (step === 7) {
     return (
       <PolicyStage
-        title={title}
+        title={titleHeader}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2139,7 +2221,7 @@ Condition: ${
   if (step === 8) {
     return (
       <TitleRevisionStage
-        title={title}
+        title={titleHeader}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2183,7 +2265,7 @@ Condition: ${
   if (step === 9) {
     return (
       <PriceStage
-        title={title}
+        title={titleHeader}
         navigation={navigation}
         styles={styles}
         backward={backward}
@@ -2230,6 +2312,27 @@ Condition: ${
       />
     );
   }
+
+ } else {
+  return (
+  <View
+        style={{
+          flex: 1,
+          //justifyContent: 'space-between',
+          alignItems: 'center',
+          alignContent: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+
+          //paddingBottom: 100,
+        }}
+      >
+        <ActivityIndicator
+          size='large'
+          style={{ marginTop: '20%', marginBottom: '20%' }}
+        />
+      </View>)
+ }
 }
 
 const styles = StyleSheet.create({

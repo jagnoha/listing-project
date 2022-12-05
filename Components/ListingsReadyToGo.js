@@ -45,6 +45,7 @@ const month = [
 ];
 
 export default function ListingsReadyToGo() {
+  const navigation = useNavigation();
   const theme = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -76,6 +77,10 @@ export default function ListingsReadyToGo() {
     return 'tag';
   };
 
+  const onOpenListing = (id, type) => {
+    navigation.navigate('EditListing', {listingId: id, type: type.toLowerCase()})
+  }
+
   /*useEffect(() => {
     //query the initial todolist and subscribe to data updates
     const subscription = API.graphql(
@@ -104,7 +109,7 @@ export default function ListingsReadyToGo() {
       descriptionStyle={{ color: 'gray' }}
       description={item.conditionName}
       //onPress={() => navigation.navigate('AddListing')}
-      onPress={() => console.log(item.id)}
+      onPress={() => onOpenListing(item.id, item.type)}
       onLongPress={() => onSelectListing(item.id)}
       left={(props) =>
         selected.find((listing) => listing === item.id) ? (

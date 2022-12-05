@@ -45,8 +45,11 @@ const month = [
 ];
 
 export default function ListingsToRevise() {
+  
+  const navigation = useNavigation();
   const theme = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
+
 
   const [selected, setSelected] = useRecoilState(selectedAtom);
   const [listings, setListings] = useRecoilState(listingsAtom);
@@ -75,6 +78,10 @@ export default function ListingsToRevise() {
     }
     return 'tag';
   };
+
+  const onOpenListing = (id, type) => {
+    navigation.navigate('EditListing', {listingId: id, type: type.toLowerCase()})
+  }
 
   /*useEffect(() => {
     //query the initial todolist and subscribe to data updates
@@ -107,7 +114,7 @@ export default function ListingsToRevise() {
       descriptionStyle={{ color: 'gray' }}
       description={item.conditionName}
       //onPress={() => navigation.navigate('AddListing')}
-      onPress={() => console.log(item.id)}
+      onPress={() => onOpenListing(item.id, item.type)}
       onLongPress={() => onSelectListing(item.id)}
       left={(props) =>
         selected.find((listing) => listing === item.id) ? (

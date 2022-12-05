@@ -25,6 +25,7 @@ import { DataStore } from '@aws-amplify/datastore';
 import { Accounts, EbayAccounts, Plans } from './src/models';
 import Home from './Components/Home';
 import AddListingForm from './Components/AddListingForm';
+import EditListingForm from './Components/EditListingForm';
 import { useRecoilState } from 'recoil';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -230,119 +231,43 @@ export default function Main() {
     };
   }, []);
 
-  /*useEffect(()=>{
-    (async () => {
-      console.log('User Account: ', userAccount);
-  })()
-
-
-  },[])*/
-
-  /*useEffect(() => {
-    try {
-      (async () => {
-        const account = await DataStore.query(Accounts, (c) =>
-          c.username.eq(user.username.toLowerCase())
-        );
-
-        const oneAccount = await API.graphql({
-          query: queries.getAccounts,
-          variables: { id: user.username.toLowerCase() }
-        });
-
-        console.log('One account: ', oneAccount);
-
-        console.log('Acccccccccount: ', account);
-        setAccounts(account);
-
-      })
-    }catch(error){
-      console.log(error)
-    }
-  },[]);
-
-        useEffect(() => {
-          try {
-            (async () => {
-
-        if (accounts.length > 0) {
-          console.log('ACCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC: ', accounts[0]);
-          setUserAccount(accounts[0]);
-          setEbayUser(accounts[0].ebayAccountId);
-        } else {
-          const newAccount = await DataStore.save(
-            new Accounts({
-              username: user.username.toLowerCase(),
-              EbayAccounts: [],
-              isNewAccount: true,
-              plan: Plans.PERSONAL,
-              EbayOrders: [],
-              Locations: [],
-              Brands: [],
-              Products: [],
-              Listings: [],
-              ebayAccountId: '',
-              postalCode: '',
-            })
-          );
-
-          console.log(newAccount);
-        }
-      })();
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);*/
-
-  /*useEffect(() => {
-
+  useEffect(() => {
     //query the initial todolist and subscribe to data updates
-    const subscription = DataStore.observeQuery(EbayAccounts).subscribe((snapshot) => {
-      //isSynced can be used to show a loading spinner when the list is being loaded. 
-      const { items, isSynced } = snapshot;
-      setEbayAccounts(items);
+    const subscription = API.graphql(
+      graphqlOperation(subscriptions.onUpdateListing)
+    ).subscribe({
+      next: ({ provider, value }) => {
+        //console.log({ provider, value });
+        console.log('UPDATE LISTING:!!!! ');
+        //console.log(value.data.onCreateListing);
+        let newListing = value.data.onUpdateListing;
+
+        //console.log(newListing);
+
+        let filterdListings = listings.map(item => {
+          if (item.id === newListing.id) {
+            return (newListing)
+          }
+
+          return (item);
+        })
+
+        setListings(filterdListings);
+
+        //setListings((old) => [...old, value.data.onCreateListing]);
+
+
+      },
+      error: (error) => console.warn(error),
     });
 
     //unsubscribe to data updates when component is destroyed so that you don’t introduce a memory leak.
     return function cleanup() {
       subscription.unsubscribe();
-    }
+    };
+  }, []);
 
-  }, []);*/
-
-  /*useEffect(() => {
-    try {
-      if (userAccount && !userAccount.isNewAccount) {
-        (async () => {
-          console.log('USER: ', user.username);
-          const tempUser = userAccount.ebayAccountId.toLowerCase();
-          setUsername(user.username.toLowerCase());
-          const responseFulfillment = await fetch(
-            `https://listerfast.com/api/ebay/policies/fulfillment/${tempUser}/0`
-          );
-
-          const responsePayment = await fetch(
-            `https://listerfast.com/api/ebay/policies/payment/${tempUser}/0`
-          );
-
-          const responseReturn = await fetch(
-            `https://listerfast.com/api/ebay/policies/return/${tempUser}/0`
-          );
-
-          const jsonFulfillment = await responseFulfillment.json();
-          const jsonPayment = await responsePayment.json();
-          const jsonReturn = await responseReturn.json();
-
-          setFulfillmentPolicies(jsonFulfillment);
-          setPaymentPolicies(jsonPayment);
-          setReturnPolicies(jsonReturn);
-        })();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);*/
-
+  
   const connectEbayAccount = async () => {
     const ebayAccount = await fetch(
       `https://listerfast.com/api/ebay/ebaytoken`
@@ -388,6 +313,7 @@ export default function Main() {
           >
             <Stack.Screen name='Home' component={Home} />
             <Stack.Screen name='AddListing' component={AddListingForm} />
+            <Stack.Screen name='EditListing' component={EditListingForm} />
           </Stack.Navigator>
           <Snackbar
             visible={snackBar.visible}

@@ -112,6 +112,7 @@ export default function PhotosSection(props) {
             label: 'Back',
             icon: 'arrow-left',
             onPress: () => props.backward(),
+            //disabled: props.backward(),
           },
           {
             value: 'next',
