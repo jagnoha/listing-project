@@ -266,7 +266,7 @@ export default function TitleRevisionStage(props) {
               icon: 'arrow-right',
               onPress: () => {
                 props.forward();
-                props.getPrices();
+                //props.getPrices();
               },
               //disabled: true, //props.category !== '' ? false : true,
             },

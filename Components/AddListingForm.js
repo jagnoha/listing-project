@@ -2197,6 +2197,8 @@ Condition: ${
         onChangeQuantity={onChangeQuantity}
         quantity={quantity}
         saveListing={saveListing}
+        category={category}
+        getCategoriesFeatures={getCategoriesFeatures}
 
         /*titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}

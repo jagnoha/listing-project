@@ -156,7 +156,7 @@ export default function Main() {
         variables: { id: user.username.toLowerCase() },
       });
 
-      console.log('Processing 1:', oneAccount);
+      //console.log('Processing 1:', oneAccount);
       setUserAccount(oneAccount.data.getAccounts);
 
       if (oneAccount.data.getAccounts) {
@@ -200,7 +200,7 @@ export default function Main() {
           query: mutations.createAccounts,
           variables: { input: accountDetails },
         });
-        console.log(newAccount);
+        //console.log(newAccount);
         setUserAccount(newAccount.data.createAccounts);
         setFulfillmentPolicies([]);
         setPaymentPolicies([]);
@@ -239,12 +239,15 @@ export default function Main() {
       next: ({ provider, value }) => {
         //console.log({ provider, value });
         console.log('UPDATE LISTING:!!!! ');
-        //console.log(value.data.onCreateListing);
-        let newListing = value.data.onUpdateListing;
 
-        //console.log(newListing);
+        //listings.filter(item => item.id !== value.data.onUpdateListing.id );
+        setListings((old)=> [...old.filter(item => item.id !== value.data.onUpdateListing.id ), value.data.onUpdateListing ]);
 
-        let filterdListings = listings.map(item => {
+        /*let newListing = value.data.onUpdateListing;
+
+        console.log('The listings: ', listings);
+        
+        let filteredListings = listings.map(item => {
           if (item.id === newListing.id) {
             return (newListing)
           }
@@ -252,10 +255,11 @@ export default function Main() {
           return (item);
         })
 
-        setListings(filterdListings);
+        console.log(filteredListings);*/
 
-        //setListings((old) => [...old, value.data.onCreateListing]);
+        //setListings((old) => filteredListings);
 
+        
 
       },
       error: (error) => console.warn(error),

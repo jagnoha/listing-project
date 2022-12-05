@@ -193,6 +193,8 @@ export default function EditListingForm(props) {
 
       setInitializingListing(true);
 
+      
+
       console.log('ESTE ES EL ID DEL LISTING', listingId);
 
       const oneListing = await API.graphql({
@@ -237,6 +239,14 @@ export default function EditListingForm(props) {
       
       setStep(listing.lastStep);
       setLastStep(listing.lastStep);
+
+      //console.log(categoryFeatures);
+      /*  console.log(listing.categoryID);
+      if (categoryFeatures === 'undefined') {
+        getCategoriesFeatures(Number(listing.categoryID));
+      }*/
+
+      
       
 
       
@@ -287,7 +297,7 @@ export default function EditListingForm(props) {
       setPaymentPolicies(jsonPayment);
       setReturnPolicies(jsonReturn);
 
-      console.log(fulfillmentPolicies);
+      //console.log(fulfillmentPolicies);
 
       setFetchPoliciesProcessing(false);
     })();
@@ -426,7 +436,7 @@ export default function EditListingForm(props) {
         variables: { input: listingDetails },
       });
 
-      console.log(
+      /*console.log(
         '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
       );
       console.log(listings);
@@ -436,7 +446,7 @@ export default function EditListingForm(props) {
       console.log(newListing);
       console.log(
         '*****************************************************************'
-      );
+      );*/
 
       if (newListing) {
         navigation.goBack();
@@ -665,7 +675,7 @@ Item Specifics & Features:
 Condition: ${
       categoryFeatures.conditions.find((item) => item.ID === condition)
         .DisplayName
-    }     
+  }     
 `;
 
     let aspectsFil = aspects.filter((item) => item.value !== '');
@@ -1003,6 +1013,8 @@ Condition: ${
     setWeight(value);
   };
 
+  
+
   const getCategoriesFeatures = async (categoryId) => {
     try {
       setProcessingCategoryFeatures(true);
@@ -1044,34 +1056,6 @@ Condition: ${
           },
         ];
       }
-
-      //console.log(JSON.stringify(json.Category.ConditionValues));
-
-      /*const url = `https://listerfast.com/api/ebay/categoryfeatures/${username}/${categoryId}`;
-
-      const response = await axios.get(url);
-
-      console.log(response.data.Category);*/
-
-      /*const url = `https://listerfast.com/api/ebay/categoryfeatures/${username}/${categoryId}`;
-      const res = await axios.get(url, {
-        //responseType: 'arraybuffer',
-        headers: { 'Access-Control-Allow-Origin': '*' },
-      });*/
-
-      //console.log(res);
-      /*console.log(
-          res.data.filter((item) => item.localizedAspectName !== 'Brand')
-        );*/
-      //console.log('CATEGORY FEATURES >>>>>>>>>>>>>>>>>>>>>>>>', res.data);
-      //setCategoryFeatures(res.data);
-
-      //console.log(res.data.Category.BestOfferEnabled);
-      //console.log(result.conditions);
-
-      /*console.log(result.Category.UPCEnabled);
-      console.log(result.Category.ISBNEnabled);
-      console.log(result.Category.EANEnabled);*/
 
       setCategoryFeatures(result);
       setProcessingCategoryFeatures(false);
@@ -2138,6 +2122,7 @@ Condition: ${
         backward={backward}
         forward={forward}
         processingCategoryFeatures={processingCategoryFeatures}
+        //getCategoriesFeatures={getCategoriesFeatures}
         categoryFeatures={categoryFeatures}
         condition={condition}
         onSelectedCondition={onSelectedCondition}
@@ -2279,6 +2264,8 @@ Condition: ${
         onChangeQuantity={onChangeQuantity}
         quantity={quantity}
         saveListing={saveListing}
+        category={category}
+        getCategoriesFeatures={getCategoriesFeatures}
 
         /*titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}

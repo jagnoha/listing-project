@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pressable, ScrollView, View, Image, FlatList } from 'react-native';
 import {
   useTheme,
@@ -60,6 +60,13 @@ export default function PriceStage(props) {
   //const theme = useTheme();
 
   const [openPriceList, setOpenPriceList] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      console.log('Opening prices!!!!');
+      props.getPrices();
+    })();
+  }, []);
 
   const onOpenPriceList = () => {
     setOpenPriceList(true);
@@ -187,7 +194,7 @@ export default function PriceStage(props) {
               value: 'back',
               label: 'Back',
               icon: 'arrow-left',
-              onPress: () => props.backward(),
+              onPress: () =>  { props.backward(); props.getCategoriesFeatures(props.category) } ,
               //disabled: 'false'
               //disabled: categoryId
             },
