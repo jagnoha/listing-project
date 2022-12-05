@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Amplify, API } from 'aws-amplify';
+import { Amplify, API, graphqlOperation } from 'aws-amplify';
 import { useAuthenticator } from '@aws-amplify/ui-react-native';
 import { View } from 'react-native';
 import * as Linking from 'expo-linking';
@@ -15,6 +15,8 @@ import {
   ActivityIndicator,
   Snackbar,
 } from 'react-native-paper';
+
+import * as subscriptions from './src/graphql/subscriptions';
 
 import * as queries from './src/graphql/queries';
 import * as mutations from './src/graphql/mutations';
@@ -36,6 +38,7 @@ import snackBarAtom from './Store/atoms/snackBarAtom';
 
 import toReviseListAtom from './Store/atoms/toReviseListAtom';
 import readyToGoListAtom from './Store/atoms/readyToGoListAtom';
+import listingsAtom from './Store/atoms/listingsAtom';
 
 import NewAccountWizard from './Components/NewAccountWizard';
 import awsconfig from './src/aws-exports';
@@ -49,8 +52,9 @@ export default function Main() {
     fulfillmentPoliciesAtom
   );
 
-  const [toReviseList, setToReviseList] = useRecoilState(toReviseListAtom)
-  const [readyToGoList, setReadyToGoList] = useRecoilState(readyToGoListAtom)
+  const [toReviseList, setToReviseList] = useRecoilState(toReviseListAtom);
+  const [readyToGoList, setReadyToGoList] = useRecoilState(readyToGoListAtom);
+  const [listings, setListings] = useRecoilState(listingsAtom);
 
   const [paymentPolicies, setPaymentPolicies] =
     useRecoilState(paymentPoliciesAtom);
@@ -90,25 +94,52 @@ export default function Main() {
 
   useEffect(() => {
     (async () => {
-
-      const toReviseListResponse = await API.graphql({
+      const listingsResponse = await API.graphql({
         query: queries.syncListings,
-        variables: { filter: {accountsID: {eq: user.username.toLowerCase()}, isReadyToGo: {eq: false}}, limit: 1000 },
+        variables: {
+          filter: {
+            accountsID: { eq: user.username.toLowerCase() },
+            isDraft: { eq: true },
+          },
+          limit: 1000,
+        },
+      });
+
+      setListings(
+        listingsResponse.data.syncListings.items.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        )
+      );
+
+      /*const toReviseListResponse = await API.graphql({
+        query: queries.syncListings,
+        variables: {
+          filter: {
+            accountsID: { eq: user.username.toLowerCase() },
+            isReadyToGo: { eq: false },
+            isDraft: { eq: true },
+          },
+          limit: 1000,
+        },
       });
 
       setToReviseList(toReviseListResponse.data.syncListings.items);
 
       const readyToGoListResponse = await API.graphql({
         query: queries.syncListings,
-        variables: { filter: {accountsID: {eq: user.username.toLowerCase()}, isReadyToGo: {eq: true}}, limit: 1000 },
+        variables: {
+          filter: {
+            accountsID: { eq: user.username.toLowerCase() },
+            isReadyToGo: { eq: true },
+            isDraft: { eq: true },
+          },
+          limit: 1000,
+        },
       });
 
-      setReadyToGoList(readyToGoListResponse.data.syncListings.items);
+      setReadyToGoList(readyToGoListResponse.data.syncListings.items);*/
 
       //console.log('Listings to revise: ', toReviseList.data.syncListings );
-
-
-
     })();
   }, []);
 
@@ -177,6 +208,26 @@ export default function Main() {
 
       setProcessing(false);
     })();
+  }, []);
+
+  useEffect(() => {
+    //query the initial todolist and subscribe to data updates
+    const subscription = API.graphql(
+      graphqlOperation(subscriptions.onCreateListing)
+    ).subscribe({
+      next: ({ provider, value }) => {
+        //console.log({ provider, value });
+        console.log('CREATE LISTING:!!!! ');
+        //console.log(value.data.onCreateListing);
+        setListings((old) => [...old, value.data.onCreateListing]);
+      },
+      error: (error) => console.warn(error),
+    });
+
+    //unsubscribe to data updates when component is destroyed so that you don’t introduce a memory leak.
+    return function cleanup() {
+      subscription.unsubscribe();
+    };
   }, []);
 
   /*useEffect(()=>{

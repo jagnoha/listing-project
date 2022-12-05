@@ -1,29 +1,149 @@
-import React, {useEffect} from 'react';
-import { useTheme, Button, Divider } from 'react-native-paper';
-import { StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { Amplify, API, graphqlOperation } from 'aws-amplify';
+import { useRecoilState } from 'recoil';
+import selectedAtom from '../Store/atoms/selectedAtom';
+import {
+  useTheme,
+  List,
+  Text,
+  Card,
+  Searchbar,
+  IconButton,
+  Avatar,
+  Chip,
+  Badge,
+  MD3Colors,
+  Button,
+  Snackbar,
+} from 'react-native-paper';
+
+import { StyleSheet, Image, FlatList } from 'react-native';
+import listingsAtom from '../Store/atoms/listingsAtom';
+
+//import * as subscriptions from '../src/graphql/subscriptions';
+
+import urlImagesAtom from '../Store/atoms/urlImagesAtom';
+
+import awsconfig from '../src/aws-exports';
+
+Amplify.configure(awsconfig);
+
+const month = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
 export default function ListingsReadyToGo() {
   const theme = useTheme();
+  const [searchQuery, setSearchQuery] = useState('');
 
-  
+  const [selected, setSelected] = useRecoilState(selectedAtom);
+  const [listings, setListings] = useRecoilState(listingsAtom);
 
-  /*useEffect(()=>{
-    console.log('READY TO GO!!!')
-  })*/
+  const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
+
+  const onChangeSearch = (query) => setSearchQuery(query);
+
+  const onSelectListing = (id) => {
+    if (selected.find((item) => item === id)) {
+      setSelected(selected.filter((item) => item !== id));
+    } else {
+      setSelected((oldSelected) => [...oldSelected, id]);
+    }
+  };
+
+  const checkType = (type) => {
+    if (type === 'CLOTHING') {
+      return 'tshirt-crew';
+    } else if (type === 'SHOES') {
+      return 'shoe-formal';
+    } else if (type === 'AUTOPARTS') {
+      return 'car-side';
+    } else if (type === 'BOOKS') {
+      return 'book-open-variant';
+    }
+    return 'tag';
+  };
+
+  /*useEffect(() => {
+    //query the initial todolist and subscribe to data updates
+    const subscription = API.graphql(
+      graphqlOperation(subscriptions.onCreateListing)
+    ).subscribe({
+      next: ({ provider, value }) => {
+        //console.log({ provider, value });
+        console.log('CREATE LISTING:!!!! ');
+        //console.log(value.data.onCreateListing);
+        setListings((old) => [...old, value.data.onCreateListing]);
+      },
+      error: (error) => console.warn(error),
+    });
+
+    //unsubscribe to data updates when component is destroyed so that you don’t introduce a memory leak.
+    return function cleanup() {
+      subscription.unsubscribe();
+    };
+  }, []);*/
+
+  const renderItem = ({ item }) => (
+    <List.Item
+      style={{ paddingLeft: 10 }}
+      title={item.title}
+      titleNumberOfLines={2}
+      descriptionStyle={{ color: 'gray' }}
+      description={item.conditionName}
+      //onPress={() => navigation.navigate('AddListing')}
+      onPress={() => console.log(item.id)}
+      onLongPress={() => onSelectListing(item.id)}
+      left={(props) =>
+        selected.find((listing) => listing === item.id) ? (
+          <IconButton
+            icon='check-circle'
+            size={30}
+            iconColor={theme.colors.primary}
+          />
+        ) : (
+          <List.Image
+            variant='image'
+            source={{ uri: urlImages + item.photoMain }}
+          />
+        )
+      }
+      right={() => (
+        <>
+          <List.Icon icon={checkType(item.type)} color={theme.colors.primary} />
+          <Text style={{ fontSize: 11 }}>
+            {' '}
+            {month[new Date(item.createdAt).getMonth()]}{' '}
+            {new Date(item.createdAt).getDate()}
+          </Text>
+        </>
+      )}
+    />
+  );
 
   return (
     <>
-      
-      <Button
-        icon='publish'
-        mode='contained'
-        onPress={() => console.log('Pressed')}
-        style={styles.button}
-      >
-        Publish all to eBay
-      </Button>
-      <Divider />
-      
+      <FlatList
+        data={listings
+          .filter((item) => item.isReadyToGo)
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        refreshing={false}
+        onRefresh={() => console.log('Refreshing')}
+      />
     </>
   );
 }
@@ -32,15 +152,18 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
   },
-  button: {
-    marginLeft: 60,
-    marginRight: 60,
-    marginTop: 10,
-  },
   fab: {
     position: 'absolute',
     margin: 16,
     right: 0,
     bottom: 25,
+  },
+  tinyImage: {
+    width: 100,
+    height: 100,
+  },
+  features: {
+    color: 'gray',
+    padding: 25,
   },
 });

@@ -49,6 +49,8 @@ import returnPoliciesAtom from '../Store/atoms/returnPoliciesAtom';
 
 import snackBarAtom from '../Store/atoms/snackBarAtom';
 
+import listingsAtom from '../Store/atoms/listingsAtom';
+
 import Header from './Header';
 import SearchProduct from './CreateProductWizard/SearchProduct';
 import PhotosSection from './CreateProductWizard/PhotosSection';
@@ -153,6 +155,8 @@ export default function AddListingForm(props) {
   const [conditionDescription, setConditionDescription] = useState('');
 
   const [barcodeOpen, setBarcodeOpen] = useState(false);
+
+  const [listings, setListings] = useRecoilState(listingsAtom);
 
   //const [listPhotoOpen, setListPhotoOpen] = useState(0);
 
@@ -286,12 +290,12 @@ export default function AddListingForm(props) {
 
       const id = uuidv4();
 
-      console.log(id);
+      //console.log(id);
 
-      console.log(userAccount.id);
+      //console.log(userAccount.id);
 
-      console.log(category);
-      console.log(categories);
+      //console.log(category);
+      //console.log(categories);
 
       const listingDetails = {
         id: id,
@@ -341,9 +345,21 @@ export default function AddListingForm(props) {
         query: mutations.createListing,
         variables: { input: listingDetails },
       });
+
+      console.log(
+        '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
+      );
+      console.log(listings);
+      console.log(
+        '*****************************************************************'
+      );
       console.log(newListing);
+      console.log(
+        '*****************************************************************'
+      );
 
       if (newListing) {
+        //setListings((old) => [...old, newListing.data.createListing]);
         navigation.goBack();
         setSnackBar({ visible: true, text: 'Listing Saved as Draft' });
       }

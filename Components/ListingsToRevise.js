@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { Amplify, API, graphqlOperation } from 'aws-amplify';
 import { useRecoilState } from 'recoil';
 import selectedAtom from '../Store/atoms/selectedAtom';
 import {
@@ -14,103 +15,43 @@ import {
   Badge,
   MD3Colors,
   Button,
-  Snackbar
-  
+  Snackbar,
 } from 'react-native-paper';
+
 import { StyleSheet, Image, FlatList } from 'react-native';
-import toReviseListAtom from '../Store/atoms/toReviseListAtom';
-import readyToGoListAtom from '../Store/atoms/readyToGoListAtom';
+import listingsAtom from '../Store/atoms/listingsAtom';
+
+//import * as subscriptions from '../src/graphql/subscriptions';
+
 import urlImagesAtom from '../Store/atoms/urlImagesAtom';
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    image: 'https://picsum.photos/200',
-    title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    price: 0,
-    type: 'SHOES',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    image: 'https://picsum.photos/200',
-    title: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco',
-    price: 0,
-    type: 'SHOES',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    image: 'https://picsum.photos/200',
-    title:
-      'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum',
-    price: 0,
-    type: 'CLOTHING',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba1',
-    image: 'https://picsum.photos/200',
-    title: 'First Item',
-    price: 0,
-    type: 'SHOES',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f632',
-    image: 'https://picsum.photos/200',
-    title: 'Second Item',
-    price: 0,
-    type: 'SHOES',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d723',
-    image: 'https://picsum.photos/200',
-    title: 'Third Item',
-    price: 0,
-    type: 'OTHER',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba4',
-    image: 'https://picsum.photos/200',
-    title: 'First Item',
-    price: 0,
-    type: 'AUTOPARTS',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f635',
-    image: 'https://picsum.photos/200',
-    title: 'Second Item',
-    price: 0,
-    type: 'BOOKS',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d726',
-    image: 'https://picsum.photos/200',
-    title: 'Third Item',
-    price: 0,
-    type: 'CLOTHING',
-  },
+import awsconfig from '../src/aws-exports';
+
+Amplify.configure(awsconfig);
+
+const month = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
 ];
-
-const month = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-const listingStructure = (props) => {
-  return (
-    <>
-      <Text>Nike | Preowned</Text>
-    </>
-  );
-};
 
 export default function ListingsToRevise() {
   const theme = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
-  //const navigation = useNavigation();
-  //const [selected, setSelected] = useState([]);
 
   const [selected, setSelected] = useRecoilState(selectedAtom);
-  const [toReviseList, setToReviseList] = useRecoilState(toReviseListAtom)
-  const [readyToGoList, setReadyToGoList] = useRecoilState(readyToGoListAtom)
-  const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom)
+  const [listings, setListings] = useRecoilState(listingsAtom);
 
-  console.log(toReviseList);
+  const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
 
   const onChangeSearch = (query) => setSearchQuery(query);
 
@@ -121,18 +62,6 @@ export default function ListingsToRevise() {
       setSelected((oldSelected) => [...oldSelected, id]);
     }
   };
-
-  /*useEffect(() => {
-    (async () => {
-    
-
-    
-    })
-
-  
-  })*/
-
-
 
   const checkType = (type) => {
     if (type === 'CLOTHING') {
@@ -147,18 +76,34 @@ export default function ListingsToRevise() {
     return 'tag';
   };
 
-  /*useEffect(()=>{
-    console.log('READY TO GO!!!')
-  })*/
+  /*useEffect(() => {
+    //query the initial todolist and subscribe to data updates
+    const subscription = API.graphql(
+      graphqlOperation(subscriptions.onCreateListing)
+    ).subscribe({
+      next: ({ provider, value }) => {
+        //console.log({ provider, value });
+        console.log('CREATE LISTING:!!!! ');
+        //console.log(value.data.onCreateListing);
+        setListings((old) => [...old, value.data.onCreateListing]);
+      },
+      error: (error) => console.warn(error),
+    });
 
-  //console.log('AQUI ESTOY!');
-  //console.log(selectedDemo);
+    //unsubscribe to data updates when component is destroyed so that you don’t introduce a memory leak.
+    return function cleanup() {
+      subscription.unsubscribe();
+    };
+  }, []);*/
 
   const renderItem = ({ item }) => (
     <List.Item
       style={{ paddingLeft: 10 }}
-      title={item.title}
-      titleNumberOfLines={2}
+      titleStyle={
+        item.title ? { color: 'black' } : { fontSize: 12, color: 'gray' }
+      }
+      title={item.title ? item.title : 'Title is not ready yet...'}
+      titleNumberOfLines={3}
       descriptionStyle={{ color: 'gray' }}
       description={item.conditionName}
       //onPress={() => navigation.navigate('AddListing')}
@@ -172,13 +117,20 @@ export default function ListingsToRevise() {
             iconColor={theme.colors.primary}
           />
         ) : (
-          <List.Image variant='image' source={{ uri: urlImages + item.photoMain }} />
+          <List.Image
+            variant='image'
+            source={{ uri: urlImages + item.photoMain }}
+          />
         )
       }
       right={() => (
         <>
           <List.Icon icon={checkType(item.type)} color={theme.colors.primary} />
-          <Text style={{ fontSize: 11 }}> {month[new Date(item.createdAt).getMonth()]} {new Date(item.createdAt).getDay()}</Text>
+          <Text style={{ fontSize: 11 }}>
+            {' '}
+            {month[new Date(item.createdAt).getMonth()]}{' '}
+            {new Date(item.createdAt).getDate()}
+          </Text>
         </>
       )}
     />
@@ -186,20 +138,15 @@ export default function ListingsToRevise() {
 
   return (
     <>
-      {/*selected.length === 0 ? <Searchbar
-        placeholder='Search'
-        onChangeText={onChangeSearch}
-        value={searchQuery}
-        loading={false}
-  />:''*/}
       <FlatList
-        data={toReviseList}
+        data={listings
+          .filter((item) => !item.isReadyToGo)
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshing={false}
         onRefresh={() => console.log('Refreshing')}
       />
-      
     </>
   );
 }
