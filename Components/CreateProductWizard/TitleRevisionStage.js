@@ -176,6 +176,7 @@ export default function TitleRevisionStage(props) {
       <Header
         title={props.title}
         //type='createListing'
+        onDeleteItem={props.onDeleteItem}
         type={props.typeHeader}
         actionBack={props.navigation.goBack}
       />
@@ -273,7 +274,11 @@ export default function TitleRevisionStage(props) {
             },
           ]}
         />
-        <Button style={{ marginTop: 15 }} icon='clock-edit-outline' onPress={()=>props.saveListing()}>
+        <Button
+          style={{ marginTop: 15 }}
+          icon='clock-edit-outline'
+          onPress={() => props.saveListing()}
+        >
           Finish this listing later
         </Button>
       </View>

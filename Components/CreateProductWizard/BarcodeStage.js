@@ -56,6 +56,7 @@ export default function BarcodeStage(props) {
     <View>
       <Header
         title={props.title}
+        onDeleteItem={props.onDeleteItem}
         //type='createListing'
         type={props.typeHeader}
         actionBack={props.navigation.goBack}

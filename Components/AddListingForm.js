@@ -305,6 +305,7 @@ export default function AddListingForm(props) {
         description: descriptionProcessed,
         price: priceProduct,
         itemsSpecifics: JSON.stringify(aspects),
+        categoryFeatures: JSON.stringify(categoryFeatures),
         isDraft: true,
         type: ListingType[type.toUpperCase()],
         photoMain: photoMain,
@@ -349,10 +350,10 @@ export default function AddListingForm(props) {
       console.log(
         '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
       );
-      console.log(listings);
+      /*console.log(listings);
       console.log(
         '*****************************************************************'
-      );
+      );*/
       console.log(newListing);
       console.log(
         '*****************************************************************'
@@ -361,7 +362,7 @@ export default function AddListingForm(props) {
       if (newListing) {
         //setListings((old) => [...old, newListing.data.createListing]);
         navigation.goBack();
-        
+
         setSnackBar({ visible: true, text: 'Listing Saved as Draft' });
       }
     } catch (error) {

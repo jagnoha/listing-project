@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Amplify, API, graphqlOperation } from 'aws-amplify';
+import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
+import { Amplify, API, graphqlOperation, Hub } from 'aws-amplify';
 import { useAuthenticator } from '@aws-amplify/ui-react-native';
 import { View } from 'react-native';
 import * as Linking from 'expo-linking';
@@ -93,6 +94,42 @@ export default function Main() {
     setSnackBar({ visible: false, text: '' });
   };
 
+  const fetchRecentData = async () => {
+    // Retrieve some/all data from a appsync
+    const listingsResponse = await API.graphql({
+      query: queries.syncListings,
+      variables: {
+        filter: {
+          accountsID: { eq: user.username.toLowerCase() },
+          isDraft: { eq: true },
+          //_deleted: { eq: false },
+        },
+        limit: 1000,
+      },
+    });
+
+    setListings(
+      listingsResponse.data.syncListings.items
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .filter((item) => item._deleted !== true)
+    );
+  };
+
+  //let priorConnectionState;
+
+  /*Hub.listen('api', (data) => {
+    const { payload } = data;
+    if (payload.event === CONNECTION_STATE_CHANGE) {
+      if (
+        priorConnectionState === ConnectionState.Connecting &&
+        payload.message === ConnectionState.Connected
+      ) {
+        fetchRecentData();
+      }
+      priorConnectionState = payload.message;
+    }
+  });*/
+
   useEffect(() => {
     (async () => {
       const listingsResponse = await API.graphql({
@@ -101,15 +138,16 @@ export default function Main() {
           filter: {
             accountsID: { eq: user.username.toLowerCase() },
             isDraft: { eq: true },
+            //_deleted: { eq: false },
           },
           limit: 1000,
         },
       });
 
       setListings(
-        listingsResponse.data.syncListings.items.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        )
+        listingsResponse.data.syncListings.items
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .filter((item) => item._deleted !== true)
       );
 
       /*const toReviseListResponse = await API.graphql({
@@ -219,8 +257,9 @@ export default function Main() {
       next: ({ provider, value }) => {
         //console.log({ provider, value });
         console.log('CREATE LISTING:!!!! ');
-        //console.log(value.data.onCreateListing);
+        console.log(value.data.onCreateListing);
         setListings((old) => [...old, value.data.onCreateListing]);
+        //setListings([...listings, value.data.onCreateListing]);
       },
       error: (error) => console.warn(error),
     });
@@ -241,7 +280,10 @@ export default function Main() {
         console.log('UPDATE LISTING:!!!! ');
 
         //listings.filter(item => item.id !== value.data.onUpdateListing.id );
-        setListings((old)=> [...old.filter(item => item.id !== value.data.onUpdateListing.id ), value.data.onUpdateListing ]);
+        setListings((old) => [
+          ...old.filter((item) => item.id !== value.data.onUpdateListing.id),
+          value.data.onUpdateListing,
+        ]);
 
         /*let newListing = value.data.onUpdateListing;
 
@@ -258,9 +300,6 @@ export default function Main() {
         console.log(filteredListings);*/
 
         //setListings((old) => filteredListings);
-
-        
-
       },
       error: (error) => console.warn(error),
     });
@@ -271,7 +310,29 @@ export default function Main() {
     };
   }, []);
 
-  
+  useEffect(() => {
+    //query the initial todolist and subscribe to data updates
+    const subscription = API.graphql(
+      graphqlOperation(subscriptions.onDeleteListing)
+    ).subscribe({
+      next: ({ provider, value }) => {
+        //console.log({ provider, value });
+        console.log('UPDATE LISTING:!!!! ');
+
+        //listings.filter(item => item.id !== value.data.onUpdateListing.id );
+        setListings((old) => [
+          ...old.filter((item) => item.id !== value.data.onDeleteListing.id),
+        ]);
+      },
+      error: (error) => console.warn(error),
+    });
+
+    //unsubscribe to data updates when component is destroyed so that you don’t introduce a memory leak.
+    return function cleanup() {
+      subscription.unsubscribe();
+    };
+  }, []);
+
   const connectEbayAccount = async () => {
     const ebayAccount = await fetch(
       `https://listerfast.com/api/ebay/ebaytoken`
@@ -323,7 +384,7 @@ export default function Main() {
             visible={snackBar.visible}
             duration={1500}
             onDismiss={onDismissSnackBar}
-            style={{backgroundColor:'green'}}
+            style={{ backgroundColor: 'green' }}
             //onDismiss={onDismissSnackBar}
             /*action={{
           label: 'Undo',

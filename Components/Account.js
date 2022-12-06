@@ -18,7 +18,7 @@ export default function Account() {
     <>
       <Header title='Account' />
       <Text>Account</Text>
-      <Text>{JSON.stringify(userAccount)}</Text>
+      <Text>{userAccount.id}</Text>
       <SignOutButton />
     </>
   );

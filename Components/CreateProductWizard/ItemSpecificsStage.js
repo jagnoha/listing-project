@@ -837,6 +837,7 @@ export default function ItemSpecificsStage(props) {
       <Header
         title={props.title}
         //type='createListing'
+        onDeleteItem={props.onDeleteItem}
         type={props.typeHeader}
         actionBack={props.navigation.goBack}
       />

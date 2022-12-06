@@ -52,6 +52,7 @@ export const createListing = /* GraphQL */ `
       conditionName
       isReadyToGo
       barcodeValue
+      categoryFeatures
       createdAt
       updatedAt
       _version
@@ -112,6 +113,7 @@ export const updateListing = /* GraphQL */ `
       conditionName
       isReadyToGo
       barcodeValue
+      categoryFeatures
       createdAt
       updatedAt
       _version
@@ -172,6 +174,7 @@ export const deleteListing = /* GraphQL */ `
       conditionName
       isReadyToGo
       barcodeValue
+      categoryFeatures
       createdAt
       updatedAt
       _version

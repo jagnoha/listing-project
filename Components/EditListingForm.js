@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   useTheme,
   Text,
+  Dialog,
+  Portal,
   Card,
   Surface,
   Button,
@@ -71,8 +73,6 @@ export default function EditListingForm(props) {
   let cameraRef = useRef();
 
   const { listingId, type } = props.route.params;
-
-  
 
   const [hasCameraPermission, setHasCameraPermission] = useState();
 
@@ -154,6 +154,8 @@ export default function EditListingForm(props) {
   const [morePhotosOpen, setMorePhotosOpen] = useState(false);
   const [editPhotoOpen, setEditPhotoOpen] = useState('');
 
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
   const [condition, setCondition] = useState('');
 
   const [conditionName, setConditionName] = useState('');
@@ -186,90 +188,70 @@ export default function EditListingForm(props) {
   }, []);
 
   useEffect(() => {
-
     try {
+      (async () => {
+        setInitializingListing(true);
 
-    (async () => {
+        console.log('ESTE ES EL ID DEL LISTING', listingId);
 
-      setInitializingListing(true);
+        const oneListing = await API.graphql({
+          query: queries.getListing,
+          variables: { id: listingId },
+        });
 
-      
+        const listing = oneListing.data.getListing;
 
-      console.log('ESTE ES EL ID DEL LISTING', listingId);
+        setListing(listing);
 
-      const oneListing = await API.graphql({
-        query: queries.getListing,
-        variables: { id: listingId },
-      });
+        setPhotoMain(listing.photoMain);
+        setPhotoLabel(listing.photoLabel);
+        setPhotos(JSON.parse(listing.photos));
+        setBarcodeValue(listing.barcodeValue);
+        setCategories(JSON.parse(listing.categoryList));
+        setAspects(JSON.parse(listing.itemsSpecifics));
+        setCategory(listing.categoryID);
 
-      
-      const listing = oneListing.data.getListing;
+        const aspectList = JSON.parse(listing.itemsSpecifics).filter(
+          (item) => item.require === true && item.value === ''
+        );
 
-      setListing(listing);
-     
-      setPhotoMain(listing.photoMain);
-      setPhotoLabel(listing.photoLabel);
-      setPhotos(JSON.parse(listing.photos));
-      setBarcodeValue(listing.barcodeValue);
-      setCategories(JSON.parse(listing.categoryList));
-      setAspects(JSON.parse(listing.itemsSpecifics));
-      setCategory(listing.categoryID);
+        setCheckedAllAspects(aspectList.length > 0 ? false : true);
 
-      const aspectList = JSON.parse(listing.itemsSpecifics).filter(
-        (item) => item.require === true && item.value === ''
-      );
-  
-      setCheckedAllAspects(aspectList.length > 0 ? false : true);
+        setCondition(Number(listing.conditionCode));
+        setConditionDescription(listing.conditionDescription);
+        setConditionName(listing.conditionName);
+        setLength(listing.length.toString());
+        setHeight(listing.height.toString());
+        setWidth(listing.width.toString());
+        setWeight(listing.weight.toString());
 
-      setCondition(Number(listing.conditionCode));
-      setConditionDescription(listing.conditionDescription);
-      setConditionName(listing.conditionName);
-      setLength(listing.length.toString());
-      setHeight(listing.height.toString());
-      setWidth(listing.width.toString());
-      setWeight(listing.weight.toString());
+        setFulfillmentPolicyId(listing.shippingProfileID);
+        setReturnPolicyId(listing.returnProfileID);
+        setPaymentPolicyId(listing.paymentProfileID);
+        setTitleProcessed(listing.title);
+        setDescriptionProcessed(listing.description);
+        setQuantity(listing.quantity.toString());
+        setPriceProduct(listing.price.toString());
+        setCategoryFeatures(JSON.parse(listing.categoryFeatures));
 
-      setFulfillmentPolicyId(listing.shippingProfileID);
-      setReturnPolicyId(listing.returnProfileID);
-      setPaymentPolicyId(listing.paymentProfileID);
-      setTitleProcessed(listing.title);
-      setDescriptionProcessed(listing.description);
-      setQuantity(listing.quantity.toString());
-      setPriceProduct(listing.price.toString());
-      
-      setStep(listing.lastStep);
-      setLastStep(listing.lastStep);
+        setStep(listing.lastStep);
+        setLastStep(listing.lastStep);
 
-      //console.log(categoryFeatures);
-      /*  console.log(listing.categoryID);
+        //console.log(categoryFeatures);
+        /*  console.log(listing.categoryID);
       if (categoryFeatures === 'undefined') {
         getCategoriesFeatures(Number(listing.categoryID));
       }*/
 
-      
-      
+        setInitializingListing(false);
 
-      
-
-  
-      setInitializingListing(false)
-
-      //console.log(type);
-
-      
-      
-
-
-    })()
-    } catch(error){
+        //console.log(type);
+      })();
+    } catch (error) {
       console.log(error);
       setInitializingListing(false);
     }
-  
-  }
-    
-    
-    ,[]);
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -312,8 +294,6 @@ export default function EditListingForm(props) {
       </Text>
     );
   }
-
-  
 
   const getUPC = () => {
     if (
@@ -392,7 +372,6 @@ export default function EditListingForm(props) {
 
       const version = listing._version;
 
-      
       const listingDetails = {
         id: id,
         sku: listing.sku,
@@ -430,7 +409,6 @@ export default function EditListingForm(props) {
         isReadyToGo: quantity > 0 && priceProduct > 0 ? true : false,
       };
 
-      
       const newListing = await API.graphql({
         query: mutations.updateListing,
         variables: { input: listingDetails },
@@ -675,7 +653,7 @@ Item Specifics & Features:
 Condition: ${
       categoryFeatures.conditions.find((item) => item.ID === condition)
         .DisplayName
-  }     
+    }     
 `;
 
     let aspectsFil = aspects.filter((item) => item.value !== '');
@@ -1012,8 +990,6 @@ Condition: ${
   const onChangeWeight = async (value) => {
     setWeight(value);
   };
-
-  
 
   const getCategoriesFeatures = async (categoryId) => {
     try {
@@ -1623,7 +1599,7 @@ Condition: ${
   };
 
   let backward = async () => {
-    if (step > 1){
+    if (step > 1) {
       setStep((old) => old - 1);
       return true;
     }
@@ -1717,6 +1693,44 @@ Condition: ${
       setMorePhotosOpen(false);
       setOpenCamera(false);
       //console.log('picture source', source);
+    }
+  };
+
+  const onDeleteItem = async () => {
+    try {
+      console.log(listingId);
+      setOpenDeleteDialog(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteItem = async () => {
+    try {
+      console.log(listingId);
+
+      console.log('Saving Listing');
+
+      const id = listingId;
+
+      const version = listing._version;
+
+      const listingDetails = {
+        id: id,
+        _version: version,
+      };
+
+      const deletedListing = await API.graphql({
+        query: mutations.deleteListing,
+        variables: { input: listingDetails },
+      });
+
+      if (deletedListing) {
+        navigation.goBack();
+        setSnackBar({ visible: true, text: 'Listing Deleted' });
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -1836,169 +1850,191 @@ Condition: ${
     setSearchCategories(query);
   };
 
-  if (!initializingListing) {
-
-  if (step === 0) {
+  if (openDeleteDialog) {
     return (
-      <SearchProduct
-        title={title}
-        navigation={navigation}
-        onSearchCategories={onSearchCategories}
-        searchCategories={searchCategories}
-        styles={styles}
-        backward={backward}
-        forward={forward}
-        setCategory={setCategory}
-      />
+      <View>
+        <Portal>
+          <Dialog
+            visible={openDeleteDialog}
+            onDismiss={() => setOpenDeleteDialog(false)}
+          >
+            <Dialog.Icon icon='alert' />
+            <Dialog.Title style={{ textAlign: 'center' }}>
+              Are you sure you want to delete this listing?
+            </Dialog.Title>
+            <Dialog.Actions>
+              <Button onPress={() => setOpenDeleteDialog(false)}>Cancel</Button>
+              <Button onPress={() => deleteItem()}>Ok</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      </View>
     );
   }
 
-  if (step === 1) {
-    if (!openCamera) {
+  if (!initializingListing) {
+    if (step === 0) {
       return (
-        <View>
-          <PhotosSection
-            title={titleHeader}
-            typeHeader={'editListing'}
-            navigation={navigation}
-            styles={styles}
-            onMainPhotoOpen={onMainPhotoOpen}
-            photoMain={photoMain}
-            photoLabel={photoLabel}
-            onLabelPhotoOpen={onLabelPhotoOpen}
-            photos={photos}
-            backward={backward}
-            forward={forward}
-            type={type}
-            onOpenPreviewPhoto={onOpenPreviewPhoto}
-            onOpenEditPhoto={onOpenEditPhoto}
-            saveListing={saveListing}
-          />
-        </View>
+        <SearchProduct
+          title={title}
+          navigation={navigation}
+          onSearchCategories={onSearchCategories}
+          searchCategories={searchCategories}
+          styles={styles}
+          backward={backward}
+          forward={forward}
+          setCategory={setCategory}
+        />
       );
-    } else {
-      if (mainPhotoOpen) {
-        /*if (processingImage) {
+    }
+
+    if (step === 1) {
+      if (!openCamera) {
+        return (
+          <View>
+            <PhotosSection
+              title={titleHeader}
+              typeHeader={'editListing'}
+              navigation={navigation}
+              styles={styles}
+              onMainPhotoOpen={onMainPhotoOpen}
+              photoMain={photoMain}
+              photoLabel={photoLabel}
+              onLabelPhotoOpen={onLabelPhotoOpen}
+              photos={photos}
+              backward={backward}
+              forward={forward}
+              type={type}
+              onOpenPreviewPhoto={onOpenPreviewPhoto}
+              onOpenEditPhoto={onOpenEditPhoto}
+              saveListing={saveListing}
+              onDeleteItem={onDeleteItem}
+            />
+          </View>
+        );
+      } else {
+        if (mainPhotoOpen) {
+          /*if (processingImage) {
           return (<View><Text>Processing</Text></View>)
         } else {*/
-        /*if (processingImage) {
+          /*if (processingImage) {
         return (
           <View style={{flex: 1, alignItems: 'center', alignContent:'center', alignSelf:'center',   marginTop: '50%'}}><ActivityIndicator size='large' animating={true} /></View>
         )
         }*/
 
-        return (
-          <Camera
-            style={styles.container}
-            ref={cameraRef}
-            pictureSize='1280x960'
-            //ratio='4:3'
-            //onCameraReady={() => setMainPhotoOpen(false)}
-          >
-            <SegmentedButtons
-              density='medium'
-              style={styles.previewCameraControl}
-              onValueChange={() => console.log('Change value')}
-              buttons={[
-                {
-                  value: 'close',
-                  label: 'Close',
-                  icon: 'close',
-                  onPress: () => closePic(),
-                  style: styles.buttonPreviewCameraControl,
-                  //disabled : processingImage ? true : false,
-                },
-                {
-                  value: 'next',
-                  label: 'Take photo',
-                  icon: 'camera',
-                  onPress: () => takePicMain(),
-                  style: styles.buttonPreviewCameraControl,
-                  //disabled: photoMain && photoLabel ? false : true
-                  //disabled : processingImage ? true : false,
-                },
-                {
-                  value: 'delete',
-                  label: 'Delete',
-                  icon: 'delete',
-                  onPress: () => deleteMainPic(),
-                  style: styles.buttonPreviewCameraControl,
-                  disabled: photoMain ? false : true,
-                },
-              ]}
-            />
-          </Camera>
-        );
-      } else if (labelPhotoOpen) {
-        return (
-          <Camera
-            style={styles.container}
-            ref={cameraRef}
-            pictureSize='1280x960'
-            //ratio='1:1'
-          >
-            <SegmentedButtons
-              density='medium'
-              style={styles.previewCameraControl}
-              onValueChange={() => console.log('Change value')}
-              buttons={[
-                {
-                  value: 'close',
-                  label: 'Close',
-                  icon: 'close',
-                  onPress: () => closePic(),
-                  style: styles.buttonPreviewCameraControl,
-                },
-                {
-                  value: 'next',
-                  label: 'Take photo',
-                  icon: 'camera',
-                  onPress: () => takePicLabel(),
-                  style: styles.buttonPreviewCameraControl,
-                  //disabled: photoMain && photoLabel ? false : true
-                },
-                {
-                  value: 'delete',
-                  label: 'Delete',
-                  icon: 'delete',
-                  onPress: () => deleteLabelPic(),
-                  style: styles.buttonPreviewCameraControl,
-                  disabled: photoLabel ? false : true,
-                  //disabled: photoMain && photoLabel ? false : true
-                },
-              ]}
-            />
-          </Camera>
-        );
-      } else if (morePhotosOpen) {
-        return (
-          <Camera
-            style={styles.container}
-            ref={cameraRef}
-            pictureSize='1280x960'
-            //ratio='1:1'
-          >
-            <SegmentedButtons
-              density='medium'
-              style={styles.previewCameraControl}
-              onValueChange={() => console.log('Change value')}
-              buttons={[
-                {
-                  value: 'close',
-                  label: 'Close',
-                  icon: 'close',
-                  onPress: () => closePic(),
-                  style: styles.buttonPreviewCameraControl,
-                },
-                {
-                  value: 'next',
-                  label: 'Take photo',
-                  icon: 'camera',
-                  onPress: () => takeNewPic(),
-                  style: styles.buttonPreviewCameraControl,
-                  //disabled: photoMain && photoLabel ? false : true
-                },
-                /*{
+          return (
+            <Camera
+              style={styles.container}
+              ref={cameraRef}
+              pictureSize='1280x960'
+              //ratio='4:3'
+              //onCameraReady={() => setMainPhotoOpen(false)}
+            >
+              <SegmentedButtons
+                density='medium'
+                style={styles.previewCameraControl}
+                onValueChange={() => console.log('Change value')}
+                buttons={[
+                  {
+                    value: 'close',
+                    label: 'Close',
+                    icon: 'close',
+                    onPress: () => closePic(),
+                    style: styles.buttonPreviewCameraControl,
+                    //disabled : processingImage ? true : false,
+                  },
+                  {
+                    value: 'next',
+                    label: 'Take photo',
+                    icon: 'camera',
+                    onPress: () => takePicMain(),
+                    style: styles.buttonPreviewCameraControl,
+                    //disabled: photoMain && photoLabel ? false : true
+                    //disabled : processingImage ? true : false,
+                  },
+                  {
+                    value: 'delete',
+                    label: 'Delete',
+                    icon: 'delete',
+                    onPress: () => deleteMainPic(),
+                    style: styles.buttonPreviewCameraControl,
+                    disabled: photoMain ? false : true,
+                  },
+                ]}
+              />
+            </Camera>
+          );
+        } else if (labelPhotoOpen) {
+          return (
+            <Camera
+              style={styles.container}
+              ref={cameraRef}
+              pictureSize='1280x960'
+              //ratio='1:1'
+            >
+              <SegmentedButtons
+                density='medium'
+                style={styles.previewCameraControl}
+                onValueChange={() => console.log('Change value')}
+                buttons={[
+                  {
+                    value: 'close',
+                    label: 'Close',
+                    icon: 'close',
+                    onPress: () => closePic(),
+                    style: styles.buttonPreviewCameraControl,
+                  },
+                  {
+                    value: 'next',
+                    label: 'Take photo',
+                    icon: 'camera',
+                    onPress: () => takePicLabel(),
+                    style: styles.buttonPreviewCameraControl,
+                    //disabled: photoMain && photoLabel ? false : true
+                  },
+                  {
+                    value: 'delete',
+                    label: 'Delete',
+                    icon: 'delete',
+                    onPress: () => deleteLabelPic(),
+                    style: styles.buttonPreviewCameraControl,
+                    disabled: photoLabel ? false : true,
+                    //disabled: photoMain && photoLabel ? false : true
+                  },
+                ]}
+              />
+            </Camera>
+          );
+        } else if (morePhotosOpen) {
+          return (
+            <Camera
+              style={styles.container}
+              ref={cameraRef}
+              pictureSize='1280x960'
+              //ratio='1:1'
+            >
+              <SegmentedButtons
+                density='medium'
+                style={styles.previewCameraControl}
+                onValueChange={() => console.log('Change value')}
+                buttons={[
+                  {
+                    value: 'close',
+                    label: 'Close',
+                    icon: 'close',
+                    onPress: () => closePic(),
+                    style: styles.buttonPreviewCameraControl,
+                  },
+                  {
+                    value: 'next',
+                    label: 'Take photo',
+                    icon: 'camera',
+                    onPress: () => takeNewPic(),
+                    style: styles.buttonPreviewCameraControl,
+                    //disabled: photoMain && photoLabel ? false : true
+                  },
+                  /*{
                 value: 'delete',
                 label: 'Delete',
                 icon: 'delete',
@@ -2007,194 +2043,200 @@ Condition: ${
                 disabled: photoLabel ? false : true 
                 //disabled: photoMain && photoLabel ? false : true 
               },*/
-              ]}
-            />
-          </Camera>
-        );
-      } else if (editPhotoOpen !== '') {
-        return (
-          <Camera
-            style={styles.container}
-            ref={cameraRef}
-            pictureSize='1280x960'
-            //ratio='1:1'
-          >
-            <SegmentedButtons
-              density='medium'
-              style={styles.previewCameraControl}
-              onValueChange={() => console.log('Change value')}
-              buttons={[
-                {
-                  value: 'close',
-                  label: 'Close',
-                  icon: 'close',
-                  onPress: () => closePic(),
-                  style: styles.buttonPreviewCameraControl,
-                },
-                {
-                  value: 'next',
-                  label: 'Take photo',
-                  icon: 'camera',
-                  onPress: () => takeEditPic(),
-                  style: styles.buttonPreviewCameraControl,
-                  //disabled: photoMain && photoLabel ? false : true
-                },
-                {
-                  value: 'delete',
-                  label: 'Delete',
-                  icon: 'delete',
-                  onPress: () => deleteEditPic(),
-                  style: styles.buttonPreviewCameraControl,
-                  //disabled: photoLabel ? false : true
-                  //disabled: photoMain && photoLabel ? false : true
-                },
-              ]}
-            />
-          </Camera>
-        );
+                ]}
+              />
+            </Camera>
+          );
+        } else if (editPhotoOpen !== '') {
+          return (
+            <Camera
+              style={styles.container}
+              ref={cameraRef}
+              pictureSize='1280x960'
+              //ratio='1:1'
+            >
+              <SegmentedButtons
+                density='medium'
+                style={styles.previewCameraControl}
+                onValueChange={() => console.log('Change value')}
+                buttons={[
+                  {
+                    value: 'close',
+                    label: 'Close',
+                    icon: 'close',
+                    onPress: () => closePic(),
+                    style: styles.buttonPreviewCameraControl,
+                  },
+                  {
+                    value: 'next',
+                    label: 'Take photo',
+                    icon: 'camera',
+                    onPress: () => takeEditPic(),
+                    style: styles.buttonPreviewCameraControl,
+                    //disabled: photoMain && photoLabel ? false : true
+                  },
+                  {
+                    value: 'delete',
+                    label: 'Delete',
+                    icon: 'delete',
+                    onPress: () => deleteEditPic(),
+                    style: styles.buttonPreviewCameraControl,
+                    //disabled: photoLabel ? false : true
+                    //disabled: photoMain && photoLabel ? false : true
+                  },
+                ]}
+              />
+            </Camera>
+          );
+        }
       }
     }
-  }
 
-  if (step === 2) {
-    return (
-      <BarcodeStage
-        title={titleHeader}
-        typeHeader={'editListing'}
-        navigation={navigation}
-        styles={styles}
-        backward={backward}
-        forward={forward}
-        barcodeOpen={barcodeOpen}
-        onOpenBarcode={onOpenBarcode}
-        handleBarCodeScanned={handleBarCodeScanned}
-        barcodeValue={barcodeValue}
-        deleteBarcodeValue={deleteBarcodeValue}
-        getCategories={getCategories}
-        category={category}
-        searchCategories={searchCategories}
-        saveListing={saveListing}
-      />
-    );
-  }
+    if (step === 2) {
+      return (
+        <BarcodeStage
+          title={titleHeader}
+          typeHeader={'editListing'}
+          navigation={navigation}
+          styles={styles}
+          backward={backward}
+          forward={forward}
+          barcodeOpen={barcodeOpen}
+          onOpenBarcode={onOpenBarcode}
+          handleBarCodeScanned={handleBarCodeScanned}
+          barcodeValue={barcodeValue}
+          deleteBarcodeValue={deleteBarcodeValue}
+          getCategories={getCategories}
+          category={category}
+          searchCategories={searchCategories}
+          saveListing={saveListing}
+          onDeleteItem={onDeleteItem}
+        />
+      );
+    }
 
-  if (step === 3) {
-    return (
-      <CategoryStage
-        title={titleHeader}
-        typeHeader={'editListing'}
-        navigation={navigation}
-        styles={styles}
-        backward={backward}
-        forward={forward}
-        processingCategories={processingCategories}
-        categories={categories}
-        onSelectedCategory={onSelectedCategory}
-        category={category}
-        saveListing={saveListing}
-      />
-    );
-  }
+    if (step === 3) {
+      return (
+        <CategoryStage
+          title={titleHeader}
+          typeHeader={'editListing'}
+          navigation={navigation}
+          styles={styles}
+          backward={backward}
+          forward={forward}
+          processingCategories={processingCategories}
+          categories={categories}
+          onSelectedCategory={onSelectedCategory}
+          category={category}
+          saveListing={saveListing}
+          onDeleteItem={onDeleteItem}
+        />
+      );
+    }
 
-  if (step === 4) {
-    return (
-      <ItemSpecificsStage
-        title={titleHeader}
-        typeHeader={'editListing'}
-        navigation={navigation}
-        styles={styles}
-        backward={backward}
-        forward={forward}
-        processingAspects={processingAspects}
-        aspects={aspects}
-        changeValueItemAspect={changeValueItemAspect}
-        checkedAllAspects={checkedAllAspects}
-        category={category}
-        getCategoriesFeatures={getCategoriesFeatures}
-        saveListing={saveListing}
-        processingSelectedAspectValue={processingSelectedAspectValue}
-      />
-    );
-  }
+    if (step === 4) {
+      return (
+        <ItemSpecificsStage
+          title={titleHeader}
+          typeHeader={'editListing'}
+          navigation={navigation}
+          styles={styles}
+          backward={backward}
+          forward={forward}
+          processingAspects={processingAspects}
+          aspects={aspects}
+          changeValueItemAspect={changeValueItemAspect}
+          checkedAllAspects={checkedAllAspects}
+          category={category}
+          getCategoriesFeatures={getCategoriesFeatures}
+          saveListing={saveListing}
+          processingSelectedAspectValue={processingSelectedAspectValue}
+          onDeleteItem={onDeleteItem}
+        />
+      );
+    }
 
-  if (step === 5) {
-    return (
-      <ConditionStage
-        title={titleHeader}
-        typeHeader={'editListing'}
-        navigation={navigation}
-        styles={styles}
-        backward={backward}
-        forward={forward}
-        processingCategoryFeatures={processingCategoryFeatures}
-        //getCategoriesFeatures={getCategoriesFeatures}
-        categoryFeatures={categoryFeatures}
-        condition={condition}
-        onSelectedCondition={onSelectedCondition}
-        conditionDescription={conditionDescription}
-        onChangeConditionDescription={onChangeConditionDescription}
-        saveListing={saveListing}
+    if (step === 5) {
+      return (
+        <ConditionStage
+          title={titleHeader}
+          typeHeader={'editListing'}
+          navigation={navigation}
+          styles={styles}
+          backward={backward}
+          forward={forward}
+          processingCategoryFeatures={processingCategoryFeatures}
+          //getCategoriesFeatures={getCategoriesFeatures}
+          categoryFeatures={categoryFeatures}
+          condition={condition}
+          onSelectedCondition={onSelectedCondition}
+          conditionDescription={conditionDescription}
+          onChangeConditionDescription={onChangeConditionDescription}
+          saveListing={saveListing}
+          onDeleteItem={onDeleteItem}
 
-        //changeValueItemAspect={changeValueItemAspect}
-        //checkedAllAspects={checkedAllAspects}
-      />
-    );
-  }
+          //changeValueItemAspect={changeValueItemAspect}
+          //checkedAllAspects={checkedAllAspects}
+        />
+      );
+    }
 
-  if (step === 6) {
-    return (
-      <DimensionStage
-        title={titleHeader}
-        typeHeader={'editListing'}
-        navigation={navigation}
-        styles={styles}
-        backward={backward}
-        forward={forward}
-        //onChangeDimensions={onChangeDimensions}
-        onChangeLength={onChangeLength}
-        onChangeHeight={onChangeHeight}
-        onChangeWidth={onChangeWidth}
-        onChangeWeight={onChangeWeight}
-        length={length}
-        height={height}
-        width={width}
-        weight={weight}
-        saveListing={saveListing}
-        //getPolicies={getPolicies}
-        //processingCategoryFeatures={processingCategoryFeatures}
-        //categoryFeatures={categoryFeatures}
-        //condition={condition}
-        //onSelectedCondition={onSelectedCondition}
-      />
-    );
-  }
+    if (step === 6) {
+      return (
+        <DimensionStage
+          title={titleHeader}
+          typeHeader={'editListing'}
+          navigation={navigation}
+          styles={styles}
+          backward={backward}
+          forward={forward}
+          //onChangeDimensions={onChangeDimensions}
+          onChangeLength={onChangeLength}
+          onChangeHeight={onChangeHeight}
+          onChangeWidth={onChangeWidth}
+          onChangeWeight={onChangeWeight}
+          length={length}
+          height={height}
+          width={width}
+          weight={weight}
+          saveListing={saveListing}
+          onDeleteItem={onDeleteItem}
+          //getPolicies={getPolicies}
+          //processingCategoryFeatures={processingCategoryFeatures}
+          //categoryFeatures={categoryFeatures}
+          //condition={condition}
+          //onSelectedCondition={onSelectedCondition}
+        />
+      );
+    }
 
-  if (step === 7) {
-    return (
-      <PolicyStage
-        title={titleHeader}
-        navigation={navigation}
-        typeHeader={'editListing'}
-        styles={styles}
-        backward={backward}
-        forward={forward}
-        processingPolicies={processingPolicies}
-        fulfillmentPolicies={fulfillmentPolicies}
-        paymentPolicies={paymentPolicies}
-        returnPolicies={returnPolicies}
-        onClickPaymentPolicy={onClickPaymentPolicy}
-        onClickFulfillmentPolicy={onClickFulfillmentPolicy}
-        onClickReturnPolicy={onClickReturnPolicy}
-        paymentPolicyId={paymentPolicyId}
-        fulfillmentPolicyId={fulfillmentPolicyId}
-        returnPolicyId={returnPolicyId}
-        onProcessingTitle={onProcessingTitle}
-        fetchPolicies={fetchPolicies}
-        fetchPoliciesProcessing={fetchPoliciesProcessing}
-        saveListing={saveListing}
+    if (step === 7) {
+      return (
+        <PolicyStage
+          title={titleHeader}
+          navigation={navigation}
+          typeHeader={'editListing'}
+          styles={styles}
+          backward={backward}
+          forward={forward}
+          processingPolicies={processingPolicies}
+          fulfillmentPolicies={fulfillmentPolicies}
+          paymentPolicies={paymentPolicies}
+          returnPolicies={returnPolicies}
+          onClickPaymentPolicy={onClickPaymentPolicy}
+          onClickFulfillmentPolicy={onClickFulfillmentPolicy}
+          onClickReturnPolicy={onClickReturnPolicy}
+          paymentPolicyId={paymentPolicyId}
+          fulfillmentPolicyId={fulfillmentPolicyId}
+          returnPolicyId={returnPolicyId}
+          onProcessingTitle={onProcessingTitle}
+          fetchPolicies={fetchPolicies}
+          fetchPoliciesProcessing={fetchPoliciesProcessing}
+          saveListing={saveListing}
+          onDeleteItem={onDeleteItem}
 
-        //onChangeDimensions={onChangeDimensions}
-        /*onChangeLength={onChangeLength}
+          //onChangeDimensions={onChangeDimensions}
+          /*onChangeLength={onChangeLength}
         onChangeHeight={onChangeHeight}
         onChangeWidth={onChangeWidth}
         onChangeWeight={onChangeWeight}
@@ -2202,32 +2244,33 @@ Condition: ${
         height={height}
         width={width}
         weight={weight}*/
-        //processingCategoryFeatures={processingCategoryFeatures}
-        //categoryFeatures={categoryFeatures}
-        //condition={condition}
-        //onSelectedCondition={onSelectedCondition}
-      />
-    );
-  }
+          //processingCategoryFeatures={processingCategoryFeatures}
+          //categoryFeatures={categoryFeatures}
+          //condition={condition}
+          //onSelectedCondition={onSelectedCondition}
+        />
+      );
+    }
 
-  if (step === 8) {
-    return (
-      <TitleRevisionStage
-        title={titleHeader}
-        typeHeader={'editListing'}
-        navigation={navigation}
-        styles={styles}
-        backward={backward}
-        forward={forward}
-        titleProcessed={titleProcessed}
-        descriptionProcessed={descriptionProcessed}
-        onChangeTitle={onChangeTitle}
-        onChangeDescription={onChangeDescription}
-        processingPrices={processingPrices}
-        getPrices={getPrices}
-        saveListing={saveListing}
+    if (step === 8) {
+      return (
+        <TitleRevisionStage
+          title={titleHeader}
+          typeHeader={'editListing'}
+          navigation={navigation}
+          styles={styles}
+          backward={backward}
+          forward={forward}
+          titleProcessed={titleProcessed}
+          descriptionProcessed={descriptionProcessed}
+          onChangeTitle={onChangeTitle}
+          onChangeDescription={onChangeDescription}
+          processingPrices={processingPrices}
+          getPrices={getPrices}
+          saveListing={saveListing}
+          onDeleteItem={onDeleteItem}
 
-        /*processingPolicies={processingPolicies}
+          /*processingPolicies={processingPolicies}
         fulfillmentPolicies={fulfillmentPolicies}
         paymentPolicies={paymentPolicies}
         returnPolicies={returnPolicies}
@@ -2238,8 +2281,8 @@ Condition: ${
         fulfillmentPolicyId={fulfillmentPolicyId}
         returnPolicyId={returnPolicyId}*/
 
-        //onChangeDimensions={onChangeDimensions}
-        /*onChangeLength={onChangeLength}
+          //onChangeDimensions={onChangeDimensions}
+          /*onChangeLength={onChangeLength}
         onChangeHeight={onChangeHeight}
         onChangeWidth={onChangeWidth}
         onChangeWeight={onChangeWeight}
@@ -2247,41 +2290,42 @@ Condition: ${
         height={height}
         width={width}
         weight={weight}*/
-        //processingCategoryFeatures={processingCategoryFeatures}
-        //categoryFeatures={categoryFeatures}
-        //condition={condition}
-        //onSelectedCondition={onSelectedCondition}
-      />
-    );
-  }
+          //processingCategoryFeatures={processingCategoryFeatures}
+          //categoryFeatures={categoryFeatures}
+          //condition={condition}
+          //onSelectedCondition={onSelectedCondition}
+        />
+      );
+    }
 
-  if (step === 9) {
-    return (
-      <PriceStage
-        title={titleHeader}
-        typeHeader={'editListing'}
-        navigation={navigation}
-        styles={styles}
-        backward={backward}
-        forward={forward}
-        getPrices={getPrices}
-        prices={prices}
-        processingPrices={processingPrices}
-        pricingList={pricingList}
-        onChangeProductPrice={onChangeProductPrice}
-        priceProduct={priceProduct}
-        onChangeQuantity={onChangeQuantity}
-        quantity={quantity}
-        saveListing={saveListing}
-        category={category}
-        getCategoriesFeatures={getCategoriesFeatures}
+    if (step === 9) {
+      return (
+        <PriceStage
+          title={titleHeader}
+          typeHeader={'editListing'}
+          navigation={navigation}
+          styles={styles}
+          backward={backward}
+          forward={forward}
+          getPrices={getPrices}
+          prices={prices}
+          processingPrices={processingPrices}
+          pricingList={pricingList}
+          onChangeProductPrice={onChangeProductPrice}
+          priceProduct={priceProduct}
+          onChangeQuantity={onChangeQuantity}
+          quantity={quantity}
+          saveListing={saveListing}
+          category={category}
+          //getCategoriesFeatures={getCategoriesFeatures}
+          onDeleteItem={onDeleteItem}
 
-        /*titleProcessed={titleProcessed}
+          /*titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}
         onChangeTitle={onChangeTitle}
         onChangeDescription={onChangeDescription}*/
 
-        /*processingPolicies={processingPolicies}
+          /*processingPolicies={processingPolicies}
         fulfillmentPolicies={fulfillmentPolicies}
         paymentPolicies={paymentPolicies}
         returnPolicies={returnPolicies}
@@ -2292,8 +2336,8 @@ Condition: ${
         fulfillmentPolicyId={fulfillmentPolicyId}
         returnPolicyId={returnPolicyId}*/
 
-        //onChangeDimensions={onChangeDimensions}
-        /*onChangeLength={onChangeLength}
+          //onChangeDimensions={onChangeDimensions}
+          /*onChangeLength={onChangeLength}
         onChangeHeight={onChangeHeight}
         onChangeWidth={onChangeWidth}
         onChangeWeight={onChangeWeight}
@@ -2301,17 +2345,16 @@ Condition: ${
         height={height}
         width={width}
         weight={weight}*/
-        //processingCategoryFeatures={processingCategoryFeatures}
-        //categoryFeatures={categoryFeatures}
-        //condition={condition}
-        //onSelectedCondition={onSelectedCondition}
-      />
-    );
-  }
-
- } else {
-  return (
-  <View
+          //processingCategoryFeatures={processingCategoryFeatures}
+          //categoryFeatures={categoryFeatures}
+          //condition={condition}
+          //onSelectedCondition={onSelectedCondition}
+        />
+      );
+    }
+  } else {
+    return (
+      <View
         style={{
           flex: 1,
           //justifyContent: 'space-between',
@@ -2327,8 +2370,9 @@ Condition: ${
           size='large'
           style={{ marginTop: '20%', marginBottom: '20%' }}
         />
-      </View>)
- }
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({

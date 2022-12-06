@@ -274,6 +274,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "categoryFeatures": {
+                    "name": "categoryFeatures",
+                    "isArray": false,
+                    "type": "AWSJSON",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -631,5 +638,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "1b93cd66c5d3bade83d1eb510930a119"
+    "version": "4c5f0a1bbdbc09493daaa83bcd760f6a"
 };

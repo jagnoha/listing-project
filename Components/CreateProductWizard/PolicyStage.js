@@ -252,6 +252,7 @@ export default function PolicyStage(props) {
       <Header
         title={props.title}
         //type='createListing'
+        onDeleteItem={props.onDeleteItem}
         type={props.typeHeader}
         actionBack={props.navigation.goBack}
       />

@@ -69,6 +69,7 @@ type EagerListing = {
   readonly conditionName?: string | null;
   readonly isReadyToGo?: boolean | null;
   readonly barcodeValue?: string | null;
+  readonly categoryFeatures?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly listingItemsCompatibilityId?: string | null;
@@ -112,6 +113,7 @@ type LazyListing = {
   readonly conditionName?: string | null;
   readonly isReadyToGo?: boolean | null;
   readonly barcodeValue?: string | null;
+  readonly categoryFeatures?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly listingItemsCompatibilityId?: string | null;

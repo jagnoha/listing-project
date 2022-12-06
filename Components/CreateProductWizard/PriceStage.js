@@ -141,6 +141,7 @@ export default function PriceStage(props) {
         //type='createListing'
         type={props.typeHeader}
         actionBack={props.navigation.goBack}
+        onDeleteItem={props.onDeleteItem}
       />
       <View>
         <Banner visible={true} icon={'currency-usd'}>
@@ -195,7 +196,10 @@ export default function PriceStage(props) {
               value: 'back',
               label: 'Back',
               icon: 'arrow-left',
-              onPress: () =>  { props.backward(); props.getCategoriesFeatures(props.category) } ,
+              onPress: () => {
+                props.backward();
+                //props.getCategoriesFeatures(props.category);
+              },
               //disabled: 'false'
               //disabled: categoryId
             },
@@ -219,8 +223,6 @@ export default function PriceStage(props) {
         >
           Finish this listing later
         </Button>
-
-        
       </View>
     </View>
   );
