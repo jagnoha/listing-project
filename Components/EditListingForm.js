@@ -85,6 +85,8 @@ export default function EditListingForm(props) {
 
   const [snackBar, setSnackBar] = useRecoilState(snackBarAtom);
 
+  const [aspectValues, setAspectValues] = useState([]);
+
   const [processingImage, setProcessingImage] = useState(false);
 
   const [priceProduct, setPriceProduct] = useState('0.00');
@@ -242,6 +244,10 @@ export default function EditListingForm(props) {
       if (categoryFeatures === 'undefined') {
         getCategoriesFeatures(Number(listing.categoryID));
       }*/
+
+      /*if ( listing.categoryID) {
+        getCategoriesFeatures(listing.categoryID);
+      };*/
 
         setInitializingListing(false);
 
@@ -1046,6 +1052,69 @@ Condition: ${
     setConditionName(conditionName);
   };
 
+  const getAspectValues = async (categoryId) => {
+    try {
+      setProcessingAspects(true);
+      const response = await fetch(
+        `https://listerfast.com/api/ebay/aspectsbycategory/${ebayUser}/${getTypeProductCode(
+          type
+        )}/${categoryId}`
+      );
+
+      const json = await response.json();
+
+      let aspectValues = [];
+
+      for (const item of json
+        .filter((item) => item.aspectConstraint.aspectUsage === 'RECOMMENDED')){
+
+          if (
+            item.localizedAspectName === 'Type' ||
+            item.localizedAspectName === 'Manufacturer Part Number' ||
+            item.localizedAspectName === 'Color' ||
+            item.localizedAspectName === 'Placement on Vehicle' ||
+            item.localizedAspectName === 'Connector Type' ||
+            item.localizedAspectName === 'Model' ||
+            item.localizedAspectName === 'Vintage' ||
+            item.localizedAspectName === 'Format' ||
+            item.localizedAspectName === 'Edition' ||
+            item.localizedAspectName === 'Publication Year' ||
+            item.localizedAspectName === 'MPN'
+          ) {
+
+            aspectValues.push({
+              id: item.localizedAspectName,
+              value: item.aspectValues
+              ? item.aspectValues.map((value) => value.localizedValue)
+              : []
+            })
+
+          } else if (item.localizedAspectName === 'Brand') {
+            aspectValues.push({
+              id: item.localizedAspectName,
+              value: [],
+            })
+
+          } else {
+            aspectValues.push({
+              id: item.localizedAspectName,
+              value: item.aspectValues
+              ? item.aspectValues.map((value) => value.localizedValue)
+              : []
+            })
+          }
+
+          
+          setAspectValues(aspectValues);
+          setProcessingAspects(false);
+      }
+
+    } catch(error){
+      console.log(error);
+      setProcessingAspects(false);
+    }
+  }
+
   const getItemAspects = async (categoryId) => {
     try {
       setProcessingAspects(true);
@@ -1067,6 +1136,8 @@ Condition: ${
           })*/
       let n = 0;
 
+      let aspectValues = [];
+
       const aspects = json
         .filter((item) => item.aspectConstraint.aspectUsage === 'RECOMMENDED')
         .map((itemProduct) => {
@@ -1085,11 +1156,19 @@ Condition: ${
             itemProduct.localizedAspectName === 'Publication Year' ||
             itemProduct.localizedAspectName === 'MPN'
           ) {
+
+            aspectValues.push({
+              id: itemProduct.localizedAspectName,
+              value: itemProduct.aspectValues
+              ? itemProduct.aspectValues.map((value) => value.localizedValue)
+              : []
+            })
+
             return {
               localizedAspectName: itemProduct.localizedAspectName,
-              aspectValues: itemProduct.aspectValues
+              /*aspectValues: itemProduct.aspectValues
                 ? itemProduct.aspectValues.map((value) => value.localizedValue)
-                : [],
+                : [],*/
               value: '',
               require: true,
               cardinality: itemProduct.aspectConstraint.itemToAspectCardinality,
@@ -1098,9 +1177,13 @@ Condition: ${
           }
 
           if (itemProduct.localizedAspectName === 'Brand') {
+            aspectValues.push({
+              id: itemProduct.localizedAspectName,
+              value: [],
+            })
             return {
               localizedAspectName: itemProduct.localizedAspectName,
-              aspectValues: [],
+              //aspectValues: [],
               value: '',
               require: true,
               cardinality: itemProduct.aspectConstraint.itemToAspectCardinality,
@@ -1108,11 +1191,18 @@ Condition: ${
             };
           }
 
+          aspectValues.push({
+            id: itemProduct.localizedAspectName,
+            value: itemProduct.aspectValues
+            ? itemProduct.aspectValues.map((value) => value.localizedValue)
+            : []
+          })
+
           return {
             localizedAspectName: itemProduct.localizedAspectName,
-            aspectValues: itemProduct.aspectValues
+            /*aspectValues: itemProduct.aspectValues
               ? itemProduct.aspectValues.map((value) => value.localizedValue)
-              : [],
+              : [],*/
             value: '',
             require: itemProduct.aspectConstraint.aspectRequired ? true : false,
             cardinality: itemProduct.aspectConstraint.itemToAspectCardinality,
@@ -1121,7 +1211,7 @@ Condition: ${
         });
 
       //console.log(aspects);
-
+      setAspectValues(aspectValues);
       setAspects(aspects.sort((a, b) => b.require - a.require));
       setProcessingAspects(false);
     } catch (error) {
@@ -1582,9 +1672,8 @@ Condition: ${
 
   const onSelectedCategory = (id) => {
     setCategory(id);
-    //console.log(id);
     forward();
-    getItemAspects(id);
+    //getItemAspects(id);
   };
 
   let forward = async () => {
@@ -1645,7 +1734,9 @@ Condition: ${
   const handleBarCodeScanned = ({ type, data }) => {
     /*console.log(type);
     console.log(data);*/
-    setBarcodeValue({ type, data });
+    //setBarcodeValue({ type, data });
+    setBarcodeValue(data);
+    
     setBarcodeOpen(false);
   };
 
@@ -2145,6 +2236,8 @@ Condition: ${
           forward={forward}
           processingAspects={processingAspects}
           aspects={aspects}
+          getAspectValues={getAspectValues}
+          aspectValues={aspectValues}
           changeValueItemAspect={changeValueItemAspect}
           checkedAllAspects={checkedAllAspects}
           category={category}

@@ -95,12 +95,17 @@ export default function ItemSpecificsStage(props) {
       //setSearchQuery('');
     }
 
-    const wheelItemsList = props.aspects
+    /*const wheelItemsList = props.aspects
       .find((itm) => itm.localizedAspectName === selectedItem.name)
       .aspectValues.map((value) => ({
         id: value,
         name: value,
-      }));
+      }));*/
+
+      const wheelItemsList = props.aspectValues.find((itm)=> itm.id === selectedItem.name).value.map((valueItm) => ({
+        id: valueItm,
+        name: valueItm,
+      }) )
 
     //console.log(wheelItemsList);
     setWheelItems(wheelItemsList);
@@ -118,6 +123,10 @@ export default function ItemSpecificsStage(props) {
 
     return value;
   };
+
+  useEffect(() => {
+    props.getAspectValues(props.category);
+  }, []);
 
   /*const onChangeSearch = (query) => {
     setSearchQuery(query);
@@ -139,25 +148,21 @@ export default function ItemSpecificsStage(props) {
   const onChangeSearch = (query) => {
     setSearchQuery(query);
 
+    
+    const wheelItemsList = props.aspectValues.find((itm)=> itm.id === selectedItem.name).value.map((valueItm) => ({
+      id: valueItm.toUpperCase(),
+      name: valueItm,
+    }) )
+
+
     /*const wheelItemsList = props.aspects
-        .find((itm) => itm.localizedAspectName === selectedItem.name)
-        .aspectValues.map((value) => ({
-          id: value,
-          name: value.toUpperCase(),
-        }));*/
-
-    /*setWheelItems(
-        wheelItemsList.filter((itm) => itm.value.includes(query.toUpperCase()))
-      );*/
-
-    const wheelItemsList = props.aspects
       .find((itm) => itm.localizedAspectName === selectedItem.name)
       .aspectValues.map((value) => ({
         id: value.toUpperCase(),
         name: value,
-      }));
+      }));*/
 
-    /*setWheelItems((old) => old.filter((itm) => itm.name.includes(query.toUpperCase())))*/
+    
 
     setWheelItems(
       wheelItemsList.filter((itm) => itm.id.includes(query.toUpperCase()))
@@ -170,40 +175,7 @@ export default function ItemSpecificsStage(props) {
     onOpenWheel(item);
   };
 
-  /*const onOpenWheel = (item) => {
-    setSelectedItem({
-      name: item.localizedAspectName,
-      cardinality: item.cardinality,
-      mode: item.mode,
-    });
-
-    if (Array.isArray(item.value)) {
-      setMultiSelected(item.value);
-    }
-
-    if (item.localizedAspectName !== 'Brand') {
-      const wheelItemsList = props.aspects
-        .find((itm) => itm.localizedAspectName === item.localizedAspectName)
-        .aspectValues.map((name) => ({
-          label: name,
-          value: name.toUpperCase(),
-        }));
-
-      //console.log(wheelItemsList);
-
-      setWheelItems(wheelItemsList);
-
-      if (wheelItemsList.length > 0) {
-        setValueWheel(wheelItemsList[0].label);
-      }
-    } else {
-      setWheelItems([]);
-      setValueWheel('Brand');
-      setSearchQuery('');
-    }
-
-    setOpenWheel(true);
-  };*/
+  
 
   const onSelectedValue = async (value) => {
     console.log(value);
@@ -270,12 +242,22 @@ export default function ItemSpecificsStage(props) {
       setSearchQuery('');
     }*/
 
-    const wheelItemsList = props.aspects
+    /*const wheelItemsList = props.aspects
       .find((itm) => itm.localizedAspectName === item.localizedAspectName)
       .aspectValues.map((value) => ({
         id: value.toUpperCase(),
         name: value,
-      }));
+      }));*/
+
+      const wheelItemsList = props.aspectValues.find((itm)=> itm.id === item.localizedAspectName).value.map((valueItm) => ({
+        id: valueItm.toUpperCase(),
+        name: valueItm,
+      }) )
+      
+      
+      
+
+
 
     setWheelItems(wheelItemsList);
 

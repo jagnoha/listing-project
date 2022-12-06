@@ -74,6 +74,8 @@ export default function AddListingForm(props) {
 
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
 
+  
+
   const [processingSelectedAspectValue, setProcessingSelectedAspectValue] =
     useState(false);
 
@@ -98,6 +100,8 @@ export default function AddListingForm(props) {
     useRecoilState(paymentPoliciesAtom);
   const [returnPolicies, setReturnPolicies] =
     useRecoilState(returnPoliciesAtom);
+
+  const [aspectValues, setAspectValues] = useState([]);
 
   const [searchCategories, setSearchCategories] = useState('');
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
@@ -178,6 +182,8 @@ export default function AddListingForm(props) {
       //console.log(userAccount.postalCode);
 
       setFetchPoliciesProcessing(true);
+
+      
 
       const responseFulfillment = await fetch(
         `https://listerfast.com/api/ebay/policies/fulfillment/${ebayUser}/0`
@@ -1011,6 +1017,70 @@ Condition: ${
     setConditionName(conditionName);
   };
 
+
+  const getAspectValues = async (categoryId) => {
+    try {
+      setProcessingAspects(true);
+      const response = await fetch(
+        `https://listerfast.com/api/ebay/aspectsbycategory/${ebayUser}/${getTypeProductCode(
+          type
+        )}/${categoryId}`
+      );
+
+      const json = await response.json();
+
+      let aspectValues = [];
+
+      for (const item of json
+        .filter((item) => item.aspectConstraint.aspectUsage === 'RECOMMENDED')){
+
+          if (
+            item.localizedAspectName === 'Type' ||
+            item.localizedAspectName === 'Manufacturer Part Number' ||
+            item.localizedAspectName === 'Color' ||
+            item.localizedAspectName === 'Placement on Vehicle' ||
+            item.localizedAspectName === 'Connector Type' ||
+            item.localizedAspectName === 'Model' ||
+            item.localizedAspectName === 'Vintage' ||
+            item.localizedAspectName === 'Format' ||
+            item.localizedAspectName === 'Edition' ||
+            item.localizedAspectName === 'Publication Year' ||
+            item.localizedAspectName === 'MPN'
+          ) {
+
+            aspectValues.push({
+              id: item.localizedAspectName,
+              value: item.aspectValues
+              ? item.aspectValues.map((value) => value.localizedValue)
+              : []
+            })
+
+          } else if (item.localizedAspectName === 'Brand') {
+            aspectValues.push({
+              id: item.localizedAspectName,
+              value: [],
+            })
+
+          } else {
+            aspectValues.push({
+              id: item.localizedAspectName,
+              value: item.aspectValues
+              ? item.aspectValues.map((value) => value.localizedValue)
+              : []
+            })
+          }
+
+          
+          setAspectValues(aspectValues);
+          setProcessingAspects(false);
+      }
+
+    } catch(error){
+      console.log(error);
+      setProcessingAspects(false);
+    }
+  }
+
   const getItemAspects = async (categoryId) => {
     try {
       setProcessingAspects(true);
@@ -1032,6 +1102,8 @@ Condition: ${
           })*/
       let n = 0;
 
+      let aspectValues = [];
+
       const aspects = json
         .filter((item) => item.aspectConstraint.aspectUsage === 'RECOMMENDED')
         .map((itemProduct) => {
@@ -1050,11 +1122,19 @@ Condition: ${
             itemProduct.localizedAspectName === 'Publication Year' ||
             itemProduct.localizedAspectName === 'MPN'
           ) {
+
+            aspectValues.push({
+              id: itemProduct.localizedAspectName,
+              value: itemProduct.aspectValues
+              ? itemProduct.aspectValues.map((value) => value.localizedValue)
+              : []
+            })
+
             return {
               localizedAspectName: itemProduct.localizedAspectName,
-              aspectValues: itemProduct.aspectValues
+              /*aspectValues: itemProduct.aspectValues
                 ? itemProduct.aspectValues.map((value) => value.localizedValue)
-                : [],
+                : [],*/
               value: '',
               require: true,
               cardinality: itemProduct.aspectConstraint.itemToAspectCardinality,
@@ -1063,9 +1143,15 @@ Condition: ${
           }
 
           if (itemProduct.localizedAspectName === 'Brand') {
+
+            aspectValues.push({
+              id: itemProduct.localizedAspectName,
+              value: [],
+            })
+
             return {
               localizedAspectName: itemProduct.localizedAspectName,
-              aspectValues: [],
+              //aspectValues: [],
               value: '',
               require: true,
               cardinality: itemProduct.aspectConstraint.itemToAspectCardinality,
@@ -1073,11 +1159,18 @@ Condition: ${
             };
           }
 
+          aspectValues.push({
+            id: itemProduct.localizedAspectName,
+            value: itemProduct.aspectValues
+            ? itemProduct.aspectValues.map((value) => value.localizedValue)
+            : []
+          })
+
           return {
             localizedAspectName: itemProduct.localizedAspectName,
-            aspectValues: itemProduct.aspectValues
+            /*aspectValues: itemProduct.aspectValues
               ? itemProduct.aspectValues.map((value) => value.localizedValue)
-              : [],
+              : [],*/
             value: '',
             require: itemProduct.aspectConstraint.aspectRequired ? true : false,
             cardinality: itemProduct.aspectConstraint.itemToAspectCardinality,
@@ -1086,6 +1179,10 @@ Condition: ${
         });
 
       //console.log(aspects);
+      console.log('***********************************************************************************');
+      console.log(aspectValues);
+      setAspectValues(aspectValues);
+      console.log('***********************************************************************************');
 
       setAspects(aspects.sort((a, b) => b.require - a.require));
       setProcessingAspects(false);
@@ -1102,7 +1199,7 @@ Condition: ${
     const newAspects = aspects.map((item) => {
       if (item.localizedAspectName === itm) {
         return {
-          aspectValues: item.aspectValues,
+          //aspectValues: item.aspectValues,
           localizedAspectName: item.localizedAspectName,
           require: item.require,
           value: value,
@@ -1547,7 +1644,6 @@ Condition: ${
 
   const onSelectedCategory = (id) => {
     setCategory(id);
-    //console.log(id);
     forward();
     getItemAspects(id);
   };
@@ -2043,6 +2139,8 @@ Condition: ${
         forward={forward}
         processingAspects={processingAspects}
         aspects={aspects}
+        getAspectValues={getAspectValues}
+        aspectValues={aspectValues}
         changeValueItemAspect={changeValueItemAspect}
         checkedAllAspects={checkedAllAspects}
         category={category}
@@ -2160,6 +2258,7 @@ Condition: ${
         processingPrices={processingPrices}
         getPrices={getPrices}
         saveListing={saveListing}
+        
 
         /*processingPolicies={processingPolicies}
         fulfillmentPolicies={fulfillmentPolicies}

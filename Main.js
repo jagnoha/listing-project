@@ -38,6 +38,8 @@ import userAccountAtom from './Store/atoms/userAccountAtom';
 import ebayUserAtom from './Store/atoms/ebayUserAtom';
 import snackBarAtom from './Store/atoms/snackBarAtom';
 
+import generalProcessingAtom from './Store/atoms/generalProcessingAtom';
+
 import toReviseListAtom from './Store/atoms/toReviseListAtom';
 import readyToGoListAtom from './Store/atoms/readyToGoListAtom';
 import listingsAtom from './Store/atoms/listingsAtom';
@@ -54,6 +56,9 @@ export default function Main() {
     fulfillmentPoliciesAtom
   );
 
+  const [generalProcessing, setGeneralProcessing] = useRecoilState(
+    generalProcessingAtom
+  );
   const [toReviseList, setToReviseList] = useRecoilState(toReviseListAtom);
   const [readyToGoList, setReadyToGoList] = useRecoilState(readyToGoListAtom);
   const [listings, setListings] = useRecoilState(listingsAtom);
@@ -317,7 +322,7 @@ export default function Main() {
     ).subscribe({
       next: ({ provider, value }) => {
         //console.log({ provider, value });
-        console.log('UPDATE LISTING:!!!! ');
+        console.log('DELETE LISTING:!!!! ');
 
         //listings.filter(item => item.id !== value.data.onUpdateListing.id );
         setListings((old) => [

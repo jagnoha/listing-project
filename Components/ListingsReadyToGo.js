@@ -64,6 +64,8 @@ export default function ListingsReadyToGo() {
     }
   };
 
+  
+
   const checkType = (type) => {
     if (type === 'CLOTHING') {
       return 'tshirt-crew';
@@ -104,17 +106,21 @@ export default function ListingsReadyToGo() {
   const renderItem = ({ item }) => (
     <List.Item
       style={{ paddingLeft: 10 }}
-      title={item.title}
+      titleStyle={
+        item.title ? { color: 'black' } : { fontSize: 12, color: 'gray' }
+      }
+      title={item.title ? item.title : 'Title is not ready yet...'}
       titleNumberOfLines={3}
       descriptionStyle={{ color: 'gray' }}
       description={item.conditionName}
       //onPress={() => navigation.navigate('AddListing')}
       onPress={() => onOpenListing(item.id, item.type)}
-      onLongPress={() => onSelectListing(item.id)}
+      onLongPress={() =>
+        onSelectListing({ id: item.id, version: item._version })
+      }
       delayLongPress={200}
-      
       left={(props) =>
-        selected.find((listing) => listing === item.id) ? (
+        selected.find((listing) => listing.id === item.id) ? (
           <IconButton
             icon='check-circle'
             size={30}

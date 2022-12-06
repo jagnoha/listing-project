@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Amplify, API, graphqlOperation } from 'aws-amplify';
 import { useRecoilState } from 'recoil';
-import { Appbar, useTheme } from 'react-native-paper';
+import {
+  
+  View
+  
+} from 'react-native';
+import { Appbar, useTheme, Dialog, Button, Portal, ActivityIndicator } from 'react-native-paper';
 import selectedAtom from '../Store/atoms/selectedAtom';
 import * as mutations from '../src/graphql/mutations';
 import snackBarAtom from '../Store/atoms/snackBarAtom';
 import generalProcessingAtom from '../Store/atoms/generalProcessingAtom';
+
 
 import awsconfig from '../src/aws-exports';
 
@@ -18,6 +24,10 @@ export default function Header(props) {
   const [generalProcessing, setGeneralProcessing] = useRecoilState(
     generalProcessingAtom
   );
+
+  const [processing, setProcessing] = useState(false);
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const onBack = () => {
     setSelected([]);
@@ -53,9 +63,15 @@ export default function Header(props) {
   };
 
   const onDeleteItems = async () => {
-    setGeneralProcessing(true);
+    
+    setOpenDeleteDialog(true);
+    
+    /*setGeneralProcessing(true);
+    
+    
     for await (const item of selected) {
       deleteListing(item);
+    
     }
 
     setGeneralProcessing(false);
@@ -63,8 +79,80 @@ export default function Header(props) {
       visible: true,
       text: `${selected.length} Listing(s) Deleted`,
     });
-    setSelected([]);
+    setSelected([]);*/
   };
+
+  const deleteItems = async () => {
+    try {
+
+      setOpenDeleteDialog(false);
+
+      setProcessing(true);
+    
+    
+    for await (const item of selected) {
+      deleteListing(item);
+    
+    }
+
+    setProcessing(false);
+    setSnackBar({
+      visible: true,
+      text: `${selected.length} Listing(s) Deleted`,
+    });
+    setSelected([]);
+
+    } catch(error){
+      console.log(error);
+      setProcessing(false);
+    }
+  }
+
+  if (processing) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          //justifyContent: 'space-between',
+          alignItems: 'center',
+          alignContent: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+
+          //paddingBottom: 100,
+        }}
+      >
+        <ActivityIndicator
+          size='large'
+          style={{ marginTop: '20%', marginBottom: '20%' }}
+        />
+      </View>
+    );
+  }
+
+
+  if (openDeleteDialog) {
+    return (
+      
+        <Portal>
+          <Dialog
+            visible={openDeleteDialog}
+            onDismiss={() => setOpenDeleteDialog(false)}
+          >
+            <Dialog.Icon icon='alert' />
+            <Dialog.Title style={{ textAlign: 'center' }}>
+              Are you sure you want to delete this listing?
+            </Dialog.Title>
+            <Dialog.Actions>
+              <Button onPress={() => setOpenDeleteDialog(false)}>Cancel</Button>
+              <Button onPress={() => deleteItems()}>Ok</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      
+    );
+  }
+
 
   if (props.type === 'selection') {
     if (props.indexTab === 0) {

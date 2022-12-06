@@ -85,7 +85,7 @@ export default function BarcodeStage(props) {
               mode='outlined'
               icon='barcode'
             >
-              {props.barcodeValue.data}
+              {props.barcodeValue}
             </Chip>
           </View>
         ) : (
