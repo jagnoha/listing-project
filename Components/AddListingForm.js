@@ -499,6 +499,8 @@ export default function AddListingForm(props) {
         item.localizedAspectName !== 'US Shoe Size' &&
         item.localizedAspectName !== 'UK Shoe Size' &&
         item.localizedAspectName !== 'EU Shoe Size' &&
+        item.localizedAspectName !== 'Inseam' &&
+        item.localizedAspectName !== 'Waist Size' &&
         item.localizedAspectName !== 'Country/Region of Manufacture'
     );
 
@@ -547,6 +549,10 @@ export default function AddListingForm(props) {
 
     const categoryNew = categories.find((item) => item.categoryId === category);
 
+    const inseam = aspects.find((item) => item.localizedAspectName === 'Inseam');
+
+    
+
     const usShoeSize = aspects.find(
       (item) => item.localizedAspectName === 'US Shoe Size'
     );
@@ -559,6 +565,7 @@ export default function AddListingForm(props) {
       sizeType: sizeType ? sizeType.value : '',
       type: type ? type.value : '',
       color: color ? color.value : '',
+      inseam: inseam ? inseam.value : '',
 
       fit: fit ? fit.value : '',
 
@@ -700,6 +707,7 @@ Condition: ${
         }
       }
 
+      
       if (keywords['department'] === '') {
         pendingTitle.push(keywords['gender']);
         shortPendingTitle.push(keywords['gender']);
@@ -710,8 +718,21 @@ Condition: ${
 
       pendingTitle.push(keywords['sizeType']);
       shortPendingTitle.push(keywords['sizeType']);
-      pendingTitle.push(`Size ${keywords['size']}`);
+      
+      if (keywords['inseam'] !== ''){
+        pendingTitle.push(`Size ${keywords['size']}x${keywords['inseam'].split(' ')[0]}`);
+        shortPendingTitle.push(`Size ${keywords['size']}x${keywords['inseam'].split(' ')[0]}`);
+      } else {
+        pendingTitle.push(`Size ${keywords['size']}`);
+        shortPendingTitle.push(`Size ${keywords['size']}`);
+      }
+
+      
+      /*pendingTitle.push(`Size ${keywords['size']}`);
       shortPendingTitle.push(`Size ${keywords['size']}`);
+      pendingTitle.push(`Inseam ${keywords['inseam']}`);*/
+
+
 
       // Long Title processing
 
@@ -830,6 +851,8 @@ Condition: ${
       }
       pendingTitle.push(`Size ${keywords['usShoeSize']}`);
       shortPendingTitle.push(`Size ${keywords['usShoeSize']}`);
+
+      
 
       // long title
 

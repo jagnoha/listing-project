@@ -562,6 +562,8 @@ export default function EditListingForm(props) {
         item.localizedAspectName !== 'US Shoe Size' &&
         item.localizedAspectName !== 'UK Shoe Size' &&
         item.localizedAspectName !== 'EU Shoe Size' &&
+        item.localizedAspectName !== 'Inseam' &&
+        item.localizedAspectName !== 'Waist Size' &&
         item.localizedAspectName !== 'Country/Region of Manufacture'
     );
 
@@ -608,6 +610,10 @@ export default function EditListingForm(props) {
 
     const fit = aspects.find((item) => item.localizedAspectName === 'Fit');
 
+    const inseam = aspects.find((item) => item.localizedAspectName === 'Inseam');
+
+    const waistSize = aspects.find((item) => item.localizedAspectName === 'Waist Size');
+
     const categoryNew = categories.find((item) => item.categoryId === category);
 
     const usShoeSize = aspects.find(
@@ -624,6 +630,8 @@ export default function EditListingForm(props) {
       color: color ? color.value : '',
 
       fit: fit ? fit.value : '',
+      inseam: inseam ? inseam.value : '',
+      waistSize: waistSize ? waistSize.value: '',
 
       department: department ? department.value : '',
       gender: gender ? gender.value : '',
@@ -763,6 +771,8 @@ Condition: ${
         }
       }
 
+      
+
       if (keywords['department'] === '') {
         pendingTitle.push(keywords['gender']);
         shortPendingTitle.push(keywords['gender']);
@@ -773,8 +783,21 @@ Condition: ${
 
       pendingTitle.push(keywords['sizeType']);
       shortPendingTitle.push(keywords['sizeType']);
-      pendingTitle.push(`Size ${keywords['size']}`);
-      shortPendingTitle.push(`Size ${keywords['size']}`);
+      
+      
+      
+
+      if (keywords['inseam'] !== ''){
+        pendingTitle.push(`Size ${keywords['size']}x${keywords['inseam'].split(' ')[0]}`);
+        shortPendingTitle.push(`Size ${keywords['size']}x${keywords['inseam'].split(' ')[0]}`);
+      } else {
+        pendingTitle.push(`Size ${keywords['size']}`);
+        shortPendingTitle.push(`Size ${keywords['size']}`);
+      }
+
+
+      
+      
 
       // Long Title processing
 
