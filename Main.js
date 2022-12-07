@@ -389,7 +389,14 @@ export default function Main() {
             visible={snackBar.visible}
             duration={1500}
             onDismiss={onDismissSnackBar}
-            style={{ backgroundColor: 'green' }}
+            action={{
+              label: 'Undo',
+              onPress: () => {
+                console.log('Undo');
+              },
+            
+            }}
+            //style={{ backgroundColor: 'green' }}
             //onDismiss={onDismissSnackBar}
             /*action={{
           label: 'Undo',

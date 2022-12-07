@@ -50,14 +50,14 @@ export default function SearchProduct(props) {
           buttons={[
             {
               value: 'back',
-              label: 'Back',
+              //label: 'Back',
               icon: 'arrow-left',
               onPress: () => props.backward(),
               disabled: 'true',
             },
             {
               value: 'next',
-              label: 'Next',
+              //label: 'Next',
               icon: 'arrow-right',
               onPress: () => {
                 props.setCategory('');

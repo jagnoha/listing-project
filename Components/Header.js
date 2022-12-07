@@ -141,7 +141,7 @@ export default function Header(props) {
           >
             <Dialog.Icon icon='alert' />
             <Dialog.Title style={{ textAlign: 'center' }}>
-              Are you sure you want to delete this listing?
+              Are you sure you want to delete these listings?
             </Dialog.Title>
             <Dialog.Actions>
               <Button onPress={() => setOpenDeleteDialog(false)}>Cancel</Button>

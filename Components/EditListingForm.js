@@ -1718,6 +1718,17 @@ Condition: ${
     return false;
   };
 
+  let goToFirstStep = async () => {
+    if (step > 1){  
+      setStep(1);
+      return true;
+    }
+    
+    return false;
+  };
+
+  
+
   let takePicMain = async () => {
     try {
       let nameFile = `${uuidv4()}.jpg`;
@@ -2018,6 +2029,7 @@ Condition: ${
               photos={photos}
               backward={backward}
               forward={forward}
+              //goToFirstStep={goToFirstStep}
               type={type}
               onOpenPreviewPhoto={onOpenPreviewPhoto}
               onOpenEditPhoto={onOpenEditPhoto}
@@ -2215,6 +2227,7 @@ Condition: ${
           styles={styles}
           backward={backward}
           forward={forward}
+          goToFirstStep={goToFirstStep}
           barcodeOpen={barcodeOpen}
           onOpenBarcode={onOpenBarcode}
           handleBarCodeScanned={handleBarCodeScanned}
@@ -2238,6 +2251,7 @@ Condition: ${
           styles={styles}
           backward={backward}
           forward={forward}
+          goToFirstStep={goToFirstStep}
           processingCategories={processingCategories}
           categories={categories}
           onSelectedCategory={onSelectedCategory}
@@ -2257,6 +2271,7 @@ Condition: ${
           styles={styles}
           backward={backward}
           forward={forward}
+          goToFirstStep={goToFirstStep}
           processingAspects={processingAspects}
           aspects={aspects}
           getAspectValues={getAspectValues}
@@ -2281,6 +2296,7 @@ Condition: ${
           styles={styles}
           backward={backward}
           forward={forward}
+          goToFirstStep={goToFirstStep}
           processingCategoryFeatures={processingCategoryFeatures}
           //getCategoriesFeatures={getCategoriesFeatures}
           categoryFeatures={categoryFeatures}
@@ -2306,6 +2322,7 @@ Condition: ${
           styles={styles}
           backward={backward}
           forward={forward}
+          goToFirstStep={goToFirstStep}
           //onChangeDimensions={onChangeDimensions}
           onChangeLength={onChangeLength}
           onChangeHeight={onChangeHeight}
@@ -2335,6 +2352,7 @@ Condition: ${
           styles={styles}
           backward={backward}
           forward={forward}
+          goToFirstStep={goToFirstStep}
           processingPolicies={processingPolicies}
           fulfillmentPolicies={fulfillmentPolicies}
           paymentPolicies={paymentPolicies}
@@ -2376,6 +2394,7 @@ Condition: ${
           navigation={navigation}
           styles={styles}
           backward={backward}
+          goToFirstStep={goToFirstStep}
           forward={forward}
           titleProcessed={titleProcessed}
           descriptionProcessed={descriptionProcessed}
@@ -2423,6 +2442,7 @@ Condition: ${
           styles={styles}
           backward={backward}
           forward={forward}
+          goToFirstStep={goToFirstStep}
           getPrices={getPrices}
           prices={prices}
           processingPrices={processingPrices}

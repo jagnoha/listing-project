@@ -109,16 +109,17 @@ export default function PhotosSection(props) {
         style={props.styles.nextBackControl}
         onValueChange={() => console.log('Change value')}
         buttons={[
+          
           {
             value: 'back',
-            label: 'Back',
+            //label: 'Back',
             icon: 'arrow-left',
             onPress: () => props.backward(),
             //disabled: props.backward(),
           },
           {
             value: 'next',
-            label: 'Next',
+            //label: 'Next',
             icon: 'arrow-right',
             onPress: () => props.forward(),
             disabled: props.photoMain ? false : true,
@@ -130,7 +131,7 @@ export default function PhotosSection(props) {
         icon='clock-edit-outline'
         onPress={() => props.saveListing()}
       >
-        Finish this listing later
+        Save and close to finish later
       </Button>
     </View>
   );

@@ -418,6 +418,9 @@ export default function ItemSpecificsStage(props) {
           icon={wheelItems.length > 0 ? 'magnify' : 'pencil'}
         />
 
+{selectedItem.name === 'Brand' ?
+                <Button mode='outlined' onPress={()=>setSearchQuery('Unbranded')}>No brand or unknown brand</Button> : ''}
+
         <FlatList
           data={wheelItems}
           renderItem={renderItem}
@@ -910,14 +913,25 @@ export default function ItemSpecificsStage(props) {
           onValueChange={() => console.log('Change value')}
           buttons={[
             {
+              value: 'firststep',
+              //label: 'First Step',
+              icon: 'page-first',
+              onPress: () => {
+                props.goToFirstStep();
+                //props.getCategoriesFeatures(props.category);
+              },
+              //disabled: 'false'
+              //disabled: categoryId
+            },
+            {
               value: 'back',
-              label: 'Back',
+              //label: 'Back',
               icon: 'arrow-left',
               onPress: () => props.backward(),
             },
             {
               value: 'next',
-              label: 'Next',
+              //label: 'Next',
               icon: 'arrow-right',
               disabled: !props.checkedAllAspects,
               onPress: () => {
@@ -932,7 +946,7 @@ export default function ItemSpecificsStage(props) {
           icon='clock-edit-outline'
           onPress={() => props.saveListing()}
         >
-          Finish this listing later
+          Save and close to finish later
         </Button>
       </View>
     </View>

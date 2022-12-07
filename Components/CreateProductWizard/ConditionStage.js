@@ -113,15 +113,26 @@ export default function ConditionStage(props) {
           onValueChange={() => console.log('Change value')}
           buttons={[
             {
+              value: 'firststep',
+              //label: 'First Step',
+              icon: 'page-first',
+              onPress: () => {
+                props.goToFirstStep();
+                //props.getCategoriesFeatures(props.category);
+              },
+              //disabled: 'false'
+              //disabled: categoryId
+            },
+            {
               value: 'back',
-              label: 'Back',
+              //label: 'Back',
               icon: 'arrow-left',
               onPress: () => props.backward(),
               //disabled: 'true'
             },
             {
               value: 'next',
-              label: 'Next',
+              //label: 'Next',
               icon: 'arrow-right',
               onPress: () => {
                 props.forward();
@@ -136,7 +147,7 @@ export default function ConditionStage(props) {
           icon='clock-edit-outline'
           onPress={() => props.saveListing()}
         >
-          Finish this listing later
+          Save and close to finish later
         </Button>
       </View>
     </View>
