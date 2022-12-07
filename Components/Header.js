@@ -163,6 +163,10 @@ export default function Header(props) {
             title={props.title}
             color={theme.colors.onBackground}
           />
+          {selected.length === 1 ? <Appbar.Action
+            icon='plus-circle-multiple-outline'
+            onPress={() => console.log('Duplicate item')}
+      />:''}
           <Appbar.Action
             icon='delete-outline'
             onPress={() => onDeleteItems()}

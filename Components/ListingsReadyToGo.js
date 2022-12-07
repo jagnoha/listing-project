@@ -56,11 +56,11 @@ export default function ListingsReadyToGo() {
 
   const onChangeSearch = (query) => setSearchQuery(query);
 
-  const onSelectListing = (id) => {
-    if (selected.find((item) => item === id)) {
-      setSelected(selected.filter((item) => item !== id));
+  const onSelectListing = (listing) => {
+    if (selected.find((item) => item.id === listing.id)) {
+      setSelected(selected.filter((item) => item.id !== listing.id));
     } else {
-      setSelected((oldSelected) => [...oldSelected, id]);
+      setSelected((oldSelected) => [...oldSelected, listing]);
     }
   };
 
