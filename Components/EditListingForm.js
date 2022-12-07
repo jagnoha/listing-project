@@ -192,6 +192,9 @@ export default function EditListingForm(props) {
   useEffect(() => {
     try {
       (async () => {
+
+
+
         setInitializingListing(true);
 
         console.log('ESTE ES EL ID DEL LISTING', listingId);
@@ -202,6 +205,8 @@ export default function EditListingForm(props) {
         });
 
         const listing = oneListing.data.getListing;
+
+        //getCategoriesFeatures(listing.categoryID);
 
         setListing(listing);
 
@@ -1695,8 +1700,9 @@ Condition: ${
 
   const onSelectedCategory = (id) => {
     setCategory(id);
+    getCategoriesFeatures(id);
     forward();
-    //getItemAspects(id);
+    
   };
 
   let forward = async () => {

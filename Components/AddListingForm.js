@@ -296,13 +296,6 @@ export default function AddListingForm(props) {
 
       const id = uuidv4();
 
-      //console.log(id);
-
-      //console.log(userAccount.id);
-
-      //console.log(category);
-      //console.log(categories);
-
       const listingDetails = {
         id: id,
         sku: id,
@@ -338,15 +331,7 @@ export default function AddListingForm(props) {
         weight: weight ? Number(weight) : 6,
         quantity: quantity,
         isReadyToGo: quantity > 0 && priceProduct > 0 ? true : false,
-      };
-
-      //console.log('Get upc: ', getUPC());
-      //console.log('Get EAN: ', getEAN());
-      //console.log('Get ISBN: ', getISBN());
-
-      /*console.log('UPC: ', categoryFeatures);
-      console.log('ISBN: ', categoryFeatures);
-      console.log('EAN: ', categoryFeatures);*/
+      };      
 
       const newListing = await API.graphql({
         query: mutations.createListing,
@@ -1675,9 +1660,11 @@ Condition: ${
   };
 
   const onSelectedCategory = (id) => {
-    setCategory(id);
+    setCategory(id);    
     forward();
     getItemAspects(id);
+    getCategoriesFeatures(id);
+    
   };
 
   let forward = async () => {
