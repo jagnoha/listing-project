@@ -135,6 +135,7 @@ export default function ConditionStage(props) {
               //label: 'Next',
               icon: 'arrow-right',
               onPress: () => {
+                props.onProcessingTitle();
                 props.forward();
               },
               disabled: props.condition !== '' ? false : true,

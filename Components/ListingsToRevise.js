@@ -58,9 +58,12 @@ export default function ListingsToRevise() {
 
   const onSelectListing = (listing) => {
 
-    //console.log(listing);
+    
     if (selected.find((item) => item.id === listing.id)) {
-      setSelected(selected.filter((item) => item.id !== listing.id));
+      if (selected.length < 3){
+        setSelected(selected.filter((item) => item.id !== listing.id));
+      }
+    
     } else {
       setSelected((oldSelected) => [...oldSelected, listing]);
     }

@@ -2289,6 +2289,7 @@ Condition: ${
           saveListing={saveListing}
           processingSelectedAspectValue={processingSelectedAspectValue}
           onDeleteItem={onDeleteItem}
+          onProcessingTitle={onProcessingTitle}
         />
       );
     }
@@ -2312,6 +2313,7 @@ Condition: ${
           onChangeConditionDescription={onChangeConditionDescription}
           saveListing={saveListing}
           onDeleteItem={onDeleteItem}
+          onProcessingTitle={onProcessingTitle}
 
           //changeValueItemAspect={changeValueItemAspect}
           //checkedAllAspects={checkedAllAspects}
@@ -2340,6 +2342,7 @@ Condition: ${
           weight={weight}
           saveListing={saveListing}
           onDeleteItem={onDeleteItem}
+          onProcessingTitle={onProcessingTitle}
           //getPolicies={getPolicies}
           //processingCategoryFeatures={processingCategoryFeatures}
           //categoryFeatures={categoryFeatures}

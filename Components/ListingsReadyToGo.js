@@ -54,7 +54,11 @@ export default function ListingsReadyToGo() {
 
   const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
 
-  const onChangeSearch = (query) => setSearchQuery(query);
+  const onChangeSearch = (query) => {
+    setSearchQuery(query);
+
+    
+    };
 
   const onSelectListing = (listing) => {
     if (selected.find((item) => item.id === listing.id)) {
@@ -148,10 +152,17 @@ export default function ListingsReadyToGo() {
 
   return (
     <>
+    <Searchbar
+          style={{ margin: 25 }}
+          placeholder={'Search'}
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+          icon={'magnify'}
+      />
       <FlatList
         data={listings
           .filter((item) => item.isReadyToGo)
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))}
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).filter(itm => itm.title.toLowerCase().includes(searchQuery.toLowerCase()))}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshing={false}

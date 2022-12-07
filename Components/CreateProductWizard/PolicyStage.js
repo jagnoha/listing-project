@@ -433,8 +433,9 @@ export default function PolicyStage(props) {
               //label: 'Next',
               icon: 'arrow-right',
               onPress: () => {
-                props.forward();
                 props.onProcessingTitle();
+                props.forward();
+                //props.onProcessingTitle();
               },
               disabled:
                 props.paymentPolicyId === '' ||

@@ -218,12 +218,12 @@ export default function Header(props) {
 
 
   if (props.type === 'selection') {
-    if (props.indexTab === 0) {
+    //if (props.indexTab === 0) {
       return (
         <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
           <Appbar.BackAction onPress={() => onBack()} />
           <Appbar.Content
-            title={props.title}
+            title={selected.length}
             color={theme.colors.onBackground}
           />
           {selected.length === 1 ? <Appbar.Action
@@ -236,7 +236,7 @@ export default function Header(props) {
           />
         </Appbar.Header>
       );
-    }
+    //}
   }
 
   if (props.type === 'configureNewAccount') {

@@ -21,6 +21,8 @@ export default function ListingStatusTab() {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useRecoilState(selectedAtom);
+
+  
   const [routes] = useState([
     { key: 'toRevise', title: 'To Revise'},
     { key: 'readyToGo', title: 'Ready to Go' },
@@ -33,18 +35,21 @@ export default function ListingStatusTab() {
 
   //console.log(index);
 
+  
+
   return (
     <>
       {selected.length > 0 ? (
-        <Header title={selected.length} type='selection' indexTab={index} />
+        <Header type='selection' indexTab={index} />
       ) : (
-        <Header title='ListerFast' type='basic' indexTab={0} />
+        <Header title='ListerFast' type='basic' indexTab={index} />
       )}
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={() => {
-          setIndex;
+          setIndex((old) => old === 0 ? 1 : 0);
+          //console.log(index);
           setSelected([]);
         }}
         initialLayout={{ width: layout.width }}

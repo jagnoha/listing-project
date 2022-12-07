@@ -2190,6 +2190,7 @@ Condition: ${
         conditionDescription={conditionDescription}
         onChangeConditionDescription={onChangeConditionDescription}
         saveListing={saveListing}
+        onProcessingTitle={onProcessingTitle}
 
         //changeValueItemAspect={changeValueItemAspect}
         //checkedAllAspects={checkedAllAspects}
@@ -2217,6 +2218,7 @@ Condition: ${
         width={width}
         weight={weight}
         saveListing={saveListing}
+        onProcessingTitle={onProcessingTitle}
         //getPolicies={getPolicies}
         //processingCategoryFeatures={processingCategoryFeatures}
         //categoryFeatures={categoryFeatures}
