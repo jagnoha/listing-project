@@ -980,6 +980,7 @@ Condition: ${
         .join(' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
+    
       if (uniqueFilteredTitle.trim().length <= 80) {
         setTitleProcessed(uniqueFilteredTitle.trim());
       } else {
@@ -987,13 +988,13 @@ Condition: ${
       }
 
       processingDescription(uniqueFilteredTitle);
+
+      
     }
   };
 
   const onProcessingTitle = async () => {
-    /*console.log('Processing Title and Description!!!');
-    console.log(getExtraAspectsValuesClothing());*/
-    //processingTitle()
+    
     processingTitle();
   };
 
@@ -1840,7 +1841,7 @@ Condition: ${
     try {
       console.log(listingId);
 
-      console.log('Saving Listing');
+      console.log('Delete Listing');
 
       const id = listingId;
 

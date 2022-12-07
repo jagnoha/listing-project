@@ -27,7 +27,7 @@ import snackBarAtom from '../../Store/atoms/snackBarAtom';
 const AspectItemCard = ({ item, onPress }) => {
   return (
     <View style={{ margin: 7 }}>
-      <Pressable onPress={onPress} onPressOut={() => console.log('Pressed!!!')}>
+      <Pressable onPress={onPress}  >
         <Card>
           <Card.Content>
             <View>
@@ -326,6 +326,7 @@ export default function ItemSpecificsStage(props) {
     setMultiSelected([]);
     setOpenWheel(false);
     setWheelItems([]);
+    
   };
 
   const renderItem = ({ item }) => {
@@ -340,6 +341,7 @@ export default function ItemSpecificsStage(props) {
             visible: true,
             text: `Picked ${selectedItem.name}: ${item.name}`,
           });
+          //props.onProcessingTitle();
         }}
         /*onPressIn={()=> { onSelectedValue(item.name);
           onCloseWheel();  }}*/
