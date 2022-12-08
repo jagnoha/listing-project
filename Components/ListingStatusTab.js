@@ -45,6 +45,7 @@ export default function ListingStatusTab() {
         <Header title='ListerFast' type='basic' indexTab={index} />
       )}
       <TabView
+      
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={() => {
