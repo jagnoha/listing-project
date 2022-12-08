@@ -192,9 +192,6 @@ export default function EditListingForm(props) {
   useEffect(() => {
     try {
       (async () => {
-
-
-
         setInitializingListing(true);
 
         console.log('ESTE ES EL ID DEL LISTING', listingId);
@@ -250,7 +247,7 @@ export default function EditListingForm(props) {
         getCategoriesFeatures(Number(listing.categoryID));
       }*/
 
-      /*if ( listing.categoryID) {
+        /*if ( listing.categoryID) {
         getCategoriesFeatures(listing.categoryID);
       };*/
 
@@ -615,9 +612,13 @@ export default function EditListingForm(props) {
 
     const fit = aspects.find((item) => item.localizedAspectName === 'Fit');
 
-    const inseam = aspects.find((item) => item.localizedAspectName === 'Inseam');
+    const inseam = aspects.find(
+      (item) => item.localizedAspectName === 'Inseam'
+    );
 
-    const waistSize = aspects.find((item) => item.localizedAspectName === 'Waist Size');
+    const waistSize = aspects.find(
+      (item) => item.localizedAspectName === 'Waist Size'
+    );
 
     const categoryNew = categories.find((item) => item.categoryId === category);
 
@@ -636,7 +637,7 @@ export default function EditListingForm(props) {
 
       fit: fit ? fit.value : '',
       inseam: inseam ? inseam.value : '',
-      waistSize: waistSize ? waistSize.value: '',
+      waistSize: waistSize ? waistSize.value : '',
 
       department: department ? department.value : '',
       gender: gender ? gender.value : '',
@@ -776,8 +777,6 @@ Condition: ${
         }
       }
 
-      
-
       if (keywords['department'] === '') {
         pendingTitle.push(keywords['gender']);
         shortPendingTitle.push(keywords['gender']);
@@ -788,21 +787,18 @@ Condition: ${
 
       pendingTitle.push(keywords['sizeType']);
       shortPendingTitle.push(keywords['sizeType']);
-      
-      
-      
 
-      if (keywords['inseam'] !== ''){
-        pendingTitle.push(`Size ${keywords['size']}x${keywords['inseam'].split(' ')[0]}`);
-        shortPendingTitle.push(`Size ${keywords['size']}x${keywords['inseam'].split(' ')[0]}`);
-      } else {
+      if (keywords['inseam'] !== '') {
+        pendingTitle.push(
+          `Size ${keywords['size']}x${keywords['inseam'].split(' ')[0]}`
+        );
+        shortPendingTitle.push(
+          `Size ${keywords['size']}x${keywords['inseam'].split(' ')[0]}`
+        );
+      } else if (keywords['size'] !== '') {
         pendingTitle.push(`Size ${keywords['size']}`);
         shortPendingTitle.push(`Size ${keywords['size']}`);
       }
-
-
-      
-      
 
       // Long Title processing
 
@@ -846,24 +842,23 @@ Condition: ${
         (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
       );
 
-      /*console.log(filtetedTitle.join(' ').length);
-      console.log(filtetedTitleShort.join(' ').length);*/
-
-      // processing long title
-      let uniqueFilteredTitle = filtetedTitle.join(' ').split(' ');
-      uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)];
-
-      uniqueFilteredTitle = uniqueFilteredTitle
+      let uniqueFilteredTitle = filtetedTitle
         .join(' ')
-        .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
+        .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+        .split(' ');
 
-      // processing short title
-      let uniqueFilteredTitleShort = filtetedTitleShort.join(' ').split(' ');
-      uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)];
+      uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)].join(' ');
 
-      uniqueFilteredTitleShort = uniqueFilteredTitleShort
+      let uniqueFilteredTitleShort = filtetedTitleShort
         .join(' ')
-        .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
+        .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+        .split(' ');
+
+      uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)].join(
+        ' '
+      );
+
+      console.log('*********************************', uniqueFilteredTitle);
 
       if (uniqueFilteredTitle.trim().length <= 80) {
         setTitleProcessed(uniqueFilteredTitle.trim());
@@ -944,13 +939,6 @@ Condition: ${
 
       //console.log(filtetedTitle.join(' ').length);
 
-      let uniqueFilteredTitle = filtetedTitle.join(' ').split(' ');
-      uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)];
-
-      uniqueFilteredTitle = uniqueFilteredTitle
-        .join(' ')
-        .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
-
       // short title
 
       let expandTitleShort = [];
@@ -971,16 +959,24 @@ Condition: ${
         (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
       );
 
-      //console.log(filtetedTitleShort.join(' ').length);
-
-      let uniqueFilteredTitleShort = filtetedTitleShort.join(' ').split(' ');
-      uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)];
-
-      uniqueFilteredTitleShort = uniqueFilteredTitleShort
+      let uniqueFilteredTitle = filtetedTitle
         .join(' ')
-        .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
+        .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+        .split(' ');
 
-    
+      uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)].join(' ');
+
+      let uniqueFilteredTitleShort = filtetedTitleShort
+        .join(' ')
+        .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+        .split(' ');
+
+      uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)].join(
+        ' '
+      );
+
+      console.log('*********************************', uniqueFilteredTitle);
+
       if (uniqueFilteredTitle.trim().length <= 80) {
         setTitleProcessed(uniqueFilteredTitle.trim());
       } else {
@@ -988,13 +984,10 @@ Condition: ${
       }
 
       processingDescription(uniqueFilteredTitle);
-
-      
     }
   };
 
   const onProcessingTitle = async () => {
-    
     processingTitle();
   };
 
@@ -1094,55 +1087,50 @@ Condition: ${
 
       let aspectValues = [];
 
-      for (const item of json
-        .filter((item) => item.aspectConstraint.aspectUsage === 'RECOMMENDED')){
-
-          if (
-            item.localizedAspectName === 'Type' ||
-            item.localizedAspectName === 'Manufacturer Part Number' ||
-            item.localizedAspectName === 'Color' ||
-            item.localizedAspectName === 'Placement on Vehicle' ||
-            item.localizedAspectName === 'Connector Type' ||
-            item.localizedAspectName === 'Model' ||
-            item.localizedAspectName === 'Vintage' ||
-            item.localizedAspectName === 'Format' ||
-            item.localizedAspectName === 'Edition' ||
-            item.localizedAspectName === 'Publication Year' ||
-            item.localizedAspectName === 'MPN'
-          ) {
-
-            aspectValues.push({
-              id: item.localizedAspectName,
-              value: item.aspectValues
+      for (const item of json.filter(
+        (item) => item.aspectConstraint.aspectUsage === 'RECOMMENDED'
+      )) {
+        if (
+          item.localizedAspectName === 'Type' ||
+          item.localizedAspectName === 'Manufacturer Part Number' ||
+          item.localizedAspectName === 'Color' ||
+          item.localizedAspectName === 'Placement on Vehicle' ||
+          item.localizedAspectName === 'Connector Type' ||
+          item.localizedAspectName === 'Model' ||
+          item.localizedAspectName === 'Vintage' ||
+          item.localizedAspectName === 'Format' ||
+          item.localizedAspectName === 'Edition' ||
+          item.localizedAspectName === 'Publication Year' ||
+          item.localizedAspectName === 'MPN'
+        ) {
+          aspectValues.push({
+            id: item.localizedAspectName,
+            value: item.aspectValues
               ? item.aspectValues.map((value) => value.localizedValue)
-              : []
-            })
-
-          } else if (item.localizedAspectName === 'Brand') {
-            aspectValues.push({
-              id: item.localizedAspectName,
-              value: [],
-            })
-
-          } else {
-            aspectValues.push({
-              id: item.localizedAspectName,
-              value: item.aspectValues
+              : [],
+          });
+        } else if (item.localizedAspectName === 'Brand') {
+          aspectValues.push({
+            id: item.localizedAspectName,
+            value: [],
+          });
+        } else {
+          aspectValues.push({
+            id: item.localizedAspectName,
+            value: item.aspectValues
               ? item.aspectValues.map((value) => value.localizedValue)
-              : []
-            })
-          }
+              : [],
+          });
+        }
 
-          
-          setAspectValues(aspectValues);
-          setProcessingAspects(false);
+        setAspectValues(aspectValues);
+        setProcessingAspects(false);
       }
-
-    } catch(error){
+    } catch (error) {
       console.log(error);
       setProcessingAspects(false);
     }
-  }
+  };
 
   const getItemAspects = async (categoryId) => {
     try {
@@ -1185,13 +1173,12 @@ Condition: ${
             itemProduct.localizedAspectName === 'Publication Year' ||
             itemProduct.localizedAspectName === 'MPN'
           ) {
-
             aspectValues.push({
               id: itemProduct.localizedAspectName,
               value: itemProduct.aspectValues
-              ? itemProduct.aspectValues.map((value) => value.localizedValue)
-              : []
-            })
+                ? itemProduct.aspectValues.map((value) => value.localizedValue)
+                : [],
+            });
 
             return {
               localizedAspectName: itemProduct.localizedAspectName,
@@ -1209,7 +1196,7 @@ Condition: ${
             aspectValues.push({
               id: itemProduct.localizedAspectName,
               value: [],
-            })
+            });
             return {
               localizedAspectName: itemProduct.localizedAspectName,
               //aspectValues: [],
@@ -1223,9 +1210,9 @@ Condition: ${
           aspectValues.push({
             id: itemProduct.localizedAspectName,
             value: itemProduct.aspectValues
-            ? itemProduct.aspectValues.map((value) => value.localizedValue)
-            : []
-          })
+              ? itemProduct.aspectValues.map((value) => value.localizedValue)
+              : [],
+          });
 
           return {
             localizedAspectName: itemProduct.localizedAspectName,
@@ -1246,6 +1233,18 @@ Condition: ${
     } catch (error) {
       console.log(error);
       setProcessingAspects(false);
+    }
+  };
+
+  const onCheckAllAspects = async () => {
+    try {
+      const aspectList = aspects.filter(
+        (item) => item.require === true && item.value === ''
+      );
+
+      setCheckedAllAspects(aspectList.length > 0 ? false : true);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -1700,10 +1699,12 @@ Condition: ${
   };
 
   const onSelectedCategory = (id) => {
+    setCheckedAllAspects(false);
     setCategory(id);
+    getItemAspects(id);
+    //setAspectValues([]);
     getCategoriesFeatures(id);
     forward();
-    
   };
 
   let forward = async () => {
@@ -1726,15 +1727,13 @@ Condition: ${
   };
 
   let goToFirstStep = async () => {
-    if (step > 1){  
+    if (step > 1) {
       setStep(1);
       return true;
     }
-    
+
     return false;
   };
-
-  
 
   let takePicMain = async () => {
     try {
@@ -1777,7 +1776,7 @@ Condition: ${
     console.log(data);*/
     //setBarcodeValue({ type, data });
     setBarcodeValue(data);
-    
+
     setBarcodeOpen(false);
   };
 
@@ -2265,6 +2264,7 @@ Condition: ${
           category={category}
           saveListing={saveListing}
           onDeleteItem={onDeleteItem}
+          //onCheckAllAspects={onCheckAllAspects}
         />
       );
     }
@@ -2465,6 +2465,7 @@ Condition: ${
           category={category}
           //getCategoriesFeatures={getCategoriesFeatures}
           onDeleteItem={onDeleteItem}
+          onProcessingTitle={onProcessingTitle}
 
           /*titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}

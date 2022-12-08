@@ -64,6 +64,7 @@ export default function PriceStage(props) {
   useEffect(() => {
     (async () => {
       console.log('Opening prices!!!!');
+      props.onProcessingTitle(props.category);
       props.getPrices();
     })();
   }, []);
@@ -188,23 +189,21 @@ export default function PriceStage(props) {
           ''
         )}
 
-
-
         <SegmentedButtons
           style={props.styles.nextBackControl}
           onValueChange={() => console.log('Change value')}
           buttons={[
             {
-                value: 'firststep',
-                //label: 'First Step',
-                icon: 'page-first',
-                onPress: () => {
-                  props.goToFirstStep();
-                  //props.getCategoriesFeatures(props.category);
-                },
-                //disabled: 'false'
-                //disabled: categoryId
+              value: 'firststep',
+              //label: 'First Step',
+              icon: 'page-first',
+              onPress: () => {
+                props.goToFirstStep();
+                //props.getCategoriesFeatures(props.category);
               },
+              //disabled: 'false'
+              //disabled: categoryId
+            },
             {
               value: 'back',
               //label: 'Back',

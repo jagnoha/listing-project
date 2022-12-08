@@ -60,6 +60,7 @@ export default function ListingsReadyToGo() {
   const [snackBar, setSnackBar] = useRecoilState(snackBarAtom);
 
   const onChangeSearch = (query) => {
+    setSelected([]);
     setSearchQuery(query);
   };
 

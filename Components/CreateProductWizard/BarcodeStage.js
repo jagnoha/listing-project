@@ -97,16 +97,16 @@ export default function BarcodeStage(props) {
           onValueChange={() => console.log('Change value2')}
           buttons={[
             {
-                value: 'firststep',
-                //label: 'First Step',
-                icon: 'page-first',
-                onPress: () => {
-                  props.goToFirstStep();
-                  //props.getCategoriesFeatures(props.category);
-                },
-                //disabled: 'false'
-                //disabled: categoryId
+              value: 'firststep',
+              //label: 'First Step',
+              icon: 'page-first',
+              onPress: () => {
+                props.goToFirstStep();
+                //props.getCategoriesFeatures(props.category);
               },
+              //disabled: 'false'
+              //disabled: categoryId
+            },
             {
               value: 'back',
               //label: 'Back',
@@ -122,13 +122,13 @@ export default function BarcodeStage(props) {
             },
           ]}
         />
-        <Button
+        {/*<Button
           style={{ marginTop: 15 }}
           icon='clock-edit-outline'
           onPress={() => props.saveListing()}
         >
           Save and close to finish later
-        </Button>
+        </Button>*/}
       </View>
     </View>
   );

@@ -390,11 +390,11 @@ export default function Main() {
             duration={1500}
             onDismiss={onDismissSnackBar}
             action={{
-              label: 'Undo',
+              label: 'Close',
+              //icon: 'close',
               onPress: () => {
-                console.log('Undo');
+                console.log('Close');
               },
-            
             }}
             //style={{ backgroundColor: 'green' }}
             //onDismiss={onDismissSnackBar}

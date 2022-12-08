@@ -74,8 +74,6 @@ export default function AddListingForm(props) {
 
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
 
-  
-
   const [processingSelectedAspectValue, setProcessingSelectedAspectValue] =
     useState(false);
 
@@ -182,8 +180,6 @@ export default function AddListingForm(props) {
       //console.log(userAccount.postalCode);
 
       setFetchPoliciesProcessing(true);
-
-      
 
       const responseFulfillment = await fetch(
         `https://listerfast.com/api/ebay/policies/fulfillment/${ebayUser}/0`
@@ -331,7 +327,7 @@ export default function AddListingForm(props) {
         weight: weight ? Number(weight) : 6,
         quantity: quantity,
         isReadyToGo: quantity > 0 && priceProduct > 0 ? true : false,
-      };      
+      };
 
       const newListing = await API.graphql({
         query: mutations.createListing,
@@ -534,9 +530,9 @@ export default function AddListingForm(props) {
 
     const categoryNew = categories.find((item) => item.categoryId === category);
 
-    const inseam = aspects.find((item) => item.localizedAspectName === 'Inseam');
-
-    
+    const inseam = aspects.find(
+      (item) => item.localizedAspectName === 'Inseam'
+    );
 
     const usShoeSize = aspects.find(
       (item) => item.localizedAspectName === 'US Shoe Size'
@@ -692,7 +688,6 @@ Condition: ${
         }
       }
 
-      
       if (keywords['department'] === '') {
         pendingTitle.push(keywords['gender']);
         shortPendingTitle.push(keywords['gender']);
@@ -703,21 +698,22 @@ Condition: ${
 
       pendingTitle.push(keywords['sizeType']);
       shortPendingTitle.push(keywords['sizeType']);
-      
-      if (keywords['inseam'] !== ''){
-        pendingTitle.push(`Size ${keywords['size']}x${keywords['inseam'].split(' ')[0]}`);
-        shortPendingTitle.push(`Size ${keywords['size']}x${keywords['inseam'].split(' ')[0]}`);
-      } else {
+
+      if (keywords['inseam'] !== '') {
+        pendingTitle.push(
+          `Size ${keywords['size']}x${keywords['inseam'].split(' ')[0]}`
+        );
+        shortPendingTitle.push(
+          `Size ${keywords['size']}x${keywords['inseam'].split(' ')[0]}`
+        );
+      } else if (keywords['size'] !== '') {
         pendingTitle.push(`Size ${keywords['size']}`);
         shortPendingTitle.push(`Size ${keywords['size']}`);
       }
 
-      
       /*pendingTitle.push(`Size ${keywords['size']}`);
       shortPendingTitle.push(`Size ${keywords['size']}`);
       pendingTitle.push(`Inseam ${keywords['inseam']}`);*/
-
-
 
       // Long Title processing
 
@@ -836,8 +832,6 @@ Condition: ${
       }
       pendingTitle.push(`Size ${keywords['usShoeSize']}`);
       shortPendingTitle.push(`Size ${keywords['usShoeSize']}`);
-
-      
 
       // long title
 
@@ -1025,7 +1019,6 @@ Condition: ${
     setConditionName(conditionName);
   };
 
-
   const getAspectValues = async (categoryId) => {
     try {
       setProcessingAspects(true);
@@ -1039,55 +1032,50 @@ Condition: ${
 
       let aspectValues = [];
 
-      for (const item of json
-        .filter((item) => item.aspectConstraint.aspectUsage === 'RECOMMENDED')){
-
-          if (
-            item.localizedAspectName === 'Type' ||
-            item.localizedAspectName === 'Manufacturer Part Number' ||
-            item.localizedAspectName === 'Color' ||
-            item.localizedAspectName === 'Placement on Vehicle' ||
-            item.localizedAspectName === 'Connector Type' ||
-            item.localizedAspectName === 'Model' ||
-            item.localizedAspectName === 'Vintage' ||
-            item.localizedAspectName === 'Format' ||
-            item.localizedAspectName === 'Edition' ||
-            item.localizedAspectName === 'Publication Year' ||
-            item.localizedAspectName === 'MPN'
-          ) {
-
-            aspectValues.push({
-              id: item.localizedAspectName,
-              value: item.aspectValues
+      for (const item of json.filter(
+        (item) => item.aspectConstraint.aspectUsage === 'RECOMMENDED'
+      )) {
+        if (
+          item.localizedAspectName === 'Type' ||
+          item.localizedAspectName === 'Manufacturer Part Number' ||
+          item.localizedAspectName === 'Color' ||
+          item.localizedAspectName === 'Placement on Vehicle' ||
+          item.localizedAspectName === 'Connector Type' ||
+          item.localizedAspectName === 'Model' ||
+          item.localizedAspectName === 'Vintage' ||
+          item.localizedAspectName === 'Format' ||
+          item.localizedAspectName === 'Edition' ||
+          item.localizedAspectName === 'Publication Year' ||
+          item.localizedAspectName === 'MPN'
+        ) {
+          aspectValues.push({
+            id: item.localizedAspectName,
+            value: item.aspectValues
               ? item.aspectValues.map((value) => value.localizedValue)
-              : []
-            })
-
-          } else if (item.localizedAspectName === 'Brand') {
-            aspectValues.push({
-              id: item.localizedAspectName,
-              value: [],
-            })
-
-          } else {
-            aspectValues.push({
-              id: item.localizedAspectName,
-              value: item.aspectValues
+              : [],
+          });
+        } else if (item.localizedAspectName === 'Brand') {
+          aspectValues.push({
+            id: item.localizedAspectName,
+            value: [],
+          });
+        } else {
+          aspectValues.push({
+            id: item.localizedAspectName,
+            value: item.aspectValues
               ? item.aspectValues.map((value) => value.localizedValue)
-              : []
-            })
-          }
+              : [],
+          });
+        }
 
-          
-          setAspectValues(aspectValues);
-          setProcessingAspects(false);
+        setAspectValues(aspectValues);
+        setProcessingAspects(false);
       }
-
-    } catch(error){
+    } catch (error) {
       console.log(error);
       setProcessingAspects(false);
     }
-  }
+  };
 
   const getItemAspects = async (categoryId) => {
     try {
@@ -1130,13 +1118,12 @@ Condition: ${
             itemProduct.localizedAspectName === 'Publication Year' ||
             itemProduct.localizedAspectName === 'MPN'
           ) {
-
             aspectValues.push({
               id: itemProduct.localizedAspectName,
               value: itemProduct.aspectValues
-              ? itemProduct.aspectValues.map((value) => value.localizedValue)
-              : []
-            })
+                ? itemProduct.aspectValues.map((value) => value.localizedValue)
+                : [],
+            });
 
             return {
               localizedAspectName: itemProduct.localizedAspectName,
@@ -1151,11 +1138,10 @@ Condition: ${
           }
 
           if (itemProduct.localizedAspectName === 'Brand') {
-
             aspectValues.push({
               id: itemProduct.localizedAspectName,
               value: [],
-            })
+            });
 
             return {
               localizedAspectName: itemProduct.localizedAspectName,
@@ -1170,9 +1156,9 @@ Condition: ${
           aspectValues.push({
             id: itemProduct.localizedAspectName,
             value: itemProduct.aspectValues
-            ? itemProduct.aspectValues.map((value) => value.localizedValue)
-            : []
-          })
+              ? itemProduct.aspectValues.map((value) => value.localizedValue)
+              : [],
+          });
 
           return {
             localizedAspectName: itemProduct.localizedAspectName,
@@ -1187,10 +1173,14 @@ Condition: ${
         });
 
       //console.log(aspects);
-      console.log('***********************************************************************************');
+      console.log(
+        '***********************************************************************************'
+      );
       console.log(aspectValues);
       setAspectValues(aspectValues);
-      console.log('***********************************************************************************');
+      console.log(
+        '***********************************************************************************'
+      );
 
       setAspects(aspects.sort((a, b) => b.require - a.require));
       setProcessingAspects(false);
@@ -1239,11 +1229,11 @@ Condition: ${
   };
 
   let goToFirstStep = async () => {
-    if (step > 1){  
+    if (step > 1) {
       setStep(1);
       return true;
     }
-    
+
     return false;
   };
 
@@ -1660,11 +1650,10 @@ Condition: ${
   };
 
   const onSelectedCategory = (id) => {
-    setCategory(id);    
+    setCategory(id);
     forward();
     getItemAspects(id);
     getCategoriesFeatures(id);
-    
   };
 
   let forward = async () => {
@@ -2287,7 +2276,6 @@ Condition: ${
         processingPrices={processingPrices}
         getPrices={getPrices}
         saveListing={saveListing}
-        
 
         /*processingPolicies={processingPolicies}
         fulfillmentPolicies={fulfillmentPolicies}
@@ -2338,6 +2326,7 @@ Condition: ${
         saveListing={saveListing}
         category={category}
         getCategoriesFeatures={getCategoriesFeatures}
+        onProcessingTitle={onProcessingTitle}
 
         /*titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}

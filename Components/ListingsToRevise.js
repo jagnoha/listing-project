@@ -120,6 +120,7 @@ export default function ListingsToRevise() {
 
   const onChangeSearch = (query) => {
     setSearchQuery(query);
+    setSelected([]);
   };
 
   const renderItem = ({ item }) => (

@@ -109,7 +109,6 @@ export default function PhotosSection(props) {
         style={props.styles.nextBackControl}
         onValueChange={() => console.log('Change value')}
         buttons={[
-          
           {
             value: 'back',
             //label: 'Back',
@@ -126,13 +125,13 @@ export default function PhotosSection(props) {
           },
         ]}
       />
-      <Button
+      {/*<Button
         style={{ marginTop: 15 }}
         icon='clock-edit-outline'
         onPress={() => props.saveListing()}
       >
         Save and close to finish later
-      </Button>
+      </Button>*/}
     </View>
   );
 }

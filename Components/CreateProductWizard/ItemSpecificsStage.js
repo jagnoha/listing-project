@@ -27,7 +27,7 @@ import snackBarAtom from '../../Store/atoms/snackBarAtom';
 const AspectItemCard = ({ item, onPress }) => {
   return (
     <View style={{ margin: 7 }}>
-      <Pressable onPress={onPress}  >
+      <Pressable onPress={onPress}>
         <Card>
           <Card.Content>
             <View>
@@ -102,10 +102,12 @@ export default function ItemSpecificsStage(props) {
         name: value,
       }));*/
 
-      const wheelItemsList = props.aspectValues.find((itm)=> itm.id === selectedItem.name).value.map((valueItm) => ({
+    const wheelItemsList = props.aspectValues
+      .find((itm) => itm.id === selectedItem.name)
+      .value.map((valueItm) => ({
         id: valueItm,
         name: valueItm,
-      }) )
+      }));
 
     //console.log(wheelItemsList);
     setWheelItems(wheelItemsList);
@@ -148,12 +150,12 @@ export default function ItemSpecificsStage(props) {
   const onChangeSearch = (query) => {
     setSearchQuery(query);
 
-    
-    const wheelItemsList = props.aspectValues.find((itm)=> itm.id === selectedItem.name).value.map((valueItm) => ({
-      id: valueItm.toUpperCase(),
-      name: valueItm,
-    }) )
-
+    const wheelItemsList = props.aspectValues
+      .find((itm) => itm.id === selectedItem.name)
+      .value.map((valueItm) => ({
+        id: valueItm.toUpperCase(),
+        name: valueItm,
+      }));
 
     /*const wheelItemsList = props.aspects
       .find((itm) => itm.localizedAspectName === selectedItem.name)
@@ -161,8 +163,6 @@ export default function ItemSpecificsStage(props) {
         id: value.toUpperCase(),
         name: value,
       }));*/
-
-    
 
     setWheelItems(
       wheelItemsList.filter((itm) => itm.id.includes(query.toUpperCase()))
@@ -174,8 +174,6 @@ export default function ItemSpecificsStage(props) {
   const onClickItem = (item) => {
     onOpenWheel(item);
   };
-
-  
 
   const onSelectedValue = async (value) => {
     console.log(value);
@@ -249,15 +247,12 @@ export default function ItemSpecificsStage(props) {
         name: value,
       }));*/
 
-      const wheelItemsList = props.aspectValues.find((itm)=> itm.id === item.localizedAspectName).value.map((valueItm) => ({
+    const wheelItemsList = props.aspectValues
+      .find((itm) => itm.id === item.localizedAspectName)
+      .value.map((valueItm) => ({
         id: valueItm.toUpperCase(),
         name: valueItm,
-      }) )
-      
-      
-      
-
-
+      }));
 
     setWheelItems(wheelItemsList);
 
@@ -326,7 +321,6 @@ export default function ItemSpecificsStage(props) {
     setMultiSelected([]);
     setOpenWheel(false);
     setWheelItems([]);
-    
   };
 
   const renderItem = ({ item }) => {
@@ -420,8 +414,13 @@ export default function ItemSpecificsStage(props) {
           icon={wheelItems.length > 0 ? 'magnify' : 'pencil'}
         />
 
-{selectedItem.name === 'Brand' ?
-                <Button mode='outlined' onPress={()=>setSearchQuery('Unbranded')}>No brand or unknown brand</Button> : ''}
+        {selectedItem.name === 'Brand' ? (
+          <Button mode='outlined' onPress={() => setSearchQuery('Unbranded')}>
+            No brand or unknown brand
+          </Button>
+        ) : (
+          ''
+        )}
 
         <FlatList
           data={wheelItems}
@@ -943,13 +942,14 @@ export default function ItemSpecificsStage(props) {
             },
           ]}
         />
-        <Button
+        {/*<Button
           style={{ marginTop: 15 }}
           icon='clock-edit-outline'
           onPress={() => props.saveListing()}
+          disabled={!props.checkedAllAspects}
         >
           Save and close to finish later
-        </Button>
+        </Button>*/}
       </View>
     </View>
   );
