@@ -202,7 +202,7 @@ export default function EditListingForm(props) {
       (async () => {
         setInitializingListing(true);
 
-        console.log('ESTE ES EL ID DEL LISTING', listingId);
+        //console.log('ESTE ES EL ID DEL LISTING', listingId);
 
         const oneListing = await API.graphql({
           query: queries.getListing,
@@ -678,7 +678,7 @@ export default function EditListingForm(props) {
 
       images = images.concat(pictureMain, photosTemp, pictureLabel);
 
-      console.log(images);
+      //console.log(images);
 
       const res = await axios.post(urlPost, {
         product: {
@@ -723,7 +723,7 @@ export default function EditListingForm(props) {
         },
       });
       
-      console.log(res.data.result.Ack);
+      //console.log(res.data.result.Ack);
 
       if (res.data.result.Ack === 'Success'){
         console.log('Product Uploaded on eBay');        
@@ -953,7 +953,7 @@ Condition: ${
         ' '
       );
 
-      console.log('*********************************', uniqueFilteredTitle);
+      //console.log('*********************************', uniqueFilteredTitle);
 
       if (uniqueFilteredTitle.trim().length <= 80) {
         setTitleProcessed(uniqueFilteredTitle.trim());
@@ -1070,7 +1070,7 @@ Condition: ${
         ' '
       );
 
-      console.log('*********************************', uniqueFilteredTitle);
+      //console.log('*********************************', uniqueFilteredTitle);
 
       if (uniqueFilteredTitle.trim().length <= 80) {
         setTitleProcessed(uniqueFilteredTitle.trim());
@@ -1924,7 +1924,7 @@ Condition: ${
 
   const onDeleteItem = async () => {
     try {
-      console.log(listingId);
+      //console.log(listingId);
       setOpenDeleteDialog(true);
     } catch (error) {
       console.log(error);
@@ -1948,7 +1948,7 @@ Condition: ${
         variables: { input: listingDetails },
       });
 
-      console.log(savedListing);
+      //console.log(savedListing);
 
       /*if (savedListing) {
         navigation.goBack();
@@ -1964,7 +1964,7 @@ Condition: ${
 
   const deleteItem = async () => {
     try {
-      console.log(listingId);
+      //console.log(listingId);
 
       console.log('Delete Listing');
 

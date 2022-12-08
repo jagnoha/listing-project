@@ -207,7 +207,7 @@ export default function AddListingForm(props) {
       setPaymentPolicies(jsonPayment);
       setReturnPolicies(jsonReturn);
 
-      console.log(fulfillmentPolicies);
+      //console.log(fulfillmentPolicies);
 
       setFetchPoliciesProcessing(false);
     })();
@@ -342,17 +342,17 @@ export default function AddListingForm(props) {
         variables: { input: listingDetails },
       });
 
-      console.log(
+      /*console.log(
         '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
-      );
+      );*/
       /*console.log(listings);
       console.log(
         '*****************************************************************'
       );*/
-      console.log(newListing);
+      /*console.log(newListing);
       console.log(
         '*****************************************************************'
-      );
+      );*/
 
       if (newListing) {
         //setListings((old) => [...old, newListing.data.createListing]);
@@ -415,17 +415,17 @@ export default function AddListingForm(props) {
         variables: { input: listingDetails },
       });
 
-      console.log(
+      /*console.log(
         '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
-      );
+      );*/
       /*console.log(listings);
       console.log(
         '*****************************************************************'
       );*/
-      console.log(newListing);
+      /*console.log(newListing);
       console.log(
         '*****************************************************************'
-      );
+      );*/
 
       
     } catch (error) {
@@ -1257,14 +1257,14 @@ Condition: ${
         });
 
       //console.log(aspects);
-      console.log(
+      /*console.log(
         '***********************************************************************************'
-      );
-      console.log(aspectValues);
+      );*/
+      //console.log(aspectValues);
       setAspectValues(aspectValues);
-      console.log(
+      /*console.log(
         '***********************************************************************************'
-      );
+      );*/
 
       setAspects(aspects.sort((a, b) => b.require - a.require));
       setProcessingAspects(false);
@@ -1898,7 +1898,7 @@ Condition: ${
 
       images = images.concat(pictureMain, photosTemp, pictureLabel);
 
-      console.log(images);
+      //console.log(images);
 
       const res = await axios.post(urlPost, {
         product: {
@@ -1943,7 +1943,7 @@ Condition: ${
         },
       });
       
-      console.log('resultado!!!!!!!!!!!: ', JSON.stringify(res.data.result));
+      //console.log('resultado!!!!!!!!!!!: ', JSON.stringify(res.data.result));
 
       
 

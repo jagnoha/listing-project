@@ -68,12 +68,10 @@ export default function Header(props) {
         variables: { input: listingDetails },
       });
 
-      if (deletedListing) {
-        //navigation.goBack();
-        //setSelected(old => old.filter(item => item.id !== id ));
+      /*if (deletedListing) {
+        
         console.log(deleteListing);
-        //setSnackBar({ visible: true, text: 'Listing Deleted' });
-      }
+      }*/
     } catch (error) {
       console.log(error);
     }
@@ -136,7 +134,7 @@ export default function Header(props) {
         variables: { input: listingDetails },
       });
 
-      console.log(newListing);
+      //console.log(newListing);
 
       setSnackBar({
         visible: true,
@@ -189,7 +187,7 @@ export default function Header(props) {
         variables: { input: listingDetails },
       });
 
-      console.log(updateListing);
+      //console.log(updateListing);
 
     } catch(error){
       console.log(error);
@@ -208,7 +206,7 @@ export default function Header(props) {
 
       const version = listing._version;
 
-      console.log(listing.title);
+      //console.log(listing.title);
 
       //getCategoriesFeatures(listing.categoryID);
 
@@ -254,7 +252,7 @@ export default function Header(props) {
 
       images = images.concat(pictureMain, photosTemp, pictureLabel);
 
-      console.log(images);
+      //console.log(images);
 
       const res = await axios.post(urlPost, {
         product: {
