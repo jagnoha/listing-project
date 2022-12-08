@@ -17,6 +17,7 @@ import { ListingType } from '../src/models';
 
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
+import urlImagesAtom from '../Store/atoms/urlImagesAtom';
 
 import { Amplify, Storage, API, graphqlOperation } from 'aws-amplify';
 import { Listing } from '../src/models';
@@ -73,6 +74,8 @@ export default function EditListingForm(props) {
   let cameraRef = useRef();
 
   const { listingId, type } = props.route.params;
+
+  const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
 
   const [hasCameraPermission, setHasCameraPermission] = useState();
 
@@ -135,7 +138,8 @@ export default function EditListingForm(props) {
   const [length, setLength] = useState('6');
   const [height, setHeight] = useState('6');
   const [width, setWidth] = useState('6');
-  const [weight, setWeight] = useState('6');
+  const [weightMayor, setWeightMayor] = useState('0');
+  const [weightMinor, setWeightMinor] = useState('6');
 
   const [lastStep, setLastStep] = useState(0);
 
@@ -227,7 +231,10 @@ export default function EditListingForm(props) {
         setLength(listing.length.toString());
         setHeight(listing.height.toString());
         setWidth(listing.width.toString());
-        setWeight(listing.weight.toString());
+        setWeightMayor(listing.weightMayor.toString());
+        setWeightMinor(listing.weightMinor.toString());
+
+        //setWeight(listing.weight.toString());
 
         setFulfillmentPolicyId(listing.shippingProfileID);
         setReturnPolicyId(listing.returnProfileID);
@@ -412,7 +419,8 @@ export default function EditListingForm(props) {
         length: length ? Number(length) : 6,
         width: width ? Number(width) : 6,
         height: height ? Number(height) : 6,
-        weight: weight ? Number(weight) : 6,
+        weightMayor: weightMayor ? Number(weightMayor) : 0,
+        weightMinor: weightMinor ? Number(weightMinor) : 6,
         quantity: quantity,
         isReadyToGo: quantity > 0 && priceProduct > 0 ? true : false,
       };
@@ -650,6 +658,68 @@ export default function EditListingForm(props) {
     };
 
     return importantAspects;
+  };
+
+  const onPublishEbay = async () => {
+    try {
+      let urlPost = 'https://listerfast.com/api/ebay/additem';
+
+      let images = [];
+      let pictureMain = `${urlImages}${photoMain}`;
+      let pictureLabel = photoLabel ? `${urlImages}${photoLabel}` : [];
+      let photosTemp = photos.map((item) => `${urlImages}${item.value}`);
+
+      images = images.concat(pictureMain, photosTemp, pictureLabel);
+
+      console.log(images);
+
+      const res = await fetch.post(urlPost, {
+        product: {
+          SKU: listingId,
+          bestOffer: true,
+          title: titleProcessed,
+          description: descriptionProcessed,
+          primaryCategory: category,
+          price: priceProduct,
+          conditionID: condition,
+          conditionDescription: conditionDescription,
+          country: 'US',
+          currency: 'USD',
+          dispatchTimeMax: 1,
+          listingDuration: 'GTC',
+          listingType: 'FixedPriceItem',
+          pictures: images,
+          postalCode: `${userAccount.postalCode}`,
+          quantity: Number(quantity),
+          shippingProfileID: fulfillmentPolicyId,
+          returnProfileID: returnPolicyId,
+          paymentProfileID: paymentPolicyId,
+          itemSpecifics: {
+            NameValueList: aspects.map((item) => ({
+              Name: item.localizedAspectName,
+              Value: item.value,
+              Source: 'ItemSpecific',
+            })),
+          },
+
+          weightMajor: Number(weightMayor),
+          weightMinor: Number(weightMinor),
+          packageDepth: Number(height),
+          packageLength: Number(length),
+          packageWidth: Number(width),
+          siteID: ListingType[type.toUpperCase()] === 'AUTOPARTS' ? '100' : '0',
+          site:
+            ListingType[type.toUpperCase()] === 'AUTOPARTS'
+              ? 'eBayMotors'
+              : 'US',
+          ebayAccountLinked: product.ebayAccountLinked,
+        },
+      });
+      console.log(res);
+      console.log('Publish on eBay!!!');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const onChangeTitle = (newTitle) => {
@@ -1967,6 +2037,14 @@ Condition: ${
     setOpenCamera((old) => !old);
   };
 
+  const onChangeWeightMayor = async (value) => {
+    setWeightMayor(value);
+  };
+
+  const onChangeWeightMinor = async (value) => {
+    setWeightMinor(value);
+  };
+
   const onMainPhotoOpen = async () => {
     setMainPhotoOpen(true);
     setOpenCamera(true);
@@ -2336,11 +2414,13 @@ Condition: ${
           onChangeLength={onChangeLength}
           onChangeHeight={onChangeHeight}
           onChangeWidth={onChangeWidth}
-          onChangeWeight={onChangeWeight}
+          onChangeWeightMayor={onChangeWeightMayor}
+          onChangeWeightMinor={onChangeWeightMinor}
           length={length}
           height={height}
           width={width}
-          weight={weight}
+          weightMayor={weightMayor}
+          weightMinor={weightMinor}
           saveListing={saveListing}
           onDeleteItem={onDeleteItem}
           onProcessingTitle={onProcessingTitle}
@@ -2466,6 +2546,7 @@ Condition: ${
           //getCategoriesFeatures={getCategoriesFeatures}
           onDeleteItem={onDeleteItem}
           onProcessingTitle={onProcessingTitle}
+          onPublishEbay={onPublishEbay}
 
           /*titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}

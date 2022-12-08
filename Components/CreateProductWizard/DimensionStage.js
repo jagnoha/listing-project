@@ -32,8 +32,8 @@ export default function DimensionStage(props) {
       />
       <View>
         <Banner visible={true} icon={'tape-measure'}>
-          Add the measurements and weight of the item. Weight is in ounces and
-          measurements are in inches.
+          Add the measurements and weight of the item. Weight are in ounces and
+          pounds. Measurements are in inches.
         </Banner>
 
         <View>
@@ -73,15 +73,33 @@ export default function DimensionStage(props) {
           </View>
           <View>
             <Surface elevation={4} style={{ margin: 10, padding: 10 }}>
-              <TextInput
-                mode='outlined'
-                style={{ margin: 10 }}
-                right={<TextInput.Affix text='oz' />}
-                label='Weight'
-                keyboardType='decimal-pad'
-                onChangeText={props.onChangeWeight}
-                value={props.weight}
-              />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-evenly',
+                }}
+              >
+                <TextInput
+                  mode='outlined'
+                  style={{ margin: 10 }}
+                  right={<TextInput.Affix text='lbs' />}
+                  label='Weight (lbs)'
+                  keyboardType='decimal-pad'
+                  onChangeText={props.onChangeWeightMayor}
+                  value={props.weightMayor}
+                  width={125}
+                />
+                <TextInput
+                  mode='outlined'
+                  style={{ margin: 10 }}
+                  right={<TextInput.Affix text='oz' />}
+                  label='Weight (oz)'
+                  keyboardType='decimal-pad'
+                  onChangeText={props.onChangeWeightMinor}
+                  value={props.weightMinor}
+                  width={125}
+                />
+              </View>
             </Surface>
           </View>
         </View>
@@ -91,16 +109,16 @@ export default function DimensionStage(props) {
           onValueChange={() => console.log('Change value')}
           buttons={[
             {
-                value: 'firststep',
-                //label: 'First Step',
-                icon: 'page-first',
-                onPress: () => {
-                  props.goToFirstStep();
-                  //props.getCategoriesFeatures(props.category);
-                },
-                //disabled: 'false'
-                //disabled: categoryId
+              value: 'firststep',
+              //label: 'First Step',
+              icon: 'page-first',
+              onPress: () => {
+                props.goToFirstStep();
+                //props.getCategoriesFeatures(props.category);
               },
+              //disabled: 'false'
+              //disabled: categoryId
+            },
             {
               value: 'back',
               //label: 'Back',

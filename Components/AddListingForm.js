@@ -129,7 +129,8 @@ export default function AddListingForm(props) {
   const [length, setLength] = useState('6');
   const [height, setHeight] = useState('6');
   const [width, setWidth] = useState('6');
-  const [weight, setWeight] = useState('6');
+  const [weightMayor, setWeightMayor] = useState('0');
+  const [weightMinor, setWeightMinor] = useState('6');
 
   const [lastStep, setLastStep] = useState(0);
 
@@ -324,7 +325,9 @@ export default function AddListingForm(props) {
         length: length ? Number(length) : 6,
         width: width ? Number(width) : 6,
         height: height ? Number(height) : 6,
-        weight: weight ? Number(weight) : 6,
+        weightMayor: weightMayor ? Number(weightMayor) : 0,
+        weightMinor: weightMinor ? Number(weightMinor) : 6,
+
         quantity: quantity,
         isReadyToGo: quantity > 0 && priceProduct > 0 ? true : false,
       };
@@ -932,8 +935,16 @@ Condition: ${
     setHeight(value);
   };
 
-  const onChangeWeight = async (value) => {
+  /*const onChangeWeight = async (value) => {
     setWeight(value);
+  };*/
+
+  const onChangeWeightMayor = async (value) => {
+    setWeightMayor(value);
+  };
+
+  const onChangeWeightMinor = async (value) => {
+    setWeightMinor(value);
   };
 
   const getCategoriesFeatures = async (categoryId) => {
@@ -2201,11 +2212,14 @@ Condition: ${
         onChangeLength={onChangeLength}
         onChangeHeight={onChangeHeight}
         onChangeWidth={onChangeWidth}
-        onChangeWeight={onChangeWeight}
+        //onChangeWeight={onChangeWeight}
+        onChangeWeightMayor={onChangeWeightMayor}
+        onChangeWeightMinor={onChangeWeightMinor}
         length={length}
         height={height}
         width={width}
-        weight={weight}
+        weightMayor={weightMayor}
+        weightMinor={weightMinor}
         saveListing={saveListing}
         onProcessingTitle={onProcessingTitle}
         //getPolicies={getPolicies}

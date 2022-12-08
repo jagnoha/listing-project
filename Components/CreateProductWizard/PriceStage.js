@@ -220,7 +220,7 @@ export default function PriceStage(props) {
               label: 'Publish on eBay',
 
               icon: 'publish',
-              onPress: () => props.forward(),
+              onPress: () => props.onPublishEbay(),
               disabled:
                 Number(props.priceProduct) > 0 && Number(props.quantity > 0)
                   ? false

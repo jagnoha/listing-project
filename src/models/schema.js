@@ -151,8 +151,8 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "weight": {
-                    "name": "weight",
+                "weightMayor": {
+                    "name": "weightMayor",
                     "isArray": false,
                     "type": "Float",
                     "isRequired": false,
@@ -278,6 +278,13 @@ export const schema = {
                     "name": "categoryFeatures",
                     "isArray": false,
                     "type": "AWSJSON",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "weightMinor": {
+                    "name": "weightMinor",
+                    "isArray": false,
+                    "type": "Float",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -638,5 +645,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "4c5f0a1bbdbc09493daaa83bcd760f6a"
+    "version": "634d4b068d079b76ae8cc8c7555a08e7"
 };

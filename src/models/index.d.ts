@@ -53,7 +53,7 @@ type EagerListing = {
   readonly length?: number | null;
   readonly width?: number | null;
   readonly height?: number | null;
-  readonly weight?: number | null;
+  readonly weightMayor?: number | null;
   readonly quantity?: number | null;
   readonly sku?: string | null;
   readonly isDraft?: boolean | null;
@@ -70,6 +70,7 @@ type EagerListing = {
   readonly isReadyToGo?: boolean | null;
   readonly barcodeValue?: string | null;
   readonly categoryFeatures?: string | null;
+  readonly weightMinor?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly listingItemsCompatibilityId?: string | null;
@@ -97,7 +98,7 @@ type LazyListing = {
   readonly length?: number | null;
   readonly width?: number | null;
   readonly height?: number | null;
-  readonly weight?: number | null;
+  readonly weightMayor?: number | null;
   readonly quantity?: number | null;
   readonly sku?: string | null;
   readonly isDraft?: boolean | null;
@@ -114,6 +115,7 @@ type LazyListing = {
   readonly isReadyToGo?: boolean | null;
   readonly barcodeValue?: string | null;
   readonly categoryFeatures?: string | null;
+  readonly weightMinor?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly listingItemsCompatibilityId?: string | null;

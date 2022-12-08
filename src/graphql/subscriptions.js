@@ -25,7 +25,7 @@ export const onCreateListing = /* GraphQL */ `
       length
       width
       height
-      weight
+      weightMayor
       quantity
       sku
       isDraft
@@ -50,6 +50,7 @@ export const onCreateListing = /* GraphQL */ `
       isReadyToGo
       barcodeValue
       categoryFeatures
+      weightMinor
       createdAt
       updatedAt
       _version
@@ -83,7 +84,7 @@ export const onUpdateListing = /* GraphQL */ `
       length
       width
       height
-      weight
+      weightMayor
       quantity
       sku
       isDraft
@@ -108,6 +109,7 @@ export const onUpdateListing = /* GraphQL */ `
       isReadyToGo
       barcodeValue
       categoryFeatures
+      weightMinor
       createdAt
       updatedAt
       _version
@@ -141,7 +143,7 @@ export const onDeleteListing = /* GraphQL */ `
       length
       width
       height
-      weight
+      weightMayor
       quantity
       sku
       isDraft
@@ -166,6 +168,7 @@ export const onDeleteListing = /* GraphQL */ `
       isReadyToGo
       barcodeValue
       categoryFeatures
+      weightMinor
       createdAt
       updatedAt
       _version
