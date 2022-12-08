@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Amplify, API, graphqlOperation } from 'aws-amplify';
 import { useRecoilState } from 'recoil';
 import selectedAtom from '../Store/atoms/selectedAtom';
+import snackBarAtom from '../Store/atoms/snackBarAtom';
 import {
   useTheme,
   List,
@@ -44,6 +45,8 @@ const month = [
   'Dec',
 ];
 
+const MAX_LISTINGS = 25;
+
 export default function ListingsReadyToGo() {
   const navigation = useNavigation();
   const theme = useTheme();
@@ -54,21 +57,26 @@ export default function ListingsReadyToGo() {
 
   const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
 
+  const [snackBar, setSnackBar] = useRecoilState(snackBarAtom);
+
   const onChangeSearch = (query) => {
     setSearchQuery(query);
-
-    
-    };
+  };
 
   const onSelectListing = (listing) => {
     if (selected.find((item) => item.id === listing.id)) {
       setSelected(selected.filter((item) => item.id !== listing.id));
     } else {
-      setSelected((oldSelected) => [...oldSelected, listing]);
+      if (selected.length < MAX_LISTINGS) {
+        setSelected((oldSelected) => [...oldSelected, listing]);
+      } else {
+        setSnackBar({
+          visible: true,
+          text: `Limit of ${MAX_LISTINGS}  listings per bulk`,
+        });
+      }
     }
   };
-
-  
 
   const checkType = (type) => {
     if (type === 'CLOTHING') {
@@ -84,8 +92,11 @@ export default function ListingsReadyToGo() {
   };
 
   const onOpenListing = (id, type) => {
-    navigation.navigate('EditListing', {listingId: id, type: type.toLowerCase()})
-  }
+    navigation.navigate('EditListing', {
+      listingId: id,
+      type: type.toLowerCase(),
+    });
+  };
 
   /*useEffect(() => {
     //query the initial todolist and subscribe to data updates
@@ -152,17 +163,20 @@ export default function ListingsReadyToGo() {
 
   return (
     <>
-    <Searchbar
-          style={{ margin: 25 }}
-          placeholder={'Search'}
-          onChangeText={onChangeSearch}
-          value={searchQuery}
-          icon={'magnify'}
+      <Searchbar
+        style={{ margin: 25 }}
+        placeholder={'Search'}
+        onChangeText={onChangeSearch}
+        value={searchQuery}
+        icon={'magnify'}
       />
       <FlatList
         data={listings
           .filter((item) => item.isReadyToGo)
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).filter(itm => itm.title.toLowerCase().includes(searchQuery.toLowerCase()))}
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .filter((itm) =>
+            itm.title.toLowerCase().includes(searchQuery.toLowerCase())
+          )}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshing={false}
