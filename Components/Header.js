@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { Amplify, API, graphqlOperation } from 'aws-amplify';
 import { useRecoilState } from 'recoil';
+import { View } from 'react-native';
 import {
-  
-  View
-  
-} from 'react-native';
-import { Appbar, useTheme, Dialog, Button, Portal, ActivityIndicator } from 'react-native-paper';
+  Appbar,
+  useTheme,
+  Dialog,
+  Button,
+  Portal,
+  ActivityIndicator,
+} from 'react-native-paper';
 import selectedAtom from '../Store/atoms/selectedAtom';
 import * as mutations from '../src/graphql/mutations';
 import * as queries from '../src/graphql/queries';
 import snackBarAtom from '../Store/atoms/snackBarAtom';
 import generalProcessingAtom from '../Store/atoms/generalProcessingAtom';
 import { v4 as uuidv4 } from 'uuid';
-
 
 import awsconfig from '../src/aws-exports';
 
@@ -65,21 +67,15 @@ export default function Header(props) {
   };
 
   const onCopyItem = async () => {
-
     try {
-
       const id = selected[0].id;
 
-      
       const listing = await API.graphql({
         query: queries.getListing,
         variables: { id: id },
       });
 
       const listingResult = listing.data.getListing;
-
-      
-
 
       //***************************************************** */
 
@@ -119,7 +115,7 @@ export default function Header(props) {
         weight: listingResult.weight,
         quantity: listingResult.quantity,
         isReadyToGo: listingResult.isReadyToGo,
-      };      
+      };
 
       const newListing = await API.graphql({
         query: mutations.createListing,
@@ -128,48 +124,40 @@ export default function Header(props) {
 
       console.log(newListing);
 
-
-     
-
-
-    } catch(error){
+      setSnackBar({
+        visible: true,
+        text: `Listing Copied`,
+      });
+    } catch (error) {
       console.log(error);
     }
-
-  }
+  };
 
   const onDeleteItems = async () => {
-    
     setOpenDeleteDialog(true);
-    
-    
   };
 
   const deleteItems = async () => {
     try {
-
       setOpenDeleteDialog(false);
 
       setProcessing(true);
-    
-    
-    for await (const item of selected) {
-      deleteListing(item);
-    
-    }
 
-    setProcessing(false);
-    setSnackBar({
-      visible: true,
-      text: `${selected.length} Listing(s) Deleted`,
-    });
-    setSelected([]);
+      for await (const item of selected) {
+        deleteListing(item);
+      }
 
-    } catch(error){
+      setProcessing(false);
+      setSnackBar({
+        visible: true,
+        text: `${selected.length} Listing(s) Deleted`,
+      });
+      setSelected([]);
+    } catch (error) {
       console.log(error);
       setProcessing(false);
     }
-  }
+  };
 
   if (processing) {
     return (
@@ -193,49 +181,46 @@ export default function Header(props) {
     );
   }
 
-
   if (openDeleteDialog) {
     return (
-      
-        <Portal>
-          <Dialog
-            visible={openDeleteDialog}
-            onDismiss={() => setOpenDeleteDialog(false)}
-          >
-            <Dialog.Icon icon='alert' />
-            <Dialog.Title style={{ textAlign: 'center' }}>
-              Are you sure you want to delete these listings?
-            </Dialog.Title>
-            <Dialog.Actions>
-              <Button onPress={() => setOpenDeleteDialog(false)}>Cancel</Button>
-              <Button onPress={() => deleteItems()}>Ok</Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
-      
+      <Portal>
+        <Dialog
+          visible={openDeleteDialog}
+          onDismiss={() => setOpenDeleteDialog(false)}
+        >
+          <Dialog.Icon icon='alert' />
+          <Dialog.Title style={{ textAlign: 'center' }}>
+            Are you sure you want to delete these listings?
+          </Dialog.Title>
+          <Dialog.Actions>
+            <Button onPress={() => setOpenDeleteDialog(false)}>Cancel</Button>
+            <Button onPress={() => deleteItems()}>Ok</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     );
   }
 
-
   if (props.type === 'selection') {
     //if (props.indexTab === 0) {
-      return (
-        <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
-          <Appbar.BackAction onPress={() => onBack()} />
-          <Appbar.Content
-            title={selected.length}
-            color={theme.colors.onBackground}
-          />
-          {selected.length === 1 ? <Appbar.Action
+    return (
+      <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
+        <Appbar.BackAction onPress={() => onBack()} />
+        <Appbar.Content
+          title={selected.length}
+          color={theme.colors.onBackground}
+        />
+        {selected.length === 1 ? (
+          <Appbar.Action
             icon='plus-circle-multiple-outline'
             onPress={() => onCopyItem()}
-      />:''}
-          <Appbar.Action
-            icon='delete-outline'
-            onPress={() => onDeleteItems()}
           />
-        </Appbar.Header>
-      );
+        ) : (
+          ''
+        )}
+        <Appbar.Action icon='delete-outline' onPress={() => onDeleteItems()} />
+      </Appbar.Header>
+    );
     //}
   }
 
