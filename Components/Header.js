@@ -17,6 +17,9 @@ import snackBarAtom from '../Store/atoms/snackBarAtom';
 import generalProcessingAtom from '../Store/atoms/generalProcessingAtom';
 import ebayUserAtom from '../Store/atoms/ebayUserAtom';
 import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
+import urlImagesAtom from '../Store/atoms/urlImagesAtom';
+import userAccountAtom from '../Store/atoms/userAccountAtom';
 
 import awsconfig from '../src/aws-exports';
 
@@ -27,6 +30,12 @@ export default function Header(props) {
   const [selected, setSelected] = useRecoilState(selectedAtom);
   const [ebayUser, setEbayUser] = useRecoilState(ebayUserAtom);
   const [snackBar, setSnackBar] = useRecoilState(snackBarAtom);
+  const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
+
+  const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
+
+
+
   const [generalProcessing, setGeneralProcessing] = useRecoilState(
     generalProcessingAtom
   );
@@ -142,6 +151,173 @@ export default function Header(props) {
     setOpenDeleteDialog(true);
   };
 
+  const publishItems = async () => {
+    try {
+      //setOpenPublishDialog(false);
+
+      setProcessing(true);
+
+      for await (const item of selected) {
+        publishListing(item.id);
+      }
+
+      setProcessing(false);
+      setOpenPublishDialog(false);
+      
+      setSnackBar({
+        visible: true,
+        text: `${selected.length} Listing(s) publish on eBay`,
+      });
+      setSelected([]);
+    } catch (error) {
+      console.log(error);
+      setProcessing(false);
+    }
+  };
+
+  const updateItemOnline = async (id, version) => {
+    try {
+
+      const listingDetails = {
+        id: id,
+        _version: version,
+        isDraft: false,
+      };
+
+      const updateListing = await API.graphql({
+        query: mutations.updateListing,
+        variables: { input: listingDetails },
+      });
+
+      console.log(updateListing);
+
+    } catch(error){
+      console.log(error);
+    }
+  }
+
+  const publishListing = async (id) => {
+    try {
+
+      const oneListing = await API.graphql({
+        query: queries.getListing,
+        variables: { id: id },
+      });
+
+      const listing = oneListing.data.getListing;
+
+      const version = listing._version;
+
+      console.log(listing.title);
+
+      //getCategoriesFeatures(listing.categoryID);
+
+      const photoMain = listing.photoMain;
+      const photoLabel = listing.photoLabel;
+      const photos = JSON.parse(listing.photos);
+      const aspects = JSON.parse(listing.itemsSpecifics);
+      const category = listing.categoryID;
+
+      
+
+      
+      const condition = Number(listing.conditionCode);
+      const conditionDescription = listing.conditionDescription;
+      const length = listing.length.toString();
+      const height = listing.height.toString();
+      const width = listing.width.toString();
+      const weightMayor = listing.weightMayor.toString();
+      const weightMinor = listing.weightMinor.toString();
+
+      
+
+      const fulfillmentPolicyId = listing.shippingProfileID;
+      const returnPolicyId = listing.returnProfileID;
+      const paymentPolicyId = listing.paymentProfileID;
+      const titleProcessed = listing.title;
+      const descriptionProcessed = listing.description;
+      const quantity = listing.quantity.toString();
+      const priceProduct = listing.price.toString();
+
+      const type = listing.type;
+     
+     
+
+      /****************************************************/
+
+      let urlPost = 'https://listerfast.com/api/ebay/additem';
+
+      let images = [];
+      let pictureMain = `${urlImages}${photoMain}`;
+      let pictureLabel = photoLabel ? `${urlImages}${photoLabel}` : [];
+      let photosTemp = photos.map((item) => `${urlImages}${item.value}`);
+
+      images = images.concat(pictureMain, photosTemp, pictureLabel);
+
+      console.log(images);
+
+      const res = await axios.post(urlPost, {
+        product: {
+          SKU: id,
+          bestOffer: true,
+          title: titleProcessed,
+          description: descriptionProcessed,
+          primaryCategory: category,
+          price: priceProduct,
+          conditionID: condition,
+          conditionDescription: conditionDescription,
+          country: 'US',
+          currency: 'USD',
+          dispatchTimeMax: 1,
+          listingDuration: 'GTC',
+          listingType: 'FixedPriceItem',
+          pictures: images,
+          postalCode: `${userAccount.postalCode}`,
+          quantity: Number(quantity),
+          shippingProfileID: fulfillmentPolicyId,
+          returnProfileID: returnPolicyId,
+          paymentProfileID: paymentPolicyId,
+          itemSpecifics: {
+            NameValueList: aspects.map((item) => ({
+              Name: item.localizedAspectName,
+              Value: item.value,
+              Source: 'ItemSpecific',
+            })),
+          },
+
+          weightMajor: Number(weightMayor),
+          weightMinor: Number(weightMinor),
+          packageDepth: Number(height),
+          packageLength: Number(length),
+          packageWidth: Number(width),
+          siteID: type === 'AUTOPARTS' ? '100' : '0',
+          site:
+            type === 'AUTOPARTS'
+              ? 'eBayMotors'
+              : 'US',
+          ebayAccountLinked: ebayUser,
+        },
+      });
+      
+      console.log(res.data.result.Ack);
+
+      if (res.data.result.Ack === 'Success'){
+        console.log('Product Uploaded on eBay');        
+        updateItemOnline(id, version);
+        
+        
+      } else {
+        console.log('Error con eBay!');
+        
+      }
+
+
+
+    } catch(error){
+      console.log(error);
+    }
+  }
+
   const onPublishItems = async () => {
     setOpenPublishDialog(true);
   };
@@ -193,6 +369,8 @@ export default function Header(props) {
   if (openDeleteDialog) {
     return (
       <Portal>
+
+       
         <Dialog
           visible={openDeleteDialog}
           onDismiss={() => setOpenDeleteDialog(false)}
@@ -207,7 +385,8 @@ export default function Header(props) {
             <Button onPress={() => setOpenDeleteDialog(false)}>Cancel</Button>
             <Button onPress={() => deleteItems()}>Ok</Button>
           </Dialog.Actions>
-        </Dialog>
+        </Dialog> 
+
       </Portal>
     );
   }
@@ -226,7 +405,7 @@ export default function Header(props) {
           
           <Dialog.Actions>
             <Button onPress={() => setOpenPublishDialog(false)}>Cancel</Button>
-            <Button onPress={() => console.log('Publish Items!')}>Ok</Button>
+            <Button onPress={() => publishItems()}>Ok</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

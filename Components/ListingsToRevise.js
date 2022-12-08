@@ -45,7 +45,7 @@ const month = [
   'Dec',
 ];
 
-const MAX_LISTINGS = 25;
+const MAX_LISTINGS = 10;
 
 export default function ListingsToRevise() {
   const navigation = useNavigation();
