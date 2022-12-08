@@ -61,6 +61,7 @@ import ConditionStage from './CreateProductWizard/ConditionStage';
 import DimensionStage from './CreateProductWizard/DimensionStage';
 import PolicyStage from './CreateProductWizard/PolicyStage';
 import PriceStage from './CreateProductWizard/PriceStage';
+import urlImagesAtom from '../Store/atoms/urlImagesAtom';
 
 import TitleRevisionStage from './CreateProductWizard/TitleRevisionStage';
 
@@ -73,6 +74,8 @@ export default function AddListingForm(props) {
   const [hasCameraPermission, setHasCameraPermission] = useState();
 
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
+
+  const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
 
   const [processingSelectedAspectValue, setProcessingSelectedAspectValue] =
     useState(false);
@@ -108,6 +111,8 @@ export default function AddListingForm(props) {
   const [photoLabel, setPhotoLabel] = useState();
   const [barcodeValue, setBarcodeValue] = useState();
   const [categories, setCategories] = useState([]);
+
+  const [processingPublishEbay, setProcessingPublishEbay] = useState(false);
 
   const [categoryFeatures, setCategoryFeatures] = useState();
 
@@ -354,6 +359,79 @@ export default function AddListingForm(props) {
         navigation.goBack();
 
         setSnackBar({ visible: true, text: 'Listing Saved as Draft' });
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error));
+    }
+  };
+
+  const createNewListingOnline = async (id) => {
+    try {
+      console.log('Saving Listing Online');
+
+      //const id = uuidv4();
+
+      const listingDetails = {
+        id: id,
+        sku: id,
+        accountsID: userAccount.id,
+        title: titleProcessed,
+        description: descriptionProcessed,
+        price: priceProduct,
+        itemsSpecifics: JSON.stringify(aspects),
+        categoryFeatures: JSON.stringify(categoryFeatures),
+        isDraft: false,
+        type: ListingType[type.toUpperCase()],
+        photoMain: photoMain,
+        photoLabel: photoLabel,
+        photos: JSON.stringify(photos),
+        lastStep: lastStep,
+        ebayMotors:
+          ListingType[type.toUpperCase()] === 'AUTOPARTS' ? true : false,
+        categoryID: category,
+        categoryList: JSON.stringify(categories),
+        shippingProfileID: fulfillmentPolicyId,
+        returnProfileID: returnPolicyId,
+        paymentProfileID: paymentPolicyId,
+        conditionCode: condition,
+        conditionDescription: conditionDescription,
+        conditionName: conditionName,
+        UPC: getUPC(),
+        ISBN: getISBN(),
+        EAN: getEAN(),
+        barcodeValue: barcodeValue ? barcodeValue.data : null,
+        length: length ? Number(length) : 6,
+        width: width ? Number(width) : 6,
+        height: height ? Number(height) : 6,
+        weightMayor: weightMayor ? Number(weightMayor) : 0,
+        weightMinor: weightMinor ? Number(weightMinor) : 6,
+
+        quantity: quantity,
+        isReadyToGo: quantity > 0 && priceProduct > 0 ? true : false,
+      };
+
+      const newListing = await API.graphql({
+        query: mutations.createListing,
+        variables: { input: listingDetails },
+      });
+
+      console.log(
+        '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
+      );
+      /*console.log(listings);
+      console.log(
+        '*****************************************************************'
+      );*/
+      console.log(newListing);
+      console.log(
+        '*****************************************************************'
+      );
+
+      if (newListing) {
+        //setListings((old) => [...old, newListing.data.createListing]);
+        navigation.goBack();
+
+        setSnackBar({ visible: true, text: 'Listing published on eBay' });
       }
     } catch (error) {
       console.log(JSON.stringify(error));
@@ -1809,6 +1887,93 @@ Condition: ${
     }
   };
 
+  const onPublishEbay = async () => {
+    try {
+
+      setProcessingPublishEbay(true);
+
+      const id = uuidv4();
+
+      let urlPost = 'https://listerfast.com/api/ebay/additem';
+
+      let images = [];
+      let pictureMain = `${urlImages}${photoMain}`;
+      let pictureLabel = photoLabel ? `${urlImages}${photoLabel}` : [];
+      let photosTemp = photos.map((item) => `${urlImages}${item.value}`);
+
+      images = images.concat(pictureMain, photosTemp, pictureLabel);
+
+      console.log(images);
+
+      const res = await axios.post(urlPost, {
+        product: {
+          SKU: id,
+          bestOffer: true,
+          title: titleProcessed,
+          description: descriptionProcessed,
+          primaryCategory: category,
+          price: priceProduct,
+          conditionID: condition,
+          conditionDescription: conditionDescription,
+          country: 'US',
+          currency: 'USD',
+          dispatchTimeMax: 1,
+          listingDuration: 'GTC',
+          listingType: 'FixedPriceItem',
+          pictures: images,
+          postalCode: `${userAccount.postalCode}`,
+          quantity: Number(quantity),
+          shippingProfileID: fulfillmentPolicyId,
+          returnProfileID: returnPolicyId,
+          paymentProfileID: paymentPolicyId,
+          itemSpecifics: {
+            NameValueList: aspects.map((item) => ({
+              Name: item.localizedAspectName,
+              Value: item.value,
+              Source: 'ItemSpecific',
+            })),
+          },
+
+          weightMajor: Number(weightMayor),
+          weightMinor: Number(weightMinor),
+          packageDepth: Number(height),
+          packageLength: Number(length),
+          packageWidth: Number(width),
+          siteID: ListingType[type.toUpperCase()] === 'AUTOPARTS' ? '100' : '0',
+          site:
+            ListingType[type.toUpperCase()] === 'AUTOPARTS'
+              ? 'eBayMotors'
+              : 'US',
+          ebayAccountLinked: ebayUser,
+        },
+      });
+      
+      console.log(res.data.result.Ack);
+
+      if (res.data.result.Ack === 'Success'){
+        console.log('Product Uploaded on eBay');        
+        //saveItemOnline();
+        
+        setProcessingPublishEbay(false);
+        createNewListingOnline(id);
+        //navigation.goBack();
+        //setSnackBar({ visible: true, text: 'Listing published on eBay' });
+      } else {
+        console.log('Error con eBay!');
+        setProcessingPublishEbay(false);
+      }
+
+      
+
+
+
+      console.log('Publish on eBay!!!');
+    } catch (error) {
+      console.log(error);
+      setProcessingPublishEbay(false);
+    }
+  };
+
   const takePicLabel = async () => {
     let options = {
       quality: 0.6,
@@ -1887,6 +2052,30 @@ Condition: ${
   const onSearchCategories = async (query) => {
     setSearchCategories(query);
   };
+
+  if (processingPublishEbay) {
+    return (
+      <View
+          style={{
+            flex: 1,
+            //justifyContent: 'space-between',
+            alignItems: 'center',
+            alignContent: 'center',
+            alignSelf: 'center',
+            justifyContent: 'center',
+  
+            //paddingBottom: 100,
+          }}
+        >
+          <Text style={{fontSize: 20}}>Publishing on eBay</Text>
+          <Text style={{fontSize: 18, fontWeight:'bold', marginTop: 15}}>in Account {ebayUser}</Text>
+          <ActivityIndicator
+            size='large'
+            style={{ marginTop: '20%', marginBottom: '20%' }}
+          />
+        </View>
+    )
+  }
 
   if (step === 0) {
     return (
@@ -2341,6 +2530,7 @@ Condition: ${
         category={category}
         getCategoriesFeatures={getCategoriesFeatures}
         onProcessingTitle={onProcessingTitle}
+        onPublishEbay={onPublishEbay}
 
         /*titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}

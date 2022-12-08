@@ -13,6 +13,8 @@ import {
   ActivityIndicator,
 } from 'react-native-paper';
 
+
+
 import { ListingType } from '../src/models';
 
 import 'react-native-get-random-values';
@@ -89,6 +91,8 @@ export default function EditListingForm(props) {
   const [snackBar, setSnackBar] = useRecoilState(snackBarAtom);
 
   const [aspectValues, setAspectValues] = useState([]);
+
+  const [processingPublishEbay, setProcessingPublishEbay] = useState(false);
 
   const [processingImage, setProcessingImage] = useState(false);
 
@@ -662,6 +666,9 @@ export default function EditListingForm(props) {
 
   const onPublishEbay = async () => {
     try {
+
+      setProcessingPublishEbay(true);
+
       let urlPost = 'https://listerfast.com/api/ebay/additem';
 
       let images = [];
@@ -673,7 +680,7 @@ export default function EditListingForm(props) {
 
       console.log(images);
 
-      const res = await fetch.post(urlPost, {
+      const res = await axios.post(urlPost, {
         product: {
           SKU: listingId,
           bestOffer: true,
@@ -712,13 +719,31 @@ export default function EditListingForm(props) {
             ListingType[type.toUpperCase()] === 'AUTOPARTS'
               ? 'eBayMotors'
               : 'US',
-          ebayAccountLinked: product.ebayAccountLinked,
+          ebayAccountLinked: ebayUser,
         },
       });
-      console.log(res);
+      
+      console.log(res.data.result.Ack);
+
+      if (res.data.result.Ack === 'Success'){
+        console.log('Product Uploaded on eBay');        
+        saveItemOnline();
+        setProcessingPublishEbay(false);
+        navigation.goBack();
+        setSnackBar({ visible: true, text: 'Listing published on eBay' });
+      } else {
+        console.log('Error con eBay!');
+        setProcessingPublishEbay(false);
+      }
+
+      
+
+
+
       console.log('Publish on eBay!!!');
     } catch (error) {
       console.log(error);
+      setProcessingPublishEbay(false);
     }
   };
 
@@ -1906,6 +1931,37 @@ Condition: ${
     }
   };
 
+
+  const saveItemOnline = async () => {
+    try {
+
+      const id = listingId;
+      const version = listing._version;
+      const listingDetails = {
+        id: id,
+        _version: version,
+        isDraft: false,
+      };
+
+      const savedListing = await API.graphql({
+        query: mutations.updateListing,
+        variables: { input: listingDetails },
+      });
+
+      console.log(savedListing);
+
+      /*if (savedListing) {
+        navigation.goBack();
+        setSnackBar({ visible: true, text: 'Listing published on eBay' });
+      }*/
+
+
+
+    } catch(error){
+      console.log(error);
+    }
+  }
+
   const deleteItem = async () => {
     try {
       console.log(listingId);
@@ -2058,6 +2114,30 @@ Condition: ${
   const onSearchCategories = async (query) => {
     setSearchCategories(query);
   };
+
+  if (processingPublishEbay) {
+    return (
+      <View
+          style={{
+            flex: 1,
+            //justifyContent: 'space-between',
+            alignItems: 'center',
+            alignContent: 'center',
+            alignSelf: 'center',
+            justifyContent: 'center',
+  
+            //paddingBottom: 100,
+          }}
+        >
+          <Text style={{fontSize: 20}}>Publishing on eBay</Text>
+          <Text style={{fontSize: 18, fontWeight:'bold', marginTop: 15}}>in Account {ebayUser}</Text>
+          <ActivityIndicator
+            size='large'
+            style={{ marginTop: '20%', marginBottom: '20%' }}
+          />
+        </View>
+    )
+  }
 
   if (openDeleteDialog) {
     return (
@@ -2601,7 +2681,12 @@ Condition: ${
       </View>
     );
   }
+
+  
+
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
