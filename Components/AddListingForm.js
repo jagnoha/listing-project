@@ -427,12 +427,7 @@ export default function AddListingForm(props) {
         '*****************************************************************'
       );
 
-      if (newListing) {
-        //setListings((old) => [...old, newListing.data.createListing]);
-        navigation.goBack();
-
-        setSnackBar({ visible: true, text: 'Listing published on eBay' });
-      }
+      
     } catch (error) {
       console.log(JSON.stringify(error));
     }
@@ -1948,19 +1943,24 @@ Condition: ${
         },
       });
       
-      console.log(res.data.result.Ack);
+      console.log('resultado!!!!!!!!!!!: ', JSON.stringify(res.data.result));
+
+      
 
       if (res.data.result.Ack === 'Success'){
         console.log('Product Uploaded on eBay');        
-        //saveItemOnline();
         
-        setProcessingPublishEbay(false);
+
+        console.log('Product Uploaded on eBay');        
         createNewListingOnline(id);
-        //navigation.goBack();
-        //setSnackBar({ visible: true, text: 'Listing published on eBay' });
+        setProcessingPublishEbay(false);
+        navigation.goBack();
+        setSnackBar({ visible: true, text: 'Listing published on eBay' });
+
       } else {
         console.log('Error con eBay!');
         setProcessingPublishEbay(false);
+        setSnackBar({ visible: true, text: 'Error with eBay Account', color: 'red' });
       }
 
       

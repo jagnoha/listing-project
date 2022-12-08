@@ -396,6 +396,7 @@ export default function Main() {
                 console.log('Close');
               },
             }}
+            style={snackBar.color ? {color: 'white', backgroundColor: snackBar.color} : null}
             //style={{ backgroundColor: 'green' }}
             //onDismiss={onDismissSnackBar}
             /*action={{

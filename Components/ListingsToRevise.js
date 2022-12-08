@@ -130,7 +130,7 @@ export default function ListingsToRevise() {
         item.title ? { color: 'black' } : { fontSize: 12, color: 'gray' }
       }
       title={item.title ? item.title : 'Title is not ready yet...'}
-      titleNumberOfLines={3}
+      titleNumberOfLines={4}
       descriptionStyle={{ color: 'gray' }}
       description={item.conditionName}
       //onPress={() => navigation.navigate('AddListing')}

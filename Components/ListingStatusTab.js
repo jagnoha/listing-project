@@ -40,7 +40,7 @@ export default function ListingStatusTab() {
   return (
     <>
       {selected.length > 0 ? (
-        <Header type='selection' indexTab={index} />
+          index === 0 ? <Header type='selection' indexTab={index} /> : <Header type='selectionReadyToGo' indexTab={index} />
       ) : (
         <Header title='ListerFast' type='basic' indexTab={index} />
       )}

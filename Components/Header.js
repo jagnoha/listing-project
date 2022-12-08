@@ -8,13 +8,14 @@ import {
   Dialog,
   Button,
   Portal,
-  ActivityIndicator,
+  ActivityIndicator,Text
 } from 'react-native-paper';
 import selectedAtom from '../Store/atoms/selectedAtom';
 import * as mutations from '../src/graphql/mutations';
 import * as queries from '../src/graphql/queries';
 import snackBarAtom from '../Store/atoms/snackBarAtom';
 import generalProcessingAtom from '../Store/atoms/generalProcessingAtom';
+import ebayUserAtom from '../Store/atoms/ebayUserAtom';
 import { v4 as uuidv4 } from 'uuid';
 
 import awsconfig from '../src/aws-exports';
@@ -24,6 +25,7 @@ Amplify.configure(awsconfig);
 export default function Header(props) {
   const theme = useTheme();
   const [selected, setSelected] = useRecoilState(selectedAtom);
+  const [ebayUser, setEbayUser] = useRecoilState(ebayUserAtom);
   const [snackBar, setSnackBar] = useRecoilState(snackBarAtom);
   const [generalProcessing, setGeneralProcessing] = useRecoilState(
     generalProcessingAtom
@@ -32,6 +34,8 @@ export default function Header(props) {
   const [processing, setProcessing] = useState(false);
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openPublishDialog, setOpenPublishDialog ] = useState(false);
+  
 
   const onBack = () => {
     setSelected([]);
@@ -112,7 +116,8 @@ export default function Header(props) {
         length: listingResult.length,
         width: listingResult.width,
         height: listingResult.height,
-        weight: listingResult.weight,
+        weightMayor: listingResult.weightMayor,
+        weightMinor: listingResult.weightMinor,
         quantity: listingResult.quantity,
         isReadyToGo: listingResult.isReadyToGo,
       };
@@ -135,6 +140,10 @@ export default function Header(props) {
 
   const onDeleteItems = async () => {
     setOpenDeleteDialog(true);
+  };
+
+  const onPublishItems = async () => {
+    setOpenPublishDialog(true);
   };
 
   const deleteItems = async () => {
@@ -189,12 +198,35 @@ export default function Header(props) {
           onDismiss={() => setOpenDeleteDialog(false)}
         >
           <Dialog.Icon icon='alert' />
-          <Dialog.Title style={{ textAlign: 'center' }}>
-            Are you sure you want to delete these listings?
+          
+
+          <Dialog.Title style={{ textAlign: 'center', fontSize: 20 }}>
+          Are you sure you want to delete these listings?
           </Dialog.Title>
           <Dialog.Actions>
             <Button onPress={() => setOpenDeleteDialog(false)}>Cancel</Button>
             <Button onPress={() => deleteItems()}>Ok</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+    );
+  }
+
+  if (openPublishDialog) {
+    return (
+      <Portal>
+        <Dialog
+          visible={openPublishDialog}
+          onDismiss={() => setOpenPublishDialog(false)}
+        >
+          <Dialog.Icon icon='information-outline' />
+          <Dialog.Title style={{ textAlign: 'center', fontSize: 20 }}>
+          You are about to publish these products on the ebay account <Text style={{fontWeight: 'bold', color: 'blue'}}>{ebayUser}</Text>. Proceed?
+          </Dialog.Title>
+          
+          <Dialog.Actions>
+            <Button onPress={() => setOpenPublishDialog(false)}>Cancel</Button>
+            <Button onPress={() => console.log('Publish Items!')}>Ok</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
@@ -223,6 +255,31 @@ export default function Header(props) {
     );
     //}
   }
+
+  if (props.type === 'selectionReadyToGo') {
+    //if (props.indexTab === 0) {
+    return (
+      <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
+        <Appbar.BackAction onPress={() => onBack()} />
+        <Appbar.Content
+          title={selected.length}
+          color={theme.colors.onBackground}
+        />
+        {selected.length === 1 ? (
+          <Appbar.Action
+            icon='plus-circle-multiple-outline'
+            onPress={() => onCopyItem()}
+          />
+        ) : (
+          ''
+        )}
+        <Appbar.Action icon='publish' onPress={() => onPublishItems()} />
+        <Appbar.Action icon='delete-outline' onPress={() => onDeleteItems()} />
+      </Appbar.Header>
+    );
+    //}
+  }
+
 
   if (props.type === 'configureNewAccount') {
     return (
