@@ -426,8 +426,6 @@ export default function AddListingForm(props) {
       console.log(
         '*****************************************************************'
       );*/
-
-      
     } catch (error) {
       console.log(JSON.stringify(error));
     }
@@ -651,30 +649,28 @@ export default function AddListingForm(props) {
     //let pendingDescription = [];
 
     //const keywords = getImportantAspectsValues();
-    let pendingDescription = `${title}
-
-${conditionDescription.length > 0 ? conditionDescription : ''}    
-
-Item Specifics & Features:
-==========================
-Condition: ${
+    let pendingDescription = `<h2>${title}</h2><p style={font-size: 1.2em}>${
       categoryFeatures.conditions.find((item) => item.ID === condition)
         .DisplayName
-    }     
+    }</p>  
+${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
+<b>Item Specifics & Features:</b>    
 `;
-
     let aspectsFil = aspects.filter((item) => item.value !== '');
 
     for (let itm of aspectsFil) {
       //console.log(itm.localizedAspectName + ': ' + itm.value + '\n');
-      pendingDescription = pendingDescription.concat(
+      /*pendingDescription = pendingDescription.concat(
         itm.localizedAspectName + ': ' + itm.value + '\n'
-      );
+      );*/
+
+      pendingDescription = pendingDescription.concat(`
+        <b>${itm.localizedAspectName}:</b> ${itm.value}`);
     }
 
     pendingDescription = pendingDescription.concat(
       '\n' +
-        'Welcome to my store, it is a pleasure for me to assist you, if you need anything or have any questions do not hesitate to write me'
+        '<h3>Welcome to my store, it is a pleasure for me to assist you, if you need anything or have any questions do not hesitate to write me.</h3>'
     );
 
     setDescriptionProcessed(pendingDescription);
@@ -1343,7 +1339,9 @@ Condition: ${
             .map((item) => ({
               itemId: item.itemId,
               title: item.title,
-              image: item.thumbnailImages[0].imageUrl,
+              image: item.thumbnailImages
+                ? item.thumbnailImages[0].imageUrl
+                : null,
               price: item.price.value,
               condition: item.condition,
               //freeShipping: 'No',
@@ -1882,9 +1880,18 @@ Condition: ${
     }
   };
 
+  const checkBestOffer = () => {
+    let policy = paymentPolicies.find((item) => item.id === paymentPolicyId);
+
+    if (policy.name.includes('Immediate')) {
+      return false;
+    }
+
+    return true;
+  };
+
   const onPublishEbay = async () => {
     try {
-
       setProcessingPublishEbay(true);
 
       const id = uuidv4();
@@ -1899,13 +1906,14 @@ Condition: ${
       images = images.concat(pictureMain, photosTemp, pictureLabel);
 
       //console.log(images);
+      console.log(descriptionProcessed.split('\n').join('<br>'));
 
       const res = await axios.post(urlPost, {
         product: {
           SKU: id,
-          bestOffer: true,
+          bestOffer: checkBestOffer(),
           title: titleProcessed,
-          description: descriptionProcessed,
+          description: descriptionProcessed.split('\n').join('<br>'),
           primaryCategory: category,
           price: priceProduct,
           conditionID: condition,
@@ -1942,30 +1950,26 @@ Condition: ${
           ebayAccountLinked: ebayUser,
         },
       });
-      
+
       //console.log('resultado!!!!!!!!!!!: ', JSON.stringify(res.data.result));
 
-      
+      if (res.data.result.Ack === 'Success') {
+        console.log('Product Uploaded on eBay');
 
-      if (res.data.result.Ack === 'Success'){
-        console.log('Product Uploaded on eBay');        
-        
-
-        console.log('Product Uploaded on eBay');        
+        console.log('Product Uploaded on eBay');
         createNewListingOnline(id);
         setProcessingPublishEbay(false);
         navigation.goBack();
         setSnackBar({ visible: true, text: 'Listing published on eBay' });
-
       } else {
         console.log('Error con eBay!');
         setProcessingPublishEbay(false);
-        setSnackBar({ visible: true, text: 'Error with eBay Account', color: 'red' });
+        setSnackBar({
+          visible: true,
+          text: 'Error with eBay Account',
+          color: 'red',
+        });
       }
-
-      
-
-
 
       console.log('Publish on eBay!!!');
     } catch (error) {
@@ -2056,25 +2060,27 @@ Condition: ${
   if (processingPublishEbay) {
     return (
       <View
-          style={{
-            flex: 1,
-            //justifyContent: 'space-between',
-            alignItems: 'center',
-            alignContent: 'center',
-            alignSelf: 'center',
-            justifyContent: 'center',
-  
-            //paddingBottom: 100,
-          }}
-        >
-          <Text style={{fontSize: 20}}>Publishing on eBay</Text>
-          <Text style={{fontSize: 18, fontWeight:'bold', marginTop: 15}}>in Account {ebayUser}</Text>
-          <ActivityIndicator
-            size='large'
-            style={{ marginTop: '20%', marginBottom: '20%' }}
-          />
-        </View>
-    )
+        style={{
+          flex: 1,
+          //justifyContent: 'space-between',
+          alignItems: 'center',
+          alignContent: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+
+          //paddingBottom: 100,
+        }}
+      >
+        <Text style={{ fontSize: 20 }}>Publishing on eBay</Text>
+        <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 15 }}>
+          in Account {ebayUser}
+        </Text>
+        <ActivityIndicator
+          size='large'
+          style={{ marginTop: '20%', marginBottom: '20%' }}
+        />
+      </View>
+    );
   }
 
   if (step === 0) {

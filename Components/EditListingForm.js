@@ -13,8 +13,6 @@ import {
   ActivityIndicator,
 } from 'react-native-paper';
 
-
-
 import { ListingType } from '../src/models';
 
 import 'react-native-get-random-values';
@@ -132,6 +130,8 @@ export default function EditListingForm(props) {
   const [checkedAllAspects, setCheckedAllAspects] = useState(false);
 
   const [listing, setListing] = useState(null);
+
+  const [bestOffer, setBestOffer] = useState(false);
 
   const [processingPrices, setProcessingPrices] = useState(false);
 
@@ -666,7 +666,6 @@ export default function EditListingForm(props) {
 
   const onPublishEbay = async () => {
     try {
-
       setProcessingPublishEbay(true);
 
       let urlPost = 'https://listerfast.com/api/ebay/additem';
@@ -683,9 +682,9 @@ export default function EditListingForm(props) {
       const res = await axios.post(urlPost, {
         product: {
           SKU: listingId,
-          bestOffer: true,
+          bestOffer: checkBestOffer(),
           title: titleProcessed,
-          description: descriptionProcessed,
+          description: descriptionProcessed.split('\n').join('<br>'),
           primaryCategory: category,
           price: priceProduct,
           conditionID: condition,
@@ -722,23 +721,20 @@ export default function EditListingForm(props) {
           ebayAccountLinked: ebayUser,
         },
       });
-      
+
       //console.log(res.data.result.Ack);
 
-      if (res.data.result.Ack === 'Success'){
-        console.log('Product Uploaded on eBay');        
+      if (res.data.result.Ack === 'Success') {
+        console.log('Product Uploaded on eBay');
         saveItemOnline();
         setProcessingPublishEbay(false);
         navigation.goBack();
         setSnackBar({ visible: true, text: 'Listing published on eBay' });
       } else {
         console.log('Error con eBay!');
+        console.log(JSON.stringify(res.data.result));
         setProcessingPublishEbay(false);
       }
-
-      
-
-
 
       console.log('Publish on eBay!!!');
     } catch (error) {
@@ -759,33 +755,41 @@ export default function EditListingForm(props) {
     //let pendingDescription = [];
 
     //const keywords = getImportantAspectsValues();
-    let pendingDescription = `${title}
-
-${conditionDescription.length > 0 ? conditionDescription : ''}    
-
-Item Specifics & Features:
-==========================
-Condition: ${
+    let pendingDescription = `<h2>${title}</h2><p style={font-size: 1.2em}>${
       categoryFeatures.conditions.find((item) => item.ID === condition)
         .DisplayName
-    }     
+    }</p>  
+${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
+<b>Item Specifics & Features:</b>    
 `;
-
     let aspectsFil = aspects.filter((item) => item.value !== '');
 
     for (let itm of aspectsFil) {
       //console.log(itm.localizedAspectName + ': ' + itm.value + '\n');
-      pendingDescription = pendingDescription.concat(
+      /*pendingDescription = pendingDescription.concat(
         itm.localizedAspectName + ': ' + itm.value + '\n'
-      );
+      );*/
+
+      pendingDescription = pendingDescription.concat(`
+        <b>${itm.localizedAspectName}:</b> ${itm.value}`);
     }
 
     pendingDescription = pendingDescription.concat(
       '\n' +
-        'Welcome to my store, it is a pleasure for me to assist you, if you need anything or have any questions do not hesitate to write me'
+        '<h3>Welcome to my store, it is a pleasure for me to assist you, if you need anything or have any questions do not hesitate to write me.</h3>'
     );
 
     setDescriptionProcessed(pendingDescription);
+  };
+
+  const checkBestOffer = () => {
+    let policy = paymentPolicies.find((item) => item.id === paymentPolicyId);
+
+    if (policy.name.includes('Immediate')) {
+      return false;
+    }
+
+    return true;
   };
 
   const processingTitle = async () => {
@@ -1403,7 +1407,9 @@ Condition: ${
             .map((item) => ({
               itemId: item.itemId,
               title: item.title,
-              image: item.thumbnailImages[0].imageUrl,
+              image: item.thumbnailImages
+                ? item.thumbnailImages[0].imageUrl
+                : null,
               price: item.price.value,
               condition: item.condition,
               //freeShipping: 'No',
@@ -1931,10 +1937,8 @@ Condition: ${
     }
   };
 
-
   const saveItemOnline = async () => {
     try {
-
       const id = listingId;
       const version = listing._version;
       const listingDetails = {
@@ -1954,13 +1958,10 @@ Condition: ${
         navigation.goBack();
         setSnackBar({ visible: true, text: 'Listing published on eBay' });
       }*/
-
-
-
-    } catch(error){
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const deleteItem = async () => {
     try {
@@ -2118,25 +2119,27 @@ Condition: ${
   if (processingPublishEbay) {
     return (
       <View
-          style={{
-            flex: 1,
-            //justifyContent: 'space-between',
-            alignItems: 'center',
-            alignContent: 'center',
-            alignSelf: 'center',
-            justifyContent: 'center',
-  
-            //paddingBottom: 100,
-          }}
-        >
-          <Text style={{fontSize: 20}}>Publishing on eBay</Text>
-          <Text style={{fontSize: 18, fontWeight:'bold', marginTop: 15}}>in Account {ebayUser}</Text>
-          <ActivityIndicator
-            size='large'
-            style={{ marginTop: '20%', marginBottom: '20%' }}
-          />
-        </View>
-    )
+        style={{
+          flex: 1,
+          //justifyContent: 'space-between',
+          alignItems: 'center',
+          alignContent: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+
+          //paddingBottom: 100,
+        }}
+      >
+        <Text style={{ fontSize: 20 }}>Publishing on eBay</Text>
+        <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 15 }}>
+          in Account {ebayUser}
+        </Text>
+        <ActivityIndicator
+          size='large'
+          style={{ marginTop: '20%', marginBottom: '20%' }}
+        />
+      </View>
+    );
   }
 
   if (openDeleteDialog) {
@@ -2681,12 +2684,7 @@ Condition: ${
       </View>
     );
   }
-
-  
-
 }
-
-
 
 const styles = StyleSheet.create({
   container: {

@@ -8,7 +8,8 @@ import {
   Dialog,
   Button,
   Portal,
-  ActivityIndicator,Text
+  ActivityIndicator,
+  Text,
 } from 'react-native-paper';
 import selectedAtom from '../Store/atoms/selectedAtom';
 import * as mutations from '../src/graphql/mutations';
@@ -20,6 +21,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import urlImagesAtom from '../Store/atoms/urlImagesAtom';
 import userAccountAtom from '../Store/atoms/userAccountAtom';
+import paymentPoliciesAtom from '../Store/atoms/paymentPoliciesAtom';
 
 import awsconfig from '../src/aws-exports';
 
@@ -34,17 +36,17 @@ export default function Header(props) {
 
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
 
-
-
   const [generalProcessing, setGeneralProcessing] = useRecoilState(
     generalProcessingAtom
   );
 
+  const [paymentPolicies, setPaymentPolicies] =
+    useRecoilState(paymentPoliciesAtom);
+
   const [processing, setProcessing] = useState(false);
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [openPublishDialog, setOpenPublishDialog ] = useState(false);
-  
+  const [openPublishDialog, setOpenPublishDialog] = useState(false);
 
   const onBack = () => {
     setSelected([]);
@@ -161,7 +163,7 @@ export default function Header(props) {
 
       setProcessing(false);
       setOpenPublishDialog(false);
-      
+
       setSnackBar({
         visible: true,
         text: `${selected.length} Listing(s) publish on eBay`,
@@ -175,7 +177,6 @@ export default function Header(props) {
 
   const updateItemOnline = async (id, version) => {
     try {
-
       const listingDetails = {
         id: id,
         _version: version,
@@ -188,15 +189,23 @@ export default function Header(props) {
       });
 
       //console.log(updateListing);
-
-    } catch(error){
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
+
+  const checkBestOffer = (paymentPolicyId) => {
+    let policy = paymentPolicies.find((item) => item.id === paymentPolicyId);
+
+    if (policy.name.includes('Immediate')) {
+      return false;
+    }
+
+    return true;
+  };
 
   const publishListing = async (id) => {
     try {
-
       const oneListing = await API.graphql({
         query: queries.getListing,
         variables: { id: id },
@@ -216,9 +225,6 @@ export default function Header(props) {
       const aspects = JSON.parse(listing.itemsSpecifics);
       const category = listing.categoryID;
 
-      
-
-      
       const condition = Number(listing.conditionCode);
       const conditionDescription = listing.conditionDescription;
       const length = listing.length.toString();
@@ -226,8 +232,6 @@ export default function Header(props) {
       const width = listing.width.toString();
       const weightMayor = listing.weightMayor.toString();
       const weightMinor = listing.weightMinor.toString();
-
-      
 
       const fulfillmentPolicyId = listing.shippingProfileID;
       const returnPolicyId = listing.returnProfileID;
@@ -238,8 +242,6 @@ export default function Header(props) {
       const priceProduct = listing.price.toString();
 
       const type = listing.type;
-     
-     
 
       /****************************************************/
 
@@ -257,9 +259,9 @@ export default function Header(props) {
       const res = await axios.post(urlPost, {
         product: {
           SKU: id,
-          bestOffer: true,
+          bestOffer: checkBestOffer(paymentPolicyId),
           title: titleProcessed,
-          description: descriptionProcessed,
+          description: descriptionProcessed.split('\n').join('<br>'),
           primaryCategory: category,
           price: priceProduct,
           conditionID: condition,
@@ -289,32 +291,23 @@ export default function Header(props) {
           packageLength: Number(length),
           packageWidth: Number(width),
           siteID: type === 'AUTOPARTS' ? '100' : '0',
-          site:
-            type === 'AUTOPARTS'
-              ? 'eBayMotors'
-              : 'US',
+          site: type === 'AUTOPARTS' ? 'eBayMotors' : 'US',
           ebayAccountLinked: ebayUser,
         },
       });
-      
+
       console.log(res.data.result.Ack);
 
-      if (res.data.result.Ack === 'Success'){
-        console.log('Product Uploaded on eBay');        
+      if (res.data.result.Ack === 'Success') {
+        console.log('Product Uploaded on eBay');
         updateItemOnline(id, version);
-        
-        
       } else {
         console.log('Error con eBay!');
-        
       }
-
-
-
-    } catch(error){
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const onPublishItems = async () => {
     setOpenPublishDialog(true);
@@ -367,24 +360,20 @@ export default function Header(props) {
   if (openDeleteDialog) {
     return (
       <Portal>
-
-       
         <Dialog
           visible={openDeleteDialog}
           onDismiss={() => setOpenDeleteDialog(false)}
         >
           <Dialog.Icon icon='alert' />
-          
 
           <Dialog.Title style={{ textAlign: 'center', fontSize: 20 }}>
-          Are you sure you want to delete these listings?
+            Are you sure you want to delete these listings?
           </Dialog.Title>
           <Dialog.Actions>
             <Button onPress={() => setOpenDeleteDialog(false)}>Cancel</Button>
             <Button onPress={() => deleteItems()}>Ok</Button>
           </Dialog.Actions>
-        </Dialog> 
-
+        </Dialog>
       </Portal>
     );
   }
@@ -398,9 +387,13 @@ export default function Header(props) {
         >
           <Dialog.Icon icon='information-outline' />
           <Dialog.Title style={{ textAlign: 'center', fontSize: 20 }}>
-          You are about to publish these products on the ebay account <Text style={{fontWeight: 'bold', color: 'blue'}}>{ebayUser}</Text>. Proceed?
+            You are about to publish these products on the ebay account{' '}
+            <Text style={{ fontWeight: 'bold', color: 'blue' }}>
+              {ebayUser}
+            </Text>
+            . Proceed?
           </Dialog.Title>
-          
+
           <Dialog.Actions>
             <Button onPress={() => setOpenPublishDialog(false)}>Cancel</Button>
             <Button onPress={() => publishItems()}>Ok</Button>
@@ -456,7 +449,6 @@ export default function Header(props) {
     );
     //}
   }
-
 
   if (props.type === 'configureNewAccount') {
     return (

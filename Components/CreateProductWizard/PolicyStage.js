@@ -404,16 +404,16 @@ export default function PolicyStage(props) {
           onValueChange={() => console.log('Change value')}
           buttons={[
             {
-                value: 'firststep',
-                //label: 'First Step',
-                icon: 'page-first',
-                onPress: () => {
-                  props.goToFirstStep();
-                  //props.getCategoriesFeatures(props.category);
-                },
-                //disabled: 'false'
-                //disabled: categoryId
+              value: 'firststep',
+              //label: 'First Step',
+              icon: 'page-first',
+              onPress: () => {
+                props.goToFirstStep();
+                //props.getCategoriesFeatures(props.category);
               },
+              //disabled: 'false'
+              //disabled: categoryId
+            },
             {
               value: 'back',
               //label: 'Back',
@@ -446,7 +446,6 @@ export default function PolicyStage(props) {
               //disabled: props.condition !== '' ? false : true,
               //disabled: props.searchCategories.length > 0 ? false : true,
             },
-            
           ]}
         />
         <Button
