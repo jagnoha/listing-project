@@ -104,6 +104,8 @@ export default function AddListingForm(props) {
 
   const [aspectValues, setAspectValues] = useState([]);
 
+  const [wordsFromLabel, setWordsFromLabel] = useState([]);
+
   const [brand, setBrand] = useState('')
 
   const [searchCategories, setSearchCategories] = useState('');
@@ -1159,6 +1161,14 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     }
   };
 
+  const findCommonElements = (array1, array2) => {
+    
+    const intersection = array1.filter(element => array2.includes(element));
+
+    return intersection.length > 0 ? intersection[0] : '' ;
+
+  }
+
   const getItemAspects = async (categoryId) => {
     try {
       setProcessingAspects(true);
@@ -1222,13 +1232,44 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           if (itemProduct.localizedAspectName === 'Brand') {
             aspectValues.push({
               id: itemProduct.localizedAspectName,
-              value: brand, //[],
+              value: [], //[],
             });
 
             return {
               localizedAspectName: itemProduct.localizedAspectName,
               //aspectValues: [],
               value: brand, //'',
+              require: true,
+              cardinality: itemProduct.aspectConstraint.itemToAspectCardinality,
+              mode: itemProduct.aspectConstraint.aspectMode,
+            };
+          }
+
+          const tempSizeList = itemProduct.aspectValues.map((value) => value.localizedValue);
+
+          //let tempSize = '';
+
+          let tempSize = findCommonElements(wordsFromLabel, tempSizeList);
+
+          console.log('TempSize: ', tempSize);
+           
+
+          if (
+            itemProduct.localizedAspectName === 'Size'
+          ) {
+            aspectValues.push({
+              id: itemProduct.localizedAspectName,
+              value: itemProduct.aspectValues
+                ? itemProduct.aspectValues.map((value) => value.localizedValue)
+                : [],
+            });
+
+            return {
+              localizedAspectName: itemProduct.localizedAspectName,
+              /*aspectValues: itemProduct.aspectValues
+                ? itemProduct.aspectValues.map((value) => value.localizedValue)
+                : [],*/
+              value: tempSize,
               require: true,
               cardinality: itemProduct.aspectConstraint.itemToAspectCardinality,
               mode: itemProduct.aspectConstraint.aspectMode,
@@ -1985,10 +2026,16 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const textList = textDetections.filter(item => item.Type === 'LINE').map(item => item.DetectedText);
 
+      const words = textDetections.filter(item => item.Type === 'WORD').map(item => item.DetectedText);
+
       const byBrand = textList.filter(item => item.includes('by') || item.includes('BY'));
       const brand = byBrand.length > 0 ? `${textList[0]} ${byBrand}` : textList[0];
 
       setBrand(brand);
+
+      setWordsFromLabel(words);
+
+      console.log(words);
 
       //console.log(setAspects);
 
