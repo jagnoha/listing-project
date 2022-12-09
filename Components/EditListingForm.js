@@ -2052,6 +2052,16 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       await cameraRef.current.pausePreview();
       let newPhotoAWS = await handleImage(source, nameFile);
       setPhotoLabel(newPhotoAWS);
+
+
+      const tagChecked = await fetch(
+        `https://listerfast.com/api/utils/textfromimage/${newPhotoAWS}`
+      );
+
+      const json = await tagChecked.json();
+
+      console.log(json);
+
       setLabelPhotoOpen(false);
       setOpenCamera(false);
 
@@ -2151,7 +2161,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             onDismiss={() => setOpenDeleteDialog(false)}
           >
             <Dialog.Icon icon='alert' />
-            <Dialog.Title style={{ textAlign: 'center' }}>
+            <Dialog.Title style={{ textAlign: 'center', fontSize: 20 }}>
               Are you sure you want to delete this listing?
             </Dialog.Title>
             <Dialog.Actions>

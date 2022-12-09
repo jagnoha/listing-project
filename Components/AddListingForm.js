@@ -104,6 +104,8 @@ export default function AddListingForm(props) {
 
   const [aspectValues, setAspectValues] = useState([]);
 
+  const [brand, setBrand] = useState('')
+
   const [searchCategories, setSearchCategories] = useState('');
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
   const [photos, setPhotos] = useState([]);
@@ -1220,13 +1222,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           if (itemProduct.localizedAspectName === 'Brand') {
             aspectValues.push({
               id: itemProduct.localizedAspectName,
-              value: [],
+              value: brand, //[],
             });
 
             return {
               localizedAspectName: itemProduct.localizedAspectName,
               //aspectValues: [],
-              value: '',
+              value: brand, //'',
               require: true,
               cardinality: itemProduct.aspectConstraint.itemToAspectCardinality,
               mode: itemProduct.aspectConstraint.aspectMode,
@@ -1978,6 +1980,38 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     }
   };
 
+  const checkLabel = async (textDetections) => {
+    try {
+
+      const textList = textDetections.filter(item => item.Type === 'LINE' && item.Confidence > 95).map(item => item.DetectedText);
+
+      const byBrand = textList.filter(item => item.includes('by') || item.includes('BY'));
+      const brand = byBrand.length > 0 ? `${textList[0]} ${byBrand}` : textList[0];
+
+      setBrand(brand);
+
+      //console.log(setAspects);
+
+      /*const material = textList.filter(item => item.includes('%')).map(item => item.toLowerCase().replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase()));
+
+      const country = textList.find(item => item.includes('Made in') || item.includes('MADE IN')) ? textList.find(item => item.includes('Made in') || item.includes('MADE IN')).toLowerCase().split('made in')[1].replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase()) : '';*/
+      
+      
+      /*textList.find(item => item.includes('Made in') || item.includes('MADE IN')).split()*/
+      
+      console.log('Brand: ', brand);
+      //console.log('Material: ', material);
+      //console.log('Country: ', country);
+
+      
+      //console.log(textList);
+
+
+    } catch(error){
+      console.log(error);
+    }
+  }
+
   const takePicLabel = async () => {
     let options = {
       quality: 0.6,
@@ -2001,6 +2035,23 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       await cameraRef.current.pausePreview();
       let newPhotoAWS = await handleImage(source, nameFile);
       setPhotoLabel(newPhotoAWS);
+      const tagChecked = await fetch(
+        `https://listerfast.com/api/utils/textfromimage/${newPhotoAWS}`
+      );
+
+      const json = await tagChecked.json();
+      let textDetections = json.TextDetections;
+
+      checkLabel(textDetections);
+
+      //console.log(textDetections.filter(item => item.Type === 'LINE')); //.filter(itm => itm.Type === 'Line')
+      
+      //.map(item => item.DetectedText));
+      
+      /*if (textDetections[0].Confidence > 85){
+        console.log(textDetections[0].DetectedText);
+      }*/
+      
       setLabelPhotoOpen(false);
       setOpenCamera(false);
 
