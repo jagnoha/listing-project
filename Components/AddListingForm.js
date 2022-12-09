@@ -1983,7 +1983,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   const checkLabel = async (textDetections) => {
     try {
 
-      const textList = textDetections.filter(item => item.Type === 'LINE' && item.Confidence > 95).map(item => item.DetectedText);
+      const textList = textDetections.filter(item => item.Type === 'LINE').map(item => item.DetectedText);
 
       const byBrand = textList.filter(item => item.includes('by') || item.includes('BY'));
       const brand = byBrand.length > 0 ? `${textList[0]} ${byBrand}` : textList[0];
