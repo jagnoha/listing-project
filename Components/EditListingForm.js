@@ -489,6 +489,30 @@ export default function EditListingForm(props) {
     }
   };
 
+  const handleImageRemoveBackground = async (photoResult, nameFile) => {
+    try {
+      const img = await fetchImageFromUri(photoResult.uri);
+
+      const apiKey = 'acc_8b37536dc24d083';
+      const apiSecret = '5bd5d7fe8b2beb3a56f4ee52cc00988d';
+
+      const imgProccesed = await axios.post(
+        'https://api.imagga.com/v2/remove-background',
+        {
+          image: img,
+          username: apiKey,
+          password: apiSecret,
+        }
+      );
+
+      const uploadUrl = await uploadImage(nameFile, imgProccesed);
+      //console.log(uploadUrl);
+      return uploadUrl;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const saveListing = async () => {
     try {
       //console.log('Saving Listing');
@@ -1859,7 +1883,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       if (source) {
         await cameraRef.current.pausePreview();
-        let newPhotoAWS = await handleImage(source, nameFile);
+        let newPhotoAWS = await handleImageRemoveBackground(source, nameFile);
         setPhotoMain(newPhotoAWS);
         setOpenCamera(false);
         setMainPhotoOpen(false);
@@ -2052,7 +2076,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       await cameraRef.current.pausePreview();
       let newPhotoAWS = await handleImage(source, nameFile);
       setPhotoLabel(newPhotoAWS);
-
 
       const tagChecked = await fetch(
         `https://listerfast.com/api/utils/textfromimage/${newPhotoAWS}`

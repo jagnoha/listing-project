@@ -24,6 +24,8 @@
     "expo-image-picker": "~13.3.1",
     "expo-linking": "~3.2.2",
     "expo-status-bar": "~1.4.0",
+    "got": "^12.5.3",
+    "javascript-binary-converter": "^1.0.0",
     "react": "18.0.0",
     "react-native": "0.69.6",
     "react-native-get-random-values": "^1.8.0",
@@ -35,7 +37,8 @@
     "react-native-tab-view": "^3.3.0",
     "react-native-wheel-picker-expo": "^0.5.2",
     "recoil": "^0.7.6",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "expo-file-system": "~14.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

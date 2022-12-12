@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "ListingProject",
-    "slug": "ListingProject",
+    "slug": "lister-faster",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,7 +10,7 @@
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
-    },    
+    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -24,10 +24,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.jagnoha.listerfaster"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "48ef0d4a-b3ba-45d8-bcb7-bd9870ed7850"
+      }
+    },
+    "owner": "jagnoha"
   }
 }

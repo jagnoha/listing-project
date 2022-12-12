@@ -11,6 +11,10 @@ import {
   ActivityIndicator,
 } from 'react-native-paper';
 
+import * as FileSystem from 'expo-file-system';
+
+//import { fs } from 'fs';
+
 import { ListingType } from '../src/models';
 
 import 'react-native-get-random-values';
@@ -34,6 +38,8 @@ import {
 } from 'react-native';
 //import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
+
+import converter from 'javascript-binary-converter';
 
 import * as queries from '../src/graphql/queries';
 import * as mutations from '../src/graphql/mutations';
@@ -106,7 +112,7 @@ export default function AddListingForm(props) {
 
   const [wordsFromLabel, setWordsFromLabel] = useState([]);
 
-  const [brand, setBrand] = useState('')
+  const [brand, setBrand] = useState('');
 
   const [searchCategories, setSearchCategories] = useState('');
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
@@ -435,6 +441,108 @@ export default function AddListingForm(props) {
     }
   };
 
+  const uploadImageRemoveBackground = async (filename, img, uri) => {
+    try {
+      const apiKey = 'acc_8b37536dc24d083';
+      const apiSecret = '5bd5d7fe8b2beb3a56f4ee52cc00988d';
+
+      let headers = {
+        Authorization:
+          'Basic ' +
+          'YWNjXzhiMzc1MzZkYzI0ZDA4Mzo1YmQ1ZDdmZThiMmJlYjNhNTZmNGVlNTJjYzAwOTg4ZA==',
+      };
+
+      //const img2 = await fetchImageFromUri(uri);
+
+      console.log(uri);
+
+      console.log(img._data.blobId, img._data.type, img._data.size);
+
+      const responseAWS = await Storage.put(filename, img, {
+        level: 'public',
+        contentType: 'image/jpeg',
+      });
+
+      console.log(filename);
+
+      const urlAWS = `${urlImages}${responseAWS.key}`;
+
+      /*let urlAWS =
+        'https://listerfast-storage-f596989e161256-staging.s3.amazonaws.com/public/cb7b524d-59ed-441c-a0f5-f44cbe295031.jpg';
+*/
+      console.log(urlAWS);
+
+      const imgProccesed = await axios.get(
+        `https://api.imagga.com/v2/remove-background?image_url=${decodeURIComponent(
+          urlAWS
+        )}`,
+        {
+          username: apiKey,
+          password: apiSecret,
+          headers: headers,
+        }
+      );
+
+      const myFile = new File([img], 'image.jpeg', {
+        type: img.type,
+      });
+
+      console.log(myFile);
+      //console.log(myFile instanceof File);
+
+      /*const imgProccesed = await axios.post(
+        `https://api.imagga.com/v2/remove-background`,
+        {
+          username: apiKey,
+          password: apiSecret,
+          image: img,
+          headers: headers,
+        }
+      );*/
+
+      //let imgData = new Blob(imgProccesed.data.buffer, { type: 'image/png' });
+
+      //console.log(imgData._data.blobId, imgData._data.type, imgData._data.size);
+
+      /*
+      //console.log('IMAGE PROCESSED!!!!: ', imgProccesed.data);
+
+      let binary = imgProccesed.data;
+
+      //let imgData = new Blob(binary.buffer, { type: 'image/png' });
+
+      let imgData = binary;
+
+      let pngFileName = responseAWS.key.split('jpg')[0] + 'png'; //.push('png').join('');
+
+      //console.log('NEW FILE NAME: ', pngFileName);
+
+      const finalImage = await Storage.put(pngFileName, imgData, {
+        level: 'public',
+        contentType: 'image/png',
+      });
+
+      //console.log(finalImage);*/
+
+      return responseAWS.key;
+
+      /*return Storage.put(filename, img, {
+      level: 'public',
+      contentType: 'image/jpeg',      
+    })
+      .then((response) => {
+        console.log('MIERDA!!!');
+        return response.key;
+      })
+      .catch((error) => {
+        console.log(error);
+        return error.response;
+      });*/
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const uploadImage = async (filename, img) => {
     return Storage.put(filename, img, {
       level: 'public',
@@ -468,6 +576,55 @@ export default function AddListingForm(props) {
       console.log(error);
     }
   };
+
+  const handleImageRemoveBackground = async (photoResult, nameFile) => {
+    try {
+      const img = await fetchImageFromUri(photoResult.uri);
+      const uploadUrl = await uploadImage(nameFile, img);
+      //console.log(uploadUrl);
+      return uploadUrl;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  /*const handleImageRemoveBackground = async (photoResult, nameFile) => {
+    try {
+      const img = await fetchImageFromUri(photoResult.uri);
+
+      const apiKey = 'acc_8b37536dc24d083';
+      const apiSecret = '5bd5d7fe8b2beb3a56f4ee52cc00988d';
+
+      //console.log(photoResult.uri);
+
+      let headers = {
+        Authorization:
+          'Basic ' +
+          'YWNjXzhiMzc1MzZkYzI0ZDA4Mzo1YmQ1ZDdmZThiMmJlYjNhNTZmNGVlNTJjYzAwOTg4ZA==',
+      };
+
+      const imgProccesed = await axios.get(
+        `https://api.imagga.com/v2/remove-background?image_url=${encodeURIComponent(
+          photoResult.uri
+        )}`,
+        {
+          username: apiKey,
+          password: apiSecret,
+          headers: headers,
+        }
+      );
+
+      console.log(imgProccesed.data);
+
+      console.log(img);
+
+      const uploadUrl = await uploadImage(nameFile, imgProccesed);
+      //console.log(uploadUrl);
+      return uploadUrl;
+    } catch (error) {
+      console.log(error);
+    }
+  };*/
 
   const saveListing = async () => {
     try {
@@ -1162,12 +1319,10 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   };
 
   const findCommonElements = (array1, array2) => {
-    
-    const intersection = array1.filter(element => array2.includes(element));
+    const intersection = array1.filter((element) => array2.includes(element));
 
-    return intersection.length > 0 ? intersection[0] : '' ;
-
-  }
+    return intersection.length > 0 ? intersection[0] : '';
+  };
 
   const getItemAspects = async (categoryId) => {
     try {
@@ -1245,18 +1400,17 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             };
           }
 
-          const tempSizeList = itemProduct.aspectValues.map((value) => value.localizedValue);
+          const tempSizeList = itemProduct.aspectValues.map(
+            (value) => value.localizedValue
+          );
 
           //let tempSize = '';
 
           let tempSize = findCommonElements(wordsFromLabel, tempSizeList);
 
           console.log('TempSize: ', tempSize);
-           
 
-          if (
-            itemProduct.localizedAspectName === 'Size'
-          ) {
+          if (itemProduct.localizedAspectName === 'Size') {
             aspectValues.push({
               id: itemProduct.localizedAspectName,
               value: itemProduct.aspectValues
@@ -1819,7 +1973,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       if (source) {
         await cameraRef.current.pausePreview();
-        let newPhotoAWS = await handleImage(source, nameFile);
+        let newPhotoAWS = await handleImageRemoveBackground(source, nameFile);
         setPhotoMain(newPhotoAWS);
         setOpenCamera(false);
         setMainPhotoOpen(false);
@@ -2023,13 +2177,19 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
   const checkLabel = async (textDetections) => {
     try {
+      const textList = textDetections
+        .filter((item) => item.Type === 'LINE')
+        .map((item) => item.DetectedText);
 
-      const textList = textDetections.filter(item => item.Type === 'LINE').map(item => item.DetectedText);
+      const words = textDetections
+        .filter((item) => item.Type === 'WORD')
+        .map((item) => item.DetectedText);
 
-      const words = textDetections.filter(item => item.Type === 'WORD').map(item => item.DetectedText);
-
-      const byBrand = textList.filter(item => item.includes('by') || item.includes('BY'));
-      const brand = byBrand.length > 0 ? `${textList[0]} ${byBrand}` : textList[0];
+      const byBrand = textList.filter(
+        (item) => item.includes('by') || item.includes('BY')
+      );
+      const brand =
+        byBrand.length > 0 ? `${textList[0]} ${byBrand}` : textList[0];
 
       setBrand(brand);
 
@@ -2042,22 +2202,18 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       /*const material = textList.filter(item => item.includes('%')).map(item => item.toLowerCase().replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase()));
 
       const country = textList.find(item => item.includes('Made in') || item.includes('MADE IN')) ? textList.find(item => item.includes('Made in') || item.includes('MADE IN')).toLowerCase().split('made in')[1].replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase()) : '';*/
-      
-      
+
       /*textList.find(item => item.includes('Made in') || item.includes('MADE IN')).split()*/
-      
+
       console.log('Brand: ', brand);
       //console.log('Material: ', material);
       //console.log('Country: ', country);
 
-      
       //console.log(textList);
-
-
-    } catch(error){
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const takePicLabel = async () => {
     let options = {
@@ -2092,13 +2248,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       checkLabel(textDetections);
 
       //console.log(textDetections.filter(item => item.Type === 'LINE')); //.filter(itm => itm.Type === 'Line')
-      
+
       //.map(item => item.DetectedText));
-      
+
       /*if (textDetections[0].Confidence > 85){
         console.log(textDetections[0].DetectedText);
       }*/
-      
+
       setLabelPhotoOpen(false);
       setOpenCamera(false);
 
