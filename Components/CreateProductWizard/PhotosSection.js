@@ -57,7 +57,7 @@ export default function PhotosSection(props) {
             {props.photoMain ?
             <View style={{flexDirection:'row'}}>
             <IconButton style={{alignSelf: 'center'}} onPress={()=>props.deleteMainPic()} icon='delete' />
-          <IconButton style={{alignSelf: 'center'}} onPress={()=>console.log('Transparency')} icon='circle-opacity' />            
+          <IconButton style={{alignSelf: 'center'}} onPress={()=>props.removeBackground()} icon='circle-opacity' />            
            </View> :''}
 
           </Pressable>

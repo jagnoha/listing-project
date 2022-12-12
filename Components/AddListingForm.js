@@ -11,6 +11,8 @@ import {
   ActivityIndicator,
 } from 'react-native-paper';
 
+import FormData from 'form-data';
+
 import * as FileSystem from 'expo-file-system';
 
 //import { fs } from 'fs';
@@ -440,6 +442,76 @@ export default function AddListingForm(props) {
       console.log(JSON.stringify(error));
     }
   };
+
+
+  const removeBackground = async () => {
+    console.log(photoMain);
+
+      const apiKey = 'acc_8b37536dc24d083';
+      const apiSecret = '5bd5d7fe8b2beb3a56f4ee52cc00988d';
+
+      let headers = {
+        Authorization:
+          'Basic ' +
+          'YWNjXzhiMzc1MzZkYzI0ZDA4Mzo1YmQ1ZDdmZThiMmJlYjNhNTZmNGVlNTJjYzAwOTg4ZA==',
+      };
+
+      const urlAWS = `${urlImages}${photoMain}`;
+
+      /*let urlPost = 'https://listerfast.com/api/utils/removebackground';
+
+      const imageProcessed = await axios.post(urlPost, {
+        imageUri: urlAWS,
+      });
+
+      console.log(imageProcessed.data);
+      */
+
+      const imgProccesed = await axios.get(
+        `https://api.imagga.com/v2/remove-background?image_url=${decodeURIComponent(
+          urlAWS
+        )}`,
+        {
+          username: apiKey,
+          password: apiSecret,
+          headers: headers,
+        }
+      );
+
+      console.log(imgProccesed.data.toString('base64'))
+
+      /*const downloadResumable = FileSystem.createDownloadResumable(
+        imgProccesed,
+        FileSystem.documentDirectory + 'test1.png',
+        {},
+        ()=>console.log('Archivo')
+      );
+
+      const { uri } = await downloadResumable.downloadAsync();
+      console.log('Finished downloading to ', uri);*/
+
+      /*const formData = new FormData();
+      formData.append('image', imgProccesed);
+
+      const response = await axios.post('https://api.imagga.com/v2/uploads',
+      {
+        username: apiKey,
+        password: apiSecret,
+        headers: headers,
+        body: formData,
+      });
+
+      console.log(response);*/
+
+      
+
+      /*let imgData = new Blob(imgProccesed.data.buffer, { type: 'image/png' });
+
+      console.log(imgData._data.blobId, imgData._data.type, imgData._data.size);*/
+
+  }
+
+  
 
   const uploadImageRemoveBackground = async (filename, img, uri) => {
     try {
@@ -1973,7 +2045,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       if (source) {
         await cameraRef.current.pausePreview();
-        let newPhotoAWS = await handleImageRemoveBackground(source, nameFile);
+        let newPhotoAWS = await handleImage(source, nameFile);
         setPhotoMain(newPhotoAWS);
         setOpenCamera(false);
         setMainPhotoOpen(false);
@@ -2371,6 +2443,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             photos={photos}
             backward={backward}
             forward={forward}
+            removeBackground={removeBackground}
             //goToFirstStep={goToFirstStep}
             type={type}
             onOpenPreviewPhoto={onOpenPreviewPhoto}

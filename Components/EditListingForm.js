@@ -1883,7 +1883,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       if (source) {
         await cameraRef.current.pausePreview();
-        let newPhotoAWS = await handleImageRemoveBackground(source, nameFile);
+        let newPhotoAWS = await handleImage(source, nameFile);
         setPhotoMain(newPhotoAWS);
         setOpenCamera(false);
         setMainPhotoOpen(false);
@@ -2229,6 +2229,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               photos={photos}
               backward={backward}
               forward={forward}
+              removeBackground={removeBackground}
               //goToFirstStep={goToFirstStep}
               type={type}
               onOpenPreviewPhoto={onOpenPreviewPhoto}
