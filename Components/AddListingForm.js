@@ -2362,6 +2362,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             typeHeader={'createListing'}
             navigation={navigation}
             styles={styles}
+            deleteMainPic={deleteMainPic}
+            deleteLabelPic={deleteLabelPic}
             onMainPhotoOpen={onMainPhotoOpen}
             photoMain={photoMain}
             photoLabel={photoLabel}
@@ -2397,7 +2399,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             //onCameraReady={() => setMainPhotoOpen(false)}
           >
             <SegmentedButtons
-              density='medium'
+              density='small'
               style={styles.previewCameraControl}
               onValueChange={() => console.log('Change value')}
               buttons={[
@@ -2418,14 +2420,14 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                   //disabled: photoMain && photoLabel ? false : true
                   //disabled : processingImage ? true : false,
                 },
-                {
+                /*{
                   value: 'delete',
                   label: 'Delete',
                   icon: 'delete',
                   onPress: () => deleteMainPic(),
                   style: styles.buttonPreviewCameraControl,
                   disabled: photoMain ? false : true,
-                },
+                },*/
               ]}
             />
           </Camera>
@@ -2458,7 +2460,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                   style: styles.buttonPreviewCameraControl,
                   //disabled: photoMain && photoLabel ? false : true
                 },
-                {
+                /*{
                   value: 'delete',
                   label: 'Delete',
                   icon: 'delete',
@@ -2466,7 +2468,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                   style: styles.buttonPreviewCameraControl,
                   disabled: photoLabel ? false : true,
                   //disabled: photoMain && photoLabel ? false : true
-                },
+                },*/
               ]}
             />
           </Camera>
@@ -2837,7 +2839,7 @@ const styles = StyleSheet.create({
     marginTop:
       (Dimensions.get('window').height - Dimensions.get('window').width) / 4,
     marginBottom:
-      (Dimensions.get('window').height - Dimensions.get('window').width) / 3,
+      (Dimensions.get('window').height - Dimensions.get('window').width) / 4,
     //marginBottom: 100,
     //marginBottom: '55%',
     //position: 'absolute',
@@ -2876,8 +2878,8 @@ const styles = StyleSheet.create({
   },
 
   surface: {
-    height: 115,
-    width: 86.25,
+    height: 138,
+    width: 103.5,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -2279,14 +2279,14 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                     //disabled: photoMain && photoLabel ? false : true
                     //disabled : processingImage ? true : false,
                   },
-                  {
+                  /*{
                     value: 'delete',
                     label: 'Delete',
                     icon: 'delete',
                     onPress: () => deleteMainPic(),
                     style: styles.buttonPreviewCameraControl,
                     disabled: photoMain ? false : true,
-                  },
+                  },*/
                 ]}
               />
             </Camera>
@@ -2319,7 +2319,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                     style: styles.buttonPreviewCameraControl,
                     //disabled: photoMain && photoLabel ? false : true
                   },
-                  {
+                  /*{
                     value: 'delete',
                     label: 'Delete',
                     icon: 'delete',
@@ -2327,7 +2327,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                     style: styles.buttonPreviewCameraControl,
                     disabled: photoLabel ? false : true,
                     //disabled: photoMain && photoLabel ? false : true
-                  },
+                  },*/
                 ]}
               />
             </Camera>
@@ -2769,8 +2769,8 @@ const styles = StyleSheet.create({
   },
 
   surface: {
-    height: 115,
-    width: 86.25,
+    height: 138,
+    width: 103.5,
     alignItems: 'center',
     justifyContent: 'center',
   },

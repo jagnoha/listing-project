@@ -9,6 +9,8 @@ import {
   Searchbar,
   SegmentedButtons,
   Banner,
+  IconButton,
+  Divider,
 } from 'react-native-paper';
 import { useRecoilState } from 'recoil';
 import urlImagesAtom from '../../Store/atoms/urlImagesAtom';
@@ -32,7 +34,7 @@ export default function PhotosSection(props) {
       <View>
         <Banner visible={true} icon={'camera'}>
           {props.type === 'clothing' || props.type === 'shoes'
-            ? 'The main photo is required. Additionally you can take a photo of the product tag. It would be nice if the product tag had the brand name on it. You can also add up to 8 more photos.'
+            ? 'The main photo is required, you can also take a photo of the product tag. You can add up to 8 additional photos.'
             : 'The main photo is required. You can also add up to 8 more photos.'}
         </Banner>
 
@@ -50,8 +52,16 @@ export default function PhotosSection(props) {
               ) : (
                 <Text style={{ fontSize: 12 }}>Main Photo</Text>
               )}
+              
             </Surface>
+            {props.photoMain ?
+            <View style={{flexDirection:'row'}}>
+            <IconButton style={{alignSelf: 'center'}} onPress={()=>props.deleteMainPic()} icon='delete' />
+          <IconButton style={{alignSelf: 'center'}} onPress={()=>console.log('Transparency')} icon='circle-opacity' />            
+           </View> :''}
+
           </Pressable>
+         
           {props.type === 'clothing' || props.type === 'shoes' ? (
             <Pressable onPress={() => props.onLabelPhotoOpen()}>
               <Surface style={props.styles.surface} elevation={4}>
@@ -67,21 +77,28 @@ export default function PhotosSection(props) {
                   <Text style={{ fontSize: 12 }}>Photo Tag</Text>
                 )}
               </Surface>
+              {props.photoLabel ?
+            <IconButton style={{alignSelf: 'center'}} onPress={()=>props.deleteLabelPic()} icon='delete' />
+            :''}
             </Pressable>
           ) : (
             ''
           )}
         </View>
+            <Divider style={{marginTop: 15}} bold='true' horizontalInset='true' />
 
-        <View style={{ marginLeft: 60, marginRight: 60, marginTop: 20 }}>
-          <Button
-            icon='camera'
+        <View style={{alignSelf: 'center'}} 
+        /*style={{ marginLeft: 60, marginRight: 60, marginTop: 20 }}*/>
+          {/*<Button
+            icon='camera-plus'
             mode='contained'
             onPress={() => props.onOpenPreviewPhoto()}
             disabled={props.photoMain && props.photos.length < 8 ? false : true}
           >
             Take more photos
-          </Button>
+          </Button>*/}
+          <IconButton icon='camera-plus' size={35} onPress={() => props.onOpenPreviewPhoto()}
+            disabled={props.photoMain && props.photos.length < 8 ? false : true} />
         </View>
 
         <View style={props.styles.clothingButtons}>
