@@ -2054,7 +2054,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   const handleBarCodeScanned = ({ type, data }) => {
     /*console.log(type);
     console.log(data);*/
-    setBarcodeValue({ type, data });
+    setBarcodeValue(data);
     setBarcodeOpen(false);
   };
 
