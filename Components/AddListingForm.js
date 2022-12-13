@@ -779,7 +779,11 @@ export default function AddListingForm(props) {
         item.localizedAspectName !== 'EU Shoe Size' &&
         item.localizedAspectName !== 'Inseam' &&
         item.localizedAspectName !== 'Waist Size' &&
-        item.localizedAspectName !== 'Country/Region of Manufacture'
+        item.localizedAspectName !== 'Country/Region of Manufacture' &&
+        item.localizedAspectName !== 'Manufacturer Part Number' &&
+        item.localizedAspectName !== 'MPN' &&
+        item.localizedAspectName !== 'OE/OEM Part Number' &&
+        item.localizedAspectName !== 'Number of Pieces'
     );
 
     let values = require.map((item) => {
@@ -799,6 +803,22 @@ export default function AddListingForm(props) {
 
   const getImportantAspectsValues = () => {
     const brand = aspects.find((item) => item.localizedAspectName === 'Brand');
+
+    const manufacturerPartNumber = aspects.find((item) => item.localizedAspectName === 'Manufacturer Part Number');
+
+    const MPN = aspects.find((item) => item.localizedAspectName === 'MPN');
+
+    const OEMPartNumber = aspects.find((item) => item.localizedAspectName === 'OE/OEM Part Number');
+
+
+    
+
+    const numberOfPieces = aspects.find((item) => item.localizedAspectName === 'Number of Pieces');
+
+
+    
+
+
     const size = aspects.find((item) => item.localizedAspectName === 'Size');
     const style = aspects.find((item) => item.localizedAspectName === 'Style');
     const sizeType = aspects.find(
@@ -855,6 +875,11 @@ export default function AddListingForm(props) {
       features: features ? features.value : '',
 
       usShoeSize: usShoeSize ? usShoeSize.value : '',
+      manufacturerPartNumber: manufacturerPartNumber ? manufacturerPartNumber.value : '',
+      MPN: MPN ? MPN.value : '',
+      OEMPartNumber: OEMPartNumber ? OEMPartNumber.value : '',
+      numberOfPieces: numberOfPieces ? numberOfPieces.value : '',
+
     };
 
     return importantAspects;
@@ -975,7 +1000,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['features']);
 
       pendingTitle.push(extraAspects.join(' '));
-      //console.log('Extra aspects: ', extraAspects.slice(0, 2));
       shortPendingTitle.push(extraAspects.slice(0, 2).join(' '));
 
       if (keywords['fit'] !== '') {
@@ -1007,10 +1031,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         pendingTitle.push(`Size ${keywords['size']}`);
         shortPendingTitle.push(`Size ${keywords['size']}`);
       }
-
-      /*pendingTitle.push(`Size ${keywords['size']}`);
-      shortPendingTitle.push(`Size ${keywords['size']}`);
-      pendingTitle.push(`Inseam ${keywords['inseam']}`);*/
 
       // Long Title processing
 
@@ -1054,9 +1074,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
       );
 
-      /*console.log(filtetedTitle.join(' ').length);
-      console.log(filtetedTitleShort.join(' ').length);*/
-
+     
       // processing long title
       let uniqueFilteredTitle = filtetedTitle.join(' ').split(' ');
       uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)];
@@ -1080,6 +1098,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       }
 
       processingDescription(uniqueFilteredTitle.trim());
+
     } else if (type === 'shoes') {
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
@@ -1150,7 +1169,123 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
       );
 
-      //console.log(filtetedTitle.join(' ').length);
+      let uniqueFilteredTitle = filtetedTitle.join(' ').split(' ');
+      uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)];
+
+      uniqueFilteredTitle = uniqueFilteredTitle
+        .join(' ')
+        .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
+
+      // short title
+
+      let expandTitleShort = [];
+
+      for (let item of shortPendingTitle) {
+        if (Array.isArray(item)) {
+          let checkItem = item[0].split(' ');
+          checkItem.filter((chk) => !chk.includes(keywords['brand']));
+          expandTitleShort.push(checkItem.join(' '));
+        } else {
+          if (item !== '') {
+            expandTitleShort.push(item);
+          }
+        }
+      }
+
+      let filtetedTitleShort = expandTitleShort.filter(
+        (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
+      );
+
+
+      let uniqueFilteredTitleShort = filtetedTitleShort.join(' ').split(' ');
+      uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)];
+
+      uniqueFilteredTitleShort = uniqueFilteredTitleShort
+        .join(' ')
+        .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
+
+      if (uniqueFilteredTitle.trim().length <= 80) {
+        setTitleProcessed(uniqueFilteredTitle.trim());
+      } else {
+        setTitleProcessed(uniqueFilteredTitleShort.trim());
+      }
+
+      processingDescription(uniqueFilteredTitle);
+    } else if (type === 'autoparts') {
+
+
+      pendingTitle.push(keywords['vintage']);
+      shortPendingTitle.push(keywords['vintage']);
+
+      let tempBrand = keywords['brand'].toUpperCase();
+      let tempModel = keywords['model'].toUpperCase();
+
+
+      if (!tempModel.includes(tempBrand)) {
+        pendingTitle.push(keywords['brand']);
+        shortPendingTitle.push(keywords['brand']);
+      }
+
+      pendingTitle.push(keywords['model']);
+      shortPendingTitle.push(keywords['model']);
+
+
+      if (keywords['type'] === '') {
+        pendingTitle.push(keywords['category']);
+        shortPendingTitle.push(keywords['category']);
+      } else if (!keywords['category'].includes(keywords['type'])) {
+        pendingTitle.push(keywords['category']);
+        shortPendingTitle.push(keywords['category']);
+      }
+
+      pendingTitle.push(keywords['type']);
+      shortPendingTitle.push(keywords['type']);
+
+      pendingTitle.push(keywords['style']);
+      shortPendingTitle.push(keywords['style']);
+
+      
+      pendingTitle.push(keywords['manufacturerPartNumber']);
+      shortPendingTitle.push(keywords['manufacturerPartNumber']);
+
+      pendingTitle.push(keywords['MPN']);
+      shortPendingTitle.push(keywords['MPN']);
+
+
+
+      /*pendingTitle.push(type);
+      shortPendingTitle.push(type);*/
+
+      pendingTitle.push(keywords['color']);
+      shortPendingTitle.push(keywords['color']);
+
+      pendingTitle.push(keywords['features']);
+
+      pendingTitle.push(extraAspects.join(' '));
+      shortPendingTitle.push(extraAspects.slice(0, 2).join(' '));
+
+      pendingTitle.push(keywords['OEMPartNumber']);
+      shortPendingTitle.push(keywords['OEMPartNumber']);
+
+      // long title
+
+      let expandTitle = [];
+
+      for (let item of pendingTitle) {
+        if (Array.isArray(item)) {
+          let checkItem = item[0].split(' ');
+          checkItem.filter((chk) => !chk.includes(keywords['brand']));
+          expandTitle.push(checkItem.join(' '));
+        } else {
+          if (item !== '') {
+            expandTitle.push(item);
+          }
+        }
+      }
+
+      let filtetedTitle = expandTitle.filter(
+        (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
+      );
 
       let uniqueFilteredTitle = filtetedTitle.join(' ').split(' ');
       uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)];
@@ -1179,7 +1314,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
       );
 
-      //console.log(filtetedTitleShort.join(' ').length);
 
       let uniqueFilteredTitleShort = filtetedTitleShort.join(' ').split(' ');
       uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)];
@@ -1195,6 +1329,131 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       }
 
       processingDescription(uniqueFilteredTitle);
+
+
+
+    } else if (type === 'other') {
+
+
+      pendingTitle.push(keywords['vintage']);
+      shortPendingTitle.push(keywords['vintage']);
+
+      let tempBrand = keywords['brand'].toUpperCase();
+      let tempModel = keywords['model'].toUpperCase();
+
+
+      if (!tempModel.includes(tempBrand)) {
+        pendingTitle.push(keywords['brand']);
+        shortPendingTitle.push(keywords['brand']);
+      }
+
+      pendingTitle.push(keywords['model']);
+      shortPendingTitle.push(keywords['model']);
+
+
+      
+
+      pendingTitle.push(keywords['type']);
+      shortPendingTitle.push(keywords['type']);
+
+      pendingTitle.push(keywords['style']);
+      shortPendingTitle.push(keywords['style']);
+
+      
+      pendingTitle.push(keywords['manufacturerPartNumber']);
+      shortPendingTitle.push(keywords['manufacturerPartNumber']);
+
+      pendingTitle.push(keywords['MPN']);
+      shortPendingTitle.push(keywords['MPN']);
+
+
+
+      /*pendingTitle.push(type);
+      shortPendingTitle.push(type);*/
+
+      pendingTitle.push(keywords['color']);
+      shortPendingTitle.push(keywords['color']);
+
+      pendingTitle.push(keywords['features']);
+
+      pendingTitle.push(extraAspects.join(' '));
+      shortPendingTitle.push(extraAspects.slice(0, 2).join(' '));
+
+      if (Number(keywords['numberOfPieces']) > 1){
+        pendingTitle.push(`${keywords['numberOfPieces']} PCS`);
+        shortPendingTitle.push(`${keywords['numberOfPieces']} PCS`);
+      }
+
+      
+
+      pendingTitle.push(keywords['OEMPartNumber']);
+      shortPendingTitle.push(keywords['OEMPartNumber']);
+
+      // long title
+
+      let expandTitle = [];
+
+      for (let item of pendingTitle) {
+        if (Array.isArray(item)) {
+          let checkItem = item[0].split(' ');
+          checkItem.filter((chk) => !chk.includes(keywords['brand']));
+          expandTitle.push(checkItem.join(' '));
+        } else {
+          if (item !== '') {
+            expandTitle.push(item);
+          }
+        }
+      }
+
+      let filtetedTitle = expandTitle.filter(
+        (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
+      );
+
+      let uniqueFilteredTitle = filtetedTitle.join(' ').split(' ');
+      uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)];
+
+      uniqueFilteredTitle = uniqueFilteredTitle
+        .join(' ')
+        .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
+
+      // short title
+
+      let expandTitleShort = [];
+
+      for (let item of shortPendingTitle) {
+        if (Array.isArray(item)) {
+          let checkItem = item[0].split(' ');
+          checkItem.filter((chk) => !chk.includes(keywords['brand']));
+          expandTitleShort.push(checkItem.join(' '));
+        } else {
+          if (item !== '') {
+            expandTitleShort.push(item);
+          }
+        }
+      }
+
+      let filtetedTitleShort = expandTitleShort.filter(
+        (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
+      );
+
+
+      let uniqueFilteredTitleShort = filtetedTitleShort.join(' ').split(' ');
+      uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)];
+
+      uniqueFilteredTitleShort = uniqueFilteredTitleShort
+        .join(' ')
+        .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
+
+      if (uniqueFilteredTitle.trim().length <= 80) {
+        setTitleProcessed(uniqueFilteredTitle.trim());
+      } else {
+        setTitleProcessed(uniqueFilteredTitleShort.trim());
+      }
+
+      processingDescription(uniqueFilteredTitle);
+
+
+
     }
   };
 
@@ -1887,6 +2146,72 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           }
 
           //pendingTitle.push(`Size ${keywords['usShoeSize']}`);
+        }
+
+        if (type === 'autoparts') {
+
+          console.log(keywords);
+
+          let tempBrand = keywords['brand'].toUpperCase();
+          let tempModel = keywords['model'].toUpperCase();
+
+          if (!tempModel.includes(tempBrand)) {
+            pendingTitle.push(keywords['brand']);
+            shortPendingTitle.push(keywords['brand']);
+          }
+
+          pendingTitle.push(keywords['model']);
+          shortPendingTitle.push(keywords['model']);
+         
+
+          pendingTitle.push(keywords['type']);
+          shortPendingTitle.push(keywords['type']);
+          
+
+          pendingTitle.push(keywords['manufacturerPartNumber']);
+          shortPendingTitle.push(keywords['manufacturerPartNumber']);
+
+          pendingTitle.push(keywords['OEMPartNumber']);
+          shortPendingTitle.push(keywords['OEMPartNumber']);
+
+
+          pendingTitle.push(keywords['vintage']);
+          shortPendingTitle.push(keywords['vintage']);
+
+          
+        }
+
+        if (type === 'other') {
+
+          console.log(keywords);
+
+          let tempBrand = keywords['brand'].toUpperCase();
+          let tempModel = keywords['model'].toUpperCase();
+
+          if (!tempModel.includes(tempBrand)) {
+            pendingTitle.push(keywords['brand']);
+            shortPendingTitle.push(keywords['brand']);
+          }
+
+          pendingTitle.push(keywords['model']);
+          shortPendingTitle.push(keywords['model']);
+         
+
+          pendingTitle.push(keywords['type']);
+          shortPendingTitle.push(keywords['type']);
+          
+
+          pendingTitle.push(keywords['manufacturerPartNumber']);
+          shortPendingTitle.push(keywords['manufacturerPartNumber']);
+
+          pendingTitle.push(keywords['OEMPartNumber']);
+          shortPendingTitle.push(keywords['OEMPartNumber']);
+
+
+          pendingTitle.push(keywords['vintage']);
+          shortPendingTitle.push(keywords['vintage']);
+
+          
         }
 
         /*console.log(
