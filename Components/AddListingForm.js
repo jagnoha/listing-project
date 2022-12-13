@@ -1327,6 +1327,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   const getAspectValues = async (categoryId) => {
     try {
       setProcessingAspects(true);
+
+      console.log(type);
+
+      console.log('PRODUCT CODE!: ', getTypeProductCode(type));
+
+      console.log(categoryId);
+
       const response = await fetch(
         `https://listerfast.com/api/ebay/aspectsbycategory/${ebayUser}/${getTypeProductCode(
           type
@@ -1334,6 +1341,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       );
 
       const json = await response.json();
+
+      //console.log(json);
 
       let aspectValues = [];
 
@@ -1431,9 +1440,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           ) {
             aspectValues.push({
               id: itemProduct.localizedAspectName,
-              value: itemProduct.aspectValues
-                ? itemProduct.aspectValues.map((value) => value.localizedValue)
-                : [],
+              value:
+                itemProduct.aspectValues &&
+                Array.isArray(itemProduct.aspectValues)
+                  ? itemProduct.aspectValues.map(
+                      (value) => value.localizedValue
+                    )
+                  : [],
             });
 
             return {
@@ -1464,17 +1477,24 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             };
           }
 
-          const tempSizeList = itemProduct.aspectValues.map(
-            (value) => value.localizedValue
-          );
+          console.log('ITEM PRODUCT ASPECT VALUES: ', itemProduct.aspectValues);
 
+          const tempSizeList =
+            itemProduct.aspectValues && Array.isArray(itemProduct.aspectValues)
+              ? itemProduct.aspectValues.map((value) => value.localizedValue)
+              : [];
+
+          console.log(tempSizeList);
           //let tempSize = '';
 
           let tempSize = findCommonElements(wordsFromLabel, tempSizeList);
 
           console.log('TempSize: ', tempSize);
 
-          if (itemProduct.localizedAspectName === 'Size') {
+          if (
+            itemProduct.localizedAspectName === 'Size' &&
+            type !== 'autoparts'
+          ) {
             aspectValues.push({
               id: itemProduct.localizedAspectName,
               value: itemProduct.aspectValues
@@ -1496,9 +1516,11 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
           aspectValues.push({
             id: itemProduct.localizedAspectName,
-            value: itemProduct.aspectValues
-              ? itemProduct.aspectValues.map((value) => value.localizedValue)
-              : [],
+            value:
+              itemProduct.aspectValues &&
+              Array.isArray(itemProduct.aspectValues)
+                ? itemProduct.aspectValues.map((value) => value.localizedValue)
+                : [],
           });
 
           return {
