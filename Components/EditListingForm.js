@@ -19,6 +19,8 @@ import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import urlImagesAtom from '../Store/atoms/urlImagesAtom';
 
+import { encode } from 'html-entities';
+
 import { Amplify, Storage, API, graphqlOperation } from 'aws-amplify';
 import { Listing } from '../src/models';
 
@@ -765,7 +767,7 @@ export default function EditListingForm(props) {
         product: {
           SKU: listingId,
           bestOffer: checkBestOffer(),
-          title: titleProcessed,
+          title: encode(titleProcessed),
           description: descriptionProcessed.split('\n').join('<br>'),
           primaryCategory: category,
           price: priceProduct,
@@ -785,7 +787,7 @@ export default function EditListingForm(props) {
           itemSpecifics: {
             NameValueList: aspects.map((item) => ({
               Name: item.localizedAspectName,
-              Value: item.value,
+              Value: encode(item.value),
               Source: 'ItemSpecific',
             })),
           },
@@ -837,7 +839,9 @@ export default function EditListingForm(props) {
     //let pendingDescription = [];
 
     //const keywords = getImportantAspectsValues();
-    let pendingDescription = `<h2>${title}</h2><p style={font-size: 1.2em}>${
+    let pendingDescription = `<h2>${encode(
+      title
+    )}</h2><p style={font-size: 1.2em}>${
       categoryFeatures.conditions.find((item) => item.ID === condition)
         .DisplayName
     }</p>  
@@ -969,7 +973,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['sizeType']);
       shortPendingTitle.push(keywords['sizeType']);
 
-      if (keywords['inseam'] !== '') {
+      if (keywords['inseam'] !== '' && Number(keywords['size'])) {
         pendingTitle.push(
           `Size ${keywords['size']}x${keywords['inseam'].split(' ')[0]}`
         );

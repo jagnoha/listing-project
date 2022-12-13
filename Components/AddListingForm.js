@@ -13,6 +13,8 @@ import {
 
 import FormData from 'form-data';
 
+import { encode } from 'html-entities';
+
 import * as FileSystem from 'expo-file-system';
 
 //import { fs } from 'fs';
@@ -870,7 +872,9 @@ export default function AddListingForm(props) {
     //let pendingDescription = [];
 
     //const keywords = getImportantAspectsValues();
-    let pendingDescription = `<h2>${title}</h2><p style={font-size: 1.2em}>${
+    let pendingDescription = `<h2>${encode(
+      title
+    )}</h2><p style={font-size: 1.2em}>${
       categoryFeatures.conditions.find((item) => item.ID === condition)
         .DisplayName
     }</p>  
@@ -992,7 +996,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['sizeType']);
       shortPendingTitle.push(keywords['sizeType']);
 
-      if (keywords['inseam'] !== '') {
+      if (keywords['inseam'] !== '' && Number(keywords['size'])) {
         pendingTitle.push(
           `Size ${keywords['size']}x${keywords['inseam'].split(' ')[0]}`
         );
@@ -2170,7 +2174,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         product: {
           SKU: id,
           bestOffer: checkBestOffer(),
-          title: titleProcessed,
+          title: encode(titleProcessed),
           description: descriptionProcessed.split('\n').join('<br>'),
           primaryCategory: category,
           price: priceProduct,
@@ -2190,7 +2194,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           itemSpecifics: {
             NameValueList: aspects.map((item) => ({
               Name: item.localizedAspectName,
-              Value: item.value,
+              Value: encode(item.value),
               Source: 'ItemSpecific',
             })),
           },

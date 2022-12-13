@@ -27,6 +27,7 @@
     "expo-status-bar": "~1.4.0",
     "form-data": "^4.0.0",
     "got": "^12.5.3",
+    "html-entities": "^2.3.3",
     "javascript-binary-converter": "^1.0.0",
     "react": "18.0.0",
     "react-native": "0.69.6",
