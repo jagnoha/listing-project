@@ -85,6 +85,11 @@ export default function AddListingForm(props) {
 
   const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
 
+  const [processingRemoveBackground, setProcessingRemoveBackground] =
+    useState(false);
+  const [processedRemoveBackground, setProcessedRemoveBackground] =
+    useState(false);
+
   const [processingSelectedAspectValue, setProcessingSelectedAspectValue] =
     useState(false);
 
@@ -443,9 +448,11 @@ export default function AddListingForm(props) {
     }
   };
 
-
   const removeBackground = async () => {
-    console.log(photoMain);
+    try {
+      //console.log(photoMain);
+
+      setProcessingRemoveBackground(true);
 
       const apiKey = 'acc_8b37536dc24d083';
       const apiSecret = '5bd5d7fe8b2beb3a56f4ee52cc00988d';
@@ -458,15 +465,6 @@ export default function AddListingForm(props) {
 
       const urlAWS = `${urlImages}${photoMain}`;
 
-      /*let urlPost = 'https://listerfast.com/api/utils/removebackground';
-
-      const imageProcessed = await axios.post(urlPost, {
-        imageUri: urlAWS,
-      });
-
-      console.log(imageProcessed.data);
-      */
-
       const imgProccesed = await axios.get(
         `https://api.imagga.com/v2/remove-background?image_url=${decodeURIComponent(
           urlAWS
@@ -475,43 +473,33 @@ export default function AddListingForm(props) {
           username: apiKey,
           password: apiSecret,
           headers: headers,
+          responseType: 'blob',
         }
       );
 
-      console.log(imgProccesed.data.toString('base64'))
+      let pngFileName = photoMain.split('jpg')[0] + 'png';
 
-      /*const downloadResumable = FileSystem.createDownloadResumable(
-        imgProccesed,
-        FileSystem.documentDirectory + 'test1.png',
-        {},
-        ()=>console.log('Archivo')
-      );
+      console.log(pngFileName);
 
-      const { uri } = await downloadResumable.downloadAsync();
-      console.log('Finished downloading to ', uri);*/
-
-      /*const formData = new FormData();
-      formData.append('image', imgProccesed);
-
-      const response = await axios.post('https://api.imagga.com/v2/uploads',
-      {
-        username: apiKey,
-        password: apiSecret,
-        headers: headers,
-        body: formData,
+      const finalImage = await Storage.put(pngFileName, imgProccesed.data, {
+        level: 'public',
+        contentType: 'image/png',
       });
 
-      console.log(response);*/
+      console.log(finalImage);
+      console.log(`${urlImages}${finalImage.key}`);
 
-      
+      setPhotoMain(finalImage.key);
 
-      /*let imgData = new Blob(imgProccesed.data.buffer, { type: 'image/png' });
+      setProcessingRemoveBackground(false);
 
-      console.log(imgData._data.blobId, imgData._data.type, imgData._data.size);*/
-
-  }
-
-  
+      setProcessedRemoveBackground(true);
+    } catch (error) {
+      console.log(error);
+      setProcessingRemoveBackground(false);
+      setProcessedRemoveBackground(false);
+    }
+  };
 
   const uploadImageRemoveBackground = async (filename, img, uri) => {
     try {
@@ -2047,6 +2035,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         await cameraRef.current.pausePreview();
         let newPhotoAWS = await handleImage(source, nameFile);
         setPhotoMain(newPhotoAWS);
+        setProcessedRemoveBackground(false);
         setOpenCamera(false);
         setMainPhotoOpen(false);
 
@@ -2356,6 +2345,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     setMainPhotoOpen(false);
     setOpenCamera(false);
     setPhotoMain(undefined);
+    setProcessedRemoveBackground(false);
   };
 
   const deleteLabelPic = async () => {
@@ -2449,6 +2439,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             onOpenPreviewPhoto={onOpenPreviewPhoto}
             onOpenEditPhoto={onOpenEditPhoto}
             saveListing={saveListing}
+            processedRemoveBackground={processedRemoveBackground}
+            processingRemoveBackground={processingRemoveBackground}
           />
         </View>
       );
@@ -2912,7 +2904,7 @@ const styles = StyleSheet.create({
     marginTop:
       (Dimensions.get('window').height - Dimensions.get('window').width) / 4,
     marginBottom:
-      (Dimensions.get('window').height - Dimensions.get('window').width) / 4,
+      (Dimensions.get('window').height - Dimensions.get('window').width) / 3,
     //marginBottom: 100,
     //marginBottom: '55%',
     //position: 'absolute',

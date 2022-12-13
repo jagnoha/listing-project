@@ -118,6 +118,11 @@ export default function EditListingForm(props) {
   const [barcodeValue, setBarcodeValue] = useState();
   const [categories, setCategories] = useState([]);
 
+  const [processingRemoveBackground, setProcessingRemoveBackground] =
+    useState(false);
+  const [processedRemoveBackground, setProcessedRemoveBackground] =
+    useState(false);
+
   const [categoryFeatures, setCategoryFeatures] = useState();
 
   const [fetchPoliciesProcessing, setFetchPoliciesProcessing] = useState(false);
@@ -486,6 +491,59 @@ export default function EditListingForm(props) {
       return uploadUrl;
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const removeBackground = async () => {
+    try {
+      //console.log(photoMain);
+
+      setProcessingRemoveBackground(true);
+
+      const apiKey = 'acc_8b37536dc24d083';
+      const apiSecret = '5bd5d7fe8b2beb3a56f4ee52cc00988d';
+
+      let headers = {
+        Authorization:
+          'Basic ' +
+          'YWNjXzhiMzc1MzZkYzI0ZDA4Mzo1YmQ1ZDdmZThiMmJlYjNhNTZmNGVlNTJjYzAwOTg4ZA==',
+      };
+
+      const urlAWS = `${urlImages}${photoMain}`;
+
+      const imgProccesed = await axios.get(
+        `https://api.imagga.com/v2/remove-background?image_url=${decodeURIComponent(
+          urlAWS
+        )}`,
+        {
+          username: apiKey,
+          password: apiSecret,
+          headers: headers,
+          responseType: 'blob',
+        }
+      );
+
+      let pngFileName = photoMain.split('jpg')[0] + 'png';
+
+      console.log(pngFileName);
+
+      const finalImage = await Storage.put(pngFileName, imgProccesed.data, {
+        level: 'public',
+        contentType: 'image/png',
+      });
+
+      console.log(finalImage);
+      console.log(`${urlImages}${finalImage.key}`);
+
+      setPhotoMain(finalImage.key);
+
+      setProcessingRemoveBackground(false);
+
+      setProcessedRemoveBackground(true);
+    } catch (error) {
+      console.log(error);
+      setProcessingRemoveBackground(false);
+      setProcessedRemoveBackground(false);
     }
   };
 
@@ -1885,6 +1943,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         await cameraRef.current.pausePreview();
         let newPhotoAWS = await handleImage(source, nameFile);
         setPhotoMain(newPhotoAWS);
+        setProcessedRemoveBackground(false);
         setOpenCamera(false);
         setMainPhotoOpen(false);
 
@@ -2236,6 +2295,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               onOpenEditPhoto={onOpenEditPhoto}
               saveListing={saveListing}
               onDeleteItem={onDeleteItem}
+              processedRemoveBackground={processedRemoveBackground}
+              processingRemoveBackground={processingRemoveBackground}
             />
           </View>
         );

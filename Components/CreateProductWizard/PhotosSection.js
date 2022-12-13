@@ -10,6 +10,7 @@ import {
   SegmentedButtons,
   Banner,
   IconButton,
+  ActivityIndicator,
   Divider,
 } from 'react-native-paper';
 import { useRecoilState } from 'recoil';
@@ -42,26 +43,43 @@ export default function PhotosSection(props) {
           <Pressable onPress={() => props.onMainPhotoOpen()}>
             <Surface style={props.styles.surface} elevation={4}>
               {props.photoMain ? (
-                <Image
-                  style={props.styles.preview}
-                  source={{
-                    //uri: 'data:image/jpg;base64,' + props.photoMain.base64,
-                    uri: `${urlImages}${props.photoMain}`,
-                  }}
-                />
+                !props.processingRemoveBackground ? (
+                  <Image
+                    style={props.styles.preview}
+                    source={{
+                      //uri: 'data:image/jpg;base64,' + props.photoMain.base64,
+                      uri: `${urlImages}${props.photoMain}`,
+                    }}
+                  />
+                ) : (
+                  <ActivityIndicator animating={true} />
+                )
               ) : (
                 <Text style={{ fontSize: 12 }}>Main Photo</Text>
               )}
-              
             </Surface>
-            {props.photoMain ?
-            <View style={{flexDirection:'row'}}>
-            <IconButton style={{alignSelf: 'center'}} onPress={()=>props.deleteMainPic()} icon='delete' />
-          <IconButton style={{alignSelf: 'center'}} onPress={()=>props.removeBackground()} icon='circle-opacity' />            
-           </View> :''}
-
+            {props.photoMain ? (
+              <View style={{ flexDirection: 'row' }}>
+                <IconButton
+                  style={{ alignSelf: 'center' }}
+                  onPress={() => props.deleteMainPic()}
+                  icon='delete'
+                />
+                <IconButton
+                  style={{ alignSelf: 'center' }}
+                  onPress={() => props.removeBackground()}
+                  icon='circle-opacity'
+                  disabled={
+                    props.processedRemoveBackground ||
+                    props.processingRemoveBackground
+                  }
+                />
+              </View>
+            ) : (
+              ''
+            )}
           </Pressable>
-         
+
           {props.type === 'clothing' || props.type === 'shoes' ? (
             <Pressable onPress={() => props.onLabelPhotoOpen()}>
               <Surface style={props.styles.surface} elevation={4}>
@@ -77,18 +95,26 @@ export default function PhotosSection(props) {
                   <Text style={{ fontSize: 12 }}>Photo Tag</Text>
                 )}
               </Surface>
-              {props.photoLabel ?
-            <IconButton style={{alignSelf: 'center'}} onPress={()=>props.deleteLabelPic()} icon='delete' />
-            :''}
+              {props.photoLabel ? (
+                <IconButton
+                  style={{ alignSelf: 'center' }}
+                  onPress={() => props.deleteLabelPic()}
+                  icon='delete'
+                />
+              ) : (
+                ''
+              )}
             </Pressable>
           ) : (
             ''
           )}
         </View>
-            <Divider style={{marginTop: 15}} bold='true' horizontalInset='true' />
+        <Divider style={{ marginTop: 15 }} bold='true' horizontalInset='true' />
 
-        <View style={{alignSelf: 'center'}} 
-        /*style={{ marginLeft: 60, marginRight: 60, marginTop: 20 }}*/>
+        <View
+          style={{ alignSelf: 'center' }}
+          /*style={{ marginLeft: 60, marginRight: 60, marginTop: 20 }}*/
+        >
           {/*<Button
             icon='camera-plus'
             mode='contained'
@@ -97,8 +123,12 @@ export default function PhotosSection(props) {
           >
             Take more photos
           </Button>*/}
-          <IconButton icon='camera-plus' size={35} onPress={() => props.onOpenPreviewPhoto()}
-            disabled={props.photoMain && props.photos.length < 8 ? false : true} />
+          <IconButton
+            icon='camera-plus'
+            size={35}
+            onPress={() => props.onOpenPreviewPhoto()}
+            disabled={props.photoMain && props.photos.length < 8 ? false : true}
+          />
         </View>
 
         <View style={props.styles.clothingButtons}>
