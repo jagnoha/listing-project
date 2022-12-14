@@ -19,6 +19,8 @@ import Header from '../Header';
 export default function CategoryStage(props) {
   //const theme = useTheme();
 
+  console.log(props.categories);
+
   return (
     <View>
       <Header

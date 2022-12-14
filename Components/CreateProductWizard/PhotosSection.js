@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View, Pressable, StyleSheet, Image } from 'react-native';
 import {
   useTheme,
@@ -21,6 +21,20 @@ export default function PhotosSection(props) {
   //const theme = useTheme();
 
   const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
+
+  const processCategories = () => {
+    //console.log('CATEGORY: ', props.category);
+    
+
+    if (props.category === '') {
+      props.getCategories();
+    }
+
+  };
+
+  useEffect(() => {
+    processCategories();
+  }, []);
 
   return (
     <View>

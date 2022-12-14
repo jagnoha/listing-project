@@ -77,6 +77,10 @@ export default function EditListingForm(props) {
 
   const { listingId, type } = props.route.params;
 
+  //const { listingId } = props.route.params;
+
+  //const [type, setType] = useState();
+
   const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
 
   const [hasCameraPermission, setHasCameraPermission] = useState();
@@ -248,6 +252,9 @@ export default function EditListingForm(props) {
         setWeightMinor(listing.weightMinor.toString());
 
         setIsChangedAspects(listing.isChangedAspects);
+        //setType(listing.type.toLowerCase());
+
+        console.log('TYPE: ', type);
 
         //setWeight(listing.weight.toString());
 
@@ -2547,6 +2554,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               onDeleteItem={onDeleteItem}
               processedRemoveBackground={processedRemoveBackground}
               processingRemoveBackground={processingRemoveBackground}
+              getCategories={getCategories}
+              category={category}
             />
           </View>
         );

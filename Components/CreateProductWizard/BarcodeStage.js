@@ -17,14 +17,16 @@ import Header from '../Header';
 export default function BarcodeStage(props) {
   //const theme = useTheme();
 
-  const processCategories = () => {
+  /*const processCategories = () => {
     //console.log('CATEGORY: ', props.category);
-    props.forward();
+    
 
     if (props.category === '') {
       props.getCategories();
     }
-  };
+
+    props.forward();
+  };*/
 
   if (props.barcodeOpen) {
     return (
@@ -119,7 +121,7 @@ export default function BarcodeStage(props) {
               value: 'next',
               //label: 'Next',
               icon: 'arrow-right',
-              onPress: () => processCategories(),
+              onPress: () => props.forward(),
             },
           ]}
         />

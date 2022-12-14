@@ -326,6 +326,8 @@ export default function AddListingForm(props) {
 
       const id = uuidv4();
 
+      
+
       const listingDetails = {
         id: id,
         sku: id,
@@ -387,6 +389,8 @@ export default function AddListingForm(props) {
       if (newListing) {
         //setListings((old) => [...old, newListing.data.createListing]);
         //navigation.goBack();
+
+        console.log(newListing);
 
         setListingId(id);
         //console.log('Version: ', newListing.data.createListing._version)
@@ -720,7 +724,7 @@ export default function AddListingForm(props) {
         title: titleProcessed,
         description: descriptionProcessed,
         price: priceProduct,
-        itemsSpecifics: JSON.stringify(aspects),
+        itemsSpecifics: JSON.stringify(aspects), 
         isDraft: true,
         type: ListingType[type.toUpperCase()],
         photoMain: photoMain,
@@ -771,6 +775,7 @@ export default function AddListingForm(props) {
 
       if (newListing) {
         //navigation.goBack();
+        console.log(newListing);
         setSnackBar({ visible: true, text: 'Listing Saved' });
       }
     } catch (error) {
@@ -807,6 +812,8 @@ export default function AddListingForm(props) {
     }
     return 0;
   };
+
+  console.log(type);
 
   const onChangeConditionDescription = async (value) => {
     setConditionDescription(value);
@@ -2853,6 +2860,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             saveListing={saveListing}
             processedRemoveBackground={processedRemoveBackground}
             processingRemoveBackground={processingRemoveBackground}
+            getCategories={getCategories}
+            category={category}
           />
         </View>
       );
