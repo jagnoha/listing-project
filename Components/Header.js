@@ -469,11 +469,26 @@ export default function Header(props) {
     );
   }
 
+  if (props.type === 'searchListing') {
+    return (
+      <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
+        <Appbar.BackAction onPress={() => props.actionBack()} />
+        <Appbar.Content title={props.title} color={theme.colors.onBackground} />
+        
+        {/*<Appbar.Action icon='content-save-outline' onPress={()=>console.log('Save item!')} />*/}
+      </Appbar.Header>
+    );
+  }
+
   if (props.type === 'createListing') {
     return (
       <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
         <Appbar.BackAction onPress={() => props.actionBack()} />
         <Appbar.Content title={props.title} color={theme.colors.onBackground} />
+        <Appbar.Action
+          icon='content-save-outline'
+          onPress={() => props.saveListing()}
+        />
         {/*<Appbar.Action icon='content-save-outline' onPress={()=>console.log('Save item!')} />*/}
       </Appbar.Header>
     );
@@ -484,6 +499,10 @@ export default function Header(props) {
       <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
         <Appbar.BackAction onPress={() => props.actionBack()} />
         <Appbar.Content title={props.title} color={theme.colors.onBackground} />
+        <Appbar.Action
+          icon='content-save-outline'
+          onPress={() => props.saveListing()}
+        />
         <Appbar.Action
           icon='delete-outline'
           onPress={() => props.onDeleteItem()}

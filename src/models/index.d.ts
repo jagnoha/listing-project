@@ -71,6 +71,7 @@ type EagerListing = {
   readonly barcodeValue?: string | null;
   readonly categoryFeatures?: string | null;
   readonly weightMinor?: number | null;
+  readonly isChangedAspects?: boolean | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly listingItemsCompatibilityId?: string | null;
@@ -116,6 +117,7 @@ type LazyListing = {
   readonly barcodeValue?: string | null;
   readonly categoryFeatures?: string | null;
   readonly weightMinor?: number | null;
+  readonly isChangedAspects?: boolean | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly listingItemsCompatibilityId?: string | null;

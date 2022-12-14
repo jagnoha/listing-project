@@ -247,6 +247,8 @@ export default function EditListingForm(props) {
         setWeightMayor(listing.weightMayor.toString());
         setWeightMinor(listing.weightMinor.toString());
 
+        setIsChangedAspects(listing.isChangedAspects);
+
         //setWeight(listing.weight.toString());
 
         setFulfillmentPolicyId(listing.shippingProfileID);
@@ -439,8 +441,9 @@ export default function EditListingForm(props) {
         weightMayor: weightMayor ? Number(weightMayor) : 0,
         weightMinor: weightMinor ? Number(weightMinor) : 6,
         quantity: quantity,
+        isChangedAspects: isChangedAspects,
         isReadyToGo:
-          quantity > 0 && priceProduct > 0 && checkedAllAspects ? true : false,
+          quantity > 0 && priceProduct > 0 && checkedAllAspects && !isChangedAspects ? true : false,
       };
 
       const newListing = await API.graphql({
@@ -461,7 +464,7 @@ export default function EditListingForm(props) {
       );*/
 
       if (newListing) {
-        navigation.goBack();
+        //navigation.goBack();
         setSnackBar({ visible: true, text: 'Listing Saved' });
       }
     } catch (error) {
@@ -1504,6 +1507,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   const onSelectedCondition = (conditionId, conditionName) => {
     setCondition(conditionId);
     setConditionName(conditionName);
+    setIsChangedAspects(true);
   };
 
   const getAspectValues = async (categoryId) => {
@@ -2922,6 +2926,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           onProcessingTitle={onProcessingTitle}
           onIsChangedAspects={onIsChangedAspects}
           isChangedAspects={isChangedAspects}
+          lastStep={lastStep}
 
           /*processingPolicies={processingPolicies}
         fulfillmentPolicies={fulfillmentPolicies}
@@ -2978,6 +2983,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           onProcessingTitle={onProcessingTitle}
           onPublishEbay={onPublishEbay}
           goToStep={goToStep}
+          isChangedAspects={isChangedAspects}
 
           /*titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}

@@ -143,6 +143,8 @@ export default function PriceStage(props) {
         type={props.typeHeader}
         actionBack={props.navigation.goBack}
         onDeleteItem={props.onDeleteItem}
+        saveListing={props.saveListing}
+        
       />
       <View>
         <Banner visible={true} icon={'currency-usd'}>
@@ -225,6 +227,7 @@ export default function PriceStage(props) {
                 Number(props.priceProduct) > 0 &&
                 Number(props.quantity > 0) &&
                 props.titleProcessed.length <= 80 &&
+                !props.isChangedAspects &&
                 props.checkedAllAspects
                   ? false
                   : true,
@@ -243,14 +246,35 @@ export default function PriceStage(props) {
         ) : (
           ''
         )}
-        <Button
+
+        {props.isChangedAspects ? (
+              <View>
+                
+                <Button
+                  icon='refresh'
+                  mode='text'
+                  onPress={() => props.goToStep(8)}
+                  labelStyle={{fontSize: 12, color: 'red'}}
+                  
+                >
+                  Refresh Title and Description before publish
+                </Button>
+              </View>
+            ) : (
+              ''
+            )}
+
+        
+      </View>
+      {/*<View style={{justifyContent: 'flex-end'}}>
+      <Button
           onPress={() => props.saveListing()}
           style={{ marginTop: 15 }}
           icon='clock-edit-outline'
         >
           Save and close to finish later
         </Button>
-      </View>
+            </View>*/}
     </View>
   );
 }

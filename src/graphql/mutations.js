@@ -54,6 +54,7 @@ export const createListing = /* GraphQL */ `
       barcodeValue
       categoryFeatures
       weightMinor
+      isChangedAspects
       createdAt
       updatedAt
       _version
@@ -116,6 +117,7 @@ export const updateListing = /* GraphQL */ `
       barcodeValue
       categoryFeatures
       weightMinor
+      isChangedAspects
       createdAt
       updatedAt
       _version
@@ -178,6 +180,7 @@ export const deleteListing = /* GraphQL */ `
       barcodeValue
       categoryFeatures
       weightMinor
+      isChangedAspects
       createdAt
       updatedAt
       _version

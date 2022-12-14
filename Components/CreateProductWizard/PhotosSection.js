@@ -28,6 +28,7 @@ export default function PhotosSection(props) {
         title={props.title}
         //type='createListing'
         onDeleteItem={props.onDeleteItem}
+        saveListing={props.saveListing}
         type={props.typeHeader}
         actionBack={props.navigation.goBack}
       />
@@ -172,7 +173,7 @@ export default function PhotosSection(props) {
           },
         ]}
       />
-      {
+      {/*
         <Button
           style={{ marginTop: 15 }}
           icon='clock-edit-outline'
@@ -180,7 +181,7 @@ export default function PhotosSection(props) {
         >
           Save and close to finish later
         </Button>
-      }
+      */}
     </View>
   );
 }

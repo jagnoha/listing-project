@@ -26,6 +26,7 @@ export default function DimensionStage(props) {
       <Header
         title={props.title}
         onDeleteItem={props.onDeleteItem}
+        saveListing={props.saveListing}
         //type='createListing'
         type={props.typeHeader}
         actionBack={props.navigation.goBack}
@@ -140,13 +141,13 @@ export default function DimensionStage(props) {
             },
           ]}
         />
-        <Button
+        {/*<Button
           style={{ marginTop: 15 }}
           icon='clock-edit-outline'
           onPress={() => props.saveListing()}
         >
           Save and close to finish later
-        </Button>
+        </Button>*/}
       </View>
     </View>
   );

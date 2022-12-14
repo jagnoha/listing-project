@@ -26,6 +26,7 @@ export default function ConditionStage(props) {
       <Header
         title={props.title}
         onDeleteItem={props.onDeleteItem}
+        saveListing={props.saveListing}
         //type='createListing'
         type={props.typeHeader}
         actionBack={props.navigation.goBack}

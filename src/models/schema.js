@@ -288,6 +288,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "isChangedAspects": {
+                    "name": "isChangedAspects",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -645,5 +652,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "634d4b068d079b76ae8cc8c7555a08e7"
+    "version": "58102d8d0eab0ad023123337b6f6a1a2"
 };

@@ -253,6 +253,7 @@ export default function PolicyStage(props) {
         title={props.title}
         //type='createListing'
         onDeleteItem={props.onDeleteItem}
+        saveListing={props.saveListing}
         type={props.typeHeader}
         actionBack={props.navigation.goBack}
       />
@@ -448,13 +449,13 @@ export default function PolicyStage(props) {
             },
           ]}
         />
-        <Button
+        {/*<Button
           style={{ marginTop: 15 }}
           icon='clock-edit-outline'
           onPress={() => props.saveListing()}
         >
           Save and close to finish later
-        </Button>
+        </Button>*/}
       </View>
     </View>
   );

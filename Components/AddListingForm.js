@@ -83,6 +83,10 @@ export default function AddListingForm(props) {
 
   const [hasCameraPermission, setHasCameraPermission] = useState();
 
+  const [listingId, setListingId] = useState();
+
+  const [listingVersion, setListingVersion] = useState();
+
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
 
   const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
@@ -358,8 +362,9 @@ export default function AddListingForm(props) {
         weightMinor: weightMinor ? Number(weightMinor) : 6,
 
         quantity: quantity,
+        isChangedAspects: isChangedAspects,
         isReadyToGo:
-          quantity > 0 && priceProduct > 0 && checkedAllAspects ? true : false,
+        quantity > 0 && priceProduct > 0 && checkedAllAspects && !isChangedAspects ? true : false,
       };
 
       const newListing = await API.graphql({
@@ -381,8 +386,11 @@ export default function AddListingForm(props) {
 
       if (newListing) {
         //setListings((old) => [...old, newListing.data.createListing]);
-        navigation.goBack();
+        //navigation.goBack();
 
+        setListingId(id);
+        //console.log('Version: ', newListing.data.createListing._version)
+        setListingVersion(newListing.data.createListing._version);
         setSnackBar({ visible: true, text: 'Listing Saved as Draft' });
       }
     } catch (error) {
@@ -432,8 +440,9 @@ export default function AddListingForm(props) {
         weightMinor: weightMinor ? Number(weightMinor) : 6,
 
         quantity: quantity,
+        isChangedAspects: isChangedAspects,
         isReadyToGo:
-          quantity > 0 && priceProduct > 0 && checkedAllAspects ? true : false,
+        quantity > 0 && priceProduct > 0 && checkedAllAspects && !isChangedAspects ? true : false,
       };
 
       const newListing = await API.graphql({
@@ -695,10 +704,88 @@ export default function AddListingForm(props) {
     }
   };*/
 
+  const updateListingDraft = async () => {
+    try {
+      console.log('Saving Listing');
+
+      const id = listingId;
+
+      const version = listingVersion;
+
+      const listingDetails = {
+        id: id,
+        sku: id,
+        _version: version,
+        accountsID: userAccount.id,
+        title: titleProcessed,
+        description: descriptionProcessed,
+        price: priceProduct,
+        itemsSpecifics: JSON.stringify(aspects),
+        isDraft: true,
+        type: ListingType[type.toUpperCase()],
+        photoMain: photoMain,
+        photoLabel: photoLabel,
+        photos: JSON.stringify(photos),
+        lastStep: lastStep,
+        ebayMotors:
+          ListingType[type.toUpperCase()] === 'AUTOPARTS' ? true : false,
+        categoryID: category,
+        categoryList: JSON.stringify(categories),
+        shippingProfileID: fulfillmentPolicyId,
+        returnProfileID: returnPolicyId,
+        paymentProfileID: paymentPolicyId,
+        conditionCode: condition,
+        conditionDescription: conditionDescription,
+        conditionName: conditionName,
+        UPC: getUPC(),
+        ISBN: getISBN(),
+        EAN: getEAN(),
+        barcodeValue: barcodeValue ? barcodeValue.data : null,
+        length: length ? Number(length) : 6,
+        width: width ? Number(width) : 6,
+        height: height ? Number(height) : 6,
+        weightMayor: weightMayor ? Number(weightMayor) : 0,
+        weightMinor: weightMinor ? Number(weightMinor) : 6,
+        quantity: quantity,
+        isChangedAspects: isChangedAspects,
+        isReadyToGo:
+          quantity > 0 && priceProduct > 0 && checkedAllAspects && !isChangedAspects ? true : false,
+      };
+
+      const newListing = await API.graphql({
+        query: mutations.updateListing,
+        variables: { input: listingDetails },
+      });
+
+      /*console.log(
+        '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
+      );
+      console.log(listings);
+      console.log(
+        '*****************************************************************'
+      );
+      console.log(newListing);
+      console.log(
+        '*****************************************************************'
+      );*/
+
+      if (newListing) {
+        //navigation.goBack();
+        setSnackBar({ visible: true, text: 'Listing Saved' });
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error));
+    }
+  };
+
   const saveListing = async () => {
     try {
       //console.log('Saving Listing');
-      await createNewListingDraft();
+      if (!listingId){
+        await createNewListingDraft();
+      } else {
+        await updateListingDraft()
+      }
       //handleImage(photoMain);
       //console.log(photoMain);
     } catch (error) {
@@ -1558,6 +1645,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
   const onSelectedCondition = (conditionId, conditionName) => {
     setCondition(conditionId);
+    setIsChangedAspects(true);
     setConditionName(conditionName);
   };
 
@@ -2727,7 +2815,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     return (
       <SearchProduct
         title={title}
-        typeHeader={'createListing'}
+        typeHeader={'searchListing'}
         navigation={navigation}
         onSearchCategories={onSearchCategories}
         searchCategories={searchCategories}
@@ -3133,6 +3221,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         onProcessingTitle={onProcessingTitle}
         onIsChangedAspects={onIsChangedAspects}
         isChangedAspects={isChangedAspects}
+        lastStep={lastStep}
 
         /*processingPolicies={processingPolicies}
         fulfillmentPolicies={fulfillmentPolicies}
@@ -3188,6 +3277,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         onPublishEbay={onPublishEbay}
         titleProcessed={titleProcessed}
         goToStep={goToStep}
+        isChangedAspects={isChangedAspects}
 
         /*titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}

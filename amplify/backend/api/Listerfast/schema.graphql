@@ -46,6 +46,7 @@ type Listing @model @auth(rules: [{allow: public}]) {
   barcodeValue: String
   categoryFeatures: AWSJSON
   weightMinor: Float
+  isChangedAspects: Boolean
 }
 
 type ItemsCompatibility @model @auth(rules: [{allow: public}]) {

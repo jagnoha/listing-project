@@ -824,6 +824,7 @@ export default function ItemSpecificsStage(props) {
         title={props.title}
         //type='createListing'
         onDeleteItem={props.onDeleteItem}
+        saveListing={props.saveListing}
         type={props.typeHeader}
         actionBack={props.navigation.goBack}
       />
@@ -942,7 +943,7 @@ export default function ItemSpecificsStage(props) {
             },
           ]}
         />
-        {
+        {/*
           <Button
             style={{ marginTop: 15 }}
             icon='clock-edit-outline'
@@ -951,7 +952,7 @@ export default function ItemSpecificsStage(props) {
           >
             Save and close to finish later
           </Button>
-        }
+        */}
       </View>
     </View>
   );

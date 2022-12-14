@@ -187,8 +187,10 @@ export default function TitleRevisionStage(props) {
         title={props.title}
         //type='createListing'
         onDeleteItem={props.onDeleteItem}
+        saveListing={props.saveListing}
         type={props.typeHeader}
         actionBack={props.navigation.goBack}
+        
       />
       <View>
         <Banner visible={true} icon={'draw'}>
@@ -334,13 +336,18 @@ export default function TitleRevisionStage(props) {
             },
           ]}
         />
-        <Button
+        
+
+        {/*<View style={{justifyContent: 'flex-end'}}>
+      <Button
+          onPress={() => props.saveListing()}
           style={{ marginTop: 15 }}
           icon='clock-edit-outline'
-          onPress={() => props.saveListing()}
         >
           Save and close to finish later
         </Button>
+        </View>*/}
+
       </View>
     </View>
   );

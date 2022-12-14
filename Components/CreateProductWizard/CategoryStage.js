@@ -24,6 +24,7 @@ export default function CategoryStage(props) {
       <Header
         title={props.title}
         onDeleteItem={props.onDeleteItem}
+        saveListing={props.saveListing}
         //type='createListing'
         type={props.typeHeader}
         actionBack={props.navigation.goBack}
@@ -113,7 +114,7 @@ export default function CategoryStage(props) {
             },
           ]}
         />
-        {
+        {/*
           <Button
             style={{ marginTop: 15 }}
             icon='clock-edit-outline'
@@ -121,7 +122,7 @@ export default function CategoryStage(props) {
           >
             Save and close to finish later
           </Button>
-        }
+        */}
       </View>
     </View>
   );
