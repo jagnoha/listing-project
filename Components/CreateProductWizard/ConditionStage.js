@@ -135,7 +135,7 @@ export default function ConditionStage(props) {
               //label: 'Next',
               icon: 'arrow-right',
               onPress: () => {
-                props.onProcessingTitle();
+                //props.onProcessingTitle();
                 props.forward();
               },
               disabled: props.condition !== '' ? false : true,
@@ -143,13 +143,15 @@ export default function ConditionStage(props) {
             },
           ]}
         />
-        {/*<Button
-          style={{ marginTop: 15 }}
-          icon='clock-edit-outline'
-          onPress={() => props.saveListing()}
-        >
-          Save and close to finish later
-        </Button>*/}
+        {/*
+          <Button
+            style={{ marginTop: 15 }}
+            icon='clock-edit-outline'
+            onPress={() => props.saveListing()}
+          >
+            Save and close to finish later
+          </Button>
+        */}
       </View>
     </View>
   );

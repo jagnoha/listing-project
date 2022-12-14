@@ -122,13 +122,15 @@ export default function BarcodeStage(props) {
             },
           ]}
         />
-        {/*<Button
-          style={{ marginTop: 15 }}
-          icon='clock-edit-outline'
-          onPress={() => props.saveListing()}
-        >
-          Save and close to finish later
-        </Button>*/}
+        {
+          <Button
+            style={{ marginTop: 15 }}
+            icon='clock-edit-outline'
+            onPress={() => props.saveListing()}
+          >
+            Save and close to finish later
+          </Button>
+        }
       </View>
     </View>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import {
   useTheme,
@@ -23,6 +23,16 @@ export default function TitleRevisionStage(props) {
   const [openTitle, setOpenTitle] = useState(false);
   const [openDescription, setOpenDescription] = useState(false);
   const [textForm, setTextForm] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      console.log('Processing title!!!!');
+      //props.onProcessingTitle(props.category);
+      if (props.titleProcessed === '') {
+        props.onProcessingTitle();
+      }
+    })();
+  }, []);
 
   const onOpenTitle = () => {
     setTextForm(props.titleProcessed);
@@ -184,15 +194,78 @@ export default function TitleRevisionStage(props) {
         <Banner visible={true} icon={'draw'}>
           A <Text style={{ fontWeight: 'bold' }}>Title</Text> and{' '}
           <Text style={{ fontWeight: 'bold' }}>Description</Text> for your new
-          listing was processed and built. You can review it and make any
-          changes you want before continuing.
+          listing was processed and built.
         </Banner>
 
         <View>
-          <Pressable
-            //onPress={() => props.onSelectedCategory(item.categoryId)}
-            onPress={() => onOpenTitle()}
-          >
+          <Surface elevation={4}>
+            {props.isChangedAspects ? (
+              <View>
+                <Text
+                  style={{
+                    paddingTop: 10,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                    textAlign: 'center',
+                  }}
+                >
+                  You have made changes to Item Specifics.
+                </Text>
+                <Button
+                  icon='refresh'
+                  mode='text'
+                  onPress={() => {
+                    props.onProcessingTitle();
+                    props.onIsChangedAspects(false);
+                  }}
+                >
+                  Refresh Title & Description
+                </Button>
+              </View>
+            ) : (
+              ''
+            )}
+            <Card style={{ padding: 10 }}>
+              <Card.Content>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Title style={{ fontSize: 20, fontWeight: 'bold' }}>
+                    Title{' '}
+                    <Text style={{ color: 'red', fontSize: 14 }}>
+                      {props.titleProcessed.length > 80
+                        ? '( Exceeds 80 chars )'
+                        : ''}
+                    </Text>
+                  </Title>
+
+                  <Text>
+                    <IconButton
+                      icon='refresh'
+                      iconColor={'#67BE65'}
+                      onPress={() => {
+                        props.onProcessingTitle();
+                        props.onIsChangedAspects(false);
+                      }}
+                    />
+                    <IconButton
+                      icon='pencil'
+                      iconColor={'#27A2CA'}
+                      onPress={() => onOpenTitle()}
+                    />
+                  </Text>
+                </View>
+                <Paragraph style={{ fontSize: 15 }}>
+                  {props.titleProcessed}
+                </Paragraph>
+              </Card.Content>
+            </Card>
+          </Surface>
+
+          <ScrollView style={{ height: 200 }}>
             <Surface elevation={4}>
               <Card style={{ padding: 10 }}>
                 <Card.Content>
@@ -203,50 +276,24 @@ export default function TitleRevisionStage(props) {
                     }}
                   >
                     <Title style={{ fontSize: 20, fontWeight: 'bold' }}>
-                      Title
+                      Description
                     </Title>
 
                     <Text>
-                      <IconButton icon='pencil' iconColor={'green'} />
+                      <IconButton
+                        icon='pencil'
+                        iconColor={'#27A2CA'}
+                        onPress={() => onOpenDescription()}
+                      />
                     </Text>
                   </View>
+
                   <Paragraph style={{ fontSize: 15 }}>
-                    {props.titleProcessed}
+                    {props.descriptionProcessed}
                   </Paragraph>
                 </Card.Content>
               </Card>
             </Surface>
-          </Pressable>
-          <ScrollView style={{ height: 250 }}>
-            <Pressable
-              //onPress={() => props.onSelectedCategory(item.categoryId)}
-              onPress={() => onOpenDescription()}
-            >
-              <Surface elevation={4}>
-                <Card style={{ padding: 10 }}>
-                  <Card.Content>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <Title style={{ fontSize: 20, fontWeight: 'bold' }}>
-                        Description
-                      </Title>
-
-                      <Text>
-                        <IconButton icon='pencil' iconColor={'green'} />
-                      </Text>
-                    </View>
-
-                    <Paragraph style={{ fontSize: 15 }}>
-                      {props.descriptionProcessed}
-                    </Paragraph>
-                  </Card.Content>
-                </Card>
-              </Surface>
-            </Pressable>
           </ScrollView>
         </View>
 
@@ -255,16 +302,16 @@ export default function TitleRevisionStage(props) {
           onValueChange={() => console.log('Change value')}
           buttons={[
             {
-                value: 'firststep',
-                //label: 'First Step',
-                icon: 'page-first',
-                onPress: () => {
-                  props.goToFirstStep();
-                  //props.getCategoriesFeatures(props.category);
-                },
-                //disabled: 'false'
-                //disabled: categoryId
+              value: 'firststep',
+              //label: 'First Step',
+              icon: 'page-first',
+              onPress: () => {
+                props.goToFirstStep();
+                //props.getCategoriesFeatures(props.category);
               },
+              //disabled: 'false'
+              //disabled: categoryId
+            },
             {
               value: 'back',
               //label: 'Back',
@@ -279,11 +326,12 @@ export default function TitleRevisionStage(props) {
               icon: 'arrow-right',
               onPress: () => {
                 props.forward();
+
                 //props.getPrices();
               },
+              disabled: props.titleProcessed.length > 80,
               //disabled: true, //props.category !== '' ? false : true,
             },
-            
           ]}
         />
         <Button

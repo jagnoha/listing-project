@@ -131,7 +131,7 @@ export default function DimensionStage(props) {
               //label: 'Next',
               icon: 'arrow-right',
               onPress: () => {
-                props.onProcessingTitle();
+                //props.onProcessingTitle();
                 props.forward();
                 //props.getPolicies();
               },

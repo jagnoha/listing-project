@@ -174,6 +174,7 @@ export default function AddListingForm(props) {
   const [labelPhotoOpen, setLabelPhotoOpen] = useState(false);
   const [morePhotosOpen, setMorePhotosOpen] = useState(false);
   const [editPhotoOpen, setEditPhotoOpen] = useState('');
+  const [isChangedAspects, setIsChangedAspects] = useState(false);
 
   const [condition, setCondition] = useState('');
 
@@ -265,6 +266,10 @@ export default function AddListingForm(props) {
     return null;
   };
 
+  const goToStep = async (n) => {
+    setStep(n);
+  };
+
   const getISBN = () => {
     if (
       categoryFeatures &&
@@ -353,7 +358,8 @@ export default function AddListingForm(props) {
         weightMinor: weightMinor ? Number(weightMinor) : 6,
 
         quantity: quantity,
-        isReadyToGo: quantity > 0 && priceProduct > 0 ? true : false,
+        isReadyToGo:
+          quantity > 0 && priceProduct > 0 && checkedAllAspects ? true : false,
       };
 
       const newListing = await API.graphql({
@@ -426,7 +432,8 @@ export default function AddListingForm(props) {
         weightMinor: weightMinor ? Number(weightMinor) : 6,
 
         quantity: quantity,
-        isReadyToGo: quantity > 0 && priceProduct > 0 ? true : false,
+        isReadyToGo:
+          quantity > 0 && priceProduct > 0 && checkedAllAspects ? true : false,
       };
 
       const newListing = await API.graphql({
@@ -804,20 +811,19 @@ export default function AddListingForm(props) {
   const getImportantAspectsValues = () => {
     const brand = aspects.find((item) => item.localizedAspectName === 'Brand');
 
-    const manufacturerPartNumber = aspects.find((item) => item.localizedAspectName === 'Manufacturer Part Number');
+    const manufacturerPartNumber = aspects.find(
+      (item) => item.localizedAspectName === 'Manufacturer Part Number'
+    );
 
     const MPN = aspects.find((item) => item.localizedAspectName === 'MPN');
 
-    const OEMPartNumber = aspects.find((item) => item.localizedAspectName === 'OE/OEM Part Number');
+    const OEMPartNumber = aspects.find(
+      (item) => item.localizedAspectName === 'OE/OEM Part Number'
+    );
 
-
-    
-
-    const numberOfPieces = aspects.find((item) => item.localizedAspectName === 'Number of Pieces');
-
-
-    
-
+    const numberOfPieces = aspects.find(
+      (item) => item.localizedAspectName === 'Number of Pieces'
+    );
 
     const size = aspects.find((item) => item.localizedAspectName === 'Size');
     const style = aspects.find((item) => item.localizedAspectName === 'Style');
@@ -875,11 +881,12 @@ export default function AddListingForm(props) {
       features: features ? features.value : '',
 
       usShoeSize: usShoeSize ? usShoeSize.value : '',
-      manufacturerPartNumber: manufacturerPartNumber ? manufacturerPartNumber.value : '',
+      manufacturerPartNumber: manufacturerPartNumber
+        ? manufacturerPartNumber.value
+        : '',
       MPN: MPN ? MPN.value : '',
       OEMPartNumber: OEMPartNumber ? OEMPartNumber.value : '',
       numberOfPieces: numberOfPieces ? numberOfPieces.value : '',
-
     };
 
     return importantAspects;
@@ -1074,7 +1081,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
       );
 
-     
       // processing long title
       let uniqueFilteredTitle = filtetedTitle.join(' ').split(' ');
       uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)];
@@ -1098,7 +1104,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       }
 
       processingDescription(uniqueFilteredTitle.trim());
-
     } else if (type === 'shoes') {
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
@@ -1196,7 +1201,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
       );
 
-
       let uniqueFilteredTitleShort = filtetedTitleShort.join(' ').split(' ');
       uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)];
 
@@ -1212,14 +1216,11 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       processingDescription(uniqueFilteredTitle);
     } else if (type === 'autoparts') {
-
-
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
 
       let tempBrand = keywords['brand'].toUpperCase();
       let tempModel = keywords['model'].toUpperCase();
-
 
       if (!tempModel.includes(tempBrand)) {
         pendingTitle.push(keywords['brand']);
@@ -1228,7 +1229,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       pendingTitle.push(keywords['model']);
       shortPendingTitle.push(keywords['model']);
-
 
       if (keywords['type'] === '') {
         pendingTitle.push(keywords['category']);
@@ -1244,14 +1244,11 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['style']);
       shortPendingTitle.push(keywords['style']);
 
-      
       pendingTitle.push(keywords['manufacturerPartNumber']);
       shortPendingTitle.push(keywords['manufacturerPartNumber']);
 
       pendingTitle.push(keywords['MPN']);
       shortPendingTitle.push(keywords['MPN']);
-
-
 
       /*pendingTitle.push(type);
       shortPendingTitle.push(type);*/
@@ -1314,7 +1311,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
       );
 
-
       let uniqueFilteredTitleShort = filtetedTitleShort.join(' ').split(' ');
       uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)];
 
@@ -1329,18 +1325,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       }
 
       processingDescription(uniqueFilteredTitle);
-
-
-
     } else if (type === 'other') {
-
-
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
 
       let tempBrand = keywords['brand'].toUpperCase();
       let tempModel = keywords['model'].toUpperCase();
-
 
       if (!tempModel.includes(tempBrand)) {
         pendingTitle.push(keywords['brand']);
@@ -1350,23 +1340,17 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['model']);
       shortPendingTitle.push(keywords['model']);
 
-
-      
-
       pendingTitle.push(keywords['type']);
       shortPendingTitle.push(keywords['type']);
 
       pendingTitle.push(keywords['style']);
       shortPendingTitle.push(keywords['style']);
 
-      
       pendingTitle.push(keywords['manufacturerPartNumber']);
       shortPendingTitle.push(keywords['manufacturerPartNumber']);
 
       pendingTitle.push(keywords['MPN']);
       shortPendingTitle.push(keywords['MPN']);
-
-
 
       /*pendingTitle.push(type);
       shortPendingTitle.push(type);*/
@@ -1379,12 +1363,10 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(extraAspects.join(' '));
       shortPendingTitle.push(extraAspects.slice(0, 2).join(' '));
 
-      if (Number(keywords['numberOfPieces']) > 1){
+      if (Number(keywords['numberOfPieces']) > 1) {
         pendingTitle.push(`${keywords['numberOfPieces']} PCS`);
         shortPendingTitle.push(`${keywords['numberOfPieces']} PCS`);
       }
-
-      
 
       pendingTitle.push(keywords['OEMPartNumber']);
       shortPendingTitle.push(keywords['OEMPartNumber']);
@@ -1436,7 +1418,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
       );
 
-
       let uniqueFilteredTitleShort = filtetedTitleShort.join(' ').split(' ');
       uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)];
 
@@ -1451,9 +1432,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       }
 
       processingDescription(uniqueFilteredTitle);
-
-
-
     }
   };
 
@@ -1816,6 +1794,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     //console.log(itm);
     //console.log(value);
     setProcessingSelectedAspectValue(true);
+    if (lastStep > 7) {
+      setIsChangedAspects(true);
+    }
     const newAspects = aspects.map((item) => {
       if (item.localizedAspectName === itm) {
         return {
@@ -1848,6 +1829,10 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       sum += item;
     }
     return sum / n;
+  };
+
+  const onIsChangedAspects = (value) => {
+    setIsChangedAspects(value);
   };
 
   let goToFirstStep = async () => {
@@ -2149,7 +2134,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         }
 
         if (type === 'autoparts') {
-
           console.log(keywords);
 
           let tempBrand = keywords['brand'].toUpperCase();
@@ -2162,11 +2146,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
           pendingTitle.push(keywords['model']);
           shortPendingTitle.push(keywords['model']);
-         
 
           pendingTitle.push(keywords['type']);
           shortPendingTitle.push(keywords['type']);
-          
 
           pendingTitle.push(keywords['manufacturerPartNumber']);
           shortPendingTitle.push(keywords['manufacturerPartNumber']);
@@ -2174,15 +2156,11 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           pendingTitle.push(keywords['OEMPartNumber']);
           shortPendingTitle.push(keywords['OEMPartNumber']);
 
-
           pendingTitle.push(keywords['vintage']);
           shortPendingTitle.push(keywords['vintage']);
-
-          
         }
 
         if (type === 'other') {
-
           console.log(keywords);
 
           let tempBrand = keywords['brand'].toUpperCase();
@@ -2195,11 +2173,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
           pendingTitle.push(keywords['model']);
           shortPendingTitle.push(keywords['model']);
-         
 
           pendingTitle.push(keywords['type']);
           shortPendingTitle.push(keywords['type']);
-          
 
           pendingTitle.push(keywords['manufacturerPartNumber']);
           shortPendingTitle.push(keywords['manufacturerPartNumber']);
@@ -2207,11 +2183,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           pendingTitle.push(keywords['OEMPartNumber']);
           shortPendingTitle.push(keywords['OEMPartNumber']);
 
-
           pendingTitle.push(keywords['vintage']);
           shortPendingTitle.push(keywords['vintage']);
-
-          
         }
 
         /*console.log(
@@ -3157,6 +3130,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         processingPrices={processingPrices}
         getPrices={getPrices}
         saveListing={saveListing}
+        onProcessingTitle={onProcessingTitle}
+        onIsChangedAspects={onIsChangedAspects}
+        isChangedAspects={isChangedAspects}
 
         /*processingPolicies={processingPolicies}
         fulfillmentPolicies={fulfillmentPolicies}
@@ -3207,8 +3183,11 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         saveListing={saveListing}
         category={category}
         getCategoriesFeatures={getCategoriesFeatures}
+        checkedAllAspects={checkedAllAspects}
         onProcessingTitle={onProcessingTitle}
         onPublishEbay={onPublishEbay}
+        titleProcessed={titleProcessed}
+        goToStep={goToStep}
 
         /*titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}

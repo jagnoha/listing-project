@@ -433,7 +433,7 @@ export default function PolicyStage(props) {
               //label: 'Next',
               icon: 'arrow-right',
               onPress: () => {
-                props.onProcessingTitle();
+                //props.onProcessingTitle();
                 props.forward();
                 //props.onProcessingTitle();
               },

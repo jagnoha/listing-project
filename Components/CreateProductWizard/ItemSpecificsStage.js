@@ -942,14 +942,16 @@ export default function ItemSpecificsStage(props) {
             },
           ]}
         />
-        {/*<Button
-          style={{ marginTop: 15 }}
-          icon='clock-edit-outline'
-          onPress={() => props.saveListing()}
-          disabled={!props.checkedAllAspects}
-        >
-          Save and close to finish later
-        </Button>*/}
+        {
+          <Button
+            style={{ marginTop: 15 }}
+            icon='clock-edit-outline'
+            onPress={() => props.saveListing()}
+            //disabled={!props.checkedAllAspects}
+          >
+            Save and close to finish later
+          </Button>
+        }
       </View>
     </View>
   );

@@ -64,7 +64,7 @@ export default function PriceStage(props) {
   useEffect(() => {
     (async () => {
       console.log('Opening prices!!!!');
-      props.onProcessingTitle(props.category);
+      //props.onProcessingTitle(props.category);
       props.getPrices();
     })();
   }, []);
@@ -222,12 +222,27 @@ export default function PriceStage(props) {
               icon: 'publish',
               onPress: () => props.onPublishEbay(),
               disabled:
-                Number(props.priceProduct) > 0 && Number(props.quantity > 0)
+                Number(props.priceProduct) > 0 &&
+                Number(props.quantity > 0) &&
+                props.titleProcessed.length <= 80 &&
+                props.checkedAllAspects
                   ? false
                   : true,
             },
           ]}
         />
+        {!props.checkedAllAspects ? (
+          <Button
+            onPress={() => props.goToStep(4)}
+            style={{ marginTop: 15 }}
+            icon='alert'
+            textColor='red'
+          >
+            Missing some Item Specifics
+          </Button>
+        ) : (
+          ''
+        )}
         <Button
           onPress={() => props.saveListing()}
           style={{ marginTop: 15 }}
