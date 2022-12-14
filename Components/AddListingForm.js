@@ -2669,6 +2669,19 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     }
   };
 
+  const processLabel = async () => {
+
+    const tagChecked = await fetch(
+      `https://listerfast.com/api/utils/textfromimage/${photoLabel}`
+    );
+
+    const json = await tagChecked.json();
+    let textDetections = json.TextDetections;
+
+    checkLabel(textDetections);
+
+  }
+
   const checkLabel = async (textDetections) => {
     try {
       const textList = textDetections
@@ -2732,30 +2745,22 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       await cameraRef.current.pausePreview();
       let newPhotoAWS = await handleImage(source, nameFile);
       setPhotoLabel(newPhotoAWS);
-      const tagChecked = await fetch(
+      
+      /*const tagChecked = await fetch(
         `https://listerfast.com/api/utils/textfromimage/${newPhotoAWS}`
       );
 
       const json = await tagChecked.json();
       let textDetections = json.TextDetections;
 
-      checkLabel(textDetections);
+      checkLabel(textDetections);*/
 
-      //console.log(textDetections.filter(item => item.Type === 'LINE')); //.filter(itm => itm.Type === 'Line')
-
-      //.map(item => item.DetectedText));
-
-      /*if (textDetections[0].Confidence > 85){
-        console.log(textDetections[0].DetectedText);
-      }*/
+      
 
       setLabelPhotoOpen(false);
       setOpenCamera(false);
 
-      /*await cameraRef.current.pausePreview();
-      setLabelPhotoOpen(false);
-      setOpenCamera(false);
-      console.log('picture source', source);*/
+      
     }
   };
 
@@ -3122,6 +3127,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         onSelectedCategory={onSelectedCategory}
         category={category}
         saveListing={saveListing}
+        processLabel={processLabel}
+        photoLabel={photoLabel}
       />
     );
   }

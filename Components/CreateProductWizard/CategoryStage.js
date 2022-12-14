@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import {
   useTheme,
@@ -20,6 +20,15 @@ export default function CategoryStage(props) {
   //const theme = useTheme();
 
   console.log(props.categories);
+
+  
+
+  useEffect(() => {
+    if (props.photoLabel){
+      props.processLabel();
+    }
+    //props.getAspectValues(props.category);
+  }, []);
 
   return (
     <View>

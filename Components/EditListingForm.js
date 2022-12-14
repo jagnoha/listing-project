@@ -126,6 +126,9 @@ export default function EditListingForm(props) {
   const [barcodeValue, setBarcodeValue] = useState();
   const [categories, setCategories] = useState([]);
 
+  const [brand, setBrand] = useState('');
+  const [wordsFromLabel, setWordsFromLabel] = useState([]);
+
   const [processingRemoveBackground, setProcessingRemoveBackground] =
     useState(false);
   const [processedRemoveBackground, setProcessedRemoveBackground] =
@@ -1645,7 +1648,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             return {
               localizedAspectName: itemProduct.localizedAspectName,
               //aspectValues: [],
-              value: '',
+              value: brand,
               require: true,
               cardinality: itemProduct.aspectConstraint.itemToAspectCardinality,
               mode: itemProduct.aspectConstraint.aspectMode,
@@ -2334,6 +2337,64 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     }
   };
 
+  const processLabel = async () => {
+
+    console.log(photoLabel);
+
+    const tagChecked = await fetch(
+      `https://listerfast.com/api/utils/textfromimage/${photoLabel}`
+    );
+
+    const json = await tagChecked.json();
+    let textDetections = json.TextDetections;
+
+    checkLabel(textDetections);
+
+  }
+
+  const checkLabel = async (textDetections) => {
+    try {
+      const textList = textDetections
+        .filter((item) => item.Type === 'LINE')
+        .map((item) => item.DetectedText);
+
+      const words = textDetections
+        .filter((item) => item.Type === 'WORD')
+        .map((item) => item.DetectedText);
+
+      const byBrand = textList.filter(
+        (item) => item.includes('by') || item.includes('BY')
+      );
+      const brand =
+        byBrand.length > 0 ? `${textList[0]} ${byBrand}` : textList[0];
+
+
+      setBrand(brand);
+
+      console.log(brand);
+
+      setWordsFromLabel(words);
+
+      console.log(words);
+
+      //console.log(setAspects);
+
+      /*const material = textList.filter(item => item.includes('%')).map(item => item.toLowerCase().replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase()));
+
+      const country = textList.find(item => item.includes('Made in') || item.includes('MADE IN')) ? textList.find(item => item.includes('Made in') || item.includes('MADE IN')).toLowerCase().split('made in')[1].replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase()) : '';*/
+
+      /*textList.find(item => item.includes('Made in') || item.includes('MADE IN')).split()*/
+
+      console.log('Brand: ', brand);
+      //console.log('Material: ', material);
+      //console.log('Country: ', country);
+
+      //console.log(textList);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const takeEditPic = async () => {
     let options = {
       quality: 0.6,
@@ -2592,6 +2653,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               processingRemoveBackground={processingRemoveBackground}
               getCategories={getCategories}
               category={category}
+              deleteLabelPic={deleteLabelPic}
             />
           </View>
         );
@@ -2817,6 +2879,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           category={category}
           saveListing={saveListing}
           onDeleteItem={onDeleteItem}
+          processLabel={processLabel}
+          photoLabel={photoLabel}
           //onCheckAllAspects={onCheckAllAspects}
         />
       );
@@ -2845,6 +2909,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           processingSelectedAspectValue={processingSelectedAspectValue}
           onDeleteItem={onDeleteItem}
           onProcessingTitle={onProcessingTitle}
+          
           //onIsChangedAspects={onIsChangedAspects}
         />
       );

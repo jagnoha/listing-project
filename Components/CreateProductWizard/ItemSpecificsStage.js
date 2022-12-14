@@ -127,6 +127,7 @@ export default function ItemSpecificsStage(props) {
   };
 
   useEffect(() => {
+    //props.processLabel();
     props.getAspectValues(props.category);
   }, []);
 
