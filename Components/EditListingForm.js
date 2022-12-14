@@ -179,6 +179,8 @@ export default function EditListingForm(props) {
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
+  const [openBackListingDialog, setOpenBackListingDialog] = useState(false);
+
   const [condition, setCondition] = useState('');
 
   const [conditionName, setConditionName] = useState('');
@@ -2461,6 +2463,16 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     setOpenCamera(true);
   };
 
+  const onBack = async () => {
+    setOpenBackListingDialog(false);
+    navigation.goBack();
+    
+  }
+
+  const onOpenBackDialog = () => {
+    setOpenBackListingDialog(true);
+  }
+
   const onSearchCategories = async (query) => {
     setSearchCategories(query);
   };
@@ -2490,6 +2502,29 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       </View>
     );
   }
+
+  if (openBackListingDialog) {
+    return (
+      <View>
+        <Portal>
+          <Dialog
+            visible={openBackListingDialog}
+            onDismiss={() => setOpenBackListingDialog(false)}
+          >
+            <Dialog.Icon icon='alert' />
+            <Dialog.Title style={{ textAlign: 'center', fontSize: 20 }}>
+                Do you want to save the changes before exiting?
+            </Dialog.Title>
+            <Dialog.Actions>
+              <Button onPress={() => { saveListing(); onBack() }}>Yes</Button>
+              <Button onPress={() => onBack()}>No</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      </View>
+    );
+  }
+
 
   if (openDeleteDialog) {
     return (
@@ -2537,6 +2572,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               title={titleHeader}
               typeHeader={'editListing'}
               navigation={navigation}
+              onOpenBackDialog={onOpenBackDialog}
               styles={styles}
               onMainPhotoOpen={onMainPhotoOpen}
               photoMain={photoMain}
@@ -2747,6 +2783,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           navigation={navigation}
           styles={styles}
           backward={backward}
+          onOpenBackDialog={onOpenBackDialog}
           forward={forward}
           goToFirstStep={goToFirstStep}
           barcodeOpen={barcodeOpen}
@@ -2771,6 +2808,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           navigation={navigation}
           styles={styles}
           backward={backward}
+          onOpenBackDialog={onOpenBackDialog}
           forward={forward}
           goToFirstStep={goToFirstStep}
           processingCategories={processingCategories}
@@ -2792,6 +2830,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           navigation={navigation}
           styles={styles}
           backward={backward}
+          onOpenBackDialog={onOpenBackDialog}
           forward={forward}
           goToFirstStep={goToFirstStep}
           processingAspects={processingAspects}
@@ -2819,6 +2858,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           navigation={navigation}
           styles={styles}
           backward={backward}
+          onOpenBackDialog={onOpenBackDialog}
           forward={forward}
           goToFirstStep={goToFirstStep}
           processingCategoryFeatures={processingCategoryFeatures}
@@ -2848,6 +2888,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           backward={backward}
           forward={forward}
           goToFirstStep={goToFirstStep}
+          onOpenBackDialog={onOpenBackDialog}
           //onChangeDimensions={onChangeDimensions}
           onChangeLength={onChangeLength}
           onChangeHeight={onChangeHeight}
@@ -2881,6 +2922,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           backward={backward}
           forward={forward}
           goToFirstStep={goToFirstStep}
+          onOpenBackDialog={onOpenBackDialog}
           processingPolicies={processingPolicies}
           fulfillmentPolicies={fulfillmentPolicies}
           paymentPolicies={paymentPolicies}
@@ -2923,6 +2965,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           styles={styles}
           backward={backward}
           goToFirstStep={goToFirstStep}
+          onOpenBackDialog={onOpenBackDialog}
           forward={forward}
           titleProcessed={titleProcessed}
           descriptionProcessed={descriptionProcessed}
@@ -2992,6 +3035,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           onProcessingTitle={onProcessingTitle}
           onPublishEbay={onPublishEbay}
           goToStep={goToStep}
+          onOpenBackDialog={onOpenBackDialog}
           isChangedAspects={isChangedAspects}
 
           /*titleProcessed={titleProcessed}

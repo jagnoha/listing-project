@@ -826,7 +826,7 @@ export default function ItemSpecificsStage(props) {
         onDeleteItem={props.onDeleteItem}
         saveListing={props.saveListing}
         type={props.typeHeader}
-        actionBack={props.navigation.goBack}
+        actionBack={props.onOpenBackDialog}
       />
       <View>
         <Banner visible={true} icon={'star-circle-outline'}>

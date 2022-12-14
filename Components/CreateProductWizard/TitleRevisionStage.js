@@ -189,7 +189,7 @@ export default function TitleRevisionStage(props) {
         onDeleteItem={props.onDeleteItem}
         saveListing={props.saveListing}
         type={props.typeHeader}
-        actionBack={props.navigation.goBack}
+        actionBack={props.onOpenBackDialog}
         
       />
       <View>

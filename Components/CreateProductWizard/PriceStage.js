@@ -141,7 +141,7 @@ export default function PriceStage(props) {
         title={props.title}
         //type='createListing'
         type={props.typeHeader}
-        actionBack={props.navigation.goBack}
+        actionBack={props.onOpenBackDialog}
         onDeleteItem={props.onDeleteItem}
         saveListing={props.saveListing}
         
