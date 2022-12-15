@@ -47,6 +47,7 @@ type Listing @model @auth(rules: [{allow: public}]) {
   categoryFeatures: AWSJSON
   weightMinor: Float
   isChangedAspects: Boolean
+  photoLabelExtra: String
 }
 
 type ItemsCompatibility @model @auth(rules: [{allow: public}]) {

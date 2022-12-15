@@ -52,6 +52,7 @@ export const getListing = /* GraphQL */ `
       categoryFeatures
       weightMinor
       isChangedAspects
+      photoLabelExtra
       createdAt
       updatedAt
       _version
@@ -108,6 +109,7 @@ export const listListings = /* GraphQL */ `
         categoryFeatures
         weightMinor
         isChangedAspects
+        photoLabelExtra
         createdAt
         updatedAt
         _version
@@ -173,6 +175,7 @@ export const syncListings = /* GraphQL */ `
         categoryFeatures
         weightMinor
         isChangedAspects
+        photoLabelExtra
         createdAt
         updatedAt
         _version

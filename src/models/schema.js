@@ -295,6 +295,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "photoLabelExtra": {
+                    "name": "photoLabelExtra",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -652,5 +659,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "58102d8d0eab0ad023123337b6f6a1a2"
+    "version": "3b5d7a6b1305982881b751e76f125d02"
 };

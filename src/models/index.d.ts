@@ -72,6 +72,7 @@ type EagerListing = {
   readonly categoryFeatures?: string | null;
   readonly weightMinor?: number | null;
   readonly isChangedAspects?: boolean | null;
+  readonly photoLabelExtra?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly listingItemsCompatibilityId?: string | null;
@@ -118,6 +119,7 @@ type LazyListing = {
   readonly categoryFeatures?: string | null;
   readonly weightMinor?: number | null;
   readonly isChangedAspects?: boolean | null;
+  readonly photoLabelExtra?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly listingItemsCompatibilityId?: string | null;

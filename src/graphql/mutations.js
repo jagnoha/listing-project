@@ -55,6 +55,7 @@ export const createListing = /* GraphQL */ `
       categoryFeatures
       weightMinor
       isChangedAspects
+      photoLabelExtra
       createdAt
       updatedAt
       _version
@@ -118,6 +119,7 @@ export const updateListing = /* GraphQL */ `
       categoryFeatures
       weightMinor
       isChangedAspects
+      photoLabelExtra
       createdAt
       updatedAt
       _version
@@ -181,6 +183,7 @@ export const deleteListing = /* GraphQL */ `
       categoryFeatures
       weightMinor
       isChangedAspects
+      photoLabelExtra
       createdAt
       updatedAt
       _version
