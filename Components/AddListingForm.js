@@ -113,6 +113,8 @@ export default function AddListingForm(props) {
 
   const [quantity, setQuantity] = useState('1');
 
+  const [istakePicMain, setIsTakePicMain] = useState(false);
+
   const [fulfillmentPolicyId, setFulfillmentPolicyId] = useState('');
   const [paymentPolicyId, setPaymentPolicyId] = useState('');
   const [returnPolicyId, setReturnPolicyId] = useState('');
@@ -214,6 +216,10 @@ export default function AddListingForm(props) {
   useEffect(() => {
     (async () => {
       //console.log(userAccount.postalCode);
+
+      if (type === 'clothing' || type === 'shoes'){
+        setStep(1);
+      }
 
       setFetchPoliciesProcessing(true);
 
@@ -2419,7 +2425,11 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           ? `${searchCategories} ${type}`
           : searchCategories;
 
+      console.log('SEARCH CATEGORIES: ', searchCategories)
+
       //console.log('Ebay User: ', ebayUser);
+
+      //const searchCategoriesLarge = searchCategories;
 
       const response = await fetch(
         `https://listerfast.com/api/ebay/categorysuggestions/${ebayUser}/${getTypeProductCode(
@@ -2469,6 +2479,10 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     setStep((old) => old - 1);
   };
 
+  const onMainPicIsTaken = async (value) => {
+    setIsTakePicMain(value);
+  }
+
   let takePicMain = async () => {
     try {
       let nameFile = `${uuidv4()}.jpg`;
@@ -2497,6 +2511,11 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         setProcessedRemoveBackground(false);
         setOpenCamera(false);
         setMainPhotoOpen(false);
+        onMainPicIsTaken(true);
+
+        //if (istakePicMain){
+          processImage(newPhotoAWS);
+        //}
 
         //console.log('picture source', source);
       }
@@ -2704,6 +2723,59 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       setProcessingPublishEbay(false);
     }
   };
+
+  const processImage = async (photo) => {
+
+    try {
+    //setProcessingSelectedAspectValue(true);
+    if (type === 'clothing' || type === 'shoes'){
+      const imageChecked = await fetch(
+        `https://listerfast.com/api/utils/labelsfromimage/${photo}`
+      );
+
+      const json = await imageChecked.json();
+      let labelsDetections = json.Labels;
+
+      console.log(json);
+
+      /*console.log(JSON.stringify(labelsDetections.sort((a,b) => b.Confidence - a.Confidence).filter(itm => itm.Confidence > 99.9 && itm.Parents.length> 0)));*/
+
+      /*console.log(JSON.stringify(labelsDetections.sort((a,b) => b.Confidence - a.Confidence)[0].Name));*/
+
+      let result = labelsDetections.sort((a,b) => b.Confidence - a.Confidence).filter(itm => itm.Confidence > 95 && itm.Parents.length > 0); 
+
+      console.log('RESULT: ', result);
+
+      let list = result.map(item => item.Name).join(' ').split(' ');   
+      let uniqueList = [...new Set(list)];
+
+      console.log('NEW SEARCH CATEGORIES ', uniqueList.join(' '));
+     
+    
+      setSearchCategories(uniqueList.join(' '));
+      //onSearchCategories(uniqueList.join(' '))
+    }
+
+    
+
+    /*let tagCheckedExtra;
+    let jsonExtra;
+    let textDetectionsExtra;*/
+
+    
+
+    
+    
+
+
+
+    //setProcessingSelectedAspectValue(false);
+  } catch(error){
+    console.log(error);
+    setProcessingSelectedAspectValue(false);
+  }
+  };
+
 
   const processLabel = async () => {
 
@@ -3107,6 +3179,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         backward={backward}
         forward={forward}
         setCategory={setCategory}
+        
       />
     );
   }
@@ -3142,6 +3215,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             processedRemoveBackground={processedRemoveBackground}
             processingRemoveBackground={processingRemoveBackground}
             getCategories={getCategories}
+            onMainPicIsTaken={onMainPicIsTaken}
             category={category}
           />
         </View>

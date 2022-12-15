@@ -131,6 +131,8 @@ export default function EditListingForm(props) {
   const [brand, setBrand] = useState('');
   const [wordsFromLabel, setWordsFromLabel] = useState([]);
 
+  const [istakePicMain, setIsTakePicMain] = useState(false);
+
   const [processingRemoveBackground, setProcessingRemoveBackground] =
     useState(false);
   const [processedRemoveBackground, setProcessedRemoveBackground] =
@@ -2255,6 +2257,10 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     return false;
   };
 
+  const onMainPicIsTaken = async (value) => {
+    setIsTakePicMain(value);
+  }
+
   let takePicMain = async () => {
     try {
       let nameFile = `${uuidv4()}.jpg`;
@@ -2693,13 +2699,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       let newPhotoAWS = await handleImage(source, nameFile);
       setPhotoLabel(newPhotoAWS);
 
-      const tagChecked = await fetch(
+      /*const tagChecked = await fetch(
         `https://listerfast.com/api/utils/textfromimage/${newPhotoAWS}`
       );
 
       const json = await tagChecked.json();
 
-      console.log(json);
+      console.log(json);*/
 
       setLabelPhotoOpen(false);
       setOpenCamera(false);
@@ -2868,6 +2874,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           backward={backward}
           forward={forward}
           setCategory={setCategory}
+          
         />
       );
     }
@@ -2905,6 +2912,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               deleteLabelPic={deleteLabelPic}
               deleteMainPic={deleteMainPic}
               deleteLabelPicExtra={deleteLabelPicExtra}
+              onMainPicIsTaken={onMainPicIsTaken}
             />
           </View>
         );

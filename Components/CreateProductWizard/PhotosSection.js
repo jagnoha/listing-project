@@ -1,3 +1,4 @@
+import { prototype } from 'form-data';
 import React, {useEffect} from 'react';
 import { View, Pressable, StyleSheet, Image } from 'react-native';
 import {
@@ -229,13 +230,13 @@ export default function PhotosSection(props) {
             //label: 'Back',
             icon: 'arrow-left',
             onPress: () => props.backward(),
-            //disabled: props.backward(),
+            disabled: props.type === 'clothing' || prototype.type === 'shoes' ? true : false    //props.backward(),
           },
           {
             value: 'next',
             //label: 'Next',
             icon: 'arrow-right',
-            onPress: () => props.forward(),
+            onPress: () => { props.onMainPicIsTaken(false); props.forward() },
             disabled: props.photoMain ? false : true,
           },
         ]}
