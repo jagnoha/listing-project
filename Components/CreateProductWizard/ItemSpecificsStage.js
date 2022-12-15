@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Pressable, FlatList } from 'react-native';
+import {
+  View,
+  ScrollView,
+  Pressable,
+  FlatList,
+  Dimensions,
+} from 'react-native';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import {
   useTheme,
@@ -128,6 +134,7 @@ export default function ItemSpecificsStage(props) {
 
   useEffect(() => {
     //props.processLabel();
+    console.log(props.type);
     props.getAspectValues(props.category);
   }, []);
 
@@ -365,6 +372,24 @@ export default function ItemSpecificsStage(props) {
       />
     );
   };
+
+  if (props.processingSelectedAspectValue) {
+    return (
+      <View>
+        <ActivityIndicator
+          size='large'
+          style={{
+            height: Dimensions.get('window').height,
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignSelf: 'center',
+            alignContent: 'center',
+          }}
+        />
+      </View>
+    );
+  }
 
   if (openWheel && selectedItem.cardinality === 'SINGLE') {
     return (
@@ -944,16 +969,21 @@ export default function ItemSpecificsStage(props) {
             },
           ]}
         />
-        {/*
+        {(props.photoLabel &&
+          props.photoLabel !== '' &&
+          props.type === 'clothing') ||
+        props.type === 'shoes' ? (
           <Button
             style={{ marginTop: 15 }}
-            icon='clock-edit-outline'
-            onPress={() => props.saveListing()}
-            //disabled={!props.checkedAllAspects}
+            icon='tag-outline'
+            onPress={() => props.processLabel()}
+            disabled={props.processingSelectedAspectValue}
           >
-            Save and close to finish later
+            Get information from Tag Photo
           </Button>
-        */}
+        ) : (
+          ''
+        )}
       </View>
     </View>
   );

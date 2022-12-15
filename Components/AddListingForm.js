@@ -330,8 +330,6 @@ export default function AddListingForm(props) {
 
       const id = uuidv4();
 
-      
-
       const listingDetails = {
         id: id,
         sku: id,
@@ -370,7 +368,12 @@ export default function AddListingForm(props) {
         quantity: quantity,
         isChangedAspects: isChangedAspects,
         isReadyToGo:
-        quantity > 0 && priceProduct > 0 && checkedAllAspects && !isChangedAspects ? true : false,
+          quantity > 0 &&
+          priceProduct > 0 &&
+          checkedAllAspects &&
+          !isChangedAspects
+            ? true
+            : false,
       };
 
       const newListing = await API.graphql({
@@ -450,7 +453,12 @@ export default function AddListingForm(props) {
         quantity: quantity,
         isChangedAspects: isChangedAspects,
         isReadyToGo:
-        quantity > 0 && priceProduct > 0 && checkedAllAspects && !isChangedAspects ? true : false,
+          quantity > 0 &&
+          priceProduct > 0 &&
+          checkedAllAspects &&
+          !isChangedAspects
+            ? true
+            : false,
       };
 
       const newListing = await API.graphql({
@@ -728,7 +736,7 @@ export default function AddListingForm(props) {
         title: titleProcessed,
         description: descriptionProcessed,
         price: priceProduct,
-        itemsSpecifics: JSON.stringify(aspects), 
+        itemsSpecifics: JSON.stringify(aspects),
         isDraft: true,
         type: ListingType[type.toUpperCase()],
         photoMain: photoMain,
@@ -757,7 +765,12 @@ export default function AddListingForm(props) {
         quantity: quantity,
         isChangedAspects: isChangedAspects,
         isReadyToGo:
-          quantity > 0 && priceProduct > 0 && checkedAllAspects && !isChangedAspects ? true : false,
+          quantity > 0 &&
+          priceProduct > 0 &&
+          checkedAllAspects &&
+          !isChangedAspects
+            ? true
+            : false,
       };
 
       const newListing = await API.graphql({
@@ -790,10 +803,10 @@ export default function AddListingForm(props) {
   const saveListing = async () => {
     try {
       //console.log('Saving Listing');
-      if (!listingId){
+      if (!listingId) {
         await createNewListingDraft();
       } else {
-        await updateListingDraft()
+        await updateListingDraft();
       }
       //handleImage(photoMain);
       //console.log(photoMain);
@@ -817,7 +830,7 @@ export default function AddListingForm(props) {
     return 0;
   };
 
-  console.log(type);
+  //console.log(type);
 
   const onChangeConditionDescription = async (value) => {
     setConditionDescription(value);
@@ -2473,12 +2486,11 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   const onBack = async () => {
     setOpenBackListingDialog(false);
     navigation.goBack();
-    
-  }
+  };
 
   const onOpenBackDialog = () => {
     setOpenBackListingDialog(true);
-  }
+  };
 
   const handleBarCodeScanned = ({ type, data }) => {
     /*console.log(type);
@@ -2670,7 +2682,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   };
 
   const processLabel = async () => {
-
+    setProcessingSelectedAspectValue(true);
     const tagChecked = await fetch(
       `https://listerfast.com/api/utils/textfromimage/${photoLabel}`
     );
@@ -2679,8 +2691,47 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     let textDetections = json.TextDetections;
 
     checkLabel(textDetections);
+    setProcessingSelectedAspectValue(false);
+  };
 
-  }
+  const changeValueItemAspectBulk = async (items) => {
+    //setProcessingSelectedAspectValue(true);
+    setIsChangedAspects(true);
+
+    let newAspects = [];
+    for (let item of aspects) {
+      let found = items.find((it) => it.itm === item.localizedAspectName);
+      if (found) {
+        newAspects.push({
+          aspectValues: item.aspectValues,
+          localizedAspectName: item.localizedAspectName,
+          require: item.require,
+          value: found.value,
+          cardinality: item.cardinality,
+          mode: item.mode,
+        });
+      } else {
+        newAspects.push({
+          aspectValues: item.aspectValues,
+          localizedAspectName: item.localizedAspectName,
+          require: item.require,
+          value: item.value,
+          cardinality: item.cardinality,
+          mode: item.mode,
+        });
+      }
+    }
+
+    const aspectList = newAspects.filter(
+      (item) => item.require === true && item.value === ''
+    );
+
+    setCheckedAllAspects(aspectList.length > 0 ? false : true);
+
+    setAspects(newAspects);
+
+    //setProcessingSelectedAspectValue(false);
+  };
 
   const checkLabel = async (textDetections) => {
     try {
@@ -2698,25 +2749,97 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       const brand =
         byBrand.length > 0 ? `${textList[0]} ${byBrand}` : textList[0];
 
+      console.log(byBrand);
+
       setBrand(brand);
+
+      console.log(brand);
 
       setWordsFromLabel(words);
 
-      console.log(words);
+      console.log('WORDS: ', words);
+      console.log('TEXTLIST: ', textList);
 
       //console.log(setAspects);
 
-      /*const material = textList.filter(item => item.includes('%')).map(item => item.toLowerCase().replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase()));
+      /*const material = textList
+        .filter((item) => item.includes('%'))
+        .map((item) =>
+          item
+            .toLowerCase()
+            .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+        );*/
 
-      const country = textList.find(item => item.includes('Made in') || item.includes('MADE IN')) ? textList.find(item => item.includes('Made in') || item.includes('MADE IN')).toLowerCase().split('made in')[1].replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase()) : '';*/
+      const country = textList.find(
+        (item) => item.includes('Made in') || item.includes('MADE IN')
+      )
+        ? textList
+            .find(
+              (item) => item.includes('Made in') || item.includes('MADE IN')
+            )
+            .toLowerCase()
+            .split('made in')[1]
+            .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+        : '';
 
-      /*textList.find(item => item.includes('Made in') || item.includes('MADE IN')).split()*/
+      /*const size = textList
+        .filter((item) => item.includes('%'))
+        .map((item) =>
+          item
+            .toLowerCase()
+            .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+        );*/
+
+      /*const sizes = aspectValues
+        .find((itm) => itm.localizedAspectName === 'Size')
+        .aspectValues.map((name) => name.toUpperCase());*/
+
+      const sizes = aspectValues.find((itm) => itm.id === 'Size').value;
+      const size = sizes.filter((x) => words.includes(x));
+
+      const materials = aspectValues
+        .find((itm) => itm.id === 'Material')
+        .value.map((item) =>
+          item
+            .toLowerCase()
+            .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+        );
+
+      const material = materials.filter((x) =>
+        words.map((item) =>
+          item
+            .toLowerCase()
+            .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+            .includes(x)
+        )
+      );
+
+      console.log('SIZE: ', size);
+
+      console.log('Country: ', country);
+
+      let batchProcess = [];
+      if (brand !== '') {
+        batchProcess.push({ itm: 'Brand', value: brand });
+      }
+      if (size.length > 0) {
+        batchProcess.push({ itm: 'Size', value: size[0] });
+      }
+
+      if (material.length > 0) {
+        batchProcess.push({ itm: 'Material', value: material[0] });
+      }
+
+      if (country !== '') {
+        batchProcess.push({
+          itm: 'Country/Region of Manufacture',
+          value: country,
+        });
+      }
+
+      changeValueItemAspectBulk(batchProcess);
 
       console.log('Brand: ', brand);
-      //console.log('Material: ', material);
-      //console.log('Country: ', country);
-
-      //console.log(textList);
     } catch (error) {
       console.log(error);
     }
@@ -2745,7 +2868,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       await cameraRef.current.pausePreview();
       let newPhotoAWS = await handleImage(source, nameFile);
       setPhotoLabel(newPhotoAWS);
-      
+
       /*const tagChecked = await fetch(
         `https://listerfast.com/api/utils/textfromimage/${newPhotoAWS}`
       );
@@ -2755,12 +2878,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       checkLabel(textDetections);*/
 
-      
-
       setLabelPhotoOpen(false);
       setOpenCamera(false);
-
-      
     }
   };
 
@@ -2847,10 +2966,17 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           >
             <Dialog.Icon icon='alert' />
             <Dialog.Title style={{ textAlign: 'center', fontSize: 20 }}>
-                Do you want to save the changes before exiting?
+              Do you want to save the changes before exiting?
             </Dialog.Title>
             <Dialog.Actions>
-              <Button onPress={() => { saveListing(); onBack() }}>Yes</Button>
+              <Button
+                onPress={() => {
+                  saveListing();
+                  onBack();
+                }}
+              >
+                Yes
+              </Button>
               <Button onPress={() => onBack()}>No</Button>
             </Dialog.Actions>
           </Dialog>
@@ -3127,8 +3253,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         onSelectedCategory={onSelectedCategory}
         category={category}
         saveListing={saveListing}
-        processLabel={processLabel}
-        photoLabel={photoLabel}
+        //processLabel={processLabel}
+        //photoLabel={photoLabel}
       />
     );
   }
@@ -3154,6 +3280,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         getCategoriesFeatures={getCategoriesFeatures}
         saveListing={saveListing}
         processingSelectedAspectValue={processingSelectedAspectValue}
+        photoLabel={photoLabel}
+        type={type}
+        processLabel={processLabel}
       />
     );
   }
