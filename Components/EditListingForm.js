@@ -124,6 +124,7 @@ export default function EditListingForm(props) {
   const [photos, setPhotos] = useState([]);
   const [photoMain, setPhotoMain] = useState();
   const [photoLabel, setPhotoLabel] = useState();
+  const [photoLabelExtra, setPhotoLabelExtra] = useState();
   const [barcodeValue, setBarcodeValue] = useState();
   const [categories, setCategories] = useState([]);
 
@@ -178,6 +179,7 @@ export default function EditListingForm(props) {
   const [openCamera, setOpenCamera] = useState(false);
   const [mainPhotoOpen, setMainPhotoOpen] = useState(false);
   const [labelPhotoOpen, setLabelPhotoOpen] = useState(false);
+  const [labelPhotoOpenExtra, setLabelPhotoOpenExtra] = useState(false);
   const [morePhotosOpen, setMorePhotosOpen] = useState(false);
   const [editPhotoOpen, setEditPhotoOpen] = useState('');
 
@@ -236,6 +238,7 @@ export default function EditListingForm(props) {
 
         setPhotoMain(listing.photoMain);
         setPhotoLabel(listing.photoLabel);
+        setPhotoLabelExtra(listing.photoLabelExtra);
         setPhotos(JSON.parse(listing.photos));
         setBarcodeValue(listing.barcodeValue);
         setCategories(JSON.parse(listing.categoryList));
@@ -432,6 +435,7 @@ export default function EditListingForm(props) {
         type: ListingType[type.toUpperCase()],
         photoMain: photoMain,
         photoLabel: photoLabel,
+        photoLabelExtra: photoLabelExtra,
         photos: JSON.stringify(photos),
         lastStep: lastStep,
         ebayMotors:
@@ -808,9 +812,10 @@ export default function EditListingForm(props) {
       let images = [];
       let pictureMain = `${urlImages}${photoMain}`;
       let pictureLabel = photoLabel ? `${urlImages}${photoLabel}` : [];
+      let pictureLabelExtra = photoLabelExtra ? `${urlImages}${photoLabelExtra}` : [];
       let photosTemp = photos.map((item) => `${urlImages}${item.value}`);
 
-      images = images.concat(pictureMain, photosTemp, pictureLabel);
+      images = images.concat(pictureMain, photosTemp, pictureLabel, pictureLabelExtra);
 
       //console.log(images);
 
@@ -2147,6 +2152,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     }
   };
 
+  const deleteLabelPicExtra = async () => {
+    setLabelPhotoOpenExtra(false);
+    setMainPhotoOpen(false);
+    setOpenCamera(false);
+    setPhotoLabelExtra(undefined);
+  };
+
   const getCategories = async () => {
     try {
       setProcessingCategories(true);
@@ -2382,7 +2394,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     }
   };
 
-  const processLabel = async () => {
+  /*const processLabel = async () => {
     try {
       setProcessingSelectedAspectValue(true);
       console.log(photoLabel);
@@ -2400,16 +2412,63 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       console.log(error);
       setProcessingSelectedAspectValue(false);
     }
+  };*/
+
+  const processLabel = async () => {
+
+    try {
+    setProcessingSelectedAspectValue(true);
+    const tagChecked = await fetch(
+      `https://listerfast.com/api/utils/textfromimage/${photoLabel}`
+    );
+
+    const json = await tagChecked.json();
+    let textDetections = json.TextDetections;
+
+    /*let tagCheckedExtra;
+    let jsonExtra;
+    let textDetectionsExtra;*/
+
+    if (photoLabelExtra && photoLabelExtra !== ''){
+
+      const tagCheckedExtra = await fetch(
+        `https://listerfast.com/api/utils/textfromimage/${photoLabelExtra}`
+      );
+
+      let jsonExtra = await tagCheckedExtra.json();
+      let textDetectionsExtra = jsonExtra.TextDetections;
+
+      checkLabel(textDetections, textDetectionsExtra);
+    } else {
+      checkLabel(textDetections, []);
+    }
+
+    
+    
+
+
+
+    setProcessingSelectedAspectValue(false);
+  } catch(error){
+    console.log(error);
+    setProcessingSelectedAspectValue(false);
+  }
   };
 
-  const checkLabel = async (textDetections) => {
+  const checkLabel = async (textDetections, textDetectionsExtra) => {
     try {
       //setProcessingSelectedAspectValue(true);
-      const textList = textDetections
+
+      console.log('TEXT DETECTIONS: ', textDetections.concat(textDetectionsExtra));
+
+      
+
+
+      const textList = textDetections.concat(textDetectionsExtra)
         .filter((item) => item.Type === 'LINE')
         .map((item) => item.DetectedText);
 
-      const words = textDetections
+      const words = textDetections.concat(textDetectionsExtra)
         .filter((item) => item.Type === 'WORD')
         .map((item) => item.DetectedText);
 
@@ -2420,6 +2479,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         byBrand.length > 0 ? `${textList[0]} ${byBrand}` : textList[0];
 
       console.log(byBrand);
+
 
       setBrand(brand);
 
@@ -2477,19 +2537,19 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const material = materials.filter((x) =>
         words.map((item) =>
-          item
-            .toLowerCase()
-            .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
-            .includes(x)
-        )
-      );
+        item
+          .toLowerCase()
+          .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+      ).includes(x));
+
+      console.log('MATERIAL: ', material);
 
       console.log('SIZE: ', size);
 
       console.log('Country: ', country);
 
       let batchProcess = [];
-      if (brand !== '') {
+      if (brand && brand !== '') {
         batchProcess.push({ itm: 'Brand', value: brand });
       }
       if (size.length > 0) {
@@ -2550,6 +2610,44 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       setEditPhotoOpen('');
       setOpenCamera(false);
       //console.log('picture source', source);
+    }
+  };
+
+  const takePicLabelExtra = async () => {
+    let options = {
+      quality: 0.6,
+      base64: true,
+      //skipProcessing: true,
+      exif: false,
+    };
+
+    let nameFile = `${uuidv4()}.jpg`;
+
+    let newPhoto = await cameraRef.current.takePictureAsync(options);
+
+    const source = newPhoto;
+
+    //setPhotoLabel(newPhoto);
+
+    //const source = newPhoto.uri;
+    //await cameraRef.current.pausePreview();
+
+    if (source) {
+      await cameraRef.current.pausePreview();
+      let newPhotoAWS = await handleImage(source, nameFile);
+      setPhotoLabelExtra(newPhotoAWS);
+
+      /*const tagChecked = await fetch(
+        `https://listerfast.com/api/utils/textfromimage/${newPhotoAWS}`
+      );
+
+      const json = await tagChecked.json();
+      let textDetections = json.TextDetections;
+
+      checkLabel(textDetections);*/
+
+      setLabelPhotoOpenExtra(false);
+      setOpenCamera(false);
     }
   };
 
@@ -2642,6 +2740,11 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
   const onLabelPhotoOpen = async () => {
     setLabelPhotoOpen(true);
+    setOpenCamera(true);
+  };
+
+  const onLabelPhotoOpenExtra = async () => {
+    setLabelPhotoOpenExtra(true);
     setOpenCamera(true);
   };
 
@@ -2764,7 +2867,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               onMainPhotoOpen={onMainPhotoOpen}
               photoMain={photoMain}
               photoLabel={photoLabel}
+              photoLabelExtra={photoLabelExtra}
               onLabelPhotoOpen={onLabelPhotoOpen}
+              onLabelPhotoOpenExtra={onLabelPhotoOpenExtra}
               photos={photos}
               backward={backward}
               forward={forward}
@@ -2780,6 +2885,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               getCategories={getCategories}
               category={category}
               deleteLabelPic={deleteLabelPic}
+              deleteMainPic={deleteMainPic}
+              deleteLabelPicExtra={deleteLabelPicExtra}
             />
           </View>
         );
@@ -2877,7 +2984,62 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               />
             </Camera>
           );
-        } else if (morePhotosOpen) {
+
+          
+
+
+        } 
+        
+        else if (labelPhotoOpenExtra) {
+          return (
+            <Camera
+              style={styles.container}
+              ref={cameraRef}
+              pictureSize='1280x960'
+              //ratio='1:1'
+            >
+              <SegmentedButtons
+                density='medium'
+                style={styles.previewCameraControl}
+                onValueChange={() => console.log('Change value')}
+                buttons={[
+                  {
+                    value: 'close',
+                    label: 'Close',
+                    icon: 'close',
+                    onPress: () => closePic(),
+                    style: styles.buttonPreviewCameraControl,
+                  },
+                  {
+                    value: 'next',
+                    label: 'Take photo',
+                    icon: 'camera',
+                    onPress: () => takePicLabelExtra(),
+                    style: styles.buttonPreviewCameraControl,
+                    //disabled: photoMain && photoLabel ? false : true
+                  },
+                  /*{
+                    value: 'delete',
+                    label: 'Delete',
+                    icon: 'delete',
+                    onPress: () => deleteLabelPic(),
+                    style: styles.buttonPreviewCameraControl,
+                    disabled: photoLabel ? false : true,
+                    //disabled: photoMain && photoLabel ? false : true
+                  },*/
+                ]}
+              />
+            </Camera>
+          );
+        }
+        
+        
+        
+        
+        
+        
+        
+        else if (morePhotosOpen) {
           return (
             <Camera
               style={styles.container}

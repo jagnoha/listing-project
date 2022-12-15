@@ -71,9 +71,15 @@ export default function PhotosSection(props) {
                   <ActivityIndicator animating={true} />
                 )
               ) : (
-                <Text style={{ fontSize: 12 }}>Main Photo</Text>
+                <View>
+                    <IconButton icon='image' />
+                    <Text style={{ fontSize: 12 }}>Main Photo</Text>                  
+                  </View>
               )}
             </Surface>
+            {props.photoMain && props.photoMain !== '' ? <View>
+              <Text style={{textAlign: 'center', fontSize: 12, marginTop: 5}}>Main Photo</Text>
+            </View> : ''}
             {props.photoMain ? (
               <View style={{ flexDirection: 'row' }}>
                 <IconButton
@@ -108,9 +114,15 @@ export default function PhotosSection(props) {
                     }}
                   />
                 ) : (
-                  <Text style={{ fontSize: 12 }}>Photo Tag</Text>
+                  <View>
+                    <IconButton icon='tag-outline' />
+                    <Text style={{ fontSize: 12 }}>Photo Tag</Text>                  
+                  </View>
                 )}
               </Surface>
+              {props.photoLabel && props.photoLabel !== '' ? <View>
+              <Text style={{textAlign: 'center', fontSize: 12, marginTop: 5}}>Photo Tag</Text>
+            </View> : ''}
               {props.photoLabel ? (
                 <IconButton
                   style={{ alignSelf: 'center' }}
@@ -124,8 +136,48 @@ export default function PhotosSection(props) {
           ) : (
             ''
           )}
+
+          {props.type === 'clothing' || props.type === 'shoes' ? (
+            <Pressable onPress={() => props.onLabelPhotoOpenExtra()}>
+              <Surface style={props.styles.surface} elevation={4}>
+                {props.photoLabelExtra ? (
+                  <Image
+                    style={props.styles.preview}
+                    source={{
+                      //uri: 'data:image/jpg;base64,' + props.photoLabel.base64,
+                      uri: `${urlImages}${props.photoLabelExtra}`,
+                    }}
+                  />
+                ) : (
+                  <View>
+                    <IconButton icon='tag-outline' />
+                    <Text style={{ fontSize: 12 }}>Photo Tag 2</Text>                  
+                  </View>
+                )}
+              </Surface>
+
+              {props.photoLabelExtra && props.photoLabelExtra !== '' ? <View>
+              <Text style={{textAlign: 'center', fontSize: 12, marginTop: 5}}>Photo Tag 2</Text>
+            </View> : ''}
+              
+              
+              {props.photoLabelExtra ? (
+                <IconButton
+                  style={{ alignSelf: 'center' }}
+                  onPress={() => props.deleteLabelPicExtra()}
+                  icon='delete'
+                />
+              ) : (
+                ''
+              )}
+            </Pressable>
+          ) : (
+            ''
+          )}
+
+
         </View>
-        <Divider style={{ marginTop: 15 }} bold='true' horizontalInset='true' />
+        <Divider style={{ marginTop: 5 }} bold='true' horizontalInset='true' />
 
         <View
           style={{ alignSelf: 'center' }}
