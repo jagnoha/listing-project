@@ -19,7 +19,7 @@ import Header from '../Header';
 export default function ConditionStage(props) {
   //const theme = useTheme();
 
-  //console.log(props.categoryFeatures);
+  console.log(props.categoryFeatures);
 
   return (
     <View>
@@ -59,7 +59,7 @@ export default function ConditionStage(props) {
             style={{ flexDirection: 'column', justifyContent: 'space-between' }}
           >
             <ScrollView style={{ height: 300 }}>
-              {props.categoryFeatures.conditions.map((item) => {
+              {Array.isArray(props.categoryFeatures.conditions) ? props.categoryFeatures.conditions.map((item) => {
                 return (
                   <View key={item.ID}>
                     <Pressable
@@ -104,7 +104,52 @@ export default function ConditionStage(props) {
                     </Pressable>
                   </View>
                 );
-              })}
+              }) : 
+              
+              <View key={props.categoryFeatures.conditions.ID}>
+                    <Pressable
+                      //onPress={() => props.onSelectedCategory(item.categoryId)}
+                      //onPress={() => console.log(item.ID)}
+                      onPress={() =>
+                        props.onSelectedCondition(props.categoryFeatures.conditions.ID, props.categoryFeatures.conditions.DisplayName)
+                      }
+                    >
+                      <Card>
+                        <Card.Content>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                            }}
+                          >
+                            <View>
+                              <Title>{props.categoryFeatures.conditions.DisplayName}</Title>
+                            </View>
+                            {props.condition === props.categoryFeatures.conditions.ID ? (
+                              <View>
+                                {/*<IconButton
+                              icon='check-outline'
+                              iconColor={'green'}
+                              size={20}
+                            />*/}
+                                <Text>
+                                  <IconButton
+                                    icon='check-outline'
+                                    iconColor={'green'}
+                                    size={15}
+                                  />
+                                </Text>
+                              </View>
+                            ) : (
+                              ''
+                            )}
+                          </View>
+                        </Card.Content>
+                      </Card>
+                    </Pressable>
+                  </View>
+              
+              }
             </ScrollView>
           </View>
         )}

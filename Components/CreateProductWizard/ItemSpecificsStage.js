@@ -136,6 +136,7 @@ export default function ItemSpecificsStage(props) {
     //props.processLabel();
     console.log(props.type);
     props.getAspectValues(props.category);
+    props.getCategoriesFeatures(props.category);
   }, []);
 
   /*const onChangeSearch = (query) => {

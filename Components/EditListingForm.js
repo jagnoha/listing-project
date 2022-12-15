@@ -738,6 +738,10 @@ export default function EditListingForm(props) {
     );
     const color = aspects.find((item) => item.localizedAspectName === 'Color');
     const type = aspects.find((item) => item.localizedAspectName === 'Type');
+
+    const product = aspects.find((item) => item.localizedAspectName === 'Product');
+
+
     const department = aspects.find(
       (item) => item.localizedAspectName === 'Department'
     );
@@ -779,6 +783,7 @@ export default function EditListingForm(props) {
       sizeType: sizeType ? sizeType.value : '',
       type: type ? type.value : '',
       color: color ? color.value : '',
+      product: product ? product.value : '',
 
       fit: fit ? fit.value : '',
       inseam: inseam ? inseam.value : '',
@@ -898,9 +903,9 @@ export default function EditListingForm(props) {
     let pendingDescription = `<h2>${encode(
       title
     )}</h2><p style={font-size: 1.2em}>${
-      categoryFeatures.conditions.find((item) => item.ID === condition)
+      Array.isArray(categoryFeatures.conditions) ? categoryFeatures.conditions.find((item) => item.ID === condition)
         .DisplayName
-    }</p>  
+    : categoryFeatures.conditions.DisplayName }</p> 
 ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 <b>Item Specifics & Features:</b>    
 `;
@@ -959,6 +964,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       pendingTitle.push(keywords['model']);
       shortPendingTitle.push(keywords['model']);
+
+      pendingTitle.push(keywords['product']);
+      shortPendingTitle.push(keywords['product']);
 
       if (keywords['type'] === '') {
         if (
@@ -1129,7 +1137,11 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       } else if (!keywords['category'].includes(keywords['type'])) {
         pendingTitle.push(keywords['category']);
         shortPendingTitle.push(keywords['category']);
+
       }
+
+      pendingTitle.push(keywords['product']);
+      shortPendingTitle.push(keywords['product']);
 
       pendingTitle.push(keywords['type']);
       shortPendingTitle.push(keywords['type']);
@@ -1248,6 +1260,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         shortPendingTitle.push(keywords['category']);
       }
 
+      pendingTitle.push(keywords['product']);
+      shortPendingTitle.push(keywords['product']);
+
       pendingTitle.push(keywords['type']);
       shortPendingTitle.push(keywords['type']);
 
@@ -1349,6 +1364,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       pendingTitle.push(keywords['model']);
       shortPendingTitle.push(keywords['model']);
+
+      pendingTitle.push(keywords['product']);
+      shortPendingTitle.push(keywords['product']);
 
       pendingTitle.push(keywords['type']);
       shortPendingTitle.push(keywords['type']);

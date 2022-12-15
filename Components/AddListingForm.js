@@ -948,6 +948,9 @@ export default function AddListingForm(props) {
     );
     const color = aspects.find((item) => item.localizedAspectName === 'Color');
     const type = aspects.find((item) => item.localizedAspectName === 'Type');
+
+    const product = aspects.find((item) => item.localizedAspectName === 'Product');
+
     const department = aspects.find(
       (item) => item.localizedAspectName === 'Department'
     );
@@ -986,6 +989,7 @@ export default function AddListingForm(props) {
       type: type ? type.value : '',
       color: color ? color.value : '',
       inseam: inseam ? inseam.value : '',
+      product: product ? product.value : '',
 
       fit: fit ? fit.value : '',
 
@@ -1023,9 +1027,9 @@ export default function AddListingForm(props) {
     let pendingDescription = `<h2>${encode(
       title
     )}</h2><p style={font-size: 1.2em}>${
-      categoryFeatures.conditions.find((item) => item.ID === condition)
+      Array.isArray(categoryFeatures.conditions) ? categoryFeatures.conditions.find((item) => item.ID === condition)
         .DisplayName
-    }</p>  
+    : categoryFeatures.conditions.DisplayName }</p>  
 ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 <b>Item Specifics & Features:</b>    
 `;
@@ -1066,7 +1070,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       let tempBrand = keywords['brand'].toUpperCase();
       let tempModel = keywords['model'].toUpperCase();
-
+      
       if (!tempModel.includes(tempBrand)) {
         pendingTitle.push(keywords['brand']);
         shortPendingTitle.push(keywords['brand']);
@@ -1074,6 +1078,11 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       pendingTitle.push(keywords['model']);
       shortPendingTitle.push(keywords['model']);
+
+      pendingTitle.push(keywords['product']);
+      shortPendingTitle.push(keywords['product']);
+
+
 
       if (keywords['type'] === '') {
         if (
@@ -1235,6 +1244,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['model']);
       shortPendingTitle.push(keywords['model']);
 
+      pendingTitle.push(keywords['product']);
+      shortPendingTitle.push(keywords['product']);
+
       if (keywords['type'] === '') {
         pendingTitle.push(keywords['category']);
         shortPendingTitle.push(keywords['category']);
@@ -1346,6 +1358,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['model']);
       shortPendingTitle.push(keywords['model']);
 
+      pendingTitle.push(keywords['product']);
+      shortPendingTitle.push(keywords['product']);
+
       if (keywords['type'] === '') {
         pendingTitle.push(keywords['category']);
         shortPendingTitle.push(keywords['category']);
@@ -1455,6 +1470,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       pendingTitle.push(keywords['model']);
       shortPendingTitle.push(keywords['model']);
+
+      pendingTitle.push(keywords['product']);
+      shortPendingTitle.push(keywords['product']);
 
       pendingTitle.push(keywords['type']);
       shortPendingTitle.push(keywords['type']);
