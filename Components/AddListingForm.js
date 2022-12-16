@@ -217,7 +217,7 @@ export default function AddListingForm(props) {
     (async () => {
       //console.log(userAccount.postalCode);
 
-      if (type === 'clothing' || type === 'shoes'){
+      if (type === 'clothing' || type === 'shoes') {
         setStep(1);
       }
 
@@ -955,7 +955,9 @@ export default function AddListingForm(props) {
     const color = aspects.find((item) => item.localizedAspectName === 'Color');
     const type = aspects.find((item) => item.localizedAspectName === 'Type');
 
-    const product = aspects.find((item) => item.localizedAspectName === 'Product');
+    const product = aspects.find(
+      (item) => item.localizedAspectName === 'Product'
+    );
 
     const department = aspects.find(
       (item) => item.localizedAspectName === 'Department'
@@ -1033,9 +1035,11 @@ export default function AddListingForm(props) {
     let pendingDescription = `<h2>${encode(
       title
     )}</h2><p style={font-size: 1.2em}>${
-      Array.isArray(categoryFeatures.conditions) ? categoryFeatures.conditions.find((item) => item.ID === condition)
-        .DisplayName
-    : categoryFeatures.conditions.DisplayName }</p>  
+      Array.isArray(categoryFeatures.conditions)
+        ? categoryFeatures.conditions.find((item) => item.ID === condition)
+            .DisplayName
+        : categoryFeatures.conditions.DisplayName
+    }</p>  
 ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 <b>Item Specifics & Features:</b>    
 `;
@@ -1076,7 +1080,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       let tempBrand = keywords['brand'].toUpperCase();
       let tempModel = keywords['model'].toUpperCase();
-      
+
       if (!tempModel.includes(tempBrand)) {
         pendingTitle.push(keywords['brand']);
         shortPendingTitle.push(keywords['brand']);
@@ -1087,8 +1091,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       pendingTitle.push(keywords['product']);
       shortPendingTitle.push(keywords['product']);
-
-
 
       if (keywords['type'] === '') {
         if (
@@ -2425,7 +2427,48 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           ? `${searchCategories} ${type}`
           : searchCategories;
 
-      console.log('SEARCH CATEGORIES: ', searchCategories)
+      console.log('SEARCH CATEGORIES: ', searchCategories);
+
+      //console.log('Ebay User: ', ebayUser);
+
+      //const searchCategoriesLarge = searchCategories;
+
+      const response = await fetch(
+        `https://listerfast.com/api/ebay/categorysuggestions/${ebayUser}/${getTypeProductCode(
+          type
+        )}/${searchCategoriesLarge}`
+      );
+
+      const json = await response.json();
+
+      const categories = json.categorySuggestions.map((item) => {
+        return {
+          categoryId: item.category.categoryId,
+          title: item.category.categoryName,
+          subtitle: item.categoryTreeNodeAncestors[0].categoryName,
+        };
+      });
+
+      setCategory('');
+      setCategories(categories);
+      //console.log(categories);
+      setProcessingCategories(false);
+    } catch (error) {
+      setProcessingCategories(false);
+      console.log(error);
+    }
+  };
+
+  const getCategoriesSearch = async (searchCategories) => {
+    try {
+      setProcessingCategories(true);
+
+      const searchCategoriesLarge =
+        type !== 'autoparts' && type !== 'others'
+          ? `${searchCategories} ${type}`
+          : searchCategories;
+
+      console.log('SEARCH CATEGORIES: ', searchCategories);
 
       //console.log('Ebay User: ', ebayUser);
 
@@ -2481,7 +2524,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
   const onMainPicIsTaken = async (value) => {
     setIsTakePicMain(value);
-  }
+  };
 
   let takePicMain = async () => {
     try {
@@ -2514,7 +2557,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         onMainPicIsTaken(true);
 
         //if (istakePicMain){
-          processImage(newPhotoAWS);
+        processImage(newPhotoAWS);
         //}
 
         //console.log('picture source', source);
@@ -2646,10 +2689,17 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       let images = [];
       let pictureMain = `${urlImages}${photoMain}`;
       let pictureLabel = photoLabel ? `${urlImages}${photoLabel}` : [];
-      let pictureLabelExtra = photoLabelExtra ? `${urlImages}${photoLabelExtra}` : [];
+      let pictureLabelExtra = photoLabelExtra
+        ? `${urlImages}${photoLabelExtra}`
+        : [];
       let photosTemp = photos.map((item) => `${urlImages}${item.value}`);
 
-      images = images.concat(pictureMain, photosTemp, pictureLabel, pictureLabelExtra);
+      images = images.concat(
+        pictureMain,
+        photosTemp,
+        pictureLabel,
+        pictureLabelExtra
+      );
 
       //console.log(images);
       console.log(descriptionProcessed.split('\n').join('<br>'));
@@ -2725,97 +2775,85 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   };
 
   const processImage = async (photo) => {
-
     try {
-    //setProcessingSelectedAspectValue(true);
-    if (type === 'clothing' || type === 'shoes'){
-      const imageChecked = await fetch(
-        `https://listerfast.com/api/utils/labelsfromimage/${photo}`
-      );
+      //setProcessingSelectedAspectValue(true);
+      if (type === 'clothing' || type === 'shoes') {
+        const imageChecked = await fetch(
+          `https://listerfast.com/api/utils/labelsfromimage/${photo}`
+        );
 
-      const json = await imageChecked.json();
-      let labelsDetections = json.Labels;
+        const json = await imageChecked.json();
+        let labelsDetections = json.Labels;
 
-      console.log(json);
+        console.log(json);
 
-      /*console.log(JSON.stringify(labelsDetections.sort((a,b) => b.Confidence - a.Confidence).filter(itm => itm.Confidence > 99.9 && itm.Parents.length> 0)));*/
+        /*console.log(JSON.stringify(labelsDetections.sort((a,b) => b.Confidence - a.Confidence).filter(itm => itm.Confidence > 99.9 && itm.Parents.length> 0)));*/
 
-      /*console.log(JSON.stringify(labelsDetections.sort((a,b) => b.Confidence - a.Confidence)[0].Name));*/
+        /*console.log(JSON.stringify(labelsDetections.sort((a,b) => b.Confidence - a.Confidence)[0].Name));*/
 
-      let result = labelsDetections.sort((a,b) => b.Confidence - a.Confidence).filter(itm => itm.Confidence > 95 && itm.Parents.length > 0); 
+        let result = labelsDetections
+          .sort((a, b) => b.Confidence - a.Confidence)
+          .filter((itm) => itm.Confidence > 95 && itm.Parents.length > 0);
 
-      console.log('RESULT: ', result);
+        console.log('RESULT: ', result);
 
-      let list = result.map(item => item.Name).join(' ').split(' ');   
-      let uniqueList = [...new Set(list)];
+        let list = result
+          .map((item) => item.Name)
+          .join(' ')
+          .split(' ');
+        let uniqueList = [...new Set(list)];
 
-      console.log('NEW SEARCH CATEGORIES ', uniqueList.join(' '));
-     
-    
-      setSearchCategories(uniqueList.join(' '));
-      //onSearchCategories(uniqueList.join(' '))
-    }
+        console.log('NEW SEARCH CATEGORIES ', uniqueList.join(' '));
 
-    
+        setSearchCategories(uniqueList.join(' '));
 
-    /*let tagCheckedExtra;
+        getCategoriesSearch(uniqueList.join(' '));
+        //onSearchCategories(uniqueList.join(' '))
+      }
+
+      /*let tagCheckedExtra;
     let jsonExtra;
     let textDetectionsExtra;*/
 
-    
-
-    
-    
-
-
-
-    //setProcessingSelectedAspectValue(false);
-  } catch(error){
-    console.log(error);
-    setProcessingSelectedAspectValue(false);
-  }
+      //setProcessingSelectedAspectValue(false);
+    } catch (error) {
+      console.log(error);
+      setProcessingSelectedAspectValue(false);
+    }
   };
 
-
   const processLabel = async () => {
-
     try {
-    setProcessingSelectedAspectValue(true);
-    const tagChecked = await fetch(
-      `https://listerfast.com/api/utils/textfromimage/${photoLabel}`
-    );
+      setProcessingSelectedAspectValue(true);
+      const tagChecked = await fetch(
+        `https://listerfast.com/api/utils/textfromimage/${photoLabel}`
+      );
 
-    const json = await tagChecked.json();
-    let textDetections = json.TextDetections;
+      const json = await tagChecked.json();
+      let textDetections = json.TextDetections;
 
-    /*let tagCheckedExtra;
+      /*let tagCheckedExtra;
     let jsonExtra;
     let textDetectionsExtra;*/
 
-    if (photoLabelExtra && photoLabelExtra !== ''){
+      if (photoLabelExtra && photoLabelExtra !== '') {
+        const tagCheckedExtra = await fetch(
+          `https://listerfast.com/api/utils/textfromimage/${photoLabelExtra}`
+        );
 
-      const tagCheckedExtra = await fetch(
-        `https://listerfast.com/api/utils/textfromimage/${photoLabelExtra}`
-      );
+        let jsonExtra = await tagCheckedExtra.json();
+        let textDetectionsExtra = jsonExtra.TextDetections;
 
-      let jsonExtra = await tagCheckedExtra.json();
-      let textDetectionsExtra = jsonExtra.TextDetections;
+        checkLabel(textDetections, textDetectionsExtra);
+      } else {
+        checkLabel(textDetections, []);
+      }
 
-      checkLabel(textDetections, textDetectionsExtra);
-    } else {
-      checkLabel(textDetections, []);
+      setProcessingSelectedAspectValue(false);
+    } catch (error) {
+      console.log(error);
+      setProcessingSelectedAspectValue(false);
     }
-
-    
-    
-
-
-
-    setProcessingSelectedAspectValue(false);
-  } catch(error){
-    console.log(error);
-    setProcessingSelectedAspectValue(false);
-  }
   };
 
   const changeValueItemAspectBulk = async (items) => {
@@ -2861,16 +2899,18 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     try {
       //setProcessingSelectedAspectValue(true);
 
-      console.log('TEXT DETECTIONS: ', textDetections.concat(textDetectionsExtra));
+      console.log(
+        'TEXT DETECTIONS: ',
+        textDetections.concat(textDetectionsExtra)
+      );
 
-      
-
-
-      const textList = textDetections.concat(textDetectionsExtra)
+      const textList = textDetections
+        .concat(textDetectionsExtra)
         .filter((item) => item.Type === 'LINE')
         .map((item) => item.DetectedText);
 
-      const words = textDetections.concat(textDetectionsExtra)
+      const words = textDetections
+        .concat(textDetectionsExtra)
         .filter((item) => item.Type === 'WORD')
         .map((item) => item.DetectedText);
 
@@ -3179,7 +3219,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         backward={backward}
         forward={forward}
         setCategory={setCategory}
-        
       />
     );
   }
@@ -3355,10 +3394,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             />
           </Camera>
         );
-      }
-      
-      
-      else if (morePhotosOpen) {
+      } else if (morePhotosOpen) {
         return (
           <Camera
             style={styles.container}
