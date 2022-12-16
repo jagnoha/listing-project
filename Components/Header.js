@@ -97,6 +97,7 @@ export default function Header(props) {
       const listingDetails = {
         id: newId,
         sku: newId,
+        modelType: 'Listing',
         accountsID: listingResult.accountsID,
         title: `(Copy) ${listingResult.title}`,
         description: listingResult.description,

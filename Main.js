@@ -192,8 +192,8 @@ export default function Main() {
           sortDirection: 'ASC',
           filter: {
             accountsID: { eq: user.username.toLowerCase() },
-            isDraft: { eq: false },
-            isReadyToGo: {eq: true},            
+            //isDraft: { eq: false },
+            //isReadyToGo: {eq: true},            
             //_deleted: { eq: false },
           },
           limit: 1000,
@@ -314,6 +314,7 @@ export default function Main() {
         console.log('CREATE LISTING:!!!! ');
         console.log(value.data.onCreateListing);
         setListings((old) => [...old, value.data.onCreateListing]);
+        setListingsOnline((old) => [...old, value.data.onCreateListing]);
         //setListings([...listings, value.data.onCreateListing]);
       },
       error: (error) => console.warn(error),
@@ -336,6 +337,11 @@ export default function Main() {
 
         //listings.filter(item => item.id !== value.data.onUpdateListing.id );
         setListings((old) => [
+          ...old.filter((item) => item.id !== value.data.onUpdateListing.id),
+          value.data.onUpdateListing,
+        ]);
+
+        setListingsOnline((old) => [
           ...old.filter((item) => item.id !== value.data.onUpdateListing.id),
           value.data.onUpdateListing,
         ]);
@@ -378,6 +384,11 @@ export default function Main() {
         setListings((old) => [
           ...old.filter((item) => item.id !== value.data.onDeleteListing.id),
         ]);
+
+        setListingsOnline((old) => [
+          ...old.filter((item) => item.id !== value.data.onDeleteListing.id),
+        ]);
+
       },
       error: (error) => console.warn(error),
     });
