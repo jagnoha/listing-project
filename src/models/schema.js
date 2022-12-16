@@ -302,13 +302,19 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "modelType": {
+                    "name": "modelType",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
                 },
                 "updatedAt": {
                     "name": "updatedAt",
@@ -339,6 +345,17 @@ export const schema = {
                         "name": "byAccounts",
                         "fields": [
                             "accountsID"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "listingsByDate",
+                        "queryField": "listingsByDate",
+                        "fields": [
+                            "modelType",
+                            "createdAt"
                         ]
                     }
                 },
@@ -659,5 +676,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "3b5d7a6b1305982881b751e76f125d02"
+    "version": "c2b80bfbedf315d53729997cb46b1d24"
 };

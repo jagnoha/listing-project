@@ -53,6 +53,7 @@ export const onCreateListing = /* GraphQL */ `
       weightMinor
       isChangedAspects
       photoLabelExtra
+      modelType
       createdAt
       updatedAt
       _version
@@ -114,6 +115,7 @@ export const onUpdateListing = /* GraphQL */ `
       weightMinor
       isChangedAspects
       photoLabelExtra
+      modelType
       createdAt
       updatedAt
       _version
@@ -175,6 +177,7 @@ export const onDeleteListing = /* GraphQL */ `
       weightMinor
       isChangedAspects
       photoLabelExtra
+      modelType
       createdAt
       updatedAt
       _version

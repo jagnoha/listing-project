@@ -223,7 +223,12 @@ export default function EditListingForm(props) {
   useEffect(() => {
     try {
       (async () => {
+
+
         setInitializingListing(true);
+
+
+        
 
         //console.log('ESTE ES EL ID DEL LISTING', listingId);
 
@@ -233,6 +238,8 @@ export default function EditListingForm(props) {
         });
 
         const listing = oneListing.data.getListing;
+
+        console.log('LISTING: ', listing)
 
         //getCategoriesFeatures(listing.categoryID);
 
@@ -428,6 +435,7 @@ export default function EditListingForm(props) {
         id: id,
         sku: listing.sku,
         _version: version,
+        modelType: 'Listing',
         accountsID: userAccount.id,
         title: titleProcessed,
         description: descriptionProcessed,
@@ -2866,7 +2874,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     if (step === 0) {
       return (
         <SearchProduct
-          title={title}
+          title={titleProcessed}
           navigation={navigation}
           onSearchCategories={onSearchCategories}
           searchCategories={searchCategories}

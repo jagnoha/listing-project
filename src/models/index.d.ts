@@ -16,7 +16,7 @@ export enum Plans {
 }
 
 type ListingMetaData = {
-  readOnlyFields: 'createdAt' | 'updatedAt';
+  readOnlyFields: 'updatedAt';
 }
 
 type ItemsCompatibilityMetaData = {
@@ -73,7 +73,8 @@ type EagerListing = {
   readonly weightMinor?: number | null;
   readonly isChangedAspects?: boolean | null;
   readonly photoLabelExtra?: string | null;
-  readonly createdAt?: string | null;
+  readonly modelType: string;
+  readonly createdAt: string;
   readonly updatedAt?: string | null;
   readonly listingItemsCompatibilityId?: string | null;
 }
@@ -120,7 +121,8 @@ type LazyListing = {
   readonly weightMinor?: number | null;
   readonly isChangedAspects?: boolean | null;
   readonly photoLabelExtra?: string | null;
-  readonly createdAt?: string | null;
+  readonly modelType: string;
+  readonly createdAt: string;
   readonly updatedAt?: string | null;
   readonly listingItemsCompatibilityId?: string | null;
 }

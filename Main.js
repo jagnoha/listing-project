@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
 import { Amplify, API, graphqlOperation, Hub } from 'aws-amplify';
 import { useAuthenticator } from '@aws-amplify/ui-react-native';
-import { View } from 'react-native';
+import { ActionSheetIOS, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import { A } from '@expo/html-elements';
 
@@ -44,6 +44,8 @@ import toReviseListAtom from './Store/atoms/toReviseListAtom';
 import readyToGoListAtom from './Store/atoms/readyToGoListAtom';
 import listingsAtom from './Store/atoms/listingsAtom';
 
+import listingsOnlineAtom from './Store/atoms/listingsOnlineAtom';
+
 import NewAccountWizard from './Components/NewAccountWizard';
 import awsconfig from './src/aws-exports';
 
@@ -62,6 +64,8 @@ export default function Main() {
   const [toReviseList, setToReviseList] = useRecoilState(toReviseListAtom);
   const [readyToGoList, setReadyToGoList] = useRecoilState(readyToGoListAtom);
   const [listings, setListings] = useRecoilState(listingsAtom);
+
+  const [listingsOnline, setListingsOnline] = useRecoilState(listingsOnlineAtom);
 
   const [paymentPolicies, setPaymentPolicies] =
     useRecoilState(paymentPoliciesAtom);
@@ -137,7 +141,7 @@ export default function Main() {
 
   useEffect(() => {
     (async () => {
-      const listingsResponse = await API.graphql({
+      /*const listingsResponse = await API.graphql({
         query: queries.syncListings,
         variables: {
           filter: {
@@ -147,11 +151,57 @@ export default function Main() {
           },
           limit: 1000,
         },
+      });*/
+
+      const listingsResponse = await API.graphql({
+        query: queries.listingsByDate,
+        variables: {
+          modelType: 'Listing',
+          sortDirection: 'ASC',
+          filter: {
+            accountsID: { eq: user.username.toLowerCase() },
+            isDraft: { eq: true },
+            //_deleted: { eq: false },
+          },
+          limit: 1000,
+        },
       });
 
-      setListings(
+      /*setListings(
         listingsResponse.data.syncListings.items
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .filter((item) => item._deleted !== true)
+      );*/
+
+      setListings(
+        listingsResponse.data.listingsByDate.items          
+          .filter((item) => item._deleted !== true)
+      );
+
+      
+    })();
+  }, []);
+
+
+  useEffect(() => {
+    (async () => {
+      const listingsResponse = await API.graphql({
+        query: queries.listingsByDate,
+        variables: {
+          modelType: 'Listing',
+          sortDirection: 'ASC',
+          filter: {
+            accountsID: { eq: user.username.toLowerCase() },
+            isDraft: { eq: false },
+            isReadyToGo: {eq: true},            
+            //_deleted: { eq: false },
+          },
+          limit: 1000,
+        },
+      });
+
+      setListingsOnline(
+        listingsResponse.data.listingsByDate.items
           .filter((item) => item._deleted !== true)
       );
 

@@ -48,6 +48,8 @@ type Listing @model @auth(rules: [{allow: public}]) {
   weightMinor: Float
   isChangedAspects: Boolean
   photoLabelExtra: String
+  modelType: String! @index(name: "listingsByDate", queryField: "listingsByDate", sortKeyFields: ["createdAt"])
+  createdAt: String!
 }
 
 type ItemsCompatibility @model @auth(rules: [{allow: public}]) {

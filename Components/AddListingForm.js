@@ -219,6 +219,7 @@ export default function AddListingForm(props) {
 
       if (type === 'clothing' || type === 'shoes') {
         setStep(1);
+        setLastStep(1);
       }
 
       setFetchPoliciesProcessing(true);
@@ -341,6 +342,7 @@ export default function AddListingForm(props) {
       const listingDetails = {
         id: id,
         sku: id,
+        modelType: 'Listing',
         accountsID: userAccount.id,
         title: titleProcessed,
         description: descriptionProcessed,
@@ -427,6 +429,7 @@ export default function AddListingForm(props) {
       const listingDetails = {
         id: id,
         sku: id,
+        modelType: 'Listing',
         accountsID: userAccount.id,
         title: titleProcessed,
         description: descriptionProcessed,
@@ -742,6 +745,7 @@ export default function AddListingForm(props) {
         id: id,
         sku: id,
         _version: version,
+        modelType: 'Listing',
         accountsID: userAccount.id,
         title: titleProcessed,
         description: descriptionProcessed,
