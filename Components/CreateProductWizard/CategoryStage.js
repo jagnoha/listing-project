@@ -22,9 +22,9 @@ export default function CategoryStage(props) {
   console.log(props.categories);
 
   useEffect(() => {
-    /*if (props.photoLabel){
+    if (props.photoLabel || props.photoLabelExtra) {
       props.processLabel();
-    }*/
+    }
     console.log('CategoryStage!!!!');
   }, []);
 

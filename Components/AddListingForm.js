@@ -3520,8 +3520,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         onSelectedCategory={onSelectedCategory}
         category={category}
         saveListing={saveListing}
-        //processLabel={processLabel}
-        //photoLabel={photoLabel}
+        photoLabelExtra={photoLabelExtra}
+        processLabel={processLabel}
+        photoLabel={photoLabel}
       />
     );
   }
