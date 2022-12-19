@@ -260,6 +260,14 @@ export default function AddListingForm(props) {
     );
   }
 
+  //************************************************************** */
+console.log('****************************************************************************************');
+console.log('LISTING ID!!!!: ', listingId);
+console.log('VERSION: ', listingVersion );
+console.log('****************************************************************************************');
+
+  //************************************************************** */
+
   const getUPC = () => {
     if (
       categoryFeatures &&
@@ -411,6 +419,8 @@ export default function AddListingForm(props) {
         console.log(newListing);
 
         setListingId(id);
+
+
         //console.log('Version: ', newListing.data.createListing._version)
         //setListingVersion((old) => newListing.data.createListing._version);
         setListingVersion(1);
@@ -560,6 +570,8 @@ export default function AddListingForm(props) {
         query: mutations.updateListing,
         variables: { input: listingDetails },
       });
+
+      console.log(newListing);
 
       /*console.log(
         '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
@@ -901,7 +913,7 @@ export default function AddListingForm(props) {
   const saveListing = async () => {
     try {
       console.log('Saving Listing');
-      console.log('LISTING ID: ', listingId);
+      console.log('LISTING ID BEFORE: ', listingId);
       if (!listingId) {
         await createNewListingDraft();
       } else {
