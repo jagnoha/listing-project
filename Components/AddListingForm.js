@@ -412,7 +412,8 @@ export default function AddListingForm(props) {
 
         setListingId(id);
         //console.log('Version: ', newListing.data.createListing._version)
-        setListingVersion(newListing.data.createListing._version);
+        //setListingVersion((old) => newListing.data.createListing._version);
+        setListingVersion(1);
         setSnackBar({ visible: true, text: 'Listing Saved as Draft' });
       }
     } catch (error) {
@@ -476,6 +477,87 @@ export default function AddListingForm(props) {
 
       const newListing = await API.graphql({
         query: mutations.createListing,
+        variables: { input: listingDetails },
+      });
+
+      if (newListing) {
+        setListingId(id);
+        setListingVersion(newListing.data.createListing._version);
+      }
+
+      /*console.log(
+        '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
+      );*/
+      /*console.log(listings);
+      console.log(
+        '*****************************************************************'
+      );*/
+      /*console.log(newListing);
+      console.log(
+        '*****************************************************************'
+      );*/
+    } catch (error) {
+      console.log(JSON.stringify(error));
+    }
+  };
+
+  const updateNewListingOnline = async (id, newVersion) => {
+    try {
+      console.log('Saving Listing Online');
+
+      //const id = uuidv4();
+
+      const listingDetails = {
+        id: id,
+        sku: id,
+        version: newVersion,
+        modelType: 'Listing',
+        accountsID: userAccount.id,
+        title: titleProcessed,
+        description: descriptionProcessed,
+        price: priceProduct,
+        itemsSpecifics: JSON.stringify(aspects),
+        categoryFeatures: JSON.stringify(categoryFeatures),
+        isDraft: false,
+        type: ListingType[type.toUpperCase()],
+        photoMain: photoMain,
+        photoLabel: photoLabel,
+        photoLabelExtra: photoLabelExtra,
+        photos: JSON.stringify(photos),
+        lastStep: lastStep,
+        ebayMotors:
+          ListingType[type.toUpperCase()] === 'AUTOPARTS' ? true : false,
+        categoryID: category,
+        categoryList: JSON.stringify(categories),
+        shippingProfileID: fulfillmentPolicyId,
+        returnProfileID: returnPolicyId,
+        paymentProfileID: paymentPolicyId,
+        conditionCode: condition,
+        conditionDescription: conditionDescription,
+        conditionName: conditionName,
+        UPC: getUPC(),
+        ISBN: getISBN(),
+        EAN: getEAN(),
+        barcodeValue: barcodeValue ? barcodeValue.data : null,
+        length: length ? Number(length) : 6,
+        width: width ? Number(width) : 6,
+        height: height ? Number(height) : 6,
+        weightMayor: weightMayor ? Number(weightMayor) : 0,
+        weightMinor: weightMinor ? Number(weightMinor) : 6,
+
+        quantity: quantity,
+        isChangedAspects: isChangedAspects,
+        isReadyToGo:
+          quantity > 0 &&
+          priceProduct > 0 &&
+          checkedAllAspects &&
+          !isChangedAspects
+            ? true
+            : false,
+      };
+
+      const newListing = await API.graphql({
+        query: mutations.updateListing,
         variables: { input: listingDetails },
       });
 
@@ -808,6 +890,7 @@ export default function AddListingForm(props) {
       if (newListing) {
         //navigation.goBack();
         console.log(newListing);
+        setListingVersion(newListing.data.updateListing._version);
         setSnackBar({ visible: true, text: 'Listing Saved' });
       }
     } catch (error) {
@@ -817,7 +900,8 @@ export default function AddListingForm(props) {
 
   const saveListing = async () => {
     try {
-      //console.log('Saving Listing');
+      console.log('Saving Listing');
+      console.log('LISTING ID: ', listingId);
       if (!listingId) {
         await createNewListingDraft();
       } else {
@@ -1861,7 +1945,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             };
           }
 
-          console.log('ITEM PRODUCT ASPECT VALUES: ', itemProduct.aspectValues);
+          //console.log('ITEM PRODUCT ASPECT VALUES: ', itemProduct.aspectValues);
 
           const tempSizeList =
             itemProduct.aspectValues && Array.isArray(itemProduct.aspectValues)
@@ -2685,8 +2769,17 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   const onPublishEbay = async () => {
     try {
       setProcessingPublishEbay(true);
+      let id;
+      let version;
+      if (!listingId) {
+        id = uuidv4();
+      } else {
+        id = listingId;
+        version = listingVersion;
+      }
 
-      const id = uuidv4();
+      console.log('VERSION: ', version);
+      console.log('ID: ', id);
 
       let urlPost = 'https://listerfast.com/api/ebay/additem';
 
@@ -2757,7 +2850,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         console.log('Product Uploaded on eBay');
 
         console.log('Product Uploaded on eBay');
-        createNewListingOnline(id);
+
+        if (!listingId) {
+          createNewListingOnline(id);
+        } else {
+          updateNewListingOnline(id, version);
+        }
         setProcessingPublishEbay(false);
         navigation.goBack();
         setSnackBar({ visible: true, text: 'Listing published on eBay' });
@@ -2916,7 +3014,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       const words = textDetections
         .concat(textDetectionsExtra)
         .filter((item) => item.Type === 'WORD')
-        .map((item) => item.DetectedText);
+        .map((item) => item.DetectedText.replace(/[^a-z0-9]/gi, ''));
 
       const byBrand = textList.filter(
         (item) => item.includes('by') || item.includes('BY')
@@ -2945,7 +3043,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
         );*/
 
-      const country = textList.find(
+      /*const country = textList.find(
         (item) => item.includes('Made in') || item.includes('MADE IN')
       )
         ? textList
@@ -2955,7 +3053,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             .toLowerCase()
             .split('made in')[1]
             .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
-        : '';
+        : '';*/
 
       /*const size = textList
         .filter((item) => item.includes('%'))
@@ -2969,25 +3067,50 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .find((itm) => itm.localizedAspectName === 'Size')
         .aspectValues.map((name) => name.toUpperCase());*/
 
-      const sizes = aspectValues.find((itm) => itm.id === 'Size').value;
+      /*const countries = aspectValues.find(
+        (itm) => itm.id === 'Country/Region of Manufacture'
+      ).value;*/
+
+      const checkedCountries = aspectValues.find(
+        (itm) => itm.id === 'Country/Region of Manufacture'
+      );
+
+      const countries = checkedCountries ? checkedCountries.value : [];
+
+      console.log(countries);
+
+      let tempWords = words.map((item) => item.toLowerCase());
+
+      const country = countries.filter((x) =>
+        tempWords.includes(x.toLowerCase())
+      );
+
+      console.log('COUNTRY: ', country);
+
+      const checkedSizes = aspectValues.find((itm) => itm.id === 'Size');
+      const sizes = checkedSizes ? checkedSizes.value : [];
+
       const size = sizes.filter((x) => words.includes(x));
 
-      const materials = aspectValues
-        .find((itm) => itm.id === 'Material')
-        .value.map((item) =>
-          item
-            .toLowerCase()
-            .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
-        );
+      const checkedMaterials = aspectValues.find(
+        (itm) => itm.id === 'Material'
+      );
+
+      const materials = checkedMaterials
+        ? checkedMaterials.value.map((item) =>
+            item
+              .toLowerCase()
+              .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+          )
+        : [];
+
+      console.log('MATERIALS: ', materials);
 
       const material = materials.filter((x) =>
-        words.map((item) =>
-          item
-            .toLowerCase()
-            .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
-            .includes(x)
-        )
+        tempWords.includes(x.toLowerCase())
       );
+
+      console.log('MATERIAL: ', material);
 
       console.log('SIZE: ', size);
 
@@ -3005,6 +3128,10 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         batchProcess.push({ itm: 'Material', value: material[0] });
       }
 
+      console.log('BATCHPROCESS: ', batchProcess);
+
+      console.log('TEXTLIST: ', textList);
+
       if (country !== '') {
         batchProcess.push({
           itm: 'Country/Region of Manufacture',
@@ -3014,7 +3141,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       changeValueItemAspectBulk(batchProcess);
 
-      console.log('Brand: ', brand);
+      //console.log('Brand: ', brand);
       //setProcessingSelectedAspectValue(false);
     } catch (error) {
       console.log(error);
@@ -3525,7 +3652,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         category={category}
         saveListing={saveListing}
         photoLabelExtra={photoLabelExtra}
-        processLabel={processLabel}
+        //processLabel={processLabel}
         photoLabel={photoLabel}
       />
     );

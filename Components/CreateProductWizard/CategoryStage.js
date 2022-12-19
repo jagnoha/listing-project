@@ -21,12 +21,12 @@ export default function CategoryStage(props) {
 
   console.log(props.categories);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (props.photoLabel || props.photoLabelExtra) {
       props.processLabel();
     }
     console.log('CategoryStage!!!!');
-  }, []);
+  }, []);*/
 
   return (
     <View>

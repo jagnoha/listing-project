@@ -174,7 +174,7 @@ export default function ListingsReadyToGo() {
       <FlatList
         data={listings
           .filter((item) => item.isReadyToGo && item.isDraft)
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          //.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
           .filter((itm) =>
             itm.title.toLowerCase().includes(searchQuery.toLowerCase())
           )}
