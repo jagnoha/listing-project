@@ -2147,8 +2147,33 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     }
   };
 
+  const getGooglePrices = async () => {
+
+    try {
+
+      const isNew = condition === 1000 || condition === 1500 ? 'new' : 'used';
+
+      const title = `${titleProcessed}`;
+      
+      const urlGet = `https://listerfast.com/api/utils/searchprices/${title}/${isNew}`
+
+      //console.log(`TITULO: ${titleProcessed} ${conditionName}`);
+
+      const prices = await axios.get(urlGet);
+
+      console.log(prices);
+
+
+    } catch(error){
+      console.log(error);
+    }
+  }
+
   const getPrices = async () => {
     try {
+
+      getGooglePrices();
+
       let pendingTitle = [];
       let shortPendingTitle = [];
 
