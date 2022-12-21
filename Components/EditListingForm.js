@@ -223,12 +223,7 @@ export default function EditListingForm(props) {
   useEffect(() => {
     try {
       (async () => {
-
-
         setInitializingListing(true);
-
-
-        
 
         //console.log('ESTE ES EL ID DEL LISTING', listingId);
 
@@ -239,7 +234,7 @@ export default function EditListingForm(props) {
 
         const listing = oneListing.data.getListing;
 
-        console.log('LISTING: ', listing)
+        console.log('LISTING: ', listing);
 
         //getCategoriesFeatures(listing.categoryID);
 
@@ -625,7 +620,7 @@ export default function EditListingForm(props) {
   };
 
   const onChangeProductPrice = (price) => {
-    setPriceProduct(price);
+    setPriceProduct(price.toString());
   };
 
   const onChangeQuantity = (quantity) => {
@@ -749,8 +744,9 @@ export default function EditListingForm(props) {
     const color = aspects.find((item) => item.localizedAspectName === 'Color');
     const type = aspects.find((item) => item.localizedAspectName === 'Type');
 
-    const product = aspects.find((item) => item.localizedAspectName === 'Product');
-
+    const product = aspects.find(
+      (item) => item.localizedAspectName === 'Product'
+    );
 
     const department = aspects.find(
       (item) => item.localizedAspectName === 'Department'
@@ -827,10 +823,17 @@ export default function EditListingForm(props) {
       let images = [];
       let pictureMain = `${urlImages}${photoMain}`;
       let pictureLabel = photoLabel ? `${urlImages}${photoLabel}` : [];
-      let pictureLabelExtra = photoLabelExtra ? `${urlImages}${photoLabelExtra}` : [];
+      let pictureLabelExtra = photoLabelExtra
+        ? `${urlImages}${photoLabelExtra}`
+        : [];
       let photosTemp = photos.map((item) => `${urlImages}${item.value}`);
 
-      images = images.concat(pictureMain, photosTemp, pictureLabel, pictureLabelExtra);
+      images = images.concat(
+        pictureMain,
+        photosTemp,
+        pictureLabel,
+        pictureLabelExtra
+      );
 
       //console.log(images);
 
@@ -913,9 +916,11 @@ export default function EditListingForm(props) {
     let pendingDescription = `<h2>${encode(
       title
     )}</h2><p style={font-size: 1.2em}>${
-      Array.isArray(categoryFeatures.conditions) ? categoryFeatures.conditions.find((item) => item.ID === condition)
-        .DisplayName
-    : categoryFeatures.conditions.DisplayName }</p> 
+      Array.isArray(categoryFeatures.conditions)
+        ? categoryFeatures.conditions.find((item) => item.ID === condition)
+            .DisplayName
+        : categoryFeatures.conditions.DisplayName
+    }</p> 
 ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 <b>Item Specifics & Features:</b>    
 `;
@@ -1147,7 +1152,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       } else if (!keywords['category'].includes(keywords['type'])) {
         pendingTitle.push(keywords['category']);
         shortPendingTitle.push(keywords['category']);
-
       }
 
       pendingTitle.push(keywords['product']);
@@ -1873,6 +1877,56 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     }
   };
 
+  const getGooglePrices = async () => {
+    try {
+      setProcessingPrices(true);
+      const isNew = condition === 1000 || condition === 1500 ? 'new' : 'used';
+
+      const title = `${titleProcessed}`;
+
+      const urlGet = `https://listerfast.com/api/utils/searchprices/${title}/${isNew}`;
+
+      //console.log(`TITULO: ${titleProcessed} ${conditionName}`);
+
+      const prices = await axios.get(urlGet);
+
+      const listings = prices.data;
+
+      console.log(
+        listings.map((item) => ({
+          itemId: item.id,
+          title: item.title,
+          image: item.image,
+          price: item.price,
+          condition: isNew.toUpperCase(),
+          //freeShipping: 'No',
+          freeShipping: item.freeShipping ? 'Yes' : 'No',
+        }))
+      );
+
+      setPricingList(
+        listings.map((item) => ({
+          itemId: item.id,
+          title: item.title,
+          image: item.image,
+          price: item.price,
+          condition: isNew.toUpperCase(),
+          //freeShipping: 'No',
+          freeShipping: item.freeShipping ? 'Yes' : 'No',
+        }))
+      );
+
+      let pricesL = listings.map((item) => Number(item.price));
+
+      setPrices([pricesL, getAvgPrice(pricesL).toFixed(2)]);
+
+      setProcessingPrices(false);
+    } catch (error) {
+      console.log(error);
+      setProcessingPrices(false);
+    }
+  };
+
   const getPrices = async () => {
     try {
       let pendingTitle = [];
@@ -2267,7 +2321,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
   const onMainPicIsTaken = async (value) => {
     setIsTakePicMain(value);
-  }
+  };
 
   let takePicMain = async () => {
     try {
@@ -2447,60 +2501,55 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   };*/
 
   const processLabel = async () => {
-
     try {
-    setProcessingSelectedAspectValue(true);
-    const tagChecked = await fetch(
-      `https://listerfast.com/api/utils/textfromimage/${photoLabel}`
-    );
+      setProcessingSelectedAspectValue(true);
+      const tagChecked = await fetch(
+        `https://listerfast.com/api/utils/textfromimage/${photoLabel}`
+      );
 
-    const json = await tagChecked.json();
-    let textDetections = json.TextDetections;
+      const json = await tagChecked.json();
+      let textDetections = json.TextDetections;
 
-    /*let tagCheckedExtra;
+      /*let tagCheckedExtra;
     let jsonExtra;
     let textDetectionsExtra;*/
 
-    if (photoLabelExtra && photoLabelExtra !== ''){
+      if (photoLabelExtra && photoLabelExtra !== '') {
+        const tagCheckedExtra = await fetch(
+          `https://listerfast.com/api/utils/textfromimage/${photoLabelExtra}`
+        );
 
-      const tagCheckedExtra = await fetch(
-        `https://listerfast.com/api/utils/textfromimage/${photoLabelExtra}`
-      );
+        let jsonExtra = await tagCheckedExtra.json();
+        let textDetectionsExtra = jsonExtra.TextDetections;
 
-      let jsonExtra = await tagCheckedExtra.json();
-      let textDetectionsExtra = jsonExtra.TextDetections;
+        checkLabel(textDetections, textDetectionsExtra);
+      } else {
+        checkLabel(textDetections, []);
+      }
 
-      checkLabel(textDetections, textDetectionsExtra);
-    } else {
-      checkLabel(textDetections, []);
+      setProcessingSelectedAspectValue(false);
+    } catch (error) {
+      console.log(error);
+      setProcessingSelectedAspectValue(false);
     }
-
-    
-    
-
-
-
-    setProcessingSelectedAspectValue(false);
-  } catch(error){
-    console.log(error);
-    setProcessingSelectedAspectValue(false);
-  }
   };
 
   const checkLabel = async (textDetections, textDetectionsExtra) => {
     try {
       //setProcessingSelectedAspectValue(true);
 
-      console.log('TEXT DETECTIONS: ', textDetections.concat(textDetectionsExtra));
+      console.log(
+        'TEXT DETECTIONS: ',
+        textDetections.concat(textDetectionsExtra)
+      );
 
-      
-
-
-      const textList = textDetections.concat(textDetectionsExtra)
+      const textList = textDetections
+        .concat(textDetectionsExtra)
         .filter((item) => item.Type === 'LINE')
         .map((item) => item.DetectedText);
 
-      const words = textDetections.concat(textDetectionsExtra)
+      const words = textDetections
+        .concat(textDetectionsExtra)
         .filter((item) => item.Type === 'WORD')
         .map((item) => item.DetectedText);
 
@@ -2511,7 +2560,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         byBrand.length > 0 ? `${textList[0]} ${byBrand}` : textList[0];
 
       console.log(byBrand);
-
 
       setBrand(brand);
 
@@ -2568,11 +2616,14 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         );
 
       const material = materials.filter((x) =>
-        words.map((item) =>
-        item
-          .toLowerCase()
-          .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
-      ).includes(x));
+        words
+          .map((item) =>
+            item
+              .toLowerCase()
+              .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+          )
+          .includes(x)
+      );
 
       console.log('MATERIAL: ', material);
 
@@ -2882,7 +2933,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           backward={backward}
           forward={forward}
           setCategory={setCategory}
-          
         />
       );
     }
@@ -3018,13 +3068,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               />
             </Camera>
           );
-
-          
-
-
-        } 
-        
-        else if (labelPhotoOpenExtra) {
+        } else if (labelPhotoOpenExtra) {
           return (
             <Camera
               style={styles.container}
@@ -3065,15 +3109,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               />
             </Camera>
           );
-        }
-        
-        
-        
-        
-        
-        
-        
-        else if (morePhotosOpen) {
+        } else if (morePhotosOpen) {
           return (
             <Camera
               style={styles.container}
@@ -3363,6 +3399,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           onChangeDescription={onChangeDescription}
           processingPrices={processingPrices}
           getPrices={getPrices}
+          getGooglePrices={getGooglePrices}
           saveListing={saveListing}
           onDeleteItem={onDeleteItem}
           onProcessingTitle={onProcessingTitle}
@@ -3409,6 +3446,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           forward={forward}
           goToFirstStep={goToFirstStep}
           getPrices={getPrices}
+          getGooglePrices={getGooglePrices}
           prices={prices}
           processingPrices={processingPrices}
           pricingList={pricingList}

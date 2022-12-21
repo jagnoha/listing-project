@@ -261,10 +261,14 @@ export default function AddListingForm(props) {
   }
 
   //************************************************************** */
-console.log('****************************************************************************************');
-console.log('LISTING ID!!!!: ', listingId);
-console.log('VERSION: ', listingVersion );
-console.log('****************************************************************************************');
+  console.log(
+    '****************************************************************************************'
+  );
+  console.log('LISTING ID!!!!: ', listingId);
+  console.log('VERSION: ', listingVersion);
+  console.log(
+    '****************************************************************************************'
+  );
 
   //************************************************************** */
 
@@ -419,7 +423,6 @@ console.log('*******************************************************************
         console.log(newListing);
 
         setListingId(id);
-
 
         //console.log('Version: ', newListing.data.createListing._version)
         //setListingVersion((old) => newListing.data.createListing._version);
@@ -927,7 +930,8 @@ console.log('*******************************************************************
   };
 
   const onChangeProductPrice = (price) => {
-    setPriceProduct(price);
+    console.log(price);
+    setPriceProduct(price.toString());
   };
 
   const onChangeQuantity = (quantity) => {
@@ -2148,30 +2152,57 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   };
 
   const getGooglePrices = async () => {
-
     try {
-
+      setProcessingPrices(true);
       const isNew = condition === 1000 || condition === 1500 ? 'new' : 'used';
 
       const title = `${titleProcessed}`;
-      
-      const urlGet = `https://listerfast.com/api/utils/searchprices/${title}/${isNew}`
+
+      const urlGet = `https://listerfast.com/api/utils/searchprices/${title}/${isNew}`;
 
       //console.log(`TITULO: ${titleProcessed} ${conditionName}`);
 
       const prices = await axios.get(urlGet);
 
-      console.log(prices);
+      const listings = prices.data;
 
+      console.log(
+        listings.map((item) => ({
+          itemId: item.id,
+          title: item.title,
+          image: item.image,
+          price: item.price,
+          condition: isNew.toUpperCase(),
+          //freeShipping: 'No',
+          freeShipping: item.freeShipping ? 'Yes' : 'No',
+        }))
+      );
 
-    } catch(error){
+      setPricingList(
+        listings.map((item) => ({
+          itemId: item.id,
+          title: item.title,
+          image: item.image,
+          price: item.price,
+          condition: isNew.toUpperCase(),
+          //freeShipping: 'No',
+          freeShipping: item.freeShipping ? 'Yes' : 'No',
+        }))
+      );
+
+      let pricesL = listings.map((item) => Number(item.price));
+
+      setPrices([pricesL, getAvgPrice(pricesL).toFixed(2)]);
+
+      setProcessingPrices(false);
+    } catch (error) {
       console.log(error);
+      setProcessingPrices(false);
     }
-  }
+  };
 
   const getPrices = async () => {
     try {
-
       getGooglePrices();
 
       let pendingTitle = [];
@@ -2182,7 +2213,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         (itm) => itm !== ''
       );
 
-      setProcessingPrices(true);
+      //setProcessingPrices(true);
 
       /*console.log('Get Prices!');
       console.log('Title: ', titleProcessed);
@@ -2485,7 +2516,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           processPrices(jsonResponse);
         }
       }
-      setProcessingPrices(false);
+      //setProcessingPrices(false);
     } catch (error) {
       console.log(error);
       setProcessingPrices(false);
@@ -3842,6 +3873,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         onChangeDescription={onChangeDescription}
         processingPrices={processingPrices}
         getPrices={getPrices}
+        getGooglePrices={getGooglePrices}
         saveListing={saveListing}
         onProcessingTitle={onProcessingTitle}
         onIsChangedAspects={onIsChangedAspects}
@@ -3888,6 +3920,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         goToFirstStep={goToFirstStep}
         onOpenBackDialog={onOpenBackDialog}
         getPrices={getPrices}
+        getGooglePrices={getGooglePrices}
         prices={prices}
         processingPrices={processingPrices}
         pricingList={pricingList}

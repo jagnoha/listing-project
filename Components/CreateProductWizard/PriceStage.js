@@ -65,7 +65,7 @@ export default function PriceStage(props) {
     (async () => {
       console.log('Opening prices!!!!');
       //props.onProcessingTitle(props.category);
-      props.getPrices();
+      props.getGooglePrices();
     })();
   }, []);
 
@@ -144,7 +144,6 @@ export default function PriceStage(props) {
         actionBack={props.onOpenBackDialog}
         onDeleteItem={props.onDeleteItem}
         saveListing={props.saveListing}
-        
       />
       <View>
         <Banner visible={true} icon={'currency-usd'}>
@@ -184,7 +183,7 @@ export default function PriceStage(props) {
         ) : props.prices.length > 0 ? (
           <View>
             <Button icon='format-list-text' onPress={() => onOpenPriceList()}>
-              See eBay prices reference
+              See prices reference
             </Button>
           </View>
         ) : (
@@ -248,23 +247,19 @@ export default function PriceStage(props) {
         )}
 
         {props.isChangedAspects ? (
-              <View>
-                
-                <Button
-                  icon='refresh'
-                  mode='text'
-                  onPress={() => props.goToStep(8)}
-                  labelStyle={{fontSize: 12, color: 'red'}}
-                  
-                >
-                  Refresh Title and Description before publish
-                </Button>
-              </View>
-            ) : (
-              ''
-            )}
-
-        
+          <View>
+            <Button
+              icon='refresh'
+              mode='text'
+              onPress={() => props.goToStep(8)}
+              labelStyle={{ fontSize: 12, color: 'red' }}
+            >
+              Refresh Title and Description before publish
+            </Button>
+          </View>
+        ) : (
+          ''
+        )}
       </View>
       {/*<View style={{justifyContent: 'flex-end'}}>
       <Button
