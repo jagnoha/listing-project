@@ -131,6 +131,8 @@ export default function AddListingForm(props) {
 
   const [wordsFromLabel, setWordsFromLabel] = useState([]);
 
+  const [letPriceListing, setLetPriceListing] = useState(true);
+
   const [brand, setBrand] = useState('');
 
   const [searchCategories, setSearchCategories] = useState('');
@@ -1805,6 +1807,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   const onSelectedCondition = (conditionId, conditionName) => {
     setCondition(conditionId);
     setIsChangedAspects(true);
+    setLetPriceListing(true);
     setConditionName(conditionName);
   };
 
@@ -2043,7 +2046,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     setProcessingSelectedAspectValue(true);
     if (lastStep > 7) {
       setIsChangedAspects(true);
+      
     }
+    setLetPriceListing(true);
     const newAspects = aspects.map((item) => {
       if (item.localizedAspectName === itm) {
         return {
@@ -2158,11 +2163,15 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const title = `${titleProcessed}`;
 
+      if (barcodeValue) {
+        title = title + ' ' + barcodeValue;
+      }
+
       const urlGet = `https://listerfast.com/api/utils/searchprices/${title}/${isNew}`;
 
       //console.log(`TITULO: ${titleProcessed} ${conditionName}`);
 
-      const prices = await axios.get(urlGet);
+      const prices = await axios.get(urlGet, {timeout: 1000});
 
       const listings = prices.data;
 
@@ -2173,6 +2182,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           image: item.image,
           price: item.price,
           condition: isNew.toUpperCase(),
+          shop: item.shop,
           //freeShipping: 'No',
           freeShipping: item.freeShipping ? 'Yes' : 'No',
         }))
@@ -2185,6 +2195,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           image: item.image,
           price: item.price,
           condition: isNew.toUpperCase(),
+          shop: item.shop,
           //freeShipping: 'No',
           freeShipping: item.freeShipping ? 'Yes' : 'No',
         }))
@@ -2195,6 +2206,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       setPrices([pricesL, getAvgPrice(pricesL).toFixed(2)]);
 
       setProcessingPrices(false);
+      setLetPriceListing(false);
     } catch (error) {
       console.log(error);
       setProcessingPrices(false);
@@ -3937,6 +3949,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         titleProcessed={titleProcessed}
         goToStep={goToStep}
         isChangedAspects={isChangedAspects}
+        letPriceListing={letPriceListing}
 
         /*titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}

@@ -157,7 +157,7 @@ export default function Main() {
         query: queries.listingsByDate,
         variables: {
           modelType: 'Listing',
-          sortDirection: 'ASC',
+          sortDirection: 'DESC',
           filter: {
             accountsID: { eq: user.username.toLowerCase() },
             isDraft: { eq: true },
@@ -189,7 +189,7 @@ export default function Main() {
         query: queries.listingsByDate,
         variables: {
           modelType: 'Listing',
-          sortDirection: 'ASC',
+          sortDirection: 'DESC',
           filter: {
             accountsID: { eq: user.username.toLowerCase() },
             //isDraft: { eq: false },
@@ -313,8 +313,8 @@ export default function Main() {
         //console.log({ provider, value });
         console.log('CREATE LISTING:!!!! ');
         console.log(value.data.onCreateListing);
-        setListings((old) => [...old, value.data.onCreateListing]);
-        setListingsOnline((old) => [...old, value.data.onCreateListing]);
+        setListings((old) => [value.data.onCreateListing, ...old]);
+        setListingsOnline((old) => [value.data.onCreateListing,...old]);
         //setListings([...listings, value.data.onCreateListing]);
       },
       error: (error) => console.warn(error),
@@ -333,10 +333,26 @@ export default function Main() {
     ).subscribe({
       next: ({ provider, value }) => {
         //console.log({ provider, value });
-        console.log('UPDATE LISTING:!!!! ');
+        console.log('UPDATE LISTING CODIGO PROBANDO ESTA MIERDA:!!!! ');
 
         //listings.filter(item => item.id !== value.data.onUpdateListing.id );
-        setListings((old) => [
+
+        let index = listings.findIndex(item => item.id === value.data.onUpdateListing.id );
+
+        let tempListings = [...listings];
+
+        tempListings[index - 1] = value.data.onUpdateListing;
+
+        console.log('INDEX!!!: ', index);
+
+        /*setListings((old) => [tempListings]);
+        setListingsOnline((old) => [tempListings]);*/
+
+        /*setListings((old) => [...old.slice(0,index), value.data.onUpdateListing, ...old.slice(index+1)]);
+
+        setListingsOnline((old) => [...old.slice(0,index), value.data.onUpdateListing, ...old.slice(index+1)]);*/
+
+        /*setListings((old) => [
           ...old.filter((item) => item.id !== value.data.onUpdateListing.id),
           value.data.onUpdateListing,
         ]);
@@ -344,7 +360,7 @@ export default function Main() {
         setListingsOnline((old) => [
           ...old.filter((item) => item.id !== value.data.onUpdateListing.id),
           value.data.onUpdateListing,
-        ]);
+        ]);*/
 
         /*let newListing = value.data.onUpdateListing;
 

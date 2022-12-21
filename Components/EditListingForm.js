@@ -103,6 +103,8 @@ export default function EditListingForm(props) {
 
   const [isChangedAspects, setIsChangedAspects] = useState(false);
 
+  const [letPriceListing, setLetPriceListing] = useState(true);
+
   const [priceProduct, setPriceProduct] = useState('0.00');
 
   const [quantity, setQuantity] = useState('1');
@@ -371,6 +373,11 @@ export default function EditListingForm(props) {
   const onIsChangedAspects = (value) => {
     setIsChangedAspects(value);
   };
+
+  const onLetPriceListing = (value) => {
+    setLetPriceListing(value);
+  };
+
 
   const getISBN = () => {
     if (
@@ -1563,6 +1570,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     setCondition(conditionId);
     setConditionName(conditionName);
     setIsChangedAspects(true);
+    setLetPriceListing(true);
+    
   };
 
   const getAspectValues = async (categoryId) => {
@@ -1783,6 +1792,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     //console.log(value);
     setProcessingSelectedAspectValue(true);
     setIsChangedAspects(true);
+    setLetPriceListing(true);
     const newAspects = aspects.map((item) => {
       if (item.localizedAspectName === itm) {
         return {
@@ -1882,13 +1892,25 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       setProcessingPrices(true);
       const isNew = condition === 1000 || condition === 1500 ? 'new' : 'used';
 
-      const title = `${titleProcessed}`;
+      let title = `${titleProcessed}`;
+
+      if (barcodeValue) {
+        title = title + ' ' + barcodeValue;
+      }
+
+      //const title = descriptionProcessed.split('<h2>')[1].split('</h2>')[0];
+
+      //console.log('TITLE!!!!: ', title);
+      
+      //console.log('DESCRIPTION PROCESSED!!!: ', descriptionProcessed.split('<h2>')[1].split('</h2>')[0]);
+
+      
 
       const urlGet = `https://listerfast.com/api/utils/searchprices/${title}/${isNew}`;
 
       //console.log(`TITULO: ${titleProcessed} ${conditionName}`);
 
-      const prices = await axios.get(urlGet);
+      const prices = await axios.get(urlGet, {timeout: 1000});
 
       const listings = prices.data;
 
@@ -1899,6 +1921,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           image: item.image,
           price: item.price,
           condition: isNew.toUpperCase(),
+          shop: item.shop,
+
           //freeShipping: 'No',
           freeShipping: item.freeShipping ? 'Yes' : 'No',
         }))
@@ -1911,6 +1935,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           image: item.image,
           price: item.price,
           condition: isNew.toUpperCase(),
+          shop: item.shop,
           //freeShipping: 'No',
           freeShipping: item.freeShipping ? 'Yes' : 'No',
         }))
@@ -1921,6 +1946,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       setPrices([pricesL, getAvgPrice(pricesL).toFixed(2)]);
 
       setProcessingPrices(false);
+      setLetPriceListing(false);
     } catch (error) {
       console.log(error);
       setProcessingPrices(false);
@@ -3465,6 +3491,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           goToStep={goToStep}
           onOpenBackDialog={onOpenBackDialog}
           isChangedAspects={isChangedAspects}
+          //onLetPriceListing={onLetPriceListing}
+          letPriceListing={letPriceListing}
 
           /*titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}

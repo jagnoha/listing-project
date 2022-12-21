@@ -28,7 +28,8 @@ const PriceCard = ({ item, onPress }) => {
           subtitleStyle={{ fontSize: 12, paddingLeft: 10, fontWeight: 'bold' }}
           style={{ padding: 7 }}
           title={item.title}
-          subtitle={item.condition + ' | FreeShipping: ' + item.freeShipping}
+          //subtitle={'FreeShipping: ' + item.freeShipping}          
+          subtitle={item.condition === 'USED' ? 'Used' : 'New' + ' | FreeShipping: ' + item.freeShipping}
           //subtitle={(props) => {<Text>Hola</Text>}}
           titleNumberOfLines={4}
           subtitleNumberOfLines={2}
@@ -36,12 +37,19 @@ const PriceCard = ({ item, onPress }) => {
           left={(props) => (
             <List.Image variant='image' source={{ uri: item.image }} />
           )}
+          
           /*right={(props) => <Chip icon='currency-usd' onPress={() => console.log('Pressed')}>{item.price}</Chip>}*/
         />
         {/*<Text style={{textAlign: 'center'}}>{item.price}</Text>*/}
 
         {/*<List.Image variant='image' source={{ uri: item.image }} />*/}
       </View>
+      {/*<View style={{ marginLeft: '30%', paddingBottom: 10}}><Text style={{fontWeight:'bold'}}>{item.shop}</Text></View>*/}
+
+      <Button icon='store'>
+         {item.shop}
+      </Button>
+
       <View style={{ marginLeft: '30%', marginRight: '30%' }}>
         <Chip
           mode={'outlined'}
@@ -65,7 +73,7 @@ export default function PriceStage(props) {
     (async () => {
       console.log('Opening prices!!!!');
       //props.onProcessingTitle(props.category);
-      props.getGooglePrices();
+      //props.getGooglePrices();
     })();
   }, []);
 
@@ -177,7 +185,7 @@ export default function PriceStage(props) {
         {props.processingPrices ? (
           <View>
             <Button mode='text' loading={true}>
-              Getting eBay prices
+              Getting prices
             </Button>
           </View>
         ) : props.prices.length > 0 ? (
@@ -189,6 +197,8 @@ export default function PriceStage(props) {
         ) : (
           ''
         )}
+
+
 
         <SegmentedButtons
           style={props.styles.nextBackControl}
@@ -233,6 +243,7 @@ export default function PriceStage(props) {
             },
           ]}
         />
+
         {!props.checkedAllAspects ? (
           <Button
             onPress={() => props.goToStep(4)}
@@ -260,16 +271,16 @@ export default function PriceStage(props) {
         ) : (
           ''
         )}
+
+{!props.processingPrices && props.letPriceListing && !props.isChangedAspects ?  (
+        <View style={{padding: 10}}>
+          <Button icon='refresh' onPress={() => props.getGooglePrices()}>Get updated reference prices</Button>
+        </View>
+) : ''}
+
+
       </View>
-      {/*<View style={{justifyContent: 'flex-end'}}>
-      <Button
-          onPress={() => props.saveListing()}
-          style={{ marginTop: 15 }}
-          icon='clock-edit-outline'
-        >
-          Save and close to finish later
-        </Button>
-            </View>*/}
+      
     </View>
   );
 }
