@@ -854,6 +854,7 @@ export default function ItemSpecificsStage(props) {
         saveListing={props.saveListing}
         type={props.typeHeader}
         actionBack={props.onOpenBackDialog}
+        processingSaveListing={props.processingSaveListing}
       />
       <View>
         <Banner visible={true} icon={'star-circle-outline'}>

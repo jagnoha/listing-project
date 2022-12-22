@@ -486,10 +486,11 @@ export default function Header(props) {
       <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
         <Appbar.BackAction onPress={() => props.actionBack()} />
         <Appbar.Content title={props.title} color={theme.colors.onBackground} />
-        <Appbar.Action
+        {!props.processingSaveListing ? <Appbar.Action
           icon='content-save-outline'
           onPress={() => props.saveListing()}
-        />
+          //disabled={props.processingSaveListing}
+        /> : <View style={{marginRight: 15}}><ActivityIndicator animating={true} size={20} /></View>}
         {/*<Appbar.Action icon='content-save-outline' onPress={()=>console.log('Save item!')} />*/}
       </Appbar.Header>
     );
@@ -500,13 +501,19 @@ export default function Header(props) {
       <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
         <Appbar.BackAction onPress={() => props.actionBack()} />
         <Appbar.Content title={props.title} color={theme.colors.onBackground} />
-        <Appbar.Action
+        {!props.processingSaveListing ? <Appbar.Action
           icon='content-save-outline'
           onPress={() => props.saveListing()}
-        />
+          //disabled={props.processingSaveListing}
+        /> : <View style={{marginRight: 15}}><ActivityIndicator animating={true} size={20} /></View>}
+
+        
+
+
         <Appbar.Action
           icon='delete-outline'
           onPress={() => props.onDeleteItem()}
+          
         />
       </Appbar.Header>
     );

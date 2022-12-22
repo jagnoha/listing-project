@@ -337,20 +337,12 @@ export default function Main() {
 
         console.log(value.data.onUpdateListing);
 
-        //listings.filter(item => item.id !== value.data.onUpdateListing.id );
-
-        let index = listings.findIndex(
+        
+        /*let index = listings.findIndex(
           (item) => item.id === value.data.onUpdateListing.id
         );
 
-        /*let tempListings = [...listings];
-
-        tempListings[index - 1] = value.data.onUpdateListing;
-
-        console.log('INDEX!!!: ', index);*/
-
-        /*setListings((old) => [tempListings]);
-        setListingsOnline((old) => [tempListings]);*/
+        
 
         setListings((old) => [
           ...old
@@ -370,16 +362,30 @@ export default function Main() {
           ...old
             .slice(index + 1)
             .filter((item) => item.id !== value.data.onUpdateListing.id),
+        ]);*/
+
+        setListings((old) => [ ...old.map(item => {
+          if (item.id === value.data.onUpdateListing.id) {
+            return value.data.onUpdateListing;
+          }
+          return item
+        } )  ]);
+
+        setListingsOnline((old) => [ ...old.map(item => {
+          if (item.id === value.data.onUpdateListing.id) {
+            return value.data.onUpdateListing;
+          }
+          return item
+        } )  ]);
+
+        /*setListings((old) => [value.data.onUpdateListing,
+          ...old.filter((item) => item.id !== value.data.onUpdateListing.id)
+          
         ]);
 
-        /*setListings((old) => [
-          ...old.filter((item) => item.id !== value.data.onUpdateListing.id),
-          value.data.onUpdateListing,
-        ]);
-
-        setListingsOnline((old) => [
-          ...old.filter((item) => item.id !== value.data.onUpdateListing.id),
-          value.data.onUpdateListing,
+        setListingsOnline((old) => [value.data.onUpdateListing,
+          ...old.filter((item) => item.id !== value.data.onUpdateListing.id)
+          
         ]);*/
 
         /*let newListing = value.data.onUpdateListing;

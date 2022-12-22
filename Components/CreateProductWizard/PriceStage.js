@@ -152,6 +152,7 @@ export default function PriceStage(props) {
         actionBack={props.onOpenBackDialog}
         onDeleteItem={props.onDeleteItem}
         saveListing={props.saveListing}
+        processingSaveListing={props.processingSaveListing}
       />
       <View>
         <Banner visible={true} icon={'currency-usd'}>

@@ -63,6 +63,7 @@ export default function BarcodeStage(props) {
         //type='createListing'
         type={props.typeHeader}
         actionBack={props.onOpenBackDialog}
+        processingSaveListing={props.processingSaveListing}
       />
       <View>
         <Banner visible={true} icon={'barcode'}>

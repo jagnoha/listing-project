@@ -44,6 +44,7 @@ export default function PhotosSection(props) {
         //type='createListing'
         onDeleteItem={props.onDeleteItem}
         saveListing={props.saveListing}
+        processingSaveListing={props.processingSaveListing}
         type={props.typeHeader}
         //actionBack={props.navigation.goBack} 
         actionBack={props.onOpenBackDialog}

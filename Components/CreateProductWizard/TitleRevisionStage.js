@@ -190,6 +190,7 @@ export default function TitleRevisionStage(props) {
         saveListing={props.saveListing}
         type={props.typeHeader}
         actionBack={props.onOpenBackDialog}
+        processingSaveListing={props.processingSaveListing}
         
       />
       <View>

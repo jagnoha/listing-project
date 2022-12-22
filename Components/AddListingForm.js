@@ -179,6 +179,8 @@ export default function AddListingForm(props) {
 
   const [processingCategories, setProcessingCategories] = useState(false);
 
+  const [processingSaveListing, setProcessingSaveListing] = useState(false);
+
   const [aspects, setAspects] = useState([]);
   const [processingAspects, setProcessingAspects] = useState(false);
 
@@ -351,6 +353,8 @@ export default function AddListingForm(props) {
     try {
       console.log('Saving Listing');
 
+      setProcessingSaveListing(true);
+
       const id = uuidv4();
 
       const listingDetails = {
@@ -424,11 +428,111 @@ export default function AddListingForm(props) {
 
         console.log(newListing);
 
-        setListingId(id);
+        //setListingId(id);
 
         //console.log('Version: ', newListing.data.createListing._version)
         //setListingVersion((old) => newListing.data.createListing._version);
-        setListingVersion(1);
+        //setListingVersion(1);
+
+        processListing(newListing.data.createListing);
+
+        setProcessingSaveListing(false);
+
+        setSnackBar({ visible: true, text: 'Listing Saved as Draft' });
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error));
+      setProcessingSaveListing(false);
+    }
+  };
+
+
+  const createNewListingDraftAndClose = async () => {
+    try {
+      console.log('Saving Listing');
+
+      const id = uuidv4();
+
+      const listingDetails = {
+        id: id,
+        sku: id,
+        modelType: 'Listing',
+        accountsID: userAccount.id,
+        title: titleProcessed,
+        description: descriptionProcessed,
+        price: priceProduct,
+        itemsSpecifics: JSON.stringify(aspects),
+        categoryFeatures: JSON.stringify(categoryFeatures),
+        isDraft: true,
+        type: ListingType[type.toUpperCase()],
+        photoMain: photoMain,
+        photoLabel: photoLabel,
+        photoLabelExtra: photoLabelExtra,
+        photos: JSON.stringify(photos),
+        lastStep: lastStep,
+        ebayMotors:
+          ListingType[type.toUpperCase()] === 'AUTOPARTS' ? true : false,
+        categoryID: category,
+        categoryList: JSON.stringify(categories),
+        shippingProfileID: fulfillmentPolicyId,
+        returnProfileID: returnPolicyId,
+        paymentProfileID: paymentPolicyId,
+        conditionCode: condition,
+        conditionDescription: conditionDescription,
+        conditionName: conditionName,
+        UPC: getUPC(),
+        ISBN: getISBN(),
+        EAN: getEAN(),
+        barcodeValue: barcodeValue ? barcodeValue.data : null,
+        length: length ? Number(length) : 6,
+        width: width ? Number(width) : 6,
+        height: height ? Number(height) : 6,
+        weightMayor: weightMayor ? Number(weightMayor) : 0,
+        weightMinor: weightMinor ? Number(weightMinor) : 6,
+
+        quantity: quantity,
+        isChangedAspects: isChangedAspects,
+        isReadyToGo:
+          quantity > 0 &&
+          priceProduct > 0 &&
+          checkedAllAspects &&
+          !isChangedAspects
+            ? true
+            : false,
+      };
+
+      const newListing = await API.graphql({
+        query: mutations.createListing,
+        variables: { input: listingDetails },
+      });
+
+      /*console.log(
+        '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
+      );*/
+      /*console.log(listings);
+      console.log(
+        '*****************************************************************'
+      );*/
+      /*console.log(newListing);
+      console.log(
+        '*****************************************************************'
+      );*/
+
+      if (newListing) {
+        //setListings((old) => [...old, newListing.data.createListing]);
+        //navigation.goBack();
+
+        console.log(newListing);
+
+        //setListingId(id);
+
+        //console.log('Version: ', newListing.data.createListing._version)
+        //setListingVersion((old) => newListing.data.createListing._version);
+        //setListingVersion(1);
+
+        //processListing(newListing.data.createListing);
+
+        onBack();
         setSnackBar({ visible: true, text: 'Listing Saved as Draft' });
       }
     } catch (error) {
@@ -436,11 +540,14 @@ export default function AddListingForm(props) {
     }
   };
 
+
   const createNewListingOnline = async (id) => {
     try {
       console.log('Saving Listing Online');
 
       //const id = uuidv4();
+
+      setProcessingSaveListing(true);
 
       const listingDetails = {
         id: id,
@@ -496,8 +603,10 @@ export default function AddListingForm(props) {
       });
 
       if (newListing) {
-        setListingId(id);
-        setListingVersion(newListing.data.createListing._version);
+        //setListingId(id);
+        //setListingVersion(newListing.data.createListing._version);
+        processListing(newListing.data.createListing);
+        setProcessingSaveListing(false);
       }
 
       /*console.log(
@@ -513,6 +622,7 @@ export default function AddListingForm(props) {
       );*/
     } catch (error) {
       console.log(JSON.stringify(error));
+      setProcessingSaveListing(false);
     }
   };
 
@@ -520,6 +630,7 @@ export default function AddListingForm(props) {
     try {
       console.log('Saving Listing Online');
 
+      
       //const id = uuidv4();
 
       const listingDetails = {
@@ -836,6 +947,8 @@ export default function AddListingForm(props) {
     try {
       console.log('Saving Listing');
 
+      setProcessingSaveListing(true);
+
       const id = listingId;
 
       const version = listingVersion;
@@ -907,13 +1020,122 @@ export default function AddListingForm(props) {
       if (newListing) {
         //navigation.goBack();
         console.log(newListing);
-        setListingVersion(newListing.data.updateListing._version);
+        //setListingVersion(newListing.data.updateListing._version);
+        processListing(newListing.data.updateListing);
+
+        setProcessingSaveListing(false);
+          
+        
+        setSnackBar({ visible: true, text: 'Listing Saved' });
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error));
+      setProcessingSaveListing(false);
+    }
+  };
+
+  const updateListingDraftAndClose = async () => {
+    try {
+      console.log('Saving Listing');
+
+      const id = listingId;
+
+      const version = listingVersion;
+
+      const listingDetails = {
+        id: id,
+        sku: id,
+        _version: version,
+        modelType: 'Listing',
+        accountsID: userAccount.id,
+        title: titleProcessed,
+        description: descriptionProcessed,
+        price: priceProduct,
+        itemsSpecifics: JSON.stringify(aspects),
+        isDraft: true,
+        type: ListingType[type.toUpperCase()],
+        photoMain: photoMain,
+        photoLabel: photoLabel,
+        photoLabelExtra: photoLabelExtra,
+        photos: JSON.stringify(photos),
+        lastStep: lastStep,
+        ebayMotors:
+          ListingType[type.toUpperCase()] === 'AUTOPARTS' ? true : false,
+        categoryID: category,
+        categoryList: JSON.stringify(categories),
+        shippingProfileID: fulfillmentPolicyId,
+        returnProfileID: returnPolicyId,
+        paymentProfileID: paymentPolicyId,
+        conditionCode: condition,
+        conditionDescription: conditionDescription,
+        conditionName: conditionName,
+        UPC: getUPC(),
+        ISBN: getISBN(),
+        EAN: getEAN(),
+        barcodeValue: barcodeValue ? barcodeValue.data : null,
+        length: length ? Number(length) : 6,
+        width: width ? Number(width) : 6,
+        height: height ? Number(height) : 6,
+        weightMayor: weightMayor ? Number(weightMayor) : 0,
+        weightMinor: weightMinor ? Number(weightMinor) : 6,
+        quantity: quantity,
+        isChangedAspects: isChangedAspects,
+        isReadyToGo:
+          quantity > 0 &&
+          priceProduct > 0 &&
+          checkedAllAspects &&
+          !isChangedAspects
+            ? true
+            : false,
+      };
+
+      const newListing = await API.graphql({
+        query: mutations.updateListing,
+        variables: { input: listingDetails },
+      });
+
+      /*console.log(
+        '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
+      );
+      console.log(listings);
+      console.log(
+        '*****************************************************************'
+      );
+      console.log(newListing);
+      console.log(
+        '*****************************************************************'
+      );*/
+
+      if (newListing) {
+        //navigation.goBack();
+        console.log(newListing);
+        //setListingVersion(newListing.data.updateListing._version);
+        //processListing(newListing.data.updateListing);
+        onBack()
+        
         setSnackBar({ visible: true, text: 'Listing Saved' });
       }
     } catch (error) {
       console.log(JSON.stringify(error));
     }
   };
+
+
+  const saveListingAndClose = async () => {
+    try {
+      
+
+      if (!listingId) {
+        await createNewListingDraftAndClose();
+      } else {
+        await updateListingDraftAndClose();
+      }
+
+    } catch (error){
+      console.log(error);
+    }
+  }
+
 
   const saveListing = async () => {
     try {
@@ -3004,6 +3226,61 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     }
   };
 
+  const processListing =  (listing) => {
+    try {
+
+        setListingVersion(listing._version);
+        setListingId(listing.id);
+
+        setPhotoMain(listing.photoMain);
+        setPhotoLabel(listing.photoLabel);
+        setPhotoLabelExtra(listing.photoLabelExtra);
+        setPhotos(JSON.parse(listing.photos));
+        setBarcodeValue(listing.barcodeValue);
+        setCategories(JSON.parse(listing.categoryList));
+        setAspects(JSON.parse(listing.itemsSpecifics));
+        setCategory(listing.categoryID);
+
+        const aspectList = JSON.parse(listing.itemsSpecifics).filter(
+          (item) => item.require === true && item.value === ''
+        );
+
+        setCheckedAllAspects(aspectList.length > 0 ? false : true);
+
+        setCondition(Number(listing.conditionCode));
+        setConditionDescription(listing.conditionDescription);
+        setConditionName(listing.conditionName);
+        setLength(listing.length.toString());
+        setHeight(listing.height.toString());
+        setWidth(listing.width.toString());
+        setWeightMayor(listing.weightMayor.toString());
+        setWeightMinor(listing.weightMinor.toString());
+
+        setIsChangedAspects(listing.isChangedAspects);
+        //setType(listing.type.toLowerCase());
+
+        console.log('TYPE: ', type);
+
+        //setWeight(listing.weight.toString());
+
+        setFulfillmentPolicyId(listing.shippingProfileID);
+        setReturnPolicyId(listing.returnProfileID);
+        setPaymentPolicyId(listing.paymentProfileID);
+        setTitleProcessed(listing.title);
+        setDescriptionProcessed(listing.description);
+        setQuantity(listing.quantity.toString());
+        setPriceProduct(listing.price.toString());
+        setCategoryFeatures(JSON.parse(listing.categoryFeatures));
+
+        setStep(listing.lastStep);
+        setLastStep(listing.lastStep);
+
+
+    } catch(error){
+      console.log(error);
+    }
+  }
+
   const processLabel = async () => {
     try {
       setProcessingSelectedAspectValue(true);
@@ -3404,8 +3681,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             <Dialog.Actions>
               <Button
                 onPress={() => {
-                  saveListing();
-                  onBack();
+                  saveListingAndClose();
+                  //onBack();
                 }}
               >
                 Yes
@@ -3455,6 +3732,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             photos={photos}
             backward={backward}
             forward={forward}
+            processingSaveListing={processingSaveListing}
             removeBackground={removeBackground}
             onOpenBackDialog={onOpenBackDialog}
             //goToFirstStep={goToFirstStep}
@@ -3706,6 +3984,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         onOpenBarcode={onOpenBarcode}
         handleBarCodeScanned={handleBarCodeScanned}
         barcodeValue={barcodeValue}
+        processingSaveListing={processingSaveListing}
         deleteBarcodeValue={deleteBarcodeValue}
         getCategories={getCategories}
         category={category}
@@ -3725,6 +4004,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         backward={backward}
         forward={forward}
         onOpenBackDialog={onOpenBackDialog}
+        processingSaveListing={processingSaveListing}
         goToFirstStep={goToFirstStep}
         processingCategories={processingCategories}
         categories={categories}
@@ -3749,6 +4029,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         forward={forward}
         goToFirstStep={goToFirstStep}
         onOpenBackDialog={onOpenBackDialog}
+        processingSaveListing={processingSaveListing}
         processingAspects={processingAspects}
         aspects={aspects}
         getAspectValues={getAspectValues}
@@ -3773,6 +4054,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         navigation={navigation}
         styles={styles}
         backward={backward}
+        processingSaveListing={processingSaveListing}
         forward={forward}
         goToFirstStep={goToFirstStep}
         onOpenBackDialog={onOpenBackDialog}
@@ -3799,6 +4081,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         navigation={navigation}
         styles={styles}
         backward={backward}
+        processingSaveListing={processingSaveListing}
         forward={forward}
         goToFirstStep={goToFirstStep}
         onOpenBackDialog={onOpenBackDialog}
@@ -3838,6 +4121,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         onOpenBackDialog={onOpenBackDialog}
         processingPolicies={processingPolicies}
         fulfillmentPolicies={fulfillmentPolicies}
+        processingSaveListing={processingSaveListing}
         paymentPolicies={paymentPolicies}
         returnPolicies={returnPolicies}
         onClickPaymentPolicy={onClickPaymentPolicy}
@@ -3881,6 +4165,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         forward={forward}
         titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}
+        processingSaveListing={processingSaveListing}
         onChangeTitle={onChangeTitle}
         onChangeDescription={onChangeDescription}
         processingPrices={processingPrices}
@@ -3935,6 +4220,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         getGooglePrices={getGooglePrices}
         prices={prices}
         processingPrices={processingPrices}
+        processingSaveListing={processingSaveListing}
         pricingList={pricingList}
         onChangeProductPrice={onChangeProductPrice}
         priceProduct={priceProduct}

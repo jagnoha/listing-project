@@ -256,6 +256,7 @@ export default function PolicyStage(props) {
         saveListing={props.saveListing}
         type={props.typeHeader}
         actionBack={props.onOpenBackDialog}
+        processingSaveListing={props.processingSaveListing}
       />
       <View>
         <Banner visible={true} icon={'postage-stamp'}>
