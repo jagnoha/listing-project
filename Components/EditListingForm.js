@@ -2048,6 +2048,73 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     }
   };
 
+  const getGooglePricesAgain = async () => {
+    try {
+
+      const isNew = condition === 1000 || condition === 1500 ? 'new' : 'used';
+
+      let title = `${titleProcessed}`;
+
+      if (barcodeValue) {
+        title = title + ' ' + barcodeValue;
+      }
+
+      //const title = descriptionProcessed.split('<h2>')[1].split('</h2>')[0];
+
+      //console.log('TITLE!!!!: ', title);
+
+      //console.log('DESCRIPTION PROCESSED!!!: ', descriptionProcessed.split('<h2>')[1].split('</h2>')[0]);
+
+      const urlGet = `https://listerfast.com/api/utils/searchprices/${title}/${isNew}`;
+
+      //console.log(`TITULO: ${titleProcessed} ${conditionName}`);
+
+      const prices = await axios.get(urlGet, { timeout: 1000 });
+
+      const listings = prices.data;
+
+      console.log(
+        listings.map((item) => ({
+          itemId: item.id,
+          title: item.title,
+          image: item.image,
+          price: item.price,
+          condition: isNew.toUpperCase(),
+          shop: item.shop,
+
+          //freeShipping: 'No',
+          freeShipping: item.freeShipping ? 'Yes' : 'No',
+        }))
+      );
+
+      setPricingList(
+        listings.map((item) => ({
+          itemId: item.id,
+          title: item.title,
+          image: item.image,
+          price: item.price,
+          condition: isNew.toUpperCase(),
+          shop: item.shop,
+          //freeShipping: 'No',
+          freeShipping: item.freeShipping ? 'Yes' : 'No',
+        }))
+      );
+
+      let pricesL = listings.map((item) => Number(item.price));
+
+      setPrices([pricesL, getAvgPrice(pricesL).toFixed(2)]);
+
+      setProcessingPrices(false);
+      setLetPriceListing(false);
+
+
+    } catch (error) {
+      console.log(error);
+      setProcessingPrices(false);
+    }
+
+  }
+
   const getGooglePrices = async () => {
     try {
       setProcessingPrices(true);
@@ -2108,7 +2175,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       setLetPriceListing(false);
     } catch (error) {
       console.log(error);
-      setProcessingPrices(false);
+      getGooglePricesAgain();
+      
     }
   };
 
