@@ -69,8 +69,8 @@ import PriceStage from './CreateProductWizard/PriceStage';
 
 import TitleRevisionStage from './CreateProductWizard/TitleRevisionStage';
 
-import awsconfig from '../src/aws-exports';
-Amplify.configure(awsconfig);
+import awsmobile from '../src/aws-exports';
+Amplify.configure(awsmobile);
 
 export default function EditListingForm(props) {
   let cameraRef = useRef();

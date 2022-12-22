@@ -26,9 +26,9 @@ import listingsAtom from '../Store/atoms/listingsAtom';
 
 import urlImagesAtom from '../Store/atoms/urlImagesAtom';
 
-import awsconfig from '../src/aws-exports';
+import awsmobile from '../src/aws-exports';
 
-Amplify.configure(awsconfig);
+Amplify.configure(awsmobile);
 
 const month = [
   'Jan',

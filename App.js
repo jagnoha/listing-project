@@ -3,9 +3,10 @@ import React from 'react';
 import { Amplify, Auth } from 'aws-amplify';
 import { View, Text } from 'react-native';
 import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
-import awsconfig from './src/aws-exports';
+import awsmobile from './src/aws-exports';
 
-Amplify.configure(awsconfig);
+
+Amplify.configure(awsmobile);
 
 import { RecoilRoot } from 'recoil';
 import {
