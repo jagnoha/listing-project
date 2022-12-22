@@ -47,9 +47,9 @@ import listingsAtom from './Store/atoms/listingsAtom';
 import listingsOnlineAtom from './Store/atoms/listingsOnlineAtom';
 
 import NewAccountWizard from './Components/NewAccountWizard';
-import awsmobile from './src/aws-exports';
+/*import awsmobile from './src/aws-exports';
 
-Amplify.configure(awsmobile);
+Amplify.configure(awsmobile);*/
 
 const Stack = createNativeStackNavigator();
 

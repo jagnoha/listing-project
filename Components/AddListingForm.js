@@ -77,8 +77,8 @@ import urlImagesAtom from '../Store/atoms/urlImagesAtom';
 
 import TitleRevisionStage from './CreateProductWizard/TitleRevisionStage';
 
-import awsmobile from '../src/aws-exports';
-Amplify.configure(awsmobile);
+/*import awsmobile from '../src/aws-exports';
+Amplify.configure(awsmobile);*/
 
 export default function AddListingForm(props) {
   let cameraRef = useRef();

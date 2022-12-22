@@ -23,9 +23,9 @@ import urlImagesAtom from '../Store/atoms/urlImagesAtom';
 import userAccountAtom from '../Store/atoms/userAccountAtom';
 import paymentPoliciesAtom from '../Store/atoms/paymentPoliciesAtom';
 
-import awsmobile from '../src/aws-exports';
+/*import awsmobile from '../src/aws-exports';
 
-Amplify.configure(awsmobile);
+Amplify.configure(awsmobile);*/
 
 export default function Header(props) {
   const theme = useTheme();
