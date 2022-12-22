@@ -65,7 +65,8 @@ export default function Main() {
   const [readyToGoList, setReadyToGoList] = useRecoilState(readyToGoListAtom);
   const [listings, setListings] = useRecoilState(listingsAtom);
 
-  const [listingsOnline, setListingsOnline] = useRecoilState(listingsOnlineAtom);
+  const [listingsOnline, setListingsOnline] =
+    useRecoilState(listingsOnlineAtom);
 
   const [paymentPolicies, setPaymentPolicies] =
     useRecoilState(paymentPoliciesAtom);
@@ -174,14 +175,12 @@ export default function Main() {
       );*/
 
       setListings(
-        listingsResponse.data.listingsByDate.items          
-          .filter((item) => item._deleted !== true)
+        listingsResponse.data.listingsByDate.items.filter(
+          (item) => item._deleted !== true
+        )
       );
-
-      
     })();
   }, []);
-
 
   useEffect(() => {
     (async () => {
@@ -193,7 +192,7 @@ export default function Main() {
           filter: {
             accountsID: { eq: user.username.toLowerCase() },
             //isDraft: { eq: false },
-            //isReadyToGo: {eq: true},            
+            //isReadyToGo: {eq: true},
             //_deleted: { eq: false },
           },
           limit: 1000,
@@ -201,8 +200,9 @@ export default function Main() {
       });
 
       setListingsOnline(
-        listingsResponse.data.listingsByDate.items
-          .filter((item) => item._deleted !== true)
+        listingsResponse.data.listingsByDate.items.filter(
+          (item) => item._deleted !== true
+        )
       );
 
       /*const toReviseListResponse = await API.graphql({
@@ -314,7 +314,7 @@ export default function Main() {
         console.log('CREATE LISTING:!!!! ');
         console.log(value.data.onCreateListing);
         setListings((old) => [value.data.onCreateListing, ...old]);
-        setListingsOnline((old) => [value.data.onCreateListing,...old]);
+        setListingsOnline((old) => [value.data.onCreateListing, ...old]);
         //setListings([...listings, value.data.onCreateListing]);
       },
       error: (error) => console.warn(error),
@@ -335,22 +335,42 @@ export default function Main() {
         //console.log({ provider, value });
         console.log('UPDATE LISTING CODIGO PROBANDO ESTA MIERDA:!!!! ');
 
+        console.log(value.data.onUpdateListing);
+
         //listings.filter(item => item.id !== value.data.onUpdateListing.id );
 
-        let index = listings.findIndex(item => item.id === value.data.onUpdateListing.id );
+        let index = listings.findIndex(
+          (item) => item.id === value.data.onUpdateListing.id
+        );
 
-        let tempListings = [...listings];
+        /*let tempListings = [...listings];
 
         tempListings[index - 1] = value.data.onUpdateListing;
 
-        console.log('INDEX!!!: ', index);
+        console.log('INDEX!!!: ', index);*/
 
         /*setListings((old) => [tempListings]);
         setListingsOnline((old) => [tempListings]);*/
 
-        /*setListings((old) => [...old.slice(0,index), value.data.onUpdateListing, ...old.slice(index+1)]);
+        setListings((old) => [
+          ...old
+            .slice(0, index)
+            .filter((item) => item.id !== value.data.onUpdateListing.id),
+          value.data.onUpdateListing,
+          ...old
+            .slice(index + 1)
+            .filter((item) => item.id !== value.data.onUpdateListing.id),
+        ]);
 
-        setListingsOnline((old) => [...old.slice(0,index), value.data.onUpdateListing, ...old.slice(index+1)]);*/
+        setListingsOnline((old) => [
+          ...old
+            .slice(0, index)
+            .filter((item) => item.id !== value.data.onUpdateListing.id),
+          value.data.onUpdateListing,
+          ...old
+            .slice(index + 1)
+            .filter((item) => item.id !== value.data.onUpdateListing.id),
+        ]);
 
         /*setListings((old) => [
           ...old.filter((item) => item.id !== value.data.onUpdateListing.id),
@@ -404,7 +424,6 @@ export default function Main() {
         setListingsOnline((old) => [
           ...old.filter((item) => item.id !== value.data.onDeleteListing.id),
         ]);
-
       },
       error: (error) => console.warn(error),
     });
@@ -473,7 +492,11 @@ export default function Main() {
                 console.log('Close');
               },
             }}
-            style={snackBar.color ? {color: 'white', backgroundColor: snackBar.color} : null}
+            style={
+              snackBar.color
+                ? { color: 'white', backgroundColor: snackBar.color }
+                : null
+            }
             //style={{ backgroundColor: 'green' }}
             //onDismiss={onDismissSnackBar}
             /*action={{

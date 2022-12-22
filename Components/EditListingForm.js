@@ -378,7 +378,6 @@ export default function EditListingForm(props) {
     setLetPriceListing(value);
   };
 
-
   const getISBN = () => {
     if (
       categoryFeatures &&
@@ -428,6 +427,8 @@ export default function EditListingForm(props) {
   const updateListingDraft = async () => {
     try {
       console.log('Saving Listing');
+
+      console.log('LISTING ID!!! ', listingId);
 
       const id = listingId;
 
@@ -1571,7 +1572,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     setConditionName(conditionName);
     setIsChangedAspects(true);
     setLetPriceListing(true);
-    
   };
 
   const getAspectValues = async (categoryId) => {
@@ -1901,16 +1901,14 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       //const title = descriptionProcessed.split('<h2>')[1].split('</h2>')[0];
 
       //console.log('TITLE!!!!: ', title);
-      
-      //console.log('DESCRIPTION PROCESSED!!!: ', descriptionProcessed.split('<h2>')[1].split('</h2>')[0]);
 
-      
+      //console.log('DESCRIPTION PROCESSED!!!: ', descriptionProcessed.split('<h2>')[1].split('</h2>')[0]);
 
       const urlGet = `https://listerfast.com/api/utils/searchprices/${title}/${isNew}`;
 
       //console.log(`TITULO: ${titleProcessed} ${conditionName}`);
 
-      const prices = await axios.get(urlGet, {timeout: 1000});
+      const prices = await axios.get(urlGet, { timeout: 1000 });
 
       const listings = prices.data;
 
