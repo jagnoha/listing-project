@@ -3931,6 +3931,13 @@ const styles = StyleSheet.create({
   nextBackControl: {
     justifyContent: 'center',
     marginTop: 25,
+    
+    
+  },
+
+  nextBackControlButton: {
+    backgroundColor: 'white',
+    
   },
 
   buttonPreviewCameraControl: {

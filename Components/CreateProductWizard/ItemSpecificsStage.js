@@ -466,12 +466,14 @@ export default function ItemSpecificsStage(props) {
                     value: 'close',
                     label: 'Close',
                     icon: 'close',
+                    style: props.styles.nextBackControlButton,
                     onPress: () => onCloseWheel(),
                   },
                   {
                     value: 'reset',
                     label: 'Delete',
                     icon: 'cancel',
+                    style: props.styles.nextBackControlButton,
                     onPress: () => onResetWheel(),
                   },
                 ]
@@ -480,12 +482,14 @@ export default function ItemSpecificsStage(props) {
                     value: 'close',
                     label: 'Close',
                     icon: 'close',
+                    style: props.styles.nextBackControlButton,
                     onPress: () => onCloseWheel(),
                   },
                   {
                     value: 'reset',
                     label: 'Delete',
                     icon: 'cancel',
+                    style: props.styles.nextBackControlButton,
                     onPress: () => onResetWheel(),
                   },
 
@@ -493,6 +497,7 @@ export default function ItemSpecificsStage(props) {
                     value: 'apply',
                     label: 'Apply',
                     icon: 'check',
+                    style: props.styles.nextBackControlButton,
                     onPress: () => onApplyWheel(),
                   },
                 ]
@@ -576,12 +581,14 @@ export default function ItemSpecificsStage(props) {
                     label: 'Close',
                     icon: 'close',
                     onPress: () => onCloseWheel(),
+                    style: props.styles.nextBackControlButton,
                   },
                   {
                     value: 'reset',
                     label: 'Delete',
                     icon: 'cancel',
                     onPress: () => onResetWheel(),
+                    style: props.styles.nextBackControlButton,
                   },
                   {
                     value: 'apply',
@@ -589,6 +596,7 @@ export default function ItemSpecificsStage(props) {
                     icon: 'check',
                     disabled: multiSelected.length > 0 ? false : true,
                     onPress: () => onApplyMultiWheel(),
+                    style: props.styles.nextBackControlButton,
                   },
                 ]
               : [
@@ -597,12 +605,14 @@ export default function ItemSpecificsStage(props) {
                     label: 'Close',
                     icon: 'close',
                     onPress: () => onCloseWheel(),
+                    style: props.styles.nextBackControlButton,
                   },
                   {
                     value: 'reset',
                     label: 'Delete',
                     icon: 'cancel',
                     onPress: () => onResetWheel(),
+                    style: props.styles.nextBackControlButton,
                   },
 
                   {
@@ -610,6 +620,7 @@ export default function ItemSpecificsStage(props) {
                     label: 'Add',
                     icon: 'plus',
                     onPress: () => onAddMultiItem(searchQuery),
+                    style: props.styles.nextBackControlButton,
                   },
                   {
                     value: 'apply',
@@ -617,6 +628,7 @@ export default function ItemSpecificsStage(props) {
                     icon: 'check',
                     disabled: multiSelected.length > 0 ? false : true,
                     onPress: () => onApplyMultiWheel(),
+                    style: props.styles.nextBackControlButton,
                   },
                 ]
           }
@@ -946,6 +958,7 @@ export default function ItemSpecificsStage(props) {
               value: 'firststep',
               //label: 'First Step',
               icon: 'page-first',
+              style: props.styles.nextBackControlButton,
               onPress: () => {
                 props.goToFirstStep();
                 //props.getCategoriesFeatures(props.category);
@@ -957,12 +970,14 @@ export default function ItemSpecificsStage(props) {
               value: 'back',
               //label: 'Back',
               icon: 'arrow-left',
+              style: props.styles.nextBackControlButton,
               onPress: () => props.backward(),
             },
             {
               value: 'next',
               //label: 'Next',
               icon: 'arrow-right',
+              style: props.styles.nextBackControlButton,
               disabled: !props.checkedAllAspects,
               onPress: () => {
                 props.forward();

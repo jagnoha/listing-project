@@ -54,11 +54,13 @@ export default function SearchProduct(props) {
               icon: 'arrow-left',
               onPress: () => props.backward(),
               disabled: 'true',
+              style: props.styles.nextBackControlButton,
             },
             {
               value: 'next',
               //label: 'Next',
               icon: 'arrow-right',
+              style: props.styles.nextBackControlButton,
               onPress: () => {
                 props.setCategory('');
                 props.forward();

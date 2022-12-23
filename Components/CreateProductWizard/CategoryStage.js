@@ -100,6 +100,7 @@ export default function CategoryStage(props) {
               value: 'firststep',
               //label: 'First Step',
               icon: 'page-first',
+              style: props.styles.nextBackControlButton,
               onPress: () => {
                 props.goToFirstStep();
                 //props.getCategoriesFeatures(props.category);
@@ -111,6 +112,7 @@ export default function CategoryStage(props) {
               value: 'back',
               //label: 'Back',
               icon: 'arrow-left',
+              style: props.styles.nextBackControlButton,
               onPress: () => props.backward(),
               //disabled: 'false'
               //disabled: categoryId
@@ -119,6 +121,7 @@ export default function CategoryStage(props) {
               value: 'next',
               //label: 'Next',
               icon: 'arrow-right',
+              style: props.styles.nextBackControlButton,
               onPress: () => props.forward(),
               disabled: props.category !== '' ? false : true,
             },

@@ -118,6 +118,7 @@ export default function DimensionStage(props) {
                 props.goToFirstStep();
                 //props.getCategoriesFeatures(props.category);
               },
+              style: props.styles.nextBackControlButton,
               //disabled: 'false'
               //disabled: categoryId
             },
@@ -126,12 +127,14 @@ export default function DimensionStage(props) {
               //label: 'Back',
               icon: 'arrow-left',
               onPress: () => props.backward(),
+              style: props.styles.nextBackControlButton,
               //disabled: 'true'
             },
             {
               value: 'next',
               //label: 'Next',
               icon: 'arrow-right',
+              style: props.styles.nextBackControlButton,
               onPress: () => {
                 //props.onProcessingTitle();
                 props.forward();

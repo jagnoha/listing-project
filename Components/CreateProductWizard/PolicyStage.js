@@ -409,6 +409,7 @@ export default function PolicyStage(props) {
               value: 'firststep',
               //label: 'First Step',
               icon: 'page-first',
+              style: props.styles.nextBackControlButton,
               onPress: () => {
                 props.goToFirstStep();
                 //props.getCategoriesFeatures(props.category);
@@ -420,6 +421,7 @@ export default function PolicyStage(props) {
               value: 'back',
               //label: 'Back',
               icon: 'arrow-left',
+              style: props.styles.nextBackControlButton,
               onPress: () => props.backward(),
               //disabled: 'true'
             },
@@ -427,6 +429,7 @@ export default function PolicyStage(props) {
               value: 'refresh',
               //label: 'Refresh',
               icon: 'reload',
+              style: props.styles.nextBackControlButton,
               onPress: () => props.fetchPolicies(),
               //disabled: 'true'
             },
@@ -434,6 +437,7 @@ export default function PolicyStage(props) {
               value: 'next',
               //label: 'Next',
               icon: 'arrow-right',
+              style: props.styles.nextBackControlButton,
               onPress: () => {
                 //props.onProcessingTitle();
                 props.forward();

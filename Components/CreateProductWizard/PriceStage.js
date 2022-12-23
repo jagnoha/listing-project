@@ -203,6 +203,7 @@ export default function PriceStage(props) {
 
         <SegmentedButtons
           style={props.styles.nextBackControl}
+          
           onValueChange={() => console.log('Change value')}
           buttons={[
             {
@@ -213,6 +214,7 @@ export default function PriceStage(props) {
                 props.goToFirstStep();
                 //props.getCategoriesFeatures(props.category);
               },
+              style: props.styles.nextBackControlButton
               //disabled: 'false'
               //disabled: categoryId
             },
@@ -220,6 +222,7 @@ export default function PriceStage(props) {
               value: 'back',
               //label: 'Back',
               icon: 'arrow-left',
+              style: props.styles.nextBackControlButton,
               onPress: () => {
                 props.backward();
                 //props.getCategoriesFeatures(props.category);
@@ -232,6 +235,7 @@ export default function PriceStage(props) {
               value: 'itemSpecifics',
               //label: 'Back',
               icon: 'star-circle-outline',
+              style: props.styles.nextBackControlButton,
               onPress: () => {
                 props.goToListingDetails();
                 //props.getCategoriesFeatures(props.category);
@@ -247,6 +251,7 @@ export default function PriceStage(props) {
               label: 'Publish',
 
               icon: 'publish',
+              style: props.styles.nextBackControlButton,
               onPress: () => props.onPublishEbay(),
               disabled:
                 Number(props.priceProduct) > 0 &&

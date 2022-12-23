@@ -308,6 +308,7 @@ export default function TitleRevisionStage(props) {
               value: 'firststep',
               //label: 'First Step',
               icon: 'page-first',
+              style: props.styles.nextBackControlButton,
               onPress: () => {
                 props.goToFirstStep();
                 //props.getCategoriesFeatures(props.category);
@@ -319,6 +320,7 @@ export default function TitleRevisionStage(props) {
               value: 'back',
               //label: 'Back',
               icon: 'arrow-left',
+              style: props.styles.nextBackControlButton,
               onPress: () => props.backward(),
               //disabled: 'false'
               //disabled: categoryId
@@ -327,6 +329,7 @@ export default function TitleRevisionStage(props) {
               value: 'itemSpecifics',
               //label: 'Back',
               icon: 'star-circle-outline',
+              style: props.styles.nextBackControlButton,
               onPress: () => {
                 props.goToListingDetails();
                 //props.getCategoriesFeatures(props.category);
@@ -338,6 +341,7 @@ export default function TitleRevisionStage(props) {
               value: 'next',
               //label: 'Next',
               icon: 'arrow-right',
+              style: props.styles.nextBackControlButton,
               onPress: () => {
                 props.forward();
 

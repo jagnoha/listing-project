@@ -104,6 +104,7 @@ export default function BarcodeStage(props) {
               value: 'firststep',
               //label: 'First Step',
               icon: 'page-first',
+              style: props.styles.nextBackControlButton,
               onPress: () => {
                 props.goToFirstStep();
                 //props.getCategoriesFeatures(props.category);
@@ -115,6 +116,7 @@ export default function BarcodeStage(props) {
               value: 'back',
               //label: 'Back',
               icon: 'arrow-left',
+              style: props.styles.nextBackControlButton,
               onPress: () => props.backward(),
               //disabled: 'true'
             },
@@ -122,6 +124,7 @@ export default function BarcodeStage(props) {
               value: 'next',
               //label: 'Next',
               icon: 'arrow-right',
+              style: props.styles.nextBackControlButton,
               onPress: () => props.forward(),
             },
           ]}

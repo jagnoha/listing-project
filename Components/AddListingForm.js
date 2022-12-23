@@ -4459,6 +4459,11 @@ const styles = StyleSheet.create({
     //alignSelf: 'flex-end',
   },
 
+  nextBackControlButton: {
+    backgroundColor: 'white',
+    
+  },
+
   nextBackControl: {
     justifyContent: 'center',
     marginTop: 25,

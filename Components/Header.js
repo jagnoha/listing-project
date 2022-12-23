@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Amplify, API, graphqlOperation } from 'aws-amplify';
 import { useRecoilState } from 'recoil';
-import { View } from 'react-native';
+import { View, StatusBar } from 'react-native';
 import {
   Appbar,
   useTheme,
@@ -26,6 +26,20 @@ import paymentPoliciesAtom from '../Store/atoms/paymentPoliciesAtom';
 /*import awsmobile from '../src/aws-exports';
 
 Amplify.configure(awsmobile);*/
+
+const MyStatusBar = ({ theme }) => {
+
+  return (
+    <StatusBar
+        animated={true}
+        backgroundColor={theme.colors.background}
+        barStyle='dark-content'
+        //showHideTransition={statusBarTransition}
+        hidden={false}
+        
+      />
+  )
+}
 
 export default function Header(props) {
   const theme = useTheme();
@@ -407,6 +421,8 @@ export default function Header(props) {
   if (props.type === 'selection') {
     //if (props.indexTab === 0) {
     return (
+      <View>
+        <MyStatusBar theme={theme} />
       <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='small'>
         <Appbar.BackAction onPress={() => onBack()} />
         <Appbar.Content
@@ -423,6 +439,7 @@ export default function Header(props) {
         )}
         <Appbar.Action icon='delete-outline' onPress={() => onDeleteItems()} />
       </Appbar.Header>
+      </View>
     );
     //}
   }
@@ -430,6 +447,9 @@ export default function Header(props) {
   if (props.type === 'selectionReadyToGo') {
     //if (props.indexTab === 0) {
     return (
+      
+        <View>
+        <MyStatusBar theme={theme} />
       <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='small'>
         <Appbar.BackAction onPress={() => onBack()} />
         <Appbar.Content
@@ -447,42 +467,54 @@ export default function Header(props) {
         <Appbar.Action icon='publish' onPress={() => onPublishItems()} />
         <Appbar.Action icon='delete-outline' onPress={() => onDeleteItems()} />
       </Appbar.Header>
+      </View>
     );
     //}
   }
 
   if (props.type === 'configureNewAccount') {
     return (
+      <View>
+        <MyStatusBar theme={theme} />
       <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='center-aligned'>
         <Appbar.Content title={props.title} color={theme.colors.onBackground} />
         <Appbar.Action icon='logout' onPress={() => props.onPress()} />
       </Appbar.Header>
+      </View>
     );
   }
 
   if (props.type === 'back') {
     return (
+      <View>
+        <MyStatusBar theme={theme} />
       <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='small'>
         <Appbar.BackAction onPress={() => props.actionBack()} />
         <Appbar.Content title={props.title} color={theme.colors.onBackground} />
         {/*<Appbar.Action icon='save' onPress={()=>console.log('Delete items!')} />*/}
       </Appbar.Header>
+      </View>
     );
   }
 
   if (props.type === 'searchListing') {
     return (
+      <View>
+        <MyStatusBar theme={theme} />
       <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='small'>
         <Appbar.BackAction onPress={() => props.actionBack()} />
         <Appbar.Content title={props.title} color={theme.colors.onBackground} />
         
         {/*<Appbar.Action icon='content-save-outline' onPress={()=>console.log('Save item!')} />*/}
       </Appbar.Header>
+      </View>
     );
   }
 
   if (props.type === 'createListing') {
     return (
+      <View>
+        <MyStatusBar theme={theme} />
       <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='small'>
         <Appbar.BackAction onPress={() => props.actionBack()} />
         <Appbar.Content title={props.title} color={theme.colors.onBackground} />
@@ -493,11 +525,14 @@ export default function Header(props) {
         /> : <View style={{marginRight: 15}}><ActivityIndicator animating={true} size={20} /></View>}
         {/*<Appbar.Action icon='content-save-outline' onPress={()=>console.log('Save item!')} />*/}
       </Appbar.Header>
+      </View>
     );
   }
 
   if (props.type === 'editListing') {
     return (
+      <View>
+        <MyStatusBar theme={theme} />
       <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='small'>
         <Appbar.BackAction onPress={() => props.actionBack()} />
         <Appbar.Content title={props.title} color={theme.colors.onBackground} />
@@ -516,10 +551,13 @@ export default function Header(props) {
           
         />
       </Appbar.Header>
+      </View>
     );
   }
 
   return (
+    <View>
+    <MyStatusBar theme={theme} />
     <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='center-aligned' dark={true}>
       <Appbar.Content
       
@@ -528,5 +566,9 @@ export default function Header(props) {
         //titleStyle={{ textAlign: 'center' }}
       />
     </Appbar.Header>
+    </View>
   );
+
+  
+
 }
