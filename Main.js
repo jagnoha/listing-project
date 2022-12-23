@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
 import { Amplify, API, graphqlOperation, Hub } from 'aws-amplify';
 import { useAuthenticator } from '@aws-amplify/ui-react-native';
+import NetInfo from '@react-native-community/netinfo';
 import { ActionSheetIOS, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import { A } from '@expo/html-elements';
@@ -64,6 +65,8 @@ export default function Main() {
   const [toReviseList, setToReviseList] = useRecoilState(toReviseListAtom);
   const [readyToGoList, setReadyToGoList] = useRecoilState(readyToGoListAtom);
   const [listings, setListings] = useRecoilState(listingsAtom);
+
+  const [offline, setOffline] = useState(false);
 
   const [listingsOnline, setListingsOnline] =
     useRecoilState(listingsOnlineAtom);
@@ -139,6 +142,23 @@ export default function Main() {
       priorConnectionState = payload.message;
     }
   });*/
+
+
+  useEffect(() => {
+    //query the initial todolist and subscribe to data updates
+    const unsubscribe = NetInfo.addEventListener(state => {
+      console.log('Connection type', state.type);
+      console.log('Is connected?', state.isConnected);
+
+      setOffline(!state.isConnected);
+
+    });
+
+    //unsubscribe to data updates when component is destroyed so that you don’t introduce a memory leak.
+    return function cleanup() {
+      unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -304,6 +324,7 @@ export default function Main() {
     })();
   }, []);
 
+
   useEffect(() => {
     //query the initial todolist and subscribe to data updates
     const subscription = API.graphql(
@@ -446,6 +467,25 @@ export default function Main() {
     );
   };
 
+  if (offline) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          //justifyContent: 'space-between',
+          alignItems: 'center',
+          alignContent: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+
+          //paddingBottom: 100,
+        }}
+      >
+        <Text>Not internet</Text>
+      </View>
+    );
+  }
+
   if (processing) {
     return (
       <View
@@ -467,6 +507,10 @@ export default function Main() {
       </View>
     );
   }
+
+  
+
+  
 
   if (userAccount && userAccount.isNewAccount) {
     return <NewAccountWizard signOut={signOut} />;
