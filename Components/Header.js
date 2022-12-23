@@ -407,7 +407,7 @@ export default function Header(props) {
   if (props.type === 'selection') {
     //if (props.indexTab === 0) {
     return (
-      <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
+      <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='small'>
         <Appbar.BackAction onPress={() => onBack()} />
         <Appbar.Content
           title={selected.length}
@@ -430,7 +430,7 @@ export default function Header(props) {
   if (props.type === 'selectionReadyToGo') {
     //if (props.indexTab === 0) {
     return (
-      <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
+      <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='small'>
         <Appbar.BackAction onPress={() => onBack()} />
         <Appbar.Content
           title={selected.length}
@@ -453,7 +453,7 @@ export default function Header(props) {
 
   if (props.type === 'configureNewAccount') {
     return (
-      <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
+      <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='center-aligned'>
         <Appbar.Content title={props.title} color={theme.colors.onBackground} />
         <Appbar.Action icon='logout' onPress={() => props.onPress()} />
       </Appbar.Header>
@@ -462,7 +462,7 @@ export default function Header(props) {
 
   if (props.type === 'back') {
     return (
-      <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
+      <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='small'>
         <Appbar.BackAction onPress={() => props.actionBack()} />
         <Appbar.Content title={props.title} color={theme.colors.onBackground} />
         {/*<Appbar.Action icon='save' onPress={()=>console.log('Delete items!')} />*/}
@@ -472,7 +472,7 @@ export default function Header(props) {
 
   if (props.type === 'searchListing') {
     return (
-      <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
+      <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='small'>
         <Appbar.BackAction onPress={() => props.actionBack()} />
         <Appbar.Content title={props.title} color={theme.colors.onBackground} />
         
@@ -483,7 +483,7 @@ export default function Header(props) {
 
   if (props.type === 'createListing') {
     return (
-      <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
+      <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='small'>
         <Appbar.BackAction onPress={() => props.actionBack()} />
         <Appbar.Content title={props.title} color={theme.colors.onBackground} />
         {!props.processingSaveListing ? <Appbar.Action
@@ -498,7 +498,7 @@ export default function Header(props) {
 
   if (props.type === 'editListing') {
     return (
-      <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
+      <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='small'>
         <Appbar.BackAction onPress={() => props.actionBack()} />
         <Appbar.Content title={props.title} color={theme.colors.onBackground} />
         {!props.processingSaveListing ? <Appbar.Action
@@ -520,11 +520,12 @@ export default function Header(props) {
   }
 
   return (
-    <Appbar.Header style={{ backgroundColor: theme.colors.background }}>
+    <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='center-aligned' dark={true}>
       <Appbar.Content
+      
         title={props.title}
         color={theme.colors.onBackground}
-        titleStyle={{ textAlign: 'center' }}
+        //titleStyle={{ textAlign: 'center' }}
       />
     </Appbar.Header>
   );

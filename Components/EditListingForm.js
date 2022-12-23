@@ -3783,6 +3783,27 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       </View>
     );
   }
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        //justifyContent: 'space-between',
+        alignItems: 'center',
+        alignContent: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+
+        //paddingBottom: 100,
+      }}
+    >
+      <ActivityIndicator
+        size='large'
+        style={{ marginTop: '20%', marginBottom: '20%' }}
+      />
+    </View>
+  );
+
 }
 
 const styles = StyleSheet.create({
