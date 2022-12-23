@@ -324,6 +324,17 @@ export default function TitleRevisionStage(props) {
               //disabled: categoryId
             },
             {
+              value: 'itemSpecifics',
+              //label: 'Back',
+              icon: 'star-circle-outline',
+              onPress: () => {
+                props.goToListingDetails();
+                //props.getCategoriesFeatures(props.category);
+              },
+              //disabled: 'false'
+              //disabled: categoryId
+            },
+            {
               value: 'next',
               //label: 'Next',
               icon: 'arrow-right',

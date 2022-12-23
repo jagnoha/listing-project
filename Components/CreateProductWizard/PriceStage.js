@@ -227,9 +227,24 @@ export default function PriceStage(props) {
               //disabled: 'false'
               //disabled: categoryId
             },
+
             {
-              value: 'next',
-              label: 'Publish on eBay',
+              value: 'itemSpecifics',
+              //label: 'Back',
+              icon: 'star-circle-outline',
+              onPress: () => {
+                props.goToListingDetails();
+                //props.getCategoriesFeatures(props.category);
+              },
+              //disabled: 'false'
+              //disabled: categoryId
+            },
+
+            
+
+            {
+              value: 'publish',
+              label: 'Publish',
 
               icon: 'publish',
               onPress: () => props.onPublishEbay(),
