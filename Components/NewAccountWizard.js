@@ -163,6 +163,8 @@ export default function NewAccountWizard({ signOut }) {
             value={ebayAccountText}
           />
 
+          {ebayAccountText.length > 0 ? <OpenURLButton url={URL}>Get eBay Credentials</OpenURLButton> : ''}
+
           <TextInput
             style={{ marginTop: 20 }}
             mode='outlined'
@@ -173,7 +175,7 @@ export default function NewAccountWizard({ signOut }) {
             value={postalCodeText}
           />
 
-          {<OpenURLButton url={URL}>Get eBay Credentials</OpenURLButton>}
+          
 
           <Button
             onPress={() => fetchEbayAccount()}
