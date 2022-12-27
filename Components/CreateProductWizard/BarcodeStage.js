@@ -55,7 +55,7 @@ export default function BarcodeStage(props) {
   }
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       <Header
         title={props.title}
         onDeleteItem={props.onDeleteItem}

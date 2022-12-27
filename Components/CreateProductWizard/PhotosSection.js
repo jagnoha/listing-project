@@ -179,32 +179,33 @@ export default function PhotosSection(props) {
 
 
         </View>
-        <Divider style={{ marginTop: 5 }} bold='true' horizontalInset='true' />
+        {/*<Divider style={{ marginTop: 0 }} bold='true' horizontalInset='true' />*/}
 
         <View
           style={{ alignSelf: 'center' }}
           /*style={{ marginLeft: 60, marginRight: 60, marginTop: 20 }}*/
         >
-          {/*<Button
+          {props.photoMain && props.photos.length < 8 ? <Button
             icon='camera-plus'
-            mode='contained'
+            mode='contained-tonal'
             onPress={() => props.onOpenPreviewPhoto()}
             disabled={props.photoMain && props.photos.length < 8 ? false : true}
           >
             Take more photos
-          </Button>*/}
-          <IconButton
+          </Button>:''}
+          {/*<IconButton
             icon='camera-plus'
-            size={35}
+            size={30}
             onPress={() => props.onOpenPreviewPhoto()}
             disabled={props.photoMain && props.photos.length < 8 ? false : true}
-          />
+        />*/}
         </View>
 
         <View style={props.styles.clothingButtons}>
           {props.photos.map((item) => {
             return (
-              <View key={item.id} style={props.styles.imageList}>
+              <View key={item.id}>
+              <View style={props.styles.imageList}>
                 <Pressable onPress={() => props.onOpenEditPhoto(item.id)}>
                   <Surface style={props.styles.surfaceSmall} elevation={4}>
                     <Image
@@ -216,7 +217,15 @@ export default function PhotosSection(props) {
                     />
                   </Surface>
                 </Pressable>
+                
               </View>
+              <IconButton
+              size={18}
+              style={{ alignSelf: 'center', marginTop: -10 }}
+              onPress={() => props.deleteEditPic(item.id)}
+              icon='delete'
+            />
+            </View>
             );
           })}
         </View>
