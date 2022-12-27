@@ -280,7 +280,7 @@ export default function EditListingForm(props) {
         setPriceProduct(listing.price.toString());
         setCategoryFeatures(JSON.parse(listing.categoryFeatures));
 
-        setStep(listing.lastStep);
+        setStep(step);
         setLastStep(listing.lastStep);
 
 
@@ -590,6 +590,8 @@ export default function EditListingForm(props) {
       const id = listingId;
 
       const version = listing._version;
+
+      
 
       
 

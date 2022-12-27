@@ -3658,7 +3658,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         setPriceProduct(listing.price.toString());
         setCategoryFeatures(JSON.parse(listing.categoryFeatures));
 
-        setStep(listing.lastStep);
+        setStep(step);
         setLastStep(listing.lastStep);
 
 
