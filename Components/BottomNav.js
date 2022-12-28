@@ -13,6 +13,8 @@ const AccountRoute = () => <Account />; //<Text>Account</Text>;
 export default function BottomNav() {
   const [index, setIndex] = useState(0);
 
+  console.log(index);
+
   const [routes] = useState([
     {
       key: 'home',
@@ -30,14 +32,14 @@ export default function BottomNav() {
       key: 'account',
       title: 'Account',
       focusedIcon: 'account',
-      unfocusedIcon: 'account-outline',
-    },
+      unfocusedIcon: 'account-outline',      
+    },  
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
     stats: StatsRoute,
-    account: AccountRoute, //AccountRoute,
+    account: () => <Account opt = '' />, //AccountRoute,
   });
 
   return (

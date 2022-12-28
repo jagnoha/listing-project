@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { Amplify, API, graphqlOperation } from 'aws-amplify';
 import { useRecoilState } from 'recoil';
-import { View, StatusBar } from 'react-native';
+import { View, StatusBar, Pressable } from 'react-native';
 import {
   Appbar,
   useTheme,
+  Menu,
+  Divider,
   Dialog,
   Button,
   Portal,
   ActivityIndicator,
   Text,
+  Avatar, 
 } from 'react-native-paper';
 import selectedAtom from '../Store/atoms/selectedAtom';
 import * as mutations from '../src/graphql/mutations';
@@ -47,6 +50,13 @@ export default function Header(props) {
   const [ebayUser, setEbayUser] = useRecoilState(ebayUserAtom);
   const [snackBar, setSnackBar] = useRecoilState(snackBarAtom);
   const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
+
+  const [visible, setVisible] = React.useState(false);
+
+  const openMenu = () => setVisible(true);
+
+  const closeMenu = () => setVisible(false);
+
 
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
 
@@ -524,6 +534,13 @@ export default function Header(props) {
           //disabled={props.processingSaveListing}
         /> : <View style={{marginRight: 15}}><ActivityIndicator animating={true} size={20} /></View>}
         {/*<Appbar.Action icon='content-save-outline' onPress={()=>console.log('Save item!')} />*/}
+
+        <Appbar.Action
+          icon='help-circle'
+          onPress={() => console.log('Help!')}
+          //disabled={props.processingSaveListing}
+        />
+
       </Appbar.Header>
       </View>
     );
@@ -550,8 +567,62 @@ export default function Header(props) {
           onPress={() => props.onDeleteItem()}
           
         />
+        <Appbar.Action
+          icon='help-circle'
+          onPress={() => console.log('Help!')}
+          //disabled={props.processingSaveListing}
+        />
       </Appbar.Header>
       </View>
+    );
+  }
+
+  if (props.type === 'account') {
+    return (
+      <View>
+    <MyStatusBar theme={theme} />
+    <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='center-aligned' dark={false}>
+      <Appbar.Content
+      
+        title={props.title}
+        color={theme.colors.onBackground}
+        //titleStyle={{ textAlign: 'center' }}
+      />
+
+      {/*<Appbar.Action
+          icon='logout-variant'
+          onPress={() => props.logout()}
+          //disabled={props.processingSaveListing}
+    />*/}
+        
+        
+       
+
+      <View
+        style={{
+          //paddingTop: 50,
+          flexDirection: 'row',
+          justifyContent: 'center',
+        }}>
+        <Menu
+          style={{marginTop: 25}}
+          visible={visible}
+          onDismiss={closeMenu}
+          anchor={ <Pressable onPress = {openMenu}>
+          <Avatar.Text style={{marginRight: 10}} size={40} label={props.labelUser} />
+         </Pressable>}>
+          <Menu.Item onPress={()=>{}} leadingIcon={'account'} title='Account Info' />
+          <Divider />
+          <Menu.Item onPress={props.logout} leadingIcon={'logout-variant'} title="Logout" />
+          
+        </Menu>
+      </View>
+
+
+
+
+    </Appbar.Header>
+    </View>
     );
   }
 
@@ -565,6 +636,7 @@ export default function Header(props) {
         color={theme.colors.onBackground}
         //titleStyle={{ textAlign: 'center' }}
       />
+      
     </Appbar.Header>
     </View>
   );

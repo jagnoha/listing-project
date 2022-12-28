@@ -58,7 +58,7 @@ export default function Stats() {
                 <Text style={{fontSize: 30, fontWeight: 'bold'}}>{listingsOnline.filter(item => item.createdAt >= week).length}</Text>
             </Surface>
             <Surface style={styles.surfaceC} elevation={4}>
-            <Text>Last month</Text>
+            <Text>Last 30 days</Text>
             <Text style={{fontSize: 30, fontWeight: 'bold'}}>{listingsOnline.filter(item => item.createdAt >= month).length}</Text>
             </Surface>
 
