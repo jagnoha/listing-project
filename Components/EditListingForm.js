@@ -88,8 +88,6 @@ export default function EditListingForm(props) {
 
   const [hasImagePickerPermission, setHasImagePickerPermission] = useState();
 
-  
-
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
 
   const [processingSelectedAspectValue, setProcessingSelectedAspectValue] =
@@ -230,64 +228,62 @@ export default function EditListingForm(props) {
 
   useEffect(() => {
     (async () => {
-      const imagePickerPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const imagePickerPermission =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
       setHasImagePickerPermission(imagePickerPermission.status === 'granted');
     })();
   }, []);
 
-  const processListing =  (listing) => {
+  const processListing = (listing) => {
     try {
-
       setListing(listing);
 
-        setPhotoMain(listing.photoMain);
-        setPhotoLabel(listing.photoLabel);
-        setPhotoLabelExtra(listing.photoLabelExtra);
-        setPhotos(JSON.parse(listing.photos));
-        setBarcodeValue(listing.barcodeValue);
-        setCategories(JSON.parse(listing.categoryList));
-        setAspects(JSON.parse(listing.itemsSpecifics));
-        setCategory(listing.categoryID);
+      setPhotoMain(listing.photoMain);
+      setPhotoLabel(listing.photoLabel);
+      setPhotoLabelExtra(listing.photoLabelExtra);
+      setPhotos(JSON.parse(listing.photos));
+      setBarcodeValue(listing.barcodeValue);
+      setCategories(JSON.parse(listing.categoryList));
+      setAspects(JSON.parse(listing.itemsSpecifics));
+      setCategory(listing.categoryID);
 
-        const aspectList = JSON.parse(listing.itemsSpecifics).filter(
-          (item) => item.require === true && item.value === ''
-        );
+      const aspectList = JSON.parse(listing.itemsSpecifics).filter(
+        (item) => item.require === true && item.value === ''
+      );
 
-        setCheckedAllAspects(aspectList.length > 0 ? false : true);
+      setCheckedAllAspects(aspectList.length > 0 ? false : true);
 
-        setCondition(Number(listing.conditionCode));
-        setConditionDescription(listing.conditionDescription);
-        setConditionName(listing.conditionName);
-        setLength(listing.length.toString());
-        setHeight(listing.height.toString());
-        setWidth(listing.width.toString());
-        setWeightMayor(listing.weightMayor.toString());
-        setWeightMinor(listing.weightMinor.toString());
+      setCondition(Number(listing.conditionCode));
+      setConditionDescription(listing.conditionDescription);
+      setConditionName(listing.conditionName);
+      setLength(listing.length.toString());
+      setHeight(listing.height.toString());
+      setWidth(listing.width.toString());
+      setWeightMayor(listing.weightMayor.toString());
+      setWeightMinor(listing.weightMinor.toString());
 
-        setIsChangedAspects(listing.isChangedAspects);
-        //setType(listing.type.toLowerCase());
+      setIsChangedAspects(listing.isChangedAspects);
+      //setType(listing.type.toLowerCase());
 
-        console.log('TYPE: ', type);
+      console.log('TYPE: ', type);
 
-        //setWeight(listing.weight.toString());
+      //setWeight(listing.weight.toString());
 
-        setFulfillmentPolicyId(listing.shippingProfileID);
-        setReturnPolicyId(listing.returnProfileID);
-        setPaymentPolicyId(listing.paymentProfileID);
-        setTitleProcessed(listing.title);
-        setDescriptionProcessed(listing.description);
-        setQuantity(listing.quantity.toString());
-        setPriceProduct(listing.price.toString());
-        setCategoryFeatures(JSON.parse(listing.categoryFeatures));
+      setFulfillmentPolicyId(listing.shippingProfileID);
+      setReturnPolicyId(listing.returnProfileID);
+      setPaymentPolicyId(listing.paymentProfileID);
+      setTitleProcessed(listing.title);
+      setDescriptionProcessed(listing.description);
+      setQuantity(listing.quantity.toString());
+      setPriceProduct(listing.price.toString());
+      setCategoryFeatures(JSON.parse(listing.categoryFeatures));
 
-        setStep(step);
-        setLastStep(listing.lastStep);
-
-
-    } catch(error){
+      setStep(step);
+      setLastStep(listing.lastStep);
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     try {
@@ -405,8 +401,6 @@ export default function EditListingForm(props) {
   }, []);
 
   if (hasCameraPermission === undefined) {
-
-
     return (
       <View
         style={{
@@ -419,21 +413,16 @@ export default function EditListingForm(props) {
 
           //paddingBottom: 100,
         }}
-      >        
+      >
         <ActivityIndicator
           size='large'
           style={{ marginTop: '20%', marginBottom: '20%' }}
         />
       </View>
     );
-
-
-    
   } else if (!hasCameraPermission) {
     return (
-      
-
-    <View
+      <View
         style={{
           flex: 1,
           //justifyContent: 'space-between',
@@ -444,18 +433,15 @@ export default function EditListingForm(props) {
 
           //paddingBottom: 100,
         }}
-      >        
-        <Text style={{textAlign:'center'}}>
-        Permission for camera not granted. Please change this in settings.
-      </Text>
+      >
+        <Text style={{ textAlign: 'center' }}>
+          Permission for camera not granted. Please change this in settings.
+        </Text>
       </View>
-
     );
   }
 
   if (hasImagePickerPermission === undefined) {
-
-
     return (
       <View
         style={{
@@ -468,21 +454,16 @@ export default function EditListingForm(props) {
 
           //paddingBottom: 100,
         }}
-      >        
+      >
         <ActivityIndicator
           size='large'
           style={{ marginTop: '20%', marginBottom: '20%' }}
         />
       </View>
     );
-
-
-    
   } else if (!hasImagePickerPermission) {
     return (
-      
-
-    <View
+      <View
         style={{
           flex: 1,
           //justifyContent: 'space-between',
@@ -493,12 +474,12 @@ export default function EditListingForm(props) {
 
           //paddingBottom: 100,
         }}
-      >        
-        <Text style={{textAlign:'center'}}>
-        Permission for media library not granted. Please change this in settings.
-      </Text>
+      >
+        <Text style={{ textAlign: 'center' }}>
+          Permission for media library not granted. Please change this in
+          settings.
+        </Text>
       </View>
-
     );
   }
 
@@ -591,10 +572,6 @@ export default function EditListingForm(props) {
 
       const version = listing._version;
 
-      
-
-      
-
       const listingDetails = {
         id: id,
         sku: listing.sku,
@@ -682,8 +659,6 @@ export default function EditListingForm(props) {
 
       const version = listing._version;
 
-      
-
       const listingDetails = {
         id: id,
         sku: listing.sku,
@@ -753,7 +728,7 @@ export default function EditListingForm(props) {
 
         //processListing(newListing.data.updateListing);
         onBack();
-        
+
         setSnackBar({ visible: true, text: 'Listing Saved' });
       }
     } catch (error) {
@@ -875,10 +850,10 @@ export default function EditListingForm(props) {
   const saveListingAndClose = async () => {
     try {
       await updateListingDraftAndClose();
-    } catch (error){
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const saveListing = async () => {
     try {
@@ -1416,19 +1391,26 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['model']);
       shortPendingTitle.push(keywords['model']);
 
-      if (keywords['type'] === '') {
+      /*if (keywords['type'] === '') {
         pendingTitle.push(keywords['category']);
         shortPendingTitle.push(keywords['category']);
       } else if (!keywords['category'].includes(keywords['type'])) {
         pendingTitle.push(keywords['category']);
         shortPendingTitle.push(keywords['category']);
-      }
+      }*/
 
       pendingTitle.push(keywords['product']);
       shortPendingTitle.push(keywords['product']);
 
-      pendingTitle.push(keywords['type']);
-      shortPendingTitle.push(keywords['type']);
+      let tempType = keywords['type'].toUpperCase();
+
+      if (!tempModel.includes(tempType)) {
+        pendingTitle.push(keywords['type']);
+        shortPendingTitle.push(keywords['type']);
+      }
+
+      /*pendingTitle.push(keywords['type']);
+      shortPendingTitle.push(keywords['type']);*/
 
       pendingTitle.push(keywords['style']);
       shortPendingTitle.push(keywords['style']);
@@ -1871,11 +1853,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               ? item.aspectValues.map((value) => value.localizedValue)
               : [],
           });
-        } else if (item.localizedAspectName === 'Brand') {
+          /*} else if (item.localizedAspectName === 'Brand') {
           aspectValues.push({
             id: item.localizedAspectName,
             value: [],
           });
+        */
         } else {
           aspectValues.push({
             id: item.localizedAspectName,
@@ -2151,7 +2134,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
   const getGooglePricesAgain = async () => {
     try {
-
       const isNew = condition === 1000 || condition === 1500 ? 'new' : 'used';
 
       let title = `${titleProcessed}`;
@@ -2207,14 +2189,11 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       setProcessingPrices(false);
       setLetPriceListing(false);
-
-
     } catch (error) {
       console.log(error);
       setProcessingPrices(false);
     }
-
-  }
+  };
 
   const getGooglePrices = async () => {
     try {
@@ -2277,7 +2256,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     } catch (error) {
       console.log(error);
       getGooglePricesAgain();
-      
     }
   };
 
@@ -2682,7 +2660,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     return false;
   };
 
-
   const onMainPicIsTaken = async (value) => {
     setIsTakePicMain(value);
   };
@@ -2752,12 +2729,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     setBarcodeOpen(value);
   });
 
-  
-  
   const takeNewPic = async () => {
-
     try {
-
       setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
@@ -2774,27 +2747,24 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const source = newPhoto;
 
-    if (source) {
-      //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotos((old) => [...old, { id: newPhotoAWS, value: newPhotoAWS }]);
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotos((old) => [...old, { id: newPhotoAWS, value: newPhotoAWS }]);
 
-      setMorePhotosOpen(false);
-      setOpenCamera(false);
-      setProcessingImage(false);
-      //console.log('picture source', source);
-    }
-    } catch(error){
+        setMorePhotosOpen(false);
+        setOpenCamera(false);
+        setProcessingImage(false);
+        //console.log('picture source', source);
+      }
+    } catch (error) {
       console.log(error);
       setProcessingImage(false);
     }
-
   };
 
   const pickNewPic = async () => {
-
     try {
-
       setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
@@ -2811,24 +2781,21 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const source = newPhoto;
 
-    if (source) {
-      //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotos((old) => [...old, { id: newPhotoAWS, value: newPhotoAWS }]);
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotos((old) => [...old, { id: newPhotoAWS, value: newPhotoAWS }]);
 
-      setMorePhotosOpen(false);
-      setOpenCamera(false);
-      setProcessingImage(false);
-      //console.log('picture source', source);
-    }
-    } catch(error){
+        setMorePhotosOpen(false);
+        setOpenCamera(false);
+        setProcessingImage(false);
+        //console.log('picture source', source);
+      }
+    } catch (error) {
       console.log(error);
       setProcessingImage(false);
     }
-
   };
-
-
 
   const onDeleteItem = async () => {
     try {
@@ -2949,6 +2916,207 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   };
 
   const checkLabel = async (textDetections, textDetectionsExtra) => {
+    try {
+      //setProcessingSelectedAspectValue(true);
+
+      /*console.log(
+        'TEXT DETECTIONS: ',
+        textDetections.concat(textDetectionsExtra)
+      );*/
+
+      const textList = textDetections
+        .concat(textDetectionsExtra)
+        .filter((item) => item.Type === 'LINE')
+        .map((item) => item.DetectedText);
+
+      const words = textDetections
+        .concat(textDetectionsExtra)
+        .filter((item) => item.Type === 'WORD')
+        .map((item) => item.DetectedText.replace(/[^a-z0-9]/gi, ''));
+
+      /*const byBrand = textList.filter(
+        (item) => item.includes('by') || item.includes('BY')
+      );
+      const brand =
+        byBrand.length > 0 ? `${textList[0]} ${byBrand}` : textList[0];
+
+      console.log(byBrand);
+
+      setBrand(brand);
+
+      console.log(brand);*/
+
+      setWordsFromLabel(words);
+
+      //console.log('WORDS: ', words);
+      //console.log('TEXTLIST: ', textList);
+
+      //console.log(setAspects);
+
+      /*const material = textList
+        .filter((item) => item.includes('%'))
+        .map((item) =>
+          item
+            .toLowerCase()
+            .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+        );*/
+
+      /*const country = textList.find(
+        (item) => item.includes('Made in') || item.includes('MADE IN')
+      )
+        ? textList
+            .find(
+              (item) => item.includes('Made in') || item.includes('MADE IN')
+            )
+            .toLowerCase()
+            .split('made in')[1]
+            .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+        : '';*/
+
+      /*const size = textList
+        .filter((item) => item.includes('%'))
+        .map((item) =>
+          item
+            .toLowerCase()
+            .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+        );*/
+
+      /*const sizes = aspectValues
+        .find((itm) => itm.localizedAspectName === 'Size')
+        .aspectValues.map((name) => name.toUpperCase());*/
+
+      /*const countries = aspectValues.find(
+        (itm) => itm.id === 'Country/Region of Manufacture'
+      ).value;*/
+
+      const checkedBrands = aspectValues.find((itm) => itm.id === 'Brand');
+
+      const brands = checkedBrands ? checkedBrands.value : [];
+
+      const checkedModels = aspectValues.find((itm) => itm.id === 'Model');
+
+      //console.log('MODELS!!!: ', checkedModels);
+
+      const models = checkedModels
+        ? checkedModels.value.map((item) => item.toLowerCase())
+        : [];
+
+      const checkedCountries = aspectValues.find(
+        (itm) => itm.id === 'Country/Region of Manufacture'
+      );
+
+      const countries = checkedCountries ? checkedCountries.value : [];
+
+      //console.log(countries);
+
+      let tempWords = words.map((item) => item.toLowerCase());
+
+      //console.log('BRANDS!!: ', brands );
+
+      let tempTextList = textList.map((item) => item.toLowerCase());
+
+      console.log('MODELS!!!: ', models);
+
+      console.log('TEMP TEXT LIST: ', tempTextList);
+      console.log('TEMP WORDS: ', tempWords);
+
+      //console.log('TEMP WORDS: ', tempWords);
+
+      //console.log('TEMP TEXT LIST: ', tempTextList);
+
+      //const brand = brands.filter((x) => tempWords.includes(x.toLowerCase()));
+
+      let brand = brands.filter((x) => tempTextList.includes(x.toLowerCase()));
+
+      if (brand.length === 0) {
+        brand = brands.filter((x) => tempWords.includes(x.toLowerCase()));
+      }
+
+      let model = models.filter((x) =>
+        tempWords.map((itm) => `${brand[0]} ${itm}`).includes(x.toLowerCase())
+      );
+
+      /*const model = tempTextList.filter((x) =>
+        models.includes(x.toLowerCase())
+      );*/
+
+      const country = countries.filter((x) =>
+        tempWords.includes(x.toLowerCase())
+      );
+
+      //console.log('COUNTRY: ', country);
+
+      const checkedSizes = aspectValues.find((itm) => itm.id === 'Size');
+
+      const sizes = checkedSizes ? checkedSizes.value : [];
+
+      const size = sizes.filter((x) => words.includes(x));
+
+      const checkedMaterials = aspectValues.find(
+        (itm) => itm.id === 'Material'
+      );
+
+      const materials = checkedMaterials
+        ? checkedMaterials.value.map((item) =>
+            item
+              .toLowerCase()
+              .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
+          )
+        : [];
+
+      //console.log('MATERIALS: ', materials);
+
+      const material = materials.filter((x) =>
+        tempWords.includes(x.toLowerCase())
+      );
+
+      //console.log('MATERIAL: ', material);
+
+      //console.log('SIZE: ', size);
+
+      //console.log('Country: ', country);
+
+      let batchProcess = [];
+      if (brand.length > 0) {
+        batchProcess.push({ itm: 'Brand', value: brand.join(' ') });
+      }
+
+      //console.log('MODEL!!!: ', model);
+      //console.log('BRAND!!!: ', brand);
+
+      if (model.length > 0) {
+        batchProcess.push({ itm: 'Model', value: model });
+      }
+
+      if (size.length > 0) {
+        batchProcess.push({ itm: 'Size', value: size[0] });
+      }
+
+      if (material.length > 0) {
+        batchProcess.push({ itm: 'Material', value: material });
+      }
+
+      //console.log('BATCHPROCESS: ', batchProcess);
+
+      //console.log('TEXTLIST: ', textList);
+
+      if (country.length > 0) {
+        batchProcess.push({
+          itm: 'Country/Region of Manufacture',
+          value: country,
+        });
+      }
+
+      changeValueItemAspectBulk(batchProcess);
+
+      //console.log('Brand: ', brand);
+      //setProcessingSelectedAspectValue(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const checkLabel_OLD = async (textDetections, textDetectionsExtra) => {
     try {
       //setProcessingSelectedAspectValue(true);
 
@@ -3074,9 +3242,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   };
 
   const takeEditPic = async () => {
-
     try {
-
       setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
@@ -3093,38 +3259,34 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const source = newPhoto;
 
-    if (source) {
-      //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotos((old) =>
-        old.map((item) => {
-          if (item.id === editPhotoOpen) {
-            return {
-              id: item.id,
-              value: newPhotoAWS,
-            };
-          }
-          return item;
-        })
-      );
-      //setMorePhotosOpen(false);
-      setEditPhotoOpen('');
-      setOpenCamera(false);
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotos((old) =>
+          old.map((item) => {
+            if (item.id === editPhotoOpen) {
+              return {
+                id: item.id,
+                value: newPhotoAWS,
+              };
+            }
+            return item;
+          })
+        );
+        //setMorePhotosOpen(false);
+        setEditPhotoOpen('');
+        setOpenCamera(false);
+        setProcessingImage(false);
+        //console.log('picture source', source);
+      }
+    } catch (error) {
+      console.log(error);
       setProcessingImage(false);
-      //console.log('picture source', source);
     }
-
-  } catch(error){
-    console.log(error);
-    setProcessingImage(false);
-  }
-    
   };
 
   const pickEditPic = async () => {
-
     try {
-
       setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
@@ -3141,38 +3303,34 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const source = newPhoto;
 
-    if (source) {
-      //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotos((old) =>
-        old.map((item) => {
-          if (item.id === editPhotoOpen) {
-            return {
-              id: item.id,
-              value: newPhotoAWS,
-            };
-          }
-          return item;
-        })
-      );
-      //setMorePhotosOpen(false);
-      setEditPhotoOpen('');
-      setOpenCamera(false);
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotos((old) =>
+          old.map((item) => {
+            if (item.id === editPhotoOpen) {
+              return {
+                id: item.id,
+                value: newPhotoAWS,
+              };
+            }
+            return item;
+          })
+        );
+        //setMorePhotosOpen(false);
+        setEditPhotoOpen('');
+        setOpenCamera(false);
+        setProcessingImage(false);
+        //console.log('picture source', source);
+      }
+    } catch (error) {
+      console.log(error);
       setProcessingImage(false);
-      //console.log('picture source', source);
     }
-
-  } catch(error){
-    console.log(error);
-    setProcessingImage(false);
-  }
-    
   };
 
   const takePicLabelExtra = async () => {
-
     try {
-
       setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
@@ -3189,17 +3347,17 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const source = newPhoto;
 
-    //setPhotoLabel(newPhoto);
+      //setPhotoLabel(newPhoto);
 
-    //const source = newPhoto.uri;
-    //await cameraRef.current.pausePreview();
-
-    if (source) {
+      //const source = newPhoto.uri;
       //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotoLabelExtra(newPhotoAWS);
 
-      /*const tagChecked = await fetch(
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotoLabelExtra(newPhotoAWS);
+
+        /*const tagChecked = await fetch(
         `https://listerfast.com/api/utils/textfromimage/${newPhotoAWS}`
       );
 
@@ -3208,23 +3366,19 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       checkLabel(textDetections);*/
 
-      setLabelPhotoOpenExtra(false);
-      setOpenCamera(false);
+        setLabelPhotoOpenExtra(false);
+        setOpenCamera(false);
 
-      
-      setProcessingImage(false);
-    }
-
-    } catch(error){
+        setProcessingImage(false);
+      }
+    } catch (error) {
       console.log(error);
       setProcessingImage(false);
     }
   };
 
   const pickPicLabelExtra = async () => {
-
     try {
-
       setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
@@ -3241,17 +3395,17 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const source = newPhoto;
 
-    //setPhotoLabel(newPhoto);
+      //setPhotoLabel(newPhoto);
 
-    //const source = newPhoto.uri;
-    //await cameraRef.current.pausePreview();
-
-    if (source) {
+      //const source = newPhoto.uri;
       //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotoLabelExtra(newPhotoAWS);
 
-      /*const tagChecked = await fetch(
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotoLabelExtra(newPhotoAWS);
+
+        /*const tagChecked = await fetch(
         `https://listerfast.com/api/utils/textfromimage/${newPhotoAWS}`
       );
 
@@ -3260,24 +3414,20 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       checkLabel(textDetections);*/
 
-      setLabelPhotoOpenExtra(false);
-      setOpenCamera(false);
+        setLabelPhotoOpenExtra(false);
+        setOpenCamera(false);
 
-      
-      setProcessingImage(false);
-    }
-
-    } catch(error){
+        setProcessingImage(false);
+      }
+    } catch (error) {
       console.log(error);
       setProcessingImage(false);
     }
   };
 
   const takePicLabel = async () => {
-
     try {
-
-    setProcessingImage(true);
+      setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
       let options = {
@@ -3293,37 +3443,29 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const source = newPhoto;
 
-    //setPhotoLabel(newPhoto);
+      //setPhotoLabel(newPhoto);
 
-    //const source = newPhoto.uri;
-    //await cameraRef.current.pausePreview();
-
-    
-
-
-    if (source) {
+      //const source = newPhoto.uri;
       //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotoLabel(newPhotoAWS);
 
-      
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotoLabel(newPhotoAWS);
 
-      setLabelPhotoOpen(false);
-      setOpenCamera(false);
+        setLabelPhotoOpen(false);
+        setOpenCamera(false);
+        setProcessingImage(false);
+      }
+    } catch (error) {
+      console.log(error);
       setProcessingImage(false);
     }
-
-  } catch(error){
-    console.log(error);
-    setProcessingImage(false);
-  }
   };
 
   const pickPicLabel = async () => {
-
     try {
-
-    setProcessingImage(true);
+      setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
       let options = {
@@ -3339,30 +3481,24 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const source = newPhoto;
 
-    //setPhotoLabel(newPhoto);
+      //setPhotoLabel(newPhoto);
 
-    //const source = newPhoto.uri;
-    //await cameraRef.current.pausePreview();
-
-    
-
-
-    if (source) {
+      //const source = newPhoto.uri;
       //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotoLabel(newPhotoAWS);
 
-      
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotoLabel(newPhotoAWS);
 
-      setLabelPhotoOpen(false);
-      setOpenCamera(false);
+        setLabelPhotoOpen(false);
+        setOpenCamera(false);
+        setProcessingImage(false);
+      }
+    } catch (error) {
+      console.log(error);
       setProcessingImage(false);
     }
-
-  } catch(error){
-    console.log(error);
-    setProcessingImage(false);
-  }
   };
 
   const closePic = async () => {
@@ -3501,7 +3637,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
           //paddingBottom: 100,
         }}
-      >        
+      >
         <ActivityIndicator
           size='large'
           style={{ marginTop: '20%', marginBottom: '20%' }}
@@ -3589,15 +3725,33 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         );
       } else {
         if (mainPhotoOpen) {
-          
           return (
             <View style={styles.basicContainer}>
-              <Button style={{margin: 20}} mode='outlined' onPress={()=>takePicMain()}  icon='camera'>Use the camera to take a picture</Button>
-              <Button style={{margin: 20}} mode='outlined' onPress={()=>pickPicMain()} icon='image'>Browse an image from your device</Button>
-              <Button style={{margin: 20}} icon='close' onPress={()=>closePic()}>Close</Button>
-  
+              <Button
+                style={{ margin: 20 }}
+                mode='outlined'
+                onPress={() => takePicMain()}
+                icon='camera'
+              >
+                Use the camera to take a picture
+              </Button>
+              <Button
+                style={{ margin: 20 }}
+                mode='outlined'
+                onPress={() => pickPicMain()}
+                icon='image'
+              >
+                Browse an image from your device
+              </Button>
+              <Button
+                style={{ margin: 20 }}
+                icon='close'
+                onPress={() => closePic()}
+              >
+                Close
+              </Button>
             </View>
-            );
+          );
 
           /*return (
            
@@ -3631,18 +3785,34 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               />
             </Camera>
           );*/
-
-
         } else if (labelPhotoOpen) {
-          
           return (
             <View style={styles.basicContainer}>
-              <Button style={{margin: 20}} mode='outlined' onPress={()=>takePicLabel()}  icon='camera'>Use the camera to take a picture</Button>
-              <Button style={{margin: 20}} mode='outlined' onPress={()=>pickPicLabel()} icon='image'>Browse an image from your device</Button>
-              <Button style={{margin: 20}} icon='close' onPress={()=>closePic()}>Close</Button>
-  
+              <Button
+                style={{ margin: 20 }}
+                mode='outlined'
+                onPress={() => takePicLabel()}
+                icon='camera'
+              >
+                Use the camera to take a picture
+              </Button>
+              <Button
+                style={{ margin: 20 }}
+                mode='outlined'
+                onPress={() => pickPicLabel()}
+                icon='image'
+              >
+                Browse an image from your device
+              </Button>
+              <Button
+                style={{ margin: 20 }}
+                icon='close'
+                onPress={() => closePic()}
+              >
+                Close
+              </Button>
             </View>
-            );
+          );
           /*return (
             <Camera
               style={styles.container}
@@ -3675,21 +3845,35 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               />
             </Camera>
           );*/
-
-
-
         } else if (labelPhotoOpenExtra) {
-
           return (
             <View style={styles.basicContainer}>
-              <Button style={{margin: 20}} mode='outlined' onPress={()=>takePicLabelExtra()}  icon='camera'>Use the camera to take a picture</Button>
-              <Button style={{margin: 20}} mode='outlined' onPress={()=>pickPicLabelExtra()} icon='image'>Browse an image from your device</Button>
-              <Button style={{margin: 20}} icon='close' onPress={()=>closePic()}>Close</Button>
-  
+              <Button
+                style={{ margin: 20 }}
+                mode='outlined'
+                onPress={() => takePicLabelExtra()}
+                icon='camera'
+              >
+                Use the camera to take a picture
+              </Button>
+              <Button
+                style={{ margin: 20 }}
+                mode='outlined'
+                onPress={() => pickPicLabelExtra()}
+                icon='image'
+              >
+                Browse an image from your device
+              </Button>
+              <Button
+                style={{ margin: 20 }}
+                icon='close'
+                onPress={() => closePic()}
+              >
+                Close
+              </Button>
             </View>
-            );   
-          
-          
+          );
+
           /*return (
             <Camera
               style={styles.container}
@@ -3722,20 +3906,35 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               />
             </Camera>
           );*/
-
-
-
         } else if (morePhotosOpen) {
-
           return (
             <View style={styles.basicContainer}>
-              <Button style={{margin: 20}} mode='outlined' onPress={()=>takeNewPic()}  icon='camera'>Use the camera to take a picture</Button>
-              <Button style={{margin: 20}} mode='outlined' onPress={()=>pickNewPic()} icon='image'>Browse an image from your device</Button>
-              <Button style={{margin: 20}} icon='close' onPress={()=>closePic()}>Close</Button>
-  
+              <Button
+                style={{ margin: 20 }}
+                mode='outlined'
+                onPress={() => takeNewPic()}
+                icon='camera'
+              >
+                Use the camera to take a picture
+              </Button>
+              <Button
+                style={{ margin: 20 }}
+                mode='outlined'
+                onPress={() => pickNewPic()}
+                icon='image'
+              >
+                Browse an image from your device
+              </Button>
+              <Button
+                style={{ margin: 20 }}
+                icon='close'
+                onPress={() => closePic()}
+              >
+                Close
+              </Button>
             </View>
-            );   
-          
+          );
+
           /*return (
             <Camera
               style={styles.container}
@@ -3768,19 +3967,35 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               />
             </Camera>
           );*/
-
-
         } else if (editPhotoOpen !== '') {
-          
           return (
             <View style={styles.basicContainer}>
-              <Button style={{margin: 20}} mode='outlined' onPress={()=>takeEditPic()}  icon='camera'>Use the camera to take a picture</Button>
-              <Button style={{margin: 20}} mode='outlined' onPress={()=>pickEditPic()} icon='image'>Browse an image from your device</Button>
-              <Button style={{margin: 20}} icon='close' onPress={()=>closePic()}>Close</Button>
-  
+              <Button
+                style={{ margin: 20 }}
+                mode='outlined'
+                onPress={() => takeEditPic()}
+                icon='camera'
+              >
+                Use the camera to take a picture
+              </Button>
+              <Button
+                style={{ margin: 20 }}
+                mode='outlined'
+                onPress={() => pickEditPic()}
+                icon='image'
+              >
+                Browse an image from your device
+              </Button>
+              <Button
+                style={{ margin: 20 }}
+                icon='close'
+                onPress={() => closePic()}
+              >
+                Close
+              </Button>
             </View>
-            );  
-          
+          );
+
           /*return (
             <Camera
               style={styles.container}
@@ -3821,9 +4036,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               />
             </Camera>
           );*/
-
-
-
         }
       }
     }
@@ -3904,6 +4116,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           onDeleteItem={onDeleteItem}
           onProcessingTitle={onProcessingTitle}
           photoLabel={photoLabel}
+          photoLabelExtra={photoLabelExtra}
           type={type}
           processLabel={processLabel}
 
@@ -4184,7 +4397,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       />
     </View>
   );
-
 }
 
 const styles = StyleSheet.create({
@@ -4265,16 +4477,12 @@ const styles = StyleSheet.create({
   },
 
   nextBackControl: {
-    
     justifyContent: 'center',
     marginTop: 10,
-    
-    
   },
 
   nextBackControlButton: {
     backgroundColor: 'white',
-    
   },
 
   buttonPreviewCameraControl: {

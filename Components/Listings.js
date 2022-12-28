@@ -19,8 +19,6 @@ export default function Listings() {
       <SafeAreaView style={styles.container}>
         <ListingStatusTab />
 
-        
-
         <Portal>
           <FAB.Group
             style={styles.fab}
@@ -32,14 +30,24 @@ export default function Listings() {
                 icon: 'tshirt-crew',
                 label: 'Clothing',
                 //onPress: () => console.log('Pressed clothing'),
-                onPress: () => { navigation.navigate('AddListing', {title: 'Add Clothing', type: 'clothing'}) }
+                onPress: () => {
+                  navigation.navigate('AddListing', {
+                    title: 'Add Clothing',
+                    type: 'clothing',
+                  });
+                },
               },
               {
                 icon: 'shoe-formal',
                 label: 'Shoes',
-                onPress: () => { navigation.navigate('AddListing', {title: 'Add Shoes', type: 'shoes'}) }
+                onPress: () => {
+                  navigation.navigate('AddListing', {
+                    title: 'Add Shoes',
+                    type: 'shoes',
+                  });
+                },
               },
-              {
+              /*{
                 icon: 'car-side',
                 label: 'Auto & Motorcycle Parts',
                 onPress: () => { navigation.navigate('AddListing', {title: 'Add Auto Parts', type:'autoparts'}) }
@@ -53,7 +61,7 @@ export default function Listings() {
                 icon: 'tag-multiple',
                 label: 'Everything else',
                 onPress: () => { navigation.navigate('AddListing', {title: 'Add Listing', type:'other'}) }
-              },
+              },*/
             ]}
             onStateChange={onStateChange}
             onPress={() => {

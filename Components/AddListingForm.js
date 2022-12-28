@@ -224,7 +224,8 @@ export default function AddListingForm(props) {
 
   useEffect(() => {
     (async () => {
-      const imagePickerPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const imagePickerPermission =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
       setHasImagePickerPermission(imagePickerPermission.status === 'granted');
     })();
   }, []);
@@ -267,8 +268,6 @@ export default function AddListingForm(props) {
   }, []);
 
   if (hasCameraPermission === undefined) {
-
-
     return (
       <View
         style={{
@@ -281,21 +280,16 @@ export default function AddListingForm(props) {
 
           //paddingBottom: 100,
         }}
-      >        
+      >
         <ActivityIndicator
           size='large'
           style={{ marginTop: '20%', marginBottom: '20%' }}
         />
       </View>
     );
-
-
-    
   } else if (!hasCameraPermission) {
     return (
-      
-
-    <View
+      <View
         style={{
           flex: 1,
           //justifyContent: 'space-between',
@@ -306,18 +300,15 @@ export default function AddListingForm(props) {
 
           //paddingBottom: 100,
         }}
-      >        
-        <Text style={{textAlign:'center'}}>
-        Permission for camera not granted. Please change this in settings.
-      </Text>
+      >
+        <Text style={{ textAlign: 'center' }}>
+          Permission for camera not granted. Please change this in settings.
+        </Text>
       </View>
-
     );
   }
 
   if (hasImagePickerPermission === undefined) {
-
-
     return (
       <View
         style={{
@@ -330,21 +321,16 @@ export default function AddListingForm(props) {
 
           //paddingBottom: 100,
         }}
-      >        
+      >
         <ActivityIndicator
           size='large'
           style={{ marginTop: '20%', marginBottom: '20%' }}
         />
       </View>
     );
-
-
-    
   } else if (!hasImagePickerPermission) {
     return (
-      
-
-    <View
+      <View
         style={{
           flex: 1,
           //justifyContent: 'space-between',
@@ -355,12 +341,12 @@ export default function AddListingForm(props) {
 
           //paddingBottom: 100,
         }}
-      >        
-        <Text style={{textAlign:'center'}}>
-        Permission for media library not granted. Please change this in settings.
-      </Text>
+      >
+        <Text style={{ textAlign: 'center' }}>
+          Permission for media library not granted. Please change this in
+          settings.
+        </Text>
       </View>
-
     );
   }
 
@@ -546,7 +532,6 @@ export default function AddListingForm(props) {
     }
   };
 
-
   const createNewListingDraftAndClose = async () => {
     try {
       console.log('Saving Listing');
@@ -640,7 +625,6 @@ export default function AddListingForm(props) {
     }
   };
 
-
   const createNewListingOnline = async (id) => {
     try {
       console.log('Saving Listing Online');
@@ -730,7 +714,6 @@ export default function AddListingForm(props) {
     try {
       console.log('Saving Listing Online');
 
-      
       //const id = uuidv4();
 
       const listingDetails = {
@@ -1124,8 +1107,7 @@ export default function AddListingForm(props) {
         processListing(newListing.data.updateListing);
 
         setProcessingSaveListing(false);
-          
-        
+
         setSnackBar({ visible: true, text: 'Listing Saved' });
       }
     } catch (error) {
@@ -1211,8 +1193,8 @@ export default function AddListingForm(props) {
         console.log(newListing);
         //setListingVersion(newListing.data.updateListing._version);
         //processListing(newListing.data.updateListing);
-        onBack()
-        
+        onBack();
+
         setSnackBar({ visible: true, text: 'Listing Saved' });
       }
     } catch (error) {
@@ -1220,22 +1202,17 @@ export default function AddListingForm(props) {
     }
   };
 
-
   const saveListingAndClose = async () => {
     try {
-      
-
       if (!listingId) {
         await createNewListingDraftAndClose();
       } else {
         await updateListingDraftAndClose();
       }
-
-    } catch (error){
+    } catch (error) {
       console.log(error);
     }
-  }
-
+  };
 
   const saveListing = async () => {
     try {
@@ -1683,16 +1660,23 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['product']);
       shortPendingTitle.push(keywords['product']);
 
-      if (keywords['type'] === '') {
+      /*if (keywords['type'] === '') {
         pendingTitle.push(keywords['category']);
         shortPendingTitle.push(keywords['category']);
       } else if (!keywords['category'].includes(keywords['type'])) {
         pendingTitle.push(keywords['category']);
         shortPendingTitle.push(keywords['category']);
+      }*/
+
+      let tempType = keywords['type'].toUpperCase();
+
+      if (!tempModel.includes(tempType)) {
+        pendingTitle.push(keywords['type']);
+        shortPendingTitle.push(keywords['type']);
       }
 
-      pendingTitle.push(keywords['type']);
-      shortPendingTitle.push(keywords['type']);
+      /*pendingTitle.push(keywords['type']);
+      shortPendingTitle.push(keywords['type']);*/
 
       pendingTitle.push(keywords['style']);
       shortPendingTitle.push(keywords['style']);
@@ -2151,7 +2135,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const json = await response.json();
 
-      //console.log(json);
+      console.log(json);
 
       let aspectValues = [];
 
@@ -2177,11 +2161,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               ? item.aspectValues.map((value) => value.localizedValue)
               : [],
           });
-        } else if (item.localizedAspectName === 'Brand') {
+          /*} else if (item.localizedAspectName === 'Brand') {
           aspectValues.push({
             id: item.localizedAspectName,
             value: [],
           });
+        */
         } else {
           aspectValues.push({
             id: item.localizedAspectName,
@@ -2368,7 +2353,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     setProcessingSelectedAspectValue(true);
     if (lastStep > 7) {
       setIsChangedAspects(true);
-      
     }
     setLetPriceListing(true);
     const newAspects = aspects.map((item) => {
@@ -2489,7 +2473,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
   const getGooglePricesAgain = async () => {
     try {
-
       const isNew = condition === 1000 || condition === 1500 ? 'new' : 'used';
 
       let title = `${titleProcessed}`;
@@ -2545,14 +2528,11 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       setProcessingPrices(false);
       setLetPriceListing(false);
-
-
     } catch (error) {
       console.log(error);
       setProcessingPrices(false);
     }
-
-  }
+  };
 
   const getGooglePrices = async () => {
     try {
@@ -2569,7 +2549,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       //console.log(`TITULO: ${titleProcessed} ${conditionName}`);
 
-      const prices = await axios.get(urlGet, {timeout: 1000});
+      const prices = await axios.get(urlGet, { timeout: 1000 });
 
       const listings = prices.data;
 
@@ -2988,9 +2968,14 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     try {
       setProcessingCategories(true);
 
-      const searchCategoriesLarge =
+      /*const searchCategoriesLarge =
         type !== 'autoparts' && type !== 'others'
           ? `${searchCategories} ${type}`
+          : searchCategories;*/
+
+      const searchCategoriesLarge =
+        type !== 'autoparts' && type !== 'others'
+          ? `${searchCategories}`
           : searchCategories;
 
       console.log('SEARCH CATEGORIES: ', searchCategories);
@@ -3137,7 +3122,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
   let takePicMain = async () => {
     try {
-
       setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
@@ -3158,10 +3142,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       //console.log('Source: ', source);
 
-      
-   
-
-     
       if (source) {
         //await cameraRef.current.pausePreview();
         let newPhotoAWS = await handleImage(source, nameFile);
@@ -3188,7 +3168,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
   let pickPicMain = async () => {
     try {
-
       setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
@@ -3209,10 +3188,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       //console.log('Source: ', source);
 
-      
-   
-
-     
       if (source) {
         //await cameraRef.current.pausePreview();
         let newPhotoAWS = await handleImage(source, nameFile);
@@ -3236,7 +3211,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       setProcessingImage(false);
     }
   };
-
 
   const onBack = async () => {
     setOpenBackListingDialog(false);
@@ -3275,9 +3249,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   });
 
   const takeNewPic = async () => {
-
     try {
-
       setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
@@ -3294,27 +3266,24 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const source = newPhoto;
 
-    if (source) {
-      //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotos((old) => [...old, { id: newPhotoAWS, value: newPhotoAWS }]);
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotos((old) => [...old, { id: newPhotoAWS, value: newPhotoAWS }]);
 
-      setMorePhotosOpen(false);
-      setOpenCamera(false);
-      setProcessingImage(false);
-      //console.log('picture source', source);
-    }
-    } catch(error){
+        setMorePhotosOpen(false);
+        setOpenCamera(false);
+        setProcessingImage(false);
+        //console.log('picture source', source);
+      }
+    } catch (error) {
       console.log(error);
       setProcessingImage(false);
     }
-
   };
 
   const pickNewPic = async () => {
-
     try {
-
       setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
@@ -3331,27 +3300,24 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const source = newPhoto;
 
-    if (source) {
-      //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotos((old) => [...old, { id: newPhotoAWS, value: newPhotoAWS }]);
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotos((old) => [...old, { id: newPhotoAWS, value: newPhotoAWS }]);
 
-      setMorePhotosOpen(false);
-      setOpenCamera(false);
-      setProcessingImage(false);
-      //console.log('picture source', source);
-    }
-    } catch(error){
+        setMorePhotosOpen(false);
+        setOpenCamera(false);
+        setProcessingImage(false);
+        //console.log('picture source', source);
+      }
+    } catch (error) {
       console.log(error);
       setProcessingImage(false);
     }
-
   };
 
   const takeEditPic = async () => {
-
     try {
-
       setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
@@ -3368,38 +3334,34 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const source = newPhoto;
 
-    if (source) {
-      //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotos((old) =>
-        old.map((item) => {
-          if (item.id === editPhotoOpen) {
-            return {
-              id: item.id,
-              value: newPhotoAWS,
-            };
-          }
-          return item;
-        })
-      );
-      //setMorePhotosOpen(false);
-      setEditPhotoOpen('');
-      setOpenCamera(false);
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotos((old) =>
+          old.map((item) => {
+            if (item.id === editPhotoOpen) {
+              return {
+                id: item.id,
+                value: newPhotoAWS,
+              };
+            }
+            return item;
+          })
+        );
+        //setMorePhotosOpen(false);
+        setEditPhotoOpen('');
+        setOpenCamera(false);
+        setProcessingImage(false);
+        //console.log('picture source', source);
+      }
+    } catch (error) {
+      console.log(error);
       setProcessingImage(false);
-      //console.log('picture source', source);
     }
-
-  } catch(error){
-    console.log(error);
-    setProcessingImage(false);
-  }
-    
   };
 
   const pickEditPic = async () => {
-
     try {
-
       setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
@@ -3416,32 +3378,30 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const source = newPhoto;
 
-    if (source) {
-      //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotos((old) =>
-        old.map((item) => {
-          if (item.id === editPhotoOpen) {
-            return {
-              id: item.id,
-              value: newPhotoAWS,
-            };
-          }
-          return item;
-        })
-      );
-      //setMorePhotosOpen(false);
-      setEditPhotoOpen('');
-      setOpenCamera(false);
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotos((old) =>
+          old.map((item) => {
+            if (item.id === editPhotoOpen) {
+              return {
+                id: item.id,
+                value: newPhotoAWS,
+              };
+            }
+            return item;
+          })
+        );
+        //setMorePhotosOpen(false);
+        setEditPhotoOpen('');
+        setOpenCamera(false);
+        setProcessingImage(false);
+        //console.log('picture source', source);
+      }
+    } catch (error) {
+      console.log(error);
       setProcessingImage(false);
-      //console.log('picture source', source);
     }
-
-  } catch(error){
-    console.log(error);
-    setProcessingImage(false);
-  }
-    
   };
 
   const checkBestOffer = () => {
@@ -3612,60 +3572,57 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     }
   };
 
-  const processListing =  (listing) => {
+  const processListing = (listing) => {
     try {
+      setListingVersion(listing._version);
+      setListingId(listing.id);
 
-        setListingVersion(listing._version);
-        setListingId(listing.id);
+      setPhotoMain(listing.photoMain);
+      setPhotoLabel(listing.photoLabel);
+      setPhotoLabelExtra(listing.photoLabelExtra);
+      setPhotos(JSON.parse(listing.photos));
+      setBarcodeValue(listing.barcodeValue);
+      setCategories(JSON.parse(listing.categoryList));
+      setAspects(JSON.parse(listing.itemsSpecifics));
+      setCategory(listing.categoryID);
 
-        setPhotoMain(listing.photoMain);
-        setPhotoLabel(listing.photoLabel);
-        setPhotoLabelExtra(listing.photoLabelExtra);
-        setPhotos(JSON.parse(listing.photos));
-        setBarcodeValue(listing.barcodeValue);
-        setCategories(JSON.parse(listing.categoryList));
-        setAspects(JSON.parse(listing.itemsSpecifics));
-        setCategory(listing.categoryID);
+      const aspectList = JSON.parse(listing.itemsSpecifics).filter(
+        (item) => item.require === true && item.value === ''
+      );
 
-        const aspectList = JSON.parse(listing.itemsSpecifics).filter(
-          (item) => item.require === true && item.value === ''
-        );
+      setCheckedAllAspects(aspectList.length > 0 ? false : true);
 
-        setCheckedAllAspects(aspectList.length > 0 ? false : true);
+      setCondition(Number(listing.conditionCode));
+      setConditionDescription(listing.conditionDescription);
+      setConditionName(listing.conditionName);
+      setLength(listing.length.toString());
+      setHeight(listing.height.toString());
+      setWidth(listing.width.toString());
+      setWeightMayor(listing.weightMayor.toString());
+      setWeightMinor(listing.weightMinor.toString());
 
-        setCondition(Number(listing.conditionCode));
-        setConditionDescription(listing.conditionDescription);
-        setConditionName(listing.conditionName);
-        setLength(listing.length.toString());
-        setHeight(listing.height.toString());
-        setWidth(listing.width.toString());
-        setWeightMayor(listing.weightMayor.toString());
-        setWeightMinor(listing.weightMinor.toString());
+      setIsChangedAspects(listing.isChangedAspects);
+      //setType(listing.type.toLowerCase());
 
-        setIsChangedAspects(listing.isChangedAspects);
-        //setType(listing.type.toLowerCase());
+      console.log('TYPE: ', type);
 
-        console.log('TYPE: ', type);
+      //setWeight(listing.weight.toString());
 
-        //setWeight(listing.weight.toString());
+      setFulfillmentPolicyId(listing.shippingProfileID);
+      setReturnPolicyId(listing.returnProfileID);
+      setPaymentPolicyId(listing.paymentProfileID);
+      setTitleProcessed(listing.title);
+      setDescriptionProcessed(listing.description);
+      setQuantity(listing.quantity.toString());
+      setPriceProduct(listing.price.toString());
+      setCategoryFeatures(JSON.parse(listing.categoryFeatures));
 
-        setFulfillmentPolicyId(listing.shippingProfileID);
-        setReturnPolicyId(listing.returnProfileID);
-        setPaymentPolicyId(listing.paymentProfileID);
-        setTitleProcessed(listing.title);
-        setDescriptionProcessed(listing.description);
-        setQuantity(listing.quantity.toString());
-        setPriceProduct(listing.price.toString());
-        setCategoryFeatures(JSON.parse(listing.categoryFeatures));
-
-        setStep(step);
-        setLastStep(listing.lastStep);
-
-
-    } catch(error){
+      setStep(step);
+      setLastStep(listing.lastStep);
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const processLabel = async () => {
     try {
@@ -3744,10 +3701,10 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     try {
       //setProcessingSelectedAspectValue(true);
 
-      console.log(
+      /*console.log(
         'TEXT DETECTIONS: ',
         textDetections.concat(textDetectionsExtra)
-      );
+      );*/
 
       const textList = textDetections
         .concat(textDetectionsExtra)
@@ -3759,7 +3716,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .filter((item) => item.Type === 'WORD')
         .map((item) => item.DetectedText.replace(/[^a-z0-9]/gi, ''));
 
-      const byBrand = textList.filter(
+      /*const byBrand = textList.filter(
         (item) => item.includes('by') || item.includes('BY')
       );
       const brand =
@@ -3769,12 +3726,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       setBrand(brand);
 
-      console.log(brand);
+      console.log(brand);*/
 
       setWordsFromLabel(words);
 
-      console.log('WORDS: ', words);
-      console.log('TEXTLIST: ', textList);
+      //console.log('WORDS: ', words);
+      //console.log('TEXTLIST: ', textList);
 
       //console.log(setAspects);
 
@@ -3814,23 +3771,65 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         (itm) => itm.id === 'Country/Region of Manufacture'
       ).value;*/
 
+      const checkedBrands = aspectValues.find((itm) => itm.id === 'Brand');
+
+      const brands = checkedBrands ? checkedBrands.value : [];
+
+      const checkedModels = aspectValues.find((itm) => itm.id === 'Model');
+
+      //console.log('MODELS!!!: ', checkedModels);
+
+      const models = checkedModels
+        ? checkedModels.value.map((item) => item.toLowerCase())
+        : [];
+
       const checkedCountries = aspectValues.find(
         (itm) => itm.id === 'Country/Region of Manufacture'
       );
 
       const countries = checkedCountries ? checkedCountries.value : [];
 
-      console.log(countries);
+      //console.log(countries);
 
       let tempWords = words.map((item) => item.toLowerCase());
+
+      //console.log('BRANDS!!: ', brands );
+
+      let tempTextList = textList.map((item) => item.toLowerCase());
+
+      console.log('MODELS!!!: ', models);
+
+      console.log('TEMP TEXT LIST: ', tempTextList);
+      console.log('TEMP WORDS: ', tempWords);
+
+      //console.log('TEMP WORDS: ', tempWords);
+
+      //console.log('TEMP TEXT LIST: ', tempTextList);
+
+      //const brand = brands.filter((x) => tempWords.includes(x.toLowerCase()));
+
+      let brand = brands.filter((x) => tempTextList.includes(x.toLowerCase()));
+
+      if (brand.length === 0) {
+        brand = brands.filter((x) => tempWords.includes(x.toLowerCase()));
+      }
+
+      let model = models.filter((x) =>
+        tempWords.map((itm) => `${brand[0]} ${itm}`).includes(x.toLowerCase())
+      );
+
+      /*const model = tempTextList.filter((x) =>
+        models.includes(x.toLowerCase())
+      );*/
 
       const country = countries.filter((x) =>
         tempWords.includes(x.toLowerCase())
       );
 
-      console.log('COUNTRY: ', country);
+      //console.log('COUNTRY: ', country);
 
       const checkedSizes = aspectValues.find((itm) => itm.id === 'Size');
+
       const sizes = checkedSizes ? checkedSizes.value : [];
 
       const size = sizes.filter((x) => words.includes(x));
@@ -3847,35 +3846,43 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           )
         : [];
 
-      console.log('MATERIALS: ', materials);
+      //console.log('MATERIALS: ', materials);
 
       const material = materials.filter((x) =>
         tempWords.includes(x.toLowerCase())
       );
 
-      console.log('MATERIAL: ', material);
+      //console.log('MATERIAL: ', material);
 
-      console.log('SIZE: ', size);
+      //console.log('SIZE: ', size);
 
-      console.log('Country: ', country);
+      //console.log('Country: ', country);
 
       let batchProcess = [];
-      if (brand !== '') {
-        batchProcess.push({ itm: 'Brand', value: brand });
+      if (brand.length > 0) {
+        batchProcess.push({ itm: 'Brand', value: brand.join(' ') });
       }
+
+      //console.log('MODEL!!!: ', model);
+      //console.log('BRAND!!!: ', brand);
+
+      if (model.length > 0) {
+        batchProcess.push({ itm: 'Model', value: model });
+      }
+
       if (size.length > 0) {
         batchProcess.push({ itm: 'Size', value: size[0] });
       }
 
       if (material.length > 0) {
-        batchProcess.push({ itm: 'Material', value: material[0] });
+        batchProcess.push({ itm: 'Material', value: material });
       }
 
-      console.log('BATCHPROCESS: ', batchProcess);
+      //console.log('BATCHPROCESS: ', batchProcess);
 
-      console.log('TEXTLIST: ', textList);
+      //console.log('TEXTLIST: ', textList);
 
-      if (country !== '') {
+      if (country.length > 0) {
         batchProcess.push({
           itm: 'Country/Region of Manufacture',
           value: country,
@@ -3892,101 +3899,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   };
 
   const takePicLabel = async () => {
-
     try {
-
-    setProcessingImage(true);
-      let nameFile = `${uuidv4()}.jpg`;
-
-      let options = {
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        //allowsEditing: true,
-        quality: 0.6,
-        base64: true,
-        //skipProcessing: true,
-        exif: false,
-      };
-
-      let newPhoto = await ImagePicker.launchCameraAsync(options); //cameraRef.current.takePictureAsync(options);
-
-      const source = newPhoto;
-
-    //setPhotoLabel(newPhoto);
-
-    //const source = newPhoto.uri;
-    //await cameraRef.current.pausePreview();
-
-    
-
-
-    if (source) {
-      //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotoLabel(newPhotoAWS);
-
-      
-
-      setLabelPhotoOpen(false);
-      setOpenCamera(false);
-      setProcessingImage(false);
-    }
-
-  } catch(error){
-    console.log(error);
-    setProcessingImage(false);
-  }
-  };
-
-  const pickPicLabel = async () => {
-
-    try {
-
-    setProcessingImage(true);
-      let nameFile = `${uuidv4()}.jpg`;
-
-      let options = {
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        //allowsEditing: true,
-        quality: 0.6,
-        base64: true,
-        //skipProcessing: true,
-        exif: false,
-      };
-
-      let newPhoto = await ImagePicker.launchImageLibraryAsync(options); //cameraRef.current.takePictureAsync(options);
-
-      const source = newPhoto;
-
-    //setPhotoLabel(newPhoto);
-
-    //const source = newPhoto.uri;
-    //await cameraRef.current.pausePreview();
-
-    
-
-
-    if (source) {
-      //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotoLabel(newPhotoAWS);
-
-      
-
-      setLabelPhotoOpen(false);
-      setOpenCamera(false);
-      setProcessingImage(false);
-    }
-
-  } catch(error){
-    console.log(error);
-    setProcessingImage(false);
-  }
-  };
-
-  const takePicLabelExtra = async () => {
-
-    try {
-
       setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
@@ -4003,17 +3916,93 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const source = newPhoto;
 
-    //setPhotoLabel(newPhoto);
+      //setPhotoLabel(newPhoto);
 
-    //const source = newPhoto.uri;
-    //await cameraRef.current.pausePreview();
-
-    if (source) {
+      //const source = newPhoto.uri;
       //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotoLabelExtra(newPhotoAWS);
 
-      /*const tagChecked = await fetch(
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotoLabel(newPhotoAWS);
+
+        setLabelPhotoOpen(false);
+        setOpenCamera(false);
+        setProcessingImage(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setProcessingImage(false);
+    }
+  };
+
+  const pickPicLabel = async () => {
+    try {
+      setProcessingImage(true);
+      let nameFile = `${uuidv4()}.jpg`;
+
+      let options = {
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        //allowsEditing: true,
+        quality: 0.6,
+        base64: true,
+        //skipProcessing: true,
+        exif: false,
+      };
+
+      let newPhoto = await ImagePicker.launchImageLibraryAsync(options); //cameraRef.current.takePictureAsync(options);
+
+      const source = newPhoto;
+
+      //setPhotoLabel(newPhoto);
+
+      //const source = newPhoto.uri;
+      //await cameraRef.current.pausePreview();
+
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotoLabel(newPhotoAWS);
+
+        setLabelPhotoOpen(false);
+        setOpenCamera(false);
+        setProcessingImage(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setProcessingImage(false);
+    }
+  };
+
+  const takePicLabelExtra = async () => {
+    try {
+      setProcessingImage(true);
+      let nameFile = `${uuidv4()}.jpg`;
+
+      let options = {
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        //allowsEditing: true,
+        quality: 0.6,
+        base64: true,
+        //skipProcessing: true,
+        exif: false,
+      };
+
+      let newPhoto = await ImagePicker.launchCameraAsync(options); //cameraRef.current.takePictureAsync(options);
+
+      const source = newPhoto;
+
+      //setPhotoLabel(newPhoto);
+
+      //const source = newPhoto.uri;
+      //await cameraRef.current.pausePreview();
+
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotoLabelExtra(newPhotoAWS);
+
+        /*const tagChecked = await fetch(
         `https://listerfast.com/api/utils/textfromimage/${newPhotoAWS}`
       );
 
@@ -4022,23 +4011,19 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       checkLabel(textDetections);*/
 
-      setLabelPhotoOpenExtra(false);
-      setOpenCamera(false);
+        setLabelPhotoOpenExtra(false);
+        setOpenCamera(false);
 
-      
-      setProcessingImage(false);
-    }
-
-    } catch(error){
+        setProcessingImage(false);
+      }
+    } catch (error) {
       console.log(error);
       setProcessingImage(false);
     }
   };
 
   const pickPicLabelExtra = async () => {
-
     try {
-
       setProcessingImage(true);
       let nameFile = `${uuidv4()}.jpg`;
 
@@ -4055,17 +4040,17 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const source = newPhoto;
 
-    //setPhotoLabel(newPhoto);
+      //setPhotoLabel(newPhoto);
 
-    //const source = newPhoto.uri;
-    //await cameraRef.current.pausePreview();
-
-    if (source) {
+      //const source = newPhoto.uri;
       //await cameraRef.current.pausePreview();
-      let newPhotoAWS = await handleImage(source, nameFile);
-      setPhotoLabelExtra(newPhotoAWS);
 
-      /*const tagChecked = await fetch(
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotoLabelExtra(newPhotoAWS);
+
+        /*const tagChecked = await fetch(
         `https://listerfast.com/api/utils/textfromimage/${newPhotoAWS}`
       );
 
@@ -4074,14 +4059,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       checkLabel(textDetections);*/
 
-      setLabelPhotoOpenExtra(false);
-      setOpenCamera(false);
+        setLabelPhotoOpenExtra(false);
+        setOpenCamera(false);
 
-      
-      setProcessingImage(false);
-    }
-
-    } catch(error){
+        setProcessingImage(false);
+      }
+    } catch (error) {
       console.log(error);
       setProcessingImage(false);
     }
@@ -4186,7 +4169,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
           //paddingBottom: 100,
         }}
-      >        
+      >
         <ActivityIndicator
           size='large'
           style={{ marginTop: '20%', marginBottom: '20%' }}
@@ -4194,10 +4177,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       </View>
     );
   }
-
-
-  
-
 
   if (openBackListingDialog) {
     return (
@@ -4284,7 +4263,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       );
     } else {
       if (mainPhotoOpen) {
-       
         /*if (mainCameraOpen) {
           return (
             <Camera
@@ -4323,30 +4301,60 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
         return (
           <View style={styles.basicContainer}>
-            <Button style={{margin: 20}} mode='outlined' onPress={()=>takePicMain()}  icon='camera'>Use the camera to take a picture</Button>
-            <Button style={{margin: 20}} mode='outlined' onPress={()=>pickPicMain()} icon='image'>Browse an image from your device</Button>
-            <Button style={{margin: 20}} icon='close' onPress={()=>closePic()}>Close</Button>
-
+            <Button
+              style={{ margin: 20 }}
+              mode='outlined'
+              onPress={() => takePicMain()}
+              icon='camera'
+            >
+              Use the camera to take a picture
+            </Button>
+            <Button
+              style={{ margin: 20 }}
+              mode='outlined'
+              onPress={() => pickPicMain()}
+              icon='image'
+            >
+              Browse an image from your device
+            </Button>
+            <Button
+              style={{ margin: 20 }}
+              icon='close'
+              onPress={() => closePic()}
+            >
+              Close
+            </Button>
           </View>
-          );
-
-
+        );
       } else if (labelPhotoOpen) {
-        
         return (
           <View style={styles.basicContainer}>
-            <Button style={{margin: 20}} mode='outlined' onPress={()=>takePicLabel()}  icon='camera'>Use the camera to take a picture</Button>
-            <Button style={{margin: 20}} mode='outlined' onPress={()=>pickPicLabel()} icon='image'>Browse an image from your device</Button>
-            <Button style={{margin: 20}} icon='close' onPress={()=>closePic()}>Close</Button>
-
+            <Button
+              style={{ margin: 20 }}
+              mode='outlined'
+              onPress={() => takePicLabel()}
+              icon='camera'
+            >
+              Use the camera to take a picture
+            </Button>
+            <Button
+              style={{ margin: 20 }}
+              mode='outlined'
+              onPress={() => pickPicLabel()}
+              icon='image'
+            >
+              Browse an image from your device
+            </Button>
+            <Button
+              style={{ margin: 20 }}
+              icon='close'
+              onPress={() => closePic()}
+            >
+              Close
+            </Button>
           </View>
-          );       
-        
-
-
+        );
       } else if (labelPhotoOpenExtra) {
-        
-        
         /*return (
           <Camera
             style={styles.container}
@@ -4382,25 +4390,60 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
         return (
           <View style={styles.basicContainer}>
-            <Button style={{margin: 20}} mode='outlined' onPress={()=>takePicLabelExtra()}  icon='camera'>Use the camera to take a picture</Button>
-            <Button style={{margin: 20}} mode='outlined' onPress={()=>pickPicLabelExtra()} icon='image'>Browse an image from your device</Button>
-            <Button style={{margin: 20}} icon='close' onPress={()=>closePic()}>Close</Button>
-
+            <Button
+              style={{ margin: 20 }}
+              mode='outlined'
+              onPress={() => takePicLabelExtra()}
+              icon='camera'
+            >
+              Use the camera to take a picture
+            </Button>
+            <Button
+              style={{ margin: 20 }}
+              mode='outlined'
+              onPress={() => pickPicLabelExtra()}
+              icon='image'
+            >
+              Browse an image from your device
+            </Button>
+            <Button
+              style={{ margin: 20 }}
+              icon='close'
+              onPress={() => closePic()}
+            >
+              Close
+            </Button>
           </View>
-          );   
-
-
+        );
       } else if (morePhotosOpen) {
-        
         return (
           <View style={styles.basicContainer}>
-            <Button style={{margin: 20}} mode='outlined' onPress={()=>takeNewPic()}  icon='camera'>Use the camera to take a picture</Button>
-            <Button style={{margin: 20}} mode='outlined' onPress={()=>pickNewPic()} icon='image'>Browse an image from your device</Button>
-            <Button style={{margin: 20}} icon='close' onPress={()=>closePic()}>Close</Button>
-
+            <Button
+              style={{ margin: 20 }}
+              mode='outlined'
+              onPress={() => takeNewPic()}
+              icon='camera'
+            >
+              Use the camera to take a picture
+            </Button>
+            <Button
+              style={{ margin: 20 }}
+              mode='outlined'
+              onPress={() => pickNewPic()}
+              icon='image'
+            >
+              Browse an image from your device
+            </Button>
+            <Button
+              style={{ margin: 20 }}
+              icon='close'
+              onPress={() => closePic()}
+            >
+              Close
+            </Button>
           </View>
-          );   
-        
+        );
+
         /*return (
           <Camera
             style={styles.container}
@@ -4433,20 +4476,35 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             />
           </Camera>
         );*/
-
-
-
       } else if (editPhotoOpen !== '') {
-        
         return (
           <View style={styles.basicContainer}>
-            <Button style={{margin: 20}} mode='outlined' onPress={()=>takeEditPic()}  icon='camera'>Use the camera to take a picture</Button>
-            <Button style={{margin: 20}} mode='outlined' onPress={()=>pickEditPic()} icon='image'>Browse an image from your device</Button>
-            <Button style={{margin: 20}} icon='close' onPress={()=>closePic()}>Close</Button>
-
+            <Button
+              style={{ margin: 20 }}
+              mode='outlined'
+              onPress={() => takeEditPic()}
+              icon='camera'
+            >
+              Use the camera to take a picture
+            </Button>
+            <Button
+              style={{ margin: 20 }}
+              mode='outlined'
+              onPress={() => pickEditPic()}
+              icon='image'
+            >
+              Browse an image from your device
+            </Button>
+            <Button
+              style={{ margin: 20 }}
+              icon='close'
+              onPress={() => closePic()}
+            >
+              Close
+            </Button>
           </View>
-          );  
-        
+        );
+
         /*return (
           <Camera
             style={styles.container}
@@ -4486,9 +4544,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               ]}
             />
           </Camera>*/
-
-
-        
       }
     }
   }
@@ -4565,6 +4620,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         saveListing={saveListing}
         processingSelectedAspectValue={processingSelectedAspectValue}
         photoLabel={photoLabel}
+        photoLabelExtra={photoLabelExtra}
         type={type}
         processLabel={processLabel}
       />
@@ -4876,7 +4932,6 @@ const styles = StyleSheet.create({
 
   nextBackControlButton: {
     backgroundColor: 'white',
-    
   },
 
   nextBackControl: {

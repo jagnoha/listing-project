@@ -441,13 +441,13 @@ export default function ItemSpecificsStage(props) {
           icon={wheelItems.length > 0 ? 'magnify' : 'pencil'}
         />
 
-        {selectedItem.name === 'Brand' ? (
+        {/*selectedItem.name === 'Brand' ? (
           <Button mode='outlined' onPress={() => setSearchQuery('Unbranded')}>
             No brand or unknown brand
           </Button>
         ) : (
           ''
-        )}
+        )*/}
 
         <FlatList
           data={wheelItems}
@@ -986,7 +986,21 @@ export default function ItemSpecificsStage(props) {
             },
           ]}
         />
-        {(props.photoLabel &&
+        {
+          (props.photoLabel || props.photoLabelExtra) &&
+          (props.type === 'clothing' || props.type === 'shoes') ? (
+            <Button
+              style={{ marginTop: 15 }}
+              icon='tag-outline'
+              onPress={() => props.processLabel()}
+              disabled={props.processingSelectedAspectValue}
+            >
+              Get information from Tag Photo
+            </Button>
+          ) : (
+            ''
+          )
+          /*(props.photoLabel &&
           props.photoLabel !== '' &&
           props.type === 'clothing') ||
         props.type === 'shoes' ? (
@@ -1000,7 +1014,8 @@ export default function ItemSpecificsStage(props) {
           </Button>
         ) : (
           ''
-        )}
+        )*/
+        }
       </View>
     </View>
   );
