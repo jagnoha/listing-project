@@ -94,6 +94,7 @@ export default function TitleRevisionStage(props) {
         </Text>
         <Surface style={{ padding: 25 }} elevation={4}>
           <TextInput
+            multiline={true}
             mode='outlined'
             label='Title'
             value={textForm}
@@ -191,7 +192,6 @@ export default function TitleRevisionStage(props) {
         type={props.typeHeader}
         actionBack={props.onOpenBackDialog}
         processingSaveListing={props.processingSaveListing}
-        
       />
       <View>
         <Banner visible={true} icon={'draw'}>
@@ -352,7 +352,6 @@ export default function TitleRevisionStage(props) {
             },
           ]}
         />
-        
 
         {/*<View style={{justifyContent: 'flex-end'}}>
       <Button
@@ -363,7 +362,6 @@ export default function TitleRevisionStage(props) {
           Save and close to finish later
         </Button>
         </View>*/}
-
       </View>
     </View>
   );

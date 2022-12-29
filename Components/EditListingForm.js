@@ -936,6 +936,8 @@ export default function EditListingForm(props) {
         item.localizedAspectName !== 'Vintage' &&
         item.localizedAspectName !== 'Model' &&
         item.localizedAspectName !== 'Product' &&
+        item.localizedAspectName !== 'Pattern' &&
+        item.localizedAspectName !== 'Neckline' &&
         item.localizedAspectName !== 'Gender' &&
         item.localizedAspectName !== 'Fit' &&
         item.localizedAspectName !== 'Features' &&
@@ -979,6 +981,13 @@ export default function EditListingForm(props) {
 
     const numberOfPieces = aspects.find(
       (item) => item.localizedAspectName === 'Number of Pieces'
+    );
+
+    const pattern = aspects.find(
+      (item) => item.localizedAspectName === 'Pattern'
+    );
+    const neckline = aspects.find(
+      (item) => item.localizedAspectName === 'Neckline'
     );
 
     const size = aspects.find((item) => item.localizedAspectName === 'Size');
@@ -1035,6 +1044,9 @@ export default function EditListingForm(props) {
       type: type ? type.value : '',
       color: color ? color.value : '',
       product: product ? product.value : '',
+      pattern: pattern ? pattern.value : '',
+
+      neckline: neckline ? neckline.value : '',
 
       fit: fit ? fit.value : '',
       inseam: inseam ? inseam.value : '',
@@ -1160,14 +1172,14 @@ export default function EditListingForm(props) {
     //const keywords = getImportantAspectsValues();
     let pendingDescription = `<h2>${encode(
       title
-    )}</h2><p style={font-size: 1.2em}>${
+    )}</h2><h3>Condition</h3><p style={font-size: 1.2em}>${
       Array.isArray(categoryFeatures.conditions)
         ? categoryFeatures.conditions.find((item) => item.ID === condition)
             .DisplayName
         : categoryFeatures.conditions.DisplayName
     }</p> 
 ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
-<b>Item Specifics & Features:</b>    
+<b>Additional Details:</b>    
 `;
     let aspectsFil = aspects.filter((item) => item.value !== '');
 
@@ -1272,6 +1284,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       shortPendingTitle.push(keywords['color']);
       pendingTitle.push(keywords['style']);
       shortPendingTitle.push(keywords['style']);
+
+      pendingTitle.push(keywords['pattern']);
+      shortPendingTitle.push(keywords['pattern']);
+
+      pendingTitle.push(keywords['neckline']);
+      shortPendingTitle.push(keywords['neckline']);
 
       pendingTitle.push(keywords['features']);
 
@@ -1835,6 +1853,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         (item) => item.aspectConstraint.aspectUsage === 'RECOMMENDED'
       )) {
         if (
+          item.localizedAspectName === 'Brand' ||
           item.localizedAspectName === 'Type' ||
           item.localizedAspectName === 'Manufacturer Part Number' ||
           item.localizedAspectName === 'Color' ||
@@ -3009,6 +3028,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       //console.log(countries);
 
+      let tempBrands = brands.map((item) => item.toLowerCase());
+
       let tempWords = words.map((item) => item.toLowerCase());
 
       //console.log('BRANDS!!: ', brands );
@@ -3026,10 +3047,16 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       //const brand = brands.filter((x) => tempWords.includes(x.toLowerCase()));
 
-      let brand = brands.filter((x) => tempTextList.includes(x.toLowerCase()));
+      let brandList = tempTextList.filter((x) =>
+        tempBrands.includes(x.toLowerCase())
+      );
 
-      if (brand.length === 0) {
-        brand = brands.filter((x) => tempWords.includes(x.toLowerCase()));
+      let brand = brandList[0];
+
+      if (brandList.length === 0) {
+        brand = tempWords.filter((x) =>
+          tempBrands.includes(x.toLowerCase())
+        )[0];
       }
 
       let model = models.filter((x) =>
@@ -3077,8 +3104,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       //console.log('Country: ', country);
 
       let batchProcess = [];
-      if (brand.length > 0) {
-        batchProcess.push({ itm: 'Brand', value: brand.join(' ') });
+      if (brand !== '') {
+        batchProcess.push({
+          itm: 'Brand',
+          value: brand.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
+            letter.toUpperCase()
+          ),
+        });
       }
 
       //console.log('MODEL!!!: ', model);
