@@ -937,7 +937,9 @@ export default function EditListingForm(props) {
         item.localizedAspectName !== 'Model' &&
         item.localizedAspectName !== 'Product' &&
         item.localizedAspectName !== 'Pattern' &&
+        item.localizedAspectName !== 'Fabric Wash' &&
         item.localizedAspectName !== 'Neckline' &&
+        item.localizedAspectName !== 'Material' &&
         item.localizedAspectName !== 'Gender' &&
         item.localizedAspectName !== 'Fit' &&
         item.localizedAspectName !== 'Features' &&
@@ -949,7 +951,8 @@ export default function EditListingForm(props) {
         item.localizedAspectName !== 'Country/Region of Manufacture' &&
         item.localizedAspectName !== 'Manufacturer Part Number' &&
         item.localizedAspectName !== 'MPN' &&
-        item.localizedAspectName !== 'OE/OEM Part Number'
+        item.localizedAspectName !== 'OE/OEM Part Number' &&
+        item.localizedAspectName !== 'Number of Pieces'
     );
 
     let values = require.map((item) => {
@@ -981,6 +984,14 @@ export default function EditListingForm(props) {
 
     const numberOfPieces = aspects.find(
       (item) => item.localizedAspectName === 'Number of Pieces'
+    );
+
+    const fabricWash = aspects.find(
+      (item) => item.localizedAspectName === 'Fabric Wash'
+    );
+
+    const material = aspects.find(
+      (item) => item.localizedAspectName === 'Material'
     );
 
     const pattern = aspects.find(
@@ -1044,9 +1055,12 @@ export default function EditListingForm(props) {
       type: type ? type.value : '',
       color: color ? color.value : '',
       product: product ? product.value : '',
+      fabricWash: fabricWash ? fabricWash.value : '',
       pattern: pattern ? pattern.value : '',
 
       neckline: neckline ? neckline.value : '',
+
+      material: material ? material.value : '',
 
       fit: fit ? fit.value : '',
       inseam: inseam ? inseam.value : '',
@@ -1240,6 +1254,14 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['product']);
       shortPendingTitle.push(keywords['product']);
 
+      if (keywords['department'] === '') {
+        pendingTitle.push(keywords['gender']);
+        shortPendingTitle.push(keywords['gender']);
+      } else {
+        pendingTitle.push(`${keywords['department']}`);
+        shortPendingTitle.push(`${keywords['department']}`);
+      }
+
       if (keywords['type'] === '') {
         if (
           keywords['category'].slice(keywords['category'].length - 2) === 'es'
@@ -1291,6 +1313,10 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['neckline']);
       shortPendingTitle.push(keywords['neckline']);
 
+      pendingTitle.push(keywords['material'].filter(item => item !== 'Polyester'));
+      shortPendingTitle.push(keywords['material'].filter(item => item !== 'Polyester'));
+
+
       pendingTitle.push(keywords['features']);
 
       pendingTitle.push(extraAspects.join(' '));
@@ -1304,13 +1330,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         }
       }
 
-      if (keywords['department'] === '') {
+      /*if (keywords['department'] === '') {
         pendingTitle.push(keywords['gender']);
         shortPendingTitle.push(keywords['gender']);
       } else {
         pendingTitle.push(keywords['department']);
         shortPendingTitle.push(keywords['department']);
-      }
+      }*/
 
       pendingTitle.push(keywords['sizeType']);
       shortPendingTitle.push(keywords['sizeType']);
@@ -1420,6 +1446,14 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['product']);
       shortPendingTitle.push(keywords['product']);
 
+      if (keywords['department'] === '') {
+        pendingTitle.push(keywords['gender']);
+        shortPendingTitle.push(keywords['gender']);
+      } else {
+        pendingTitle.push(`${keywords['department']}`);
+        shortPendingTitle.push(`${keywords['department']}`);
+      }
+
       let tempType = keywords['type'].toUpperCase();
 
       if (!tempModel.includes(tempType)) {
@@ -1444,13 +1478,15 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(extraAspects.join(' '));
       shortPendingTitle.push(extraAspects.slice(0, 2).join(' '));
 
-      if (keywords['department'] === '') {
+      /*if (keywords['department'] === '') {
         pendingTitle.push(keywords['gender']);
         shortPendingTitle.push(keywords['gender']);
       } else {
         pendingTitle.push(keywords['department']);
         shortPendingTitle.push(keywords['department']);
-      }
+      }*/
+
+
       pendingTitle.push(`Size ${keywords['usShoeSize']}`);
       shortPendingTitle.push(`Size ${keywords['usShoeSize']}`);
 
@@ -2375,7 +2411,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           if (keywords['fit'] !== '') {
             if (keywords['fit'] !== 'Regular') {
               pendingTitle.push(`${keywords['fit']} Fit`);
+              shortPendingTitle.push(`${keywords['fit']} Fit`);
             }
+          }
+    
+          if (keywords['fabricWash'] !== '') {        
+              pendingTitle.push(`${keywords['fabricWash']} Wash`);
+              shortPendingTitle.push(`${keywords['fabricWash']} Wash`);        
           }
 
           if (keywords['department'] === '') {
@@ -2946,12 +2988,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       const textList = textDetections
         .concat(textDetectionsExtra)
         .filter((item) => item.Type === 'LINE')
-        .map((item) => item.DetectedText);
+        .map((item) => item.DetectedText.replace(/[^a-z0-9\s]/gi, ''));
 
       const words = textDetections
         .concat(textDetectionsExtra)
         .filter((item) => item.Type === 'WORD')
-        .map((item) => item.DetectedText.replace(/[^a-z0-9]/gi, ''));
+        .map((item) => item.DetectedText.replace(/[^a-z0-9\s]/gi, ''));
 
       /*const byBrand = textList.filter(
         (item) => item.includes('by') || item.includes('BY')
@@ -3059,9 +3101,37 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         )[0];
       }
 
-      let model = models.filter((x) =>
-        tempWords.map((itm) => `${brand[0]} ${itm}`).includes(x.toLowerCase())
+      brand = brand ? brand : '';
+
+      let modelList = models.filter((x) =>
+      tempTextList.map( itm => `${brand} ${itm}`).includes(x.toLowerCase())
       );
+
+      console.log('MODEL LIST: ', modelList);
+
+      let model = modelList[0];
+
+    if (modelList.length === 0) {
+      modelList = models.filter((x) =>
+      tempWords.map( itm => `${brand} ${itm}`).includes(x.toLowerCase())
+      );
+    }
+
+    if (modelList.length === 0) {
+      modelList = models.filter((x) =>
+      tempTextList.includes(x.toLowerCase())
+      );
+    }
+
+    if (modelList.length === 0) {
+      modelList = models.filter((x) =>
+      tempWords.includes(x.toLowerCase())
+      );
+    }
+
+    model = modelList.length > 0 ? modelList[0] : '';
+
+    console.log('MODEL!: ', model);
 
       /*const model = tempTextList.filter((x) =>
         models.includes(x.toLowerCase())
@@ -3104,6 +3174,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       //console.log('Country: ', country);
 
       let batchProcess = [];
+
       if (brand !== '') {
         batchProcess.push({
           itm: 'Brand',
@@ -3116,8 +3187,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       //console.log('MODEL!!!: ', model);
       //console.log('BRAND!!!: ', brand);
 
-      if (model.length > 0) {
-        batchProcess.push({ itm: 'Model', value: model });
+      if (model !== '') {
+        batchProcess.push({
+          itm: 'Model',
+          value: model.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
+            letter.toUpperCase()
+          ),
+        });
       }
 
       if (size.length > 0) {

@@ -25,6 +25,7 @@ import {
 } from 'react-native-paper';
 import Header from '../Header';
 import { useRecoilState } from 'recoil';
+import * as Haptics from 'expo-haptics';
 
 import snackBarAtom from '../../Store/atoms/snackBarAtom';
 
@@ -92,6 +93,9 @@ export default function ItemSpecificsStage(props) {
   };
 
   const onAddMultiItem = (valueItem) => {
+
+    Haptics.selectionAsync();
+
     if (wheelItems.length > 0) {
       if (!multiSelected.find((item) => item === valueItem)) {
         setMultiSelected((old) => [...old, valueItem]);
@@ -186,6 +190,8 @@ export default function ItemSpecificsStage(props) {
 
   const onSelectedValue = async (value) => {
     console.log(value);
+
+    Haptics.selectionAsync();
 
     props.changeValueItemAspect(selectedItem.name, value);
   };

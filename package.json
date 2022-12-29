@@ -42,7 +42,8 @@
     "react-native-wheel-picker-expo": "^0.5.2",
     "recoil": "^0.7.6",
     "uuid": "^9.0.0",
-    "expo-network": "~4.3.0"
+    "expo-network": "~4.3.0",
+    "expo-haptics": "~11.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
