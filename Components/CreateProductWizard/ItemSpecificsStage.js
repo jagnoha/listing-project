@@ -17,6 +17,7 @@ import {
   Searchbar,
   SegmentedButtons,
   Banner,
+  Divider,
   Title,
   Paragraph,
   ActivityIndicator,
@@ -183,6 +184,8 @@ export default function ItemSpecificsStage(props) {
       value: item.value,
     });
 
+    console.log('ITEM!!!!: ', item);
+
     setSearchQuery(item.value);
     
     
@@ -316,6 +319,7 @@ export default function ItemSpecificsStage(props) {
 
   if (openWheel && selectedItem.cardinality === 'SINGLE') {
     return (
+      
       <View
         style={{
           flex: 1,
@@ -324,20 +328,49 @@ export default function ItemSpecificsStage(props) {
           alignItems: 'center',
           alignContent: 'center',
           alignSelf: 'center',
-          paddingTop: 75,
+          paddingTop: 40,
         }}
+        
       >
        
 
-        {wheelItems.length > 0 ? (
-          <Text style={{ fontSize: 20, marginBottom: 15 }}>
-            Pick a {selectedItem.name}
+       
+
+        {
+          selectedItem.mode === 'FREE_TEXT' ?
+          <View>
+            
+            <Text style={{ fontSize: 20, marginBottom: 15, textAlign:'center', fontWeight: 'bold' }}>
+            {selectedItem.name} 
           </Text>
-        ) : (
-          <Text style={{ fontSize: 20, marginBottom: 15 }}>
-            Edit {selectedItem.name}
+            <Text style={{ fontSize: 15, marginBottom: 15, textAlign:'center' }}>
+            Select from the list or add your own value
           </Text>
-        )}
+          <Divider bold={true} />
+          
+          </View>
+
+          :
+
+          
+
+            <View>
+                        
+            <Text style={{ fontSize: 20, marginBottom: 15, textAlign:'center', fontWeight: 'bold' }}>
+            {selectedItem.name} 
+            </Text>
+            <Text style={{ fontSize: 15, marginBottom: 15, textAlign:'center' }}>
+            
+            { selectedItem.name === 'Vintage' ? `Is it a product vintage?` : `Select from the list` } 
+            </Text>
+            <Divider bold={true} />
+
+            </View>
+
+
+
+
+        }
 
         <Searchbar
           style={{ margin: 25 }}
@@ -357,7 +390,34 @@ export default function ItemSpecificsStage(props) {
           //onEndReachedThreshold={50}
         />
 
+        {selectedItem.mode === 'SELECTION_ONLY' ?
+        
         <SegmentedButtons
+          style={props.styles.nextBackControl}
+          onValueChange={() => console.log('Change value')}
+          buttons={
+             [
+                  {
+                    value: 'close',
+                    label: 'Close',
+                    icon: 'close',
+                    style: props.styles.nextBackControlButton,
+                    onPress: () => onCloseWheel(),
+                  },
+                  {
+                    value: 'reset',
+                    label: 'Delete',
+                    icon: 'cancel',
+                    style: props.styles.nextBackControlButton,
+                    onPress: () => onResetWheel(),
+                  },
+                ]
+              
+          }
+        />
+        
+        
+        : <SegmentedButtons
           style={props.styles.nextBackControl}
           onValueChange={() => console.log('Change value')}
           buttons={
@@ -403,7 +463,8 @@ export default function ItemSpecificsStage(props) {
                   },
                 ]
           }
-        />
+        />}
+      
       </View>
     );
   }
@@ -418,10 +479,10 @@ export default function ItemSpecificsStage(props) {
           alignItems: 'center',
           alignContent: 'center',
           alignSelf: 'center',
-          paddingTop: 75,
+          paddingTop: 40,
         }}
       >
-        {wheelItems.length > 0 ? (
+        {/*wheelItems.length > 0 ? (
           <Text style={{ fontSize: 20, marginBottom: 15 }}>
             Pick a {selectedItem.name}
           </Text>
@@ -429,7 +490,22 @@ export default function ItemSpecificsStage(props) {
           <Text style={{ fontSize: 20, marginBottom: 15 }}>
             Edit {selectedItem.name}
           </Text>
-        )}
+        )*/}
+
+        
+
+        <View>
+            
+            <Text style={{ fontSize: 20, marginBottom: 15, textAlign:'center', fontWeight: 'bold' }}>
+            {selectedItem.name} <Text style={{fontSize: 15}}>(Multiple choice)</Text>
+          </Text>
+            <Text style={{ fontSize: 15, marginBottom: 15, textAlign:'center' }}>
+            Select from the list or add your own value
+          </Text>
+          <Divider bold={true} />
+          
+          </View>
+
 
         <Searchbar
           style={{ margin: 25 }}
