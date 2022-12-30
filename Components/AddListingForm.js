@@ -3078,10 +3078,15 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     try {
       setProcessingCategories(true);
 
-      const searchCategoriesLarge =
+      /*const searchCategoriesLarge =
         type !== 'autoparts' && type !== 'others'
           ? `${searchCategories} ${type}`
-          : searchCategories;
+          : searchCategories;*/
+
+        const searchCategoriesLarge =
+          type !== 'autoparts' && type !== 'others'
+            ? `${searchCategories}`
+            : searchCategories;    
 
       console.log('SEARCH CATEGORIES: ', searchCategories);
 
@@ -4427,7 +4432,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               onPress={() => takePicMain()}
               icon='camera'
             >
-              Use the camera to take a picture
+              Take a picture
             </Button>
             <Button
               style={{ margin: 20 }}
@@ -4435,7 +4440,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               onPress={() => pickPicMain()}
               icon='image'
             >
-              Browse an image from your device
+              Get an image from your device
             </Button>
             <Button
               style={{ margin: 20 }}
@@ -4455,7 +4460,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               onPress={() => takePicLabel()}
               icon='camera'
             >
-              Use the camera to take a picture
+              Take a picture
             </Button>
             <Button
               style={{ margin: 20 }}
@@ -4463,7 +4468,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               onPress={() => pickPicLabel()}
               icon='image'
             >
-              Browse an image from your device
+              Get an image from your device
             </Button>
             <Button
               style={{ margin: 20 }}
@@ -4516,7 +4521,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               onPress={() => takePicLabelExtra()}
               icon='camera'
             >
-              Use the camera to take a picture
+              Take a picture
             </Button>
             <Button
               style={{ margin: 20 }}
@@ -4524,7 +4529,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               onPress={() => pickPicLabelExtra()}
               icon='image'
             >
-              Browse an image from your device
+              Get an image from your device
             </Button>
             <Button
               style={{ margin: 20 }}
@@ -4544,7 +4549,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               onPress={() => takeNewPic()}
               icon='camera'
             >
-              Use the camera to take a picture
+              Take a picture
             </Button>
             <Button
               style={{ margin: 20 }}
@@ -4552,7 +4557,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               onPress={() => pickNewPic()}
               icon='image'
             >
-              Browse an image from your device
+              Get an image from your device
             </Button>
             <Button
               style={{ margin: 20 }}
@@ -4605,7 +4610,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               onPress={() => takeEditPic()}
               icon='camera'
             >
-              Use the camera to take a picture
+              Take a picture
             </Button>
             <Button
               style={{ margin: 20 }}
@@ -4613,7 +4618,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               onPress={() => pickEditPic()}
               icon='image'
             >
-              Browse an image from your device
+              Get an image from your device
             </Button>
             <Button
               style={{ margin: 20 }}
@@ -4713,6 +4718,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         photoLabelExtra={photoLabelExtra}
         //processLabel={processLabel}
         photoLabel={photoLabel}
+        getCategoriesSearch={getCategoriesSearch}
       />
     );
   }

@@ -51,7 +51,7 @@ export default function PhotosSection(props) {
       />
 
       <View>
-        <Banner visible={true} icon={'camera'}>
+        <Banner visible={true} icon={'image'}>
           {props.type === 'clothing' || props.type === 'shoes'
             ? 'The main photo is required, you can also take a photo of the product tags. Add up to 8 additional photos.'
             : 'The main photo is required. Add up to 8 more photos.'}
@@ -186,12 +186,12 @@ export default function PhotosSection(props) {
           /*style={{ marginLeft: 60, marginRight: 60, marginTop: 20 }}*/
         >
           {props.photoMain && props.photos.length < 8 ? <Button
-            icon='camera-plus'
+            icon='image'
             mode='contained-tonal'
             onPress={() => props.onOpenPreviewPhoto()}
             disabled={props.photoMain && props.photos.length < 8 ? false : true}
           >
-            Take more photos
+            Add more photos
           </Button>:''}
           {/*<IconButton
             icon='camera-plus'

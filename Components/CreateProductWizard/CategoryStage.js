@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import {
   useTheme,
   Text,
   Card,
   Title,
+  Avatar,
   Surface,
   Button,
+  TextInput,
   Searchbar,
   SegmentedButtons,
   Banner,
@@ -19,7 +21,12 @@ import Header from '../Header';
 export default function CategoryStage(props) {
   //const theme = useTheme();
 
+  const searchInput = useRef(null);
+
   console.log(props.categories);
+
+  const [searchText, setSearchText] = useState('');
+
 
   /*useEffect(() => {
     if (props.photoLabel || props.photoLabelExtra) {
@@ -27,6 +34,13 @@ export default function CategoryStage(props) {
     }
     console.log('CategoryStage!!!!');
   }, []);*/
+
+  const onProcessCategories = async () => {
+    console.log(searchText);
+    props.getCategoriesSearch(searchText);
+    setSearchText('');
+    searchInput.current.blur();
+  }
 
   return (
     <View>
@@ -52,7 +66,7 @@ export default function CategoryStage(props) {
             />
           </View>
         ) : (
-          <ScrollView style={{ height: '55%' }}>
+          <ScrollView style={{ height: '45%' }}>
             {props.categories.map((item) => {
               return (
                 <View key={item.categoryId}>
@@ -91,6 +105,39 @@ export default function CategoryStage(props) {
             })}
           </ScrollView>
         )}
+
+        {/*<View style ={{paddingLeft: 20, marginTop: 10, backgroundColor: 'black'}}>
+          <Text style={{color: 'white'}}>Can't find the right category? Give me more information</Text>
+          
+          </View>*/}
+        
+        <Card mode='elevated' style={{  backgroundColor: '#E0FFFF', marginTop: 10, marginLeft: 10, marginRight: 10}}>
+        <Card.Title
+    title="Can't find the right category?"
+    left={(props) => <Avatar.Icon {...props} icon="information" />}
+    
+  />
+
+        {/*<Card.Content>
+        
+          <Title style={{fontSize: 14, fontWeight: 'bold'}}>Can't find the right category?</Title>
+          
+          
+        </Card.Content>*/}
+
+        <TextInput
+          ref={searchInput} 
+          mode='outlined'
+          value={searchText}
+          onChangeText={text => setSearchText(text)}
+          style={{marginLeft: 10, marginBottom: 10, marginRight: 10, fontSize: 14}}
+          label="Enter more details about your product"
+          right={<TextInput.Icon icon="send" disabled={searchText && searchText.length > 0 ? false : true} onPress={()=>onProcessCategories()} />}
+        />
+            
+          </Card>
+      
+         
 
         <SegmentedButtons
           style={props.styles.nextBackControl}

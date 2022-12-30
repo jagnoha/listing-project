@@ -110,10 +110,16 @@ export default function PriceStage(props) {
           alignItems: 'center',
           alignContent: 'center',
           alignSelf: 'center',
-          paddingTop: 100,
+          paddingTop: 20,
         }}
       >
-        <Text style={{ fontSize: 20, paddingBottom: 20 }}>Price List</Text>
+        <View>
+          <Text style={{ fontSize: 20, marginBottom: 15, textAlign: 'center', fontWeight: 'bold' }}>Price List</Text>
+          <Text style={{ fontSize: 15, marginBottom: 20, textAlign:'center' }}>
+          Internet reference prices
+          </Text>
+        
+        </View>
         <Surface
           style={{
             width: 325,
@@ -192,12 +198,18 @@ export default function PriceStage(props) {
         ) : props.prices.length > 0 ? (
           <View>
             <Button icon='format-list-text' onPress={() => onOpenPriceList()}>
-              See prices reference
+              See internet reference prices
             </Button>
           </View>
         ) : (
           ''
         )}
+
+        {!props.processingPrices && props.letPriceListing && !props.isChangedAspects ?  (
+                <View>
+                  <Button icon='refresh' onPress={() => props.getGooglePrices()}>Get internet reference prices</Button>
+                </View>
+        ) : ''}
 
 
 
@@ -293,11 +305,7 @@ export default function PriceStage(props) {
           ''
         )}
 
-{!props.processingPrices && props.letPriceListing && !props.isChangedAspects ?  (
-        <View style={{padding: 10}}>
-          <Button icon='refresh' onPress={() => props.getGooglePrices()}>Get updated reference prices</Button>
-        </View>
-) : ''}
+
 
 
       </View>

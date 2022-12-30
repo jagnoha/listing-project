@@ -2634,6 +2634,52 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     setPhotoLabelExtra(undefined);
   };
 
+  const getCategoriesSearch = async (searchCategories) => {
+    try {
+      setProcessingCategories(true);
+
+      /*const searchCategoriesLarge =
+        type !== 'autoparts' && type !== 'others'
+          ? `${searchCategories} ${type}`
+          : searchCategories;*/
+
+        const searchCategoriesLarge =
+          type !== 'autoparts' && type !== 'others'
+            ? `${searchCategories}`
+            : searchCategories;    
+
+      console.log('SEARCH CATEGORIES: ', searchCategories);
+
+      //console.log('Ebay User: ', ebayUser);
+
+      //const searchCategoriesLarge = searchCategories;
+
+      const response = await fetch(
+        `https://listerfast.com/api/ebay/categorysuggestions/${ebayUser}/${getTypeProductCode(
+          type
+        )}/${searchCategoriesLarge}`
+      );
+
+      const json = await response.json();
+
+      const categories = json.categorySuggestions.map((item) => {
+        return {
+          categoryId: item.category.categoryId,
+          title: item.category.categoryName,
+          subtitle: item.categoryTreeNodeAncestors[0].categoryName,
+        };
+      });
+
+      setCategory('');
+      setCategories(categories);
+      //console.log(categories);
+      setProcessingCategories(false);
+    } catch (error) {
+      setProcessingCategories(false);
+      console.log(error);
+    }
+  };
+
   const getCategories = async () => {
     try {
       setProcessingCategories(true);
@@ -3841,7 +3887,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                 onPress={() => takePicMain()}
                 icon='camera'
               >
-                Use the camera to take a picture
+                Take a picture
               </Button>
               <Button
                 style={{ margin: 20 }}
@@ -3849,7 +3895,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                 onPress={() => pickPicMain()}
                 icon='image'
               >
-                Browse an image from your device
+                Get an image from your device
               </Button>
               <Button
                 style={{ margin: 20 }}
@@ -3902,7 +3948,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                 onPress={() => takePicLabel()}
                 icon='camera'
               >
-                Use the camera to take a picture
+                Take a picture
               </Button>
               <Button
                 style={{ margin: 20 }}
@@ -3910,7 +3956,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                 onPress={() => pickPicLabel()}
                 icon='image'
               >
-                Browse an image from your device
+                Get an image from your device
               </Button>
               <Button
                 style={{ margin: 20 }}
@@ -3962,7 +4008,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                 onPress={() => takePicLabelExtra()}
                 icon='camera'
               >
-                Use the camera to take a picture
+                Take a picture
               </Button>
               <Button
                 style={{ margin: 20 }}
@@ -3970,7 +4016,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                 onPress={() => pickPicLabelExtra()}
                 icon='image'
               >
-                Browse an image from your device
+                Get an image from your device
               </Button>
               <Button
                 style={{ margin: 20 }}
@@ -4023,7 +4069,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                 onPress={() => takeNewPic()}
                 icon='camera'
               >
-                Use the camera to take a picture
+                Take a picture
               </Button>
               <Button
                 style={{ margin: 20 }}
@@ -4031,7 +4077,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                 onPress={() => pickNewPic()}
                 icon='image'
               >
-                Browse an image from your device
+                Get an image from your device
               </Button>
               <Button
                 style={{ margin: 20 }}
@@ -4084,7 +4130,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                 onPress={() => takeEditPic()}
                 icon='camera'
               >
-                Use the camera to take a picture
+                Take a picture
               </Button>
               <Button
                 style={{ margin: 20 }}
@@ -4092,7 +4138,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
                 onPress={() => pickEditPic()}
                 icon='image'
               >
-                Browse an image from your device
+                Get an image from your device
               </Button>
               <Button
                 style={{ margin: 20 }}
@@ -4192,6 +4238,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           category={category}
           saveListing={saveListing}
           onDeleteItem={onDeleteItem}
+          getCategoriesSearch={getCategoriesSearch}
           //processLabel={processLabel}
           //photoLabel={photoLabel}
           //onCheckAllAspects={onCheckAllAspects}
