@@ -752,7 +752,7 @@ export default function ItemSpecificsStage(props) {
               onPress={() => props.processLabel()}
               disabled={props.processingSelectedAspectValue}
             >
-              Get information from Tag Photo
+              Get information from Tags
             </Button>
           ) : (
             ''

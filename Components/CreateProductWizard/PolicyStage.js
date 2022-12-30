@@ -259,7 +259,7 @@ export default function PolicyStage(props) {
         processingSaveListing={props.processingSaveListing}
       />
       <View>
-        <Banner visible={true} icon={'postage-stamp'}>
+        <Banner visible={true} icon={'format-list-group'}>
           Select eBay's Fulfillment, Payment and Return Policies.
         </Banner>
 

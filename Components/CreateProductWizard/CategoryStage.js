@@ -114,7 +114,7 @@ export default function CategoryStage(props) {
         <Card mode='elevated' style={{  backgroundColor: '#E0FFFF', marginTop: 10, marginLeft: 10, marginRight: 10}}>
         <Card.Title
     title="Can't find the right category?"
-    left={(props) => <Avatar.Icon {...props} icon="information" />}
+    left={(props) => <Avatar.Icon {...props} icon="emoticon-sad" />}
     
   />
 

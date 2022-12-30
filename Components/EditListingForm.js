@@ -4263,6 +4263,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           getAspectValues={getAspectValues}
           aspectValues={aspectValues}
           changeValueItemAspect={changeValueItemAspect}
+          
           checkedAllAspects={checkedAllAspects}
           category={category}
           getCategoriesFeatures={getCategoriesFeatures}
