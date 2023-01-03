@@ -153,7 +153,7 @@ export default function Header(props) {
         weightMayor: listingResult.weightMayor,
         weightMinor: listingResult.weightMinor,
         quantity: listingResult.quantity,
-        isReadyToGo: listingResult.isReadyToGo,
+        isReadyToGo: false, //listingResult.isReadyToGo,
       };
 
       const newListing = await API.graphql({
@@ -165,7 +165,76 @@ export default function Header(props) {
 
       setSnackBar({
         visible: true,
-        text: `Listing Copied`,
+        text: `Listing Copied. Check in To Revise Tab`,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onCopyItemFromPublished = async () => {
+    try {
+      const id = selected[0].id;
+
+      const listing = await API.graphql({
+        query: queries.getListing,
+        variables: { id: id },
+      });
+
+      const listingResult = listing.data.getListing;
+
+      //***************************************************** */
+
+      const newId = uuidv4();
+
+      const listingDetails = {
+        id: newId,
+        sku: newId,
+        modelType: 'Listing',
+        accountsID: listingResult.accountsID,
+        title: `(Copy) ${listingResult.title}`,
+        description: listingResult.description,
+        price: listingResult.price,
+        itemsSpecifics: listingResult.itemsSpecifics,
+        categoryFeatures: listingResult.categoryFeatures,
+        isDraft: true,
+        type: listingResult.type,
+        photoMain: listingResult.photoMain,
+        photoLabel: listingResult.photoLabel,
+        photos: listingResult.photos,
+        lastStep: listingResult.lastStep,
+        ebayMotors: listingResult.ebayMotors,
+        categoryID: listingResult.categoryID,
+        categoryList: listingResult.categoryList,
+        shippingProfileID: listingResult.shippingProfileID,
+        returnProfileID: listingResult.returnProfileID,
+        paymentProfileID: listingResult.paymentProfileID,
+        conditionCode: listingResult.conditionCode,
+        conditionDescription: listingResult.conditionDescription,
+        conditionName: listingResult.conditionName,
+        UPC: listingResult.UPC,
+        ISBN: listingResult.ISBN,
+        EAN: listingResult.EAN,
+        barcodeValue: listingResult.barcodeValue,
+        length: listingResult.length,
+        width: listingResult.width,
+        height: listingResult.height,
+        weightMayor: listingResult.weightMayor,
+        weightMinor: listingResult.weightMinor,
+        quantity: listingResult.quantity,
+        isReadyToGo: false, //listingResult.isReadyToGo,
+      };
+
+      const newListing = await API.graphql({
+        query: mutations.createListing,
+        variables: { input: listingDetails },
+      });
+
+      //console.log(newListing);
+
+      setSnackBar({
+        visible: true,
+        text: `Listing Copied. Check in To Revise Tab`,
       });
     } catch (error) {
       console.log(error);
@@ -476,6 +545,32 @@ export default function Header(props) {
         )}
         <Appbar.Action icon='publish' onPress={() => onPublishItems()} />
         <Appbar.Action icon='delete-outline' onPress={() => onDeleteItems()} />
+      </Appbar.Header>
+      </View>
+    );
+    //}
+  }
+
+  if (props.type === 'selectionPublished') {
+    //if (props.indexTab === 0) {
+    return (
+      
+        <View>
+        <MyStatusBar theme={theme} />
+      <Appbar.Header style={{ backgroundColor: theme.colors.background }} mode='small'>
+        <Appbar.BackAction onPress={() => onBack()} />
+        <Appbar.Content
+          title={selected.length}
+          color={theme.colors.onBackground}
+        />
+        {selected.length === 1 ? (
+          <Appbar.Action
+            icon='plus-circle-multiple-outline'
+            onPress={() => onCopyItemFromPublished()}
+          />
+        ) : (
+          ''
+        )}
       </Appbar.Header>
       </View>
     );

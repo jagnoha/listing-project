@@ -47,6 +47,8 @@ import listingsAtom from './Store/atoms/listingsAtom';
 
 import listingsOnlineAtom from './Store/atoms/listingsOnlineAtom';
 
+import listingsPublishedAtom from './Store/atoms/listingsPublishedAtom';
+
 import NewAccountWizard from './Components/NewAccountWizard';
 /*import awsmobile from './src/aws-exports';
 
@@ -70,6 +72,11 @@ export default function Main() {
 
   const [listingsOnline, setListingsOnline] =
     useRecoilState(listingsOnlineAtom);
+
+    const [listingsPublished, setListingsPublished] =
+    useRecoilState(listingsPublishedAtom);
+
+
 
   const [paymentPolicies, setPaymentPolicies] =
     useRecoilState(paymentPoliciesAtom);
@@ -259,6 +266,48 @@ export default function Main() {
 
   useEffect(() => {
     (async () => {
+      /*const listingsResponse = await API.graphql({
+        query: queries.syncListings,
+        variables: {
+          filter: {
+            accountsID: { eq: user.username.toLowerCase() },
+            isDraft: { eq: true },
+            //_deleted: { eq: false },
+          },
+          limit: 1000,
+        },
+      });*/
+
+      const listingsResponse = await API.graphql({
+        query: queries.listingsByDate,
+        variables: {
+          modelType: 'Listing',
+          sortDirection: 'DESC',
+          filter: {
+            accountsID: { eq: user.username.toLowerCase() },
+            isDraft: { eq: false },
+            //_deleted: { eq: false },
+          },
+          limit: 1000,
+        },
+      });
+
+      /*setListings(
+        listingsResponse.data.syncListings.items
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .filter((item) => item._deleted !== true)
+      );*/
+
+      setListingsPublished(
+        listingsResponse.data.listingsByDate.items.filter(
+          (item) => item._deleted !== true
+        )
+      );
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
       console.log('Testing!!!!!!!!!!!!!!!');
       console.log(user.username.toLowerCase());
 
@@ -336,6 +385,9 @@ export default function Main() {
         console.log(value.data.onCreateListing);
         setListings((old) => [value.data.onCreateListing, ...old]);
         setListingsOnline((old) => [value.data.onCreateListing, ...old]);
+        if (value.data.onCreateListing.isDraft === false){
+          setListingsPublished((old) => [value.data.onCreateListing, ...old]);
+        }
         //setListings([...listings, value.data.onCreateListing]);
       },
       error: (error) => console.warn(error),
@@ -398,6 +450,10 @@ export default function Main() {
           }
           return item
         } )  ]);
+
+        if (value.data.onUpdateListing.isDraft === false){
+          setListingsPublished((old) => [value.data.onUpdateListing, ...old]);
+        }
 
         /*setListings((old) => [value.data.onUpdateListing,
           ...old.filter((item) => item.id !== value.data.onUpdateListing.id)

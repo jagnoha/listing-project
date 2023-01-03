@@ -167,9 +167,9 @@ export default function ListingsToRevise() {
   );
 
   return (
-    <>
-      <Searchbar
-        style={{ margin: 25 }}
+    <><Text style={{paddingTop: 10, paddingLeft: 20, paddingRight: 20}}>List of products still under review to be able to send them to eBay.</Text>
+    <Searchbar
+      style={{ marginLeft: 25, marginRight: 25, marginBottom: 25, marginTop: 15 }}
         placeholder={'Search'}
         onChangeText={onChangeSearch}
         value={searchQuery}

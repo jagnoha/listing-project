@@ -21,6 +21,7 @@ import {
 
 import { StyleSheet, Image, FlatList } from 'react-native';
 import listingsAtom from '../Store/atoms/listingsAtom';
+import listingsPublishedAtom from '../Store/atoms/listingsPublishedAtom';
 
 //import * as subscriptions from '../src/graphql/subscriptions';
 
@@ -45,15 +46,17 @@ const month = [
   'Dec',
 ];
 
-const MAX_LISTINGS = 10;
+const MAX_LISTINGS = 1;
 
-export default function ListingsReadyToGo() {
+export default function ListingsPublished() {
   const navigation = useNavigation();
   const theme = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
 
   const [selected, setSelected] = useRecoilState(selectedAtom);
   const [listings, setListings] = useRecoilState(listingsAtom);
+
+  const [listingsPublished, setListingsPublished] = useRecoilState(listingsPublishedAtom);
 
   const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
 
@@ -64,7 +67,7 @@ export default function ListingsReadyToGo() {
     setSearchQuery(query);
   };
 
-  const onSelectListing = (listing) => {
+  const onSelectListing_old = (listing) => {
     if (selected.find((item) => item.id === listing.id)) {
       setSelected(selected.filter((item) => item.id !== listing.id));
     } else {
@@ -77,6 +80,22 @@ export default function ListingsReadyToGo() {
         });
       }
     }
+  };
+
+  const onSelectListing = (listing) => {
+    /*if (selected.find((item) => item.id === listing.id)) {
+      setSelected(selected.filter((item) => item.id !== listing.id));
+    } else {
+      if (selected.length < MAX_LISTINGS) {
+        setSelected((oldSelected) => [...oldSelected, listing]);
+      } else {
+        setSnackBar({
+          visible: true,
+          text: `Limit of ${MAX_LISTINGS}  listings per bulk`,
+        });
+      }
+    }*/
+    setSelected([listing]);
   };
 
   const checkType = (type) => {
@@ -130,10 +149,10 @@ export default function ListingsReadyToGo() {
       descriptionStyle={{ color: 'gray' }}
       description={item.conditionName}
       //onPress={() => navigation.navigate('AddListing')}
-      onPress={() => onOpenListing(item.id, item.type)}
-      onLongPress={() =>
+      onPress={() => onSelectListing({ id: item.id, version: item._version }) /*console.log('ITEM PRESSED!')*/ /*onOpenListing(item.id, item.type)*/}
+      /*onLongPress={() =>
         onSelectListing({ id: item.id, version: item._version })
-      }
+      }*/
       delayLongPress={200}
       left={(props) =>
         selected.find((listing) => listing.id === item.id) ? (
@@ -163,17 +182,18 @@ export default function ListingsReadyToGo() {
   );
 
   return (
-    <><Text style={{paddingTop: 10, paddingLeft: 20, paddingRight: 20}}>List of products ready to send to eBay. You can post individually or in bulk.</Text>
-    <Searchbar
-      style={{ marginLeft: 25, marginRight: 25, marginBottom: 25, marginTop: 15 }}
-        placeholder={'Search'}
+    <>
+    <Text style={{paddingTop: 10, paddingLeft: 20, paddingRight: 20}}>List of products you have already posted on eBay using this app. You can also make a copy of the product you select.</Text>
+      <Searchbar
+        style={{ marginLeft: 25, marginRight: 25, marginBottom: 25, marginTop: 15 }}
+        placeholder={'search (last 1000 items)'}
         onChangeText={onChangeSearch}
         value={searchQuery}
         icon={'magnify'}
       />
       <FlatList
-        data={listings
-          .filter((item) => item.isReadyToGo && item.isDraft)
+        data={listingsPublished
+          .filter((item) => !item.isDraft)
           //.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
           .filter((itm) =>
             itm.title.toLowerCase().includes(searchQuery.toLowerCase())
