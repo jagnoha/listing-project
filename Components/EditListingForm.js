@@ -1313,9 +1313,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['neckline']);
       shortPendingTitle.push(keywords['neckline']);
 
-      pendingTitle.push(keywords['material'].filter(item => item !== 'Polyester'));
-      shortPendingTitle.push(keywords['material'].filter(item => item !== 'Polyester'));
-
+      pendingTitle.push(
+        keywords['material'].filter((item) => item !== 'Polyester')
+      );
+      shortPendingTitle.push(
+        keywords['material'].filter((item) => item !== 'Polyester')
+      );
 
       pendingTitle.push(keywords['features']);
 
@@ -1485,7 +1488,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         pendingTitle.push(keywords['department']);
         shortPendingTitle.push(keywords['department']);
       }*/
-
 
       pendingTitle.push(`Size ${keywords['usShoeSize']}`);
       shortPendingTitle.push(`Size ${keywords['usShoeSize']}`);
@@ -2414,10 +2416,10 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               shortPendingTitle.push(`${keywords['fit']} Fit`);
             }
           }
-    
-          if (keywords['fabricWash'] !== '') {        
-              pendingTitle.push(`${keywords['fabricWash']} Wash`);
-              shortPendingTitle.push(`${keywords['fabricWash']} Wash`);        
+
+          if (keywords['fabricWash'] !== '') {
+            pendingTitle.push(`${keywords['fabricWash']} Wash`);
+            shortPendingTitle.push(`${keywords['fabricWash']} Wash`);
           }
 
           if (keywords['department'] === '') {
@@ -2643,10 +2645,10 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           ? `${searchCategories} ${type}`
           : searchCategories;*/
 
-        const searchCategoriesLarge =
-          type !== 'autoparts' && type !== 'others'
-            ? `${searchCategories}`
-            : searchCategories;    
+      const searchCategoriesLarge =
+        type !== 'autoparts' && type !== 'others'
+          ? `${searchCategories}`
+          : searchCategories;
 
       console.log('SEARCH CATEGORIES: ', searchCategories);
 
@@ -3031,6 +3033,14 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         textDetections.concat(textDetectionsExtra)
       );*/
 
+      const textListBrand = textDetections
+        .filter((item) => item.Type === 'LINE')
+        .map((item) => item.DetectedText.replace(/[^a-z0-9\s]/gi, ''));
+
+      const wordsBrand = textDetections
+        .filter((item) => item.Type === 'WORD')
+        .map((item) => item.DetectedText.replace(/[^a-z0-9\s]/gi, ''));
+
       const textList = textDetections
         .concat(textDetectionsExtra)
         .filter((item) => item.Type === 'LINE')
@@ -3118,11 +3128,14 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       let tempBrands = brands.map((item) => item.toLowerCase());
 
+      let tempWordsBrand = wordsBrand.map((item) => item.toLowerCase());
+
       let tempWords = words.map((item) => item.toLowerCase());
 
       //console.log('BRANDS!!: ', brands );
 
       let tempTextList = textList.map((item) => item.toLowerCase());
+      let tempTextListBrand = textListBrand.map((item) => item.toLowerCase());
 
       console.log('MODELS!!!: ', models);
 
@@ -3135,49 +3148,63 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       //const brand = brands.filter((x) => tempWords.includes(x.toLowerCase()));
 
-      let brandList = tempTextList.filter((x) =>
+      let brandListText = tempTextListBrand.filter((x) =>
         tempBrands.includes(x.toLowerCase())
       );
 
-      let brand = brandList[0];
+      let brandListWord = tempWordsBrand.filter((x) =>
+        tempBrands.includes(x.toLowerCase())
+      );
 
-      if (brandList.length === 0) {
-        brand = tempWords.filter((x) =>
+      let brand = brandListText[0];
+
+      if (brandListText.length === 0 && brandListWord.length > 0) {
+        brand = tempWordsBrand.filter((x) =>
           tempBrands.includes(x.toLowerCase())
         )[0];
       }
 
-      brand = brand ? brand : '';
+      if (brandListText.length === 0 && brandListWord.length === 0) {
+        brand = tempTextListBrand[0];
+      }
+
+      /*if (brandList.length === 0) {
+        brand = tempWordsBrand[0];
+      }*/
+
+      //let brand = tempTextListBrand[0];
+
+      console.log('BRAND!: ', brand);
+
+      brand = brand && brand.length > 1 ? brand : '';
 
       let modelList = models.filter((x) =>
-      tempTextList.map( itm => `${brand} ${itm}`).includes(x.toLowerCase())
+        tempTextList.map((itm) => `${brand} ${itm}`).includes(x.toLowerCase())
       );
 
       console.log('MODEL LIST: ', modelList);
 
       let model = modelList[0];
 
-    if (modelList.length === 0) {
-      modelList = models.filter((x) =>
-      tempWords.map( itm => `${brand} ${itm}`).includes(x.toLowerCase())
-      );
-    }
+      if (modelList.length === 0) {
+        modelList = models.filter((x) =>
+          tempWords.map((itm) => `${brand} ${itm}`).includes(x.toLowerCase())
+        );
+      }
 
-    if (modelList.length === 0) {
-      modelList = models.filter((x) =>
-      tempTextList.includes(x.toLowerCase())
-      );
-    }
+      if (modelList.length === 0) {
+        modelList = models.filter((x) =>
+          tempTextList.includes(x.toLowerCase())
+        );
+      }
 
-    if (modelList.length === 0) {
-      modelList = models.filter((x) =>
-      tempWords.includes(x.toLowerCase())
-      );
-    }
+      if (modelList.length === 0) {
+        modelList = models.filter((x) => tempWords.includes(x.toLowerCase()));
+      }
 
-    model = modelList.length > 0 ? modelList[0] : '';
+      model = modelList.length > 0 ? modelList[0] : '';
 
-    console.log('MODEL!: ', model);
+      console.log('MODEL!: ', model);
 
       /*const model = tempTextList.filter((x) =>
         models.includes(x.toLowerCase())
@@ -4263,7 +4290,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           getAspectValues={getAspectValues}
           aspectValues={aspectValues}
           changeValueItemAspect={changeValueItemAspect}
-          
           checkedAllAspects={checkedAllAspects}
           category={category}
           getCategoriesFeatures={getCategoriesFeatures}
