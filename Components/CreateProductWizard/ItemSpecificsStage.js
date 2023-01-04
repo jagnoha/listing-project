@@ -94,7 +94,6 @@ export default function ItemSpecificsStage(props) {
   };
 
   const onAddMultiItem = (valueItem) => {
-
     Haptics.selectionAsync();
 
     if (wheelItems.length > 0) {
@@ -106,7 +105,6 @@ export default function ItemSpecificsStage(props) {
       //setSearchQuery('');
     }
 
-    
     const wheelItemsList = props.aspectValues
       .find((itm) => itm.id === selectedItem.name)
       .value.map((valueItm) => ({
@@ -138,15 +136,10 @@ export default function ItemSpecificsStage(props) {
     props.getCategoriesFeatures(props.category);
   }, []);
 
-  
   const onChangeSearch = (query) => {
-    
-    
-
     setSearchQuery(query);
 
     //console.log('SELECTED VALUE!!!: ', selectedItem.value);
-    
 
     const wheelItemsList = props.aspectValues
       .find((itm) => itm.id === selectedItem.name)
@@ -155,7 +148,6 @@ export default function ItemSpecificsStage(props) {
         name: valueItm,
       }));
 
-      
     setWheelItems(
       wheelItemsList.filter((itm) => itm.id.includes(query.toUpperCase()))
     );
@@ -175,7 +167,6 @@ export default function ItemSpecificsStage(props) {
     props.changeValueItemAspect(selectedItem.name, value);
   };
 
-  
   const onOpenWheel = (item) => {
     setSelectedItem({
       name: item.localizedAspectName,
@@ -187,8 +178,7 @@ export default function ItemSpecificsStage(props) {
     console.log('ITEM!!!!: ', item);
 
     setSearchQuery(item.value);
-    
-    
+
     console.log('ITEM !!!!: ', item);
 
     const wheelItemsList = props.aspectValues
@@ -294,7 +284,6 @@ export default function ItemSpecificsStage(props) {
         onPress={() => {
           onAddMultiItem(item.name);
         }}
-        
       />
     );
   };
@@ -319,7 +308,6 @@ export default function ItemSpecificsStage(props) {
 
   if (openWheel && selectedItem.cardinality === 'SINGLE') {
     return (
-      
       <View
         style={{
           flex: 1,
@@ -330,47 +318,48 @@ export default function ItemSpecificsStage(props) {
           alignSelf: 'center',
           paddingTop: 40,
         }}
-        
       >
-       
-
-       
-
-        {
-          selectedItem.mode === 'FREE_TEXT' ?
+        {selectedItem.mode === 'FREE_TEXT' ? (
           <View>
-            
-            <Text style={{ fontSize: 20, marginBottom: 15, textAlign:'center', fontWeight: 'bold' }}>
-            {selectedItem.name} 
-          </Text>
-            <Text style={{ fontSize: 15, marginBottom: 15, textAlign:'center' }}>
-            Select from the list or add your own value
-          </Text>
-          <Divider bold={true} />
-          
-          </View>
-
-          :
-
-          
-
-            <View>
-                        
-            <Text style={{ fontSize: 20, marginBottom: 15, textAlign:'center', fontWeight: 'bold' }}>
-            {selectedItem.name} 
+            <Text
+              style={{
+                fontSize: 20,
+                marginBottom: 15,
+                textAlign: 'center',
+                fontWeight: 'bold',
+              }}
+            >
+              {selectedItem.name}
             </Text>
-            <Text style={{ fontSize: 15, marginBottom: 15, textAlign:'center' }}>
-            
-            { selectedItem.name === 'Vintage' ? `Is it a product vintage?` : `Select from the list` } 
+            <Text
+              style={{ fontSize: 15, marginBottom: 15, textAlign: 'center' }}
+            >
+              Select from the list or add your own value
             </Text>
             <Divider bold={true} />
-
-            </View>
-
-
-
-
-        }
+          </View>
+        ) : (
+          <View>
+            <Text
+              style={{
+                fontSize: 20,
+                marginBottom: 15,
+                textAlign: 'center',
+                fontWeight: 'bold',
+              }}
+            >
+              {selectedItem.name}
+            </Text>
+            <Text
+              style={{ fontSize: 15, marginBottom: 15, textAlign: 'center' }}
+            >
+              {selectedItem.name === 'Vintage'
+                ? `Is it a product vintage?`
+                : `Select from the list`}
+            </Text>
+            <Divider bold={true} />
+          </View>
+        )}
 
         <Searchbar
           style={{ margin: 25 }}
@@ -381,8 +370,6 @@ export default function ItemSpecificsStage(props) {
           icon={wheelItems.length > 0 ? 'magnify' : 'pencil'}
         />
 
-       
-
         <FlatList
           data={wheelItems}
           renderItem={renderItem}
@@ -390,81 +377,76 @@ export default function ItemSpecificsStage(props) {
           //onEndReachedThreshold={50}
         />
 
-        {selectedItem.mode === 'SELECTION_ONLY' ?
-        
-        <SegmentedButtons
-          style={props.styles.nextBackControl}
-          onValueChange={() => console.log('Change value')}
-          buttons={
-             [
-                  {
-                    value: 'close',
-                    label: 'Close',
-                    icon: 'close',
-                    style: props.styles.nextBackControlButton,
-                    onPress: () => onCloseWheel(),
-                  },
-                  {
-                    value: 'reset',
-                    label: 'Delete',
-                    icon: 'cancel',
-                    style: props.styles.nextBackControlButton,
-                    onPress: () => onResetWheel(),
-                  },
-                ]
-              
-          }
-        />
-        
-        
-        : <SegmentedButtons
-          style={props.styles.nextBackControl}
-          onValueChange={() => console.log('Change value')}
-          buttons={
-            wheelItems.length > 0
-              ? [
-                  {
-                    value: 'close',
-                    label: 'Close',
-                    icon: 'close',
-                    style: props.styles.nextBackControlButton,
-                    onPress: () => onCloseWheel(),
-                  },
-                  {
-                    value: 'reset',
-                    label: 'Delete',
-                    icon: 'cancel',
-                    style: props.styles.nextBackControlButton,
-                    onPress: () => onResetWheel(),
-                  },
-                ]
-              : [
-                  {
-                    value: 'close',
-                    label: 'Close',
-                    icon: 'close',
-                    style: props.styles.nextBackControlButton,
-                    onPress: () => onCloseWheel(),
-                  },
-                  {
-                    value: 'reset',
-                    label: 'Delete',
-                    icon: 'cancel',
-                    style: props.styles.nextBackControlButton,
-                    onPress: () => onResetWheel(),
-                  },
+        {selectedItem.mode === 'SELECTION_ONLY' ? (
+          <SegmentedButtons
+            style={props.styles.nextBackControl}
+            onValueChange={() => console.log('Change value')}
+            buttons={[
+              {
+                value: 'close',
+                label: 'Close',
+                icon: 'close',
+                style: props.styles.nextBackControlButton,
+                onPress: () => onCloseWheel(),
+              },
+              {
+                value: 'reset',
+                label: 'Delete',
+                icon: 'cancel',
+                style: props.styles.nextBackControlButton,
+                onPress: () => onResetWheel(),
+              },
+            ]}
+          />
+        ) : (
+          <SegmentedButtons
+            style={props.styles.nextBackControl}
+            onValueChange={() => console.log('Change value')}
+            buttons={
+              wheelItems.length > 0
+                ? [
+                    {
+                      value: 'close',
+                      label: 'Close',
+                      icon: 'close',
+                      style: props.styles.nextBackControlButton,
+                      onPress: () => onCloseWheel(),
+                    },
+                    {
+                      value: 'reset',
+                      label: 'Delete',
+                      icon: 'cancel',
+                      style: props.styles.nextBackControlButton,
+                      onPress: () => onResetWheel(),
+                    },
+                  ]
+                : [
+                    {
+                      value: 'close',
+                      label: 'Close',
+                      icon: 'close',
+                      style: props.styles.nextBackControlButton,
+                      onPress: () => onCloseWheel(),
+                    },
+                    {
+                      value: 'reset',
+                      label: 'Delete',
+                      icon: 'cancel',
+                      style: props.styles.nextBackControlButton,
+                      onPress: () => onResetWheel(),
+                    },
 
-                  {
-                    value: 'apply',
-                    label: 'Apply',
-                    icon: 'check',
-                    style: props.styles.nextBackControlButton,
-                    onPress: () => onApplyWheel(),
-                  },
-                ]
-          }
-        />}
-      
+                    {
+                      value: 'apply',
+                      label: 'Apply',
+                      icon: 'check',
+                      style: props.styles.nextBackControlButton,
+                      onPress: () => onApplyWheel(),
+                    },
+                  ]
+            }
+          />
+        )}
       </View>
     );
   }
@@ -492,20 +474,23 @@ export default function ItemSpecificsStage(props) {
           </Text>
         )*/}
 
-        
-
         <View>
-            
-            <Text style={{ fontSize: 20, marginBottom: 15, textAlign:'center', fontWeight: 'bold' }}>
-            {selectedItem.name} <Text style={{fontSize: 15}}>(Multiple choice)</Text>
+          <Text
+            style={{
+              fontSize: 20,
+              marginBottom: 15,
+              textAlign: 'center',
+              fontWeight: 'bold',
+            }}
+          >
+            {selectedItem.name}{' '}
+            <Text style={{ fontSize: 15 }}>(Multiple choice)</Text>
           </Text>
-            <Text style={{ fontSize: 15, marginBottom: 15, textAlign:'center' }}>
+          <Text style={{ fontSize: 15, marginBottom: 15, textAlign: 'center' }}>
             Select from the list or add your own value
           </Text>
           <Divider bold={true} />
-          
-          </View>
-
+        </View>
 
         <Searchbar
           style={{ margin: 25 }}
@@ -613,7 +598,7 @@ export default function ItemSpecificsStage(props) {
       </View>
     );
   }
-  
+
   return (
     <View>
       <Header
@@ -627,9 +612,9 @@ export default function ItemSpecificsStage(props) {
       />
       <View>
         <Banner visible={true} icon={'star-circle-outline'}>
-          Add item details. Some of them are required to continue to the next
-          step. The more elements you add, the better for generating a better
-          title and description.
+          Add item details. The title and description will be created using this
+          information, following SEO best practices. More information means a
+          better result.
         </Banner>
 
         {props.processingAspects ? (
@@ -743,22 +728,19 @@ export default function ItemSpecificsStage(props) {
             },
           ]}
         />
-        {
-          (props.photoLabel || props.photoLabelExtra) &&
-          (props.type === 'clothing' || props.type === 'shoes') ? (
-            <Button
-              style={{ marginTop: 15 }}
-              icon='tag-outline'
-              onPress={() => props.processLabel()}
-              disabled={props.processingSelectedAspectValue}
-            >
-              Get information from Tags
-            </Button>
-          ) : (
-            ''
-          )
-          
-        }
+        {(props.photoLabel || props.photoLabelExtra) &&
+        (props.type === 'clothing' || props.type === 'shoes') ? (
+          <Button
+            style={{ marginTop: 15 }}
+            icon='tag-outline'
+            onPress={() => props.processLabel()}
+            disabled={props.processingSelectedAspectValue}
+          >
+            Get information from Tags
+          </Button>
+        ) : (
+          ''
+        )}
       </View>
     </View>
   );

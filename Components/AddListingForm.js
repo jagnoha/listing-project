@@ -11,6 +11,7 @@ import {
   SegmentedButtons,
   Banner,
   ActivityIndicator,
+  IconButton,
 } from 'react-native-paper';
 
 import FormData from 'form-data';
@@ -84,6 +85,8 @@ export default function AddListingForm(props) {
   let cameraRef = useRef();
 
   const [hasCameraPermission, setHasCameraPermission] = useState();
+
+  const [optionCreateListing, setOptionCreateListing] = useState();
 
   const [hasImagePickerPermission, setHasImagePickerPermission] = useState();
 
@@ -361,6 +364,19 @@ export default function AddListingForm(props) {
   );
 
   //************************************************************** */
+
+  const checkType = (type) => {
+    if (type === 'CLOTHING') {
+      return 'tshirt-crew';
+    } else if (type === 'SHOES') {
+      return 'shoe-formal';
+    } else if (type === 'AUTOPARTS') {
+      return 'car-side';
+    } else if (type === 'BOOKS') {
+      return 'book-open-variant';
+    }
+    return 'tag';
+  };
 
   const getUPC = () => {
     if (
@@ -4286,6 +4302,42 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   const onSearchCategories = async (query) => {
     setSearchCategories(query);
   };
+
+  if (!optionCreateListing) {
+    return (
+      <View style={styles.basicContainer}>
+        <IconButton
+          icon={checkType(type.toUpperCase())}
+          style={{ alignSelf: 'center' }}
+          //iconColor={MD3Colors.error50}
+          size={40}
+          onPress={() => console.log('Pressed')}
+        />
+        <Text style={{ textAlign: 'center', marginBottom: 20, fontSize: 20 }}>
+          Create new listing ({type.toUpperCase()})
+        </Text>
+        <Button
+          style={{ margin: 20 }}
+          mode='outlined'
+          onPress={() => setOptionCreateListing('scratch')}
+          //icon='camera'
+        >
+          Create it from Scratch
+        </Button>
+        <Button
+          style={{ margin: 20 }}
+          mode='outlined'
+          //onPress={() => pickPicMain()}
+          //icon='image'
+        >
+          Use an existing eBay Listing
+        </Button>
+        <Button style={{ margin: 20 }} icon='close' onPress={() => onBack()}>
+          Close
+        </Button>
+      </View>
+    );
+  }
 
   if (processingPublishEbay) {
     return (

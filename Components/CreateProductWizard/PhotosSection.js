@@ -1,5 +1,5 @@
 import { prototype } from 'form-data';
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { View, Pressable, StyleSheet, Image } from 'react-native';
 import {
   useTheme,
@@ -25,12 +25,10 @@ export default function PhotosSection(props) {
 
   const processCategories = () => {
     //console.log('CATEGORY: ', props.category);
-    
 
     if (props.category === '') {
       props.getCategories();
     }
-
   };
 
   useEffect(() => {
@@ -46,7 +44,7 @@ export default function PhotosSection(props) {
         saveListing={props.saveListing}
         processingSaveListing={props.processingSaveListing}
         type={props.typeHeader}
-        //actionBack={props.navigation.goBack} 
+        //actionBack={props.navigation.goBack}
         actionBack={props.onOpenBackDialog}
       />
 
@@ -74,14 +72,22 @@ export default function PhotosSection(props) {
                 )
               ) : (
                 <View>
-                    <IconButton icon='image' />
-                    <Text style={{ fontSize: 12 }}>Main Photo</Text>                  
-                  </View>
+                  <IconButton icon='image' />
+                  <Text style={{ fontSize: 12 }}>Main Photo</Text>
+                </View>
               )}
             </Surface>
-            {props.photoMain && props.photoMain !== '' ? <View>
-              <Text style={{textAlign: 'center', fontSize: 12, marginTop: 5}}>Main Photo</Text>
-            </View> : ''}
+            {props.photoMain && props.photoMain !== '' ? (
+              <View>
+                <Text
+                  style={{ textAlign: 'center', fontSize: 12, marginTop: 5 }}
+                >
+                  Main Photo
+                </Text>
+              </View>
+            ) : (
+              ''
+            )}
             {props.photoMain ? (
               <View style={{ flexDirection: 'row' }}>
                 <IconButton
@@ -118,13 +124,21 @@ export default function PhotosSection(props) {
                 ) : (
                   <View>
                     <IconButton icon='tag-outline' />
-                    <Text style={{ fontSize: 12 }}>Photo Tag</Text>                  
+                    <Text style={{ fontSize: 12 }}>Photo Tag</Text>
                   </View>
                 )}
               </Surface>
-              {props.photoLabel && props.photoLabel !== '' ? <View>
-              <Text style={{textAlign: 'center', fontSize: 12, marginTop: 5}}>Photo Tag</Text>
-            </View> : ''}
+              {props.photoLabel && props.photoLabel !== '' ? (
+                <View>
+                  <Text
+                    style={{ textAlign: 'center', fontSize: 12, marginTop: 5 }}
+                  >
+                    Photo Tag
+                  </Text>
+                </View>
+              ) : (
+                ''
+              )}
               {props.photoLabel ? (
                 <IconButton
                   style={{ alignSelf: 'center' }}
@@ -153,16 +167,23 @@ export default function PhotosSection(props) {
                 ) : (
                   <View>
                     <IconButton icon='tag-outline' />
-                    <Text style={{ fontSize: 12 }}>Photo Tag 2</Text>                  
+                    <Text style={{ fontSize: 12 }}>Photo Tag 2</Text>
                   </View>
                 )}
               </Surface>
 
-              {props.photoLabelExtra && props.photoLabelExtra !== '' ? <View>
-              <Text style={{textAlign: 'center', fontSize: 12, marginTop: 5}}>Photo Tag 2</Text>
-            </View> : ''}
-              
-              
+              {props.photoLabelExtra && props.photoLabelExtra !== '' ? (
+                <View>
+                  <Text
+                    style={{ textAlign: 'center', fontSize: 12, marginTop: 5 }}
+                  >
+                    Photo Tag 2
+                  </Text>
+                </View>
+              ) : (
+                ''
+              )}
+
               {props.photoLabelExtra ? (
                 <IconButton
                   style={{ alignSelf: 'center' }}
@@ -176,8 +197,6 @@ export default function PhotosSection(props) {
           ) : (
             ''
           )}
-
-
         </View>
         {/*<Divider style={{ marginTop: 0 }} bold='true' horizontalInset='true' />*/}
 
@@ -185,14 +204,20 @@ export default function PhotosSection(props) {
           style={{ alignSelf: 'center' }}
           /*style={{ marginLeft: 60, marginRight: 60, marginTop: 20 }}*/
         >
-          {props.photoMain && props.photos.length < 8 ? <Button
-            icon='image'
-            mode='contained-tonal'
-            onPress={() => props.onOpenPreviewPhoto()}
-            disabled={props.photoMain && props.photos.length < 8 ? false : true}
-          >
-            Add more photos
-          </Button>:''}
+          {props.photoMain && props.photos.length < 8 ? (
+            <Button
+              icon='image'
+              mode='contained-tonal'
+              onPress={() => props.onOpenPreviewPhoto()}
+              disabled={
+                props.photoMain && props.photos.length < 8 ? false : true
+              }
+            >
+              Add more photos
+            </Button>
+          ) : (
+            ''
+          )}
           {/*<IconButton
             icon='camera-plus'
             size={30}
@@ -205,27 +230,26 @@ export default function PhotosSection(props) {
           {props.photos.map((item) => {
             return (
               <View key={item.id}>
-              <View style={props.styles.imageList}>
-                <Pressable onPress={() => props.onOpenEditPhoto(item.id)}>
-                  <Surface style={props.styles.surfaceSmall} elevation={4}>
-                    <Image
-                      style={props.styles.preview}
-                      source={{
-                        //uri: 'data:image/jpg;base64,' + item.value.base64,
-                        uri: `${urlImages}${item.value}`,
-                      }}
-                    />
-                  </Surface>
-                </Pressable>
-                
+                <View style={props.styles.imageList}>
+                  <Pressable onPress={() => props.onOpenEditPhoto(item.id)}>
+                    <Surface style={props.styles.surfaceSmall} elevation={4}>
+                      <Image
+                        style={props.styles.preview}
+                        source={{
+                          //uri: 'data:image/jpg;base64,' + item.value.base64,
+                          uri: `${urlImages}${item.value}`,
+                        }}
+                      />
+                    </Surface>
+                  </Pressable>
+                </View>
+                <IconButton
+                  size={18}
+                  style={{ alignSelf: 'center', marginTop: -10 }}
+                  onPress={() => props.deleteEditPic(item.id)}
+                  icon='delete'
+                />
               </View>
-              <IconButton
-              size={18}
-              style={{ alignSelf: 'center', marginTop: -10 }}
-              onPress={() => props.deleteEditPic(item.id)}
-              icon='delete'
-            />
-            </View>
             );
           })}
         </View>
@@ -241,14 +265,20 @@ export default function PhotosSection(props) {
             icon: 'arrow-left',
             style: props.styles.nextBackControlButton,
             onPress: () => props.backward(),
-            disabled: props.type === 'clothing' || prototype.type === 'shoes' ? true : false    //props.backward(),
+            disabled:
+              props.type === 'clothing' || props.type === 'shoes'
+                ? true
+                : false, //props.backward(),
           },
           {
             value: 'next',
             //label: 'Next',
             icon: 'arrow-right',
             style: props.styles.nextBackControlButton,
-            onPress: () => { props.onMainPicIsTaken(false); props.forward() },
+            onPress: () => {
+              props.onMainPicIsTaken(false);
+              props.forward();
+            },
             disabled: props.photoMain ? false : true,
           },
         ]}
