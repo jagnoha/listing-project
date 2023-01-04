@@ -183,7 +183,7 @@ export default function ListingsPublished() {
 
   return (
     <>
-    <Text style={{paddingTop: 10, paddingLeft: 20, paddingRight: 20}}>List of products you have already posted on eBay using this app. You can also make a copy of the product you select.</Text>
+    <Text style={{paddingTop: 10, paddingLeft: 20, paddingRight: 20}}>List of the latest products you have already posted on eBay using this app. You can also make a copy of the product you select.</Text>
       <Searchbar
         style={{ marginLeft: 25, marginRight: 25, marginBottom: 25, marginTop: 15 }}
         placeholder={'search (last 1000 items)'}

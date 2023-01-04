@@ -163,7 +163,7 @@ export default function ListingsReadyToGo() {
   );
 
   return (
-    <><Text style={{paddingTop: 10, paddingLeft: 20, paddingRight: 20}}>List of products ready to send to eBay. You can post individually or in bulk.</Text>
+    <><Text style={{paddingTop: 10, paddingLeft: 20, paddingRight: 20}}>List of products ready to publish on eBay. You can post individually or in bulk.</Text>
     <Searchbar
       style={{ marginLeft: 25, marginRight: 25, marginBottom: 25, marginTop: 15 }}
         placeholder={'Search'}
