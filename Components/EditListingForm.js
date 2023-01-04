@@ -1234,6 +1234,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       (itm) => itm !== ''
     );
 
+    console.log('EXTRA ASPECTS!!!: ', extraAspects);
+
     if (type === 'clothing') {
       // step 1
 
@@ -1313,12 +1315,17 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['neckline']);
       shortPendingTitle.push(keywords['neckline']);
 
+      if (keywords['material']){
       pendingTitle.push(
         keywords['material'].filter((item) => item !== 'Polyester')
       );
+
+
       shortPendingTitle.push(
         keywords['material'].filter((item) => item !== 'Polyester')
       );
+
+      }
 
       pendingTitle.push(keywords['features']);
 
@@ -1377,6 +1384,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         (item) => item !== '' && item !== 'Regular' && item !== 'Basic'
       );
 
+      console.log('FILTETED!!!! ', filtetedTitle);
+      
+
       // Short title processing
 
       let expandTitleShort = [];
@@ -1403,7 +1413,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
         .split(' ');
 
-      uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)].join(' ');
+      uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)].join(' ').replace(' Polyester', '').replace(',', ' ');
 
       let uniqueFilteredTitleShort = filtetedTitleShort
         .join(' ')
@@ -1412,7 +1422,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)].join(
         ' '
-      );
+      ).replace(' Polyester', '').replace(',', ' ');
 
       //console.log('*********************************', uniqueFilteredTitle);
 
@@ -1535,14 +1545,14 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       );
 
       let uniqueFilteredTitle = filtetedTitle
-        .join(' ')
+        .join(' ').replace(',', ' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
         .split(' ');
 
       uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)].join(' ');
 
       let uniqueFilteredTitleShort = filtetedTitleShort
-        .join(' ')
+        .join(' ').replace(',', ' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
         .split(' ');
 

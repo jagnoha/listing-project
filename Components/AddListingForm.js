@@ -1598,12 +1598,17 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['neckline']);
       shortPendingTitle.push(keywords['neckline']);
 
+
+      if (keywords['material']){
       pendingTitle.push(
         keywords['material'].filter((item) => item !== 'Polyester')
       );
       shortPendingTitle.push(
         keywords['material'].filter((item) => item !== 'Polyester')
       );
+      }
+
+
 
       pendingTitle.push(keywords['features']);
 
@@ -1692,7 +1697,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)];
 
       uniqueFilteredTitle = uniqueFilteredTitle
-        .join(' ')
+        .join(' ').replace(' Polyester', '').replace(',', ' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
       // processing short title
@@ -1700,7 +1705,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)];
 
       uniqueFilteredTitleShort = uniqueFilteredTitleShort
-        .join(' ')
+        .join(' ').replace(' Polyester', '').replace(',', ' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
       if (uniqueFilteredTitle.trim().length <= 80) {
@@ -1803,7 +1808,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)];
 
       uniqueFilteredTitle = uniqueFilteredTitle
-        .join(' ')
+        .join(' ').replace(',', ' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
       // short title
@@ -1830,7 +1835,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)];
 
       uniqueFilteredTitleShort = uniqueFilteredTitleShort
-        .join(' ')
+        .join(' ').replace(',', ' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
       if (uniqueFilteredTitle.trim().length <= 80) {
