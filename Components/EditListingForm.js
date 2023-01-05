@@ -2882,6 +2882,52 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     }
   };
 
+  let pickPicMain = async () => {
+    try {
+      setProcessingImage(true);
+      let nameFile = `${uuidv4()}.jpg`;
+
+      let options = {
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        //allowsEditing: true,
+        quality: 0.6,
+        base64: true,
+        //skipProcessing: true,
+        exif: false,
+      };
+
+      let newPhoto = await ImagePicker.launchImageLibraryAsync(options); //cameraRef.current.takePictureAsync(options);
+
+      const source = newPhoto;
+
+      //console.log(source);
+
+      //console.log('Source: ', source);
+
+      if (source) {
+        //await cameraRef.current.pausePreview();
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotoMain(newPhotoAWS);
+        setProcessedRemoveBackground(false);
+        setOpenCamera(false);
+        setMainPhotoOpen(false);
+        setMainCameraOpen(false);
+        onMainPicIsTaken(true);
+
+        //if (istakePicMain){
+        processImage(newPhotoAWS);
+        //}
+
+        setProcessingImage(false);
+
+        //console.log('picture source', source);
+      }
+    } catch (error) {
+      console.log(error);
+      setProcessingImage(false);
+    }
+  };
+
   const pickNewPic = async () => {
     try {
       setProcessingImage(true);

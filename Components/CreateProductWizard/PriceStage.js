@@ -50,7 +50,7 @@ const PriceCard = ({ item, onPress }) => {
          {item.shop}
       </Button>
 
-      <View style={{ marginLeft: '30%', marginRight: '30%' }}>
+      {/*<View style={{ marginLeft: '30%', marginRight: '30%' }}>
         <Chip
           mode={'outlined'}
           icon='currency-usd'
@@ -59,7 +59,41 @@ const PriceCard = ({ item, onPress }) => {
         >
           {item.price}
         </Chip>
+          </View>*/}
+
+
+      <View
+        style={{ flexDirection: 'row', alignSelf: 'center'  }}
+      >
+        <Chip
+          mode={'outlined'}
+          icon='currency-usd'
+          //onPress={() => onPress(item.itemId)}
+          style={{ margin: 10 }}
+          //elevated={4}
+        >
+          {item.price}
+        </Chip>
+        {/*<Chip
+          mode={'outlined'}
+          icon='currency-usd'
+          onPress={() => onPress(item.itemId)}
+          style={{ margin: 10 }}
+          //elevated={4}
+        >
+          {item.price.value}
+          </Chip>*/}
+        <Button
+          icon='check'
+          style={{ margin: 10 }}
+          onPress={() => onPress(item.itemId)}
+        >
+          Use this price
+        </Button>
       </View>
+
+
+
     </View>
   );
 };

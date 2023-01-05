@@ -357,14 +357,14 @@ export default function AddListingForm(props) {
   }
 
   //************************************************************** */
-  console.log(
+  /*console.log(
     '****************************************************************************************'
   );
   console.log('LISTING ID!!!!: ', listingId);
   console.log('VERSION: ', listingVersion);
   console.log(
     '****************************************************************************************'
-  );
+  );*/
 
   //************************************************************** */
 
@@ -643,6 +643,78 @@ export default function AddListingForm(props) {
       console.log(JSON.stringify(error));
     }
   };
+
+  const getItemFromEbay = async (id) => {
+    try {
+
+      setProcessingPrices(true);
+
+      let nameFile = `${uuidv4()}.jpg`;
+
+      const response = await fetch(
+        `https://listerfast.com/api/ebay/items/${id}`
+      );
+
+      let jsonResponse = await response.json();
+
+      console.log('CATEGORY: ', jsonResponse.PrimaryCategory.CategoryID);
+
+      setOptionCreateListing('Scratch');
+      setStep(1);
+
+      
+
+      /*let source = jsonResponse.PictureDetails.PictureURL[0];
+
+      console.log(source.split('$')[0].concat('$_10.jpg'));
+
+      if (source) {
+        let newPhotoAWS = await handleImage(source.split('$')[0].concat('$_10.jpg'), nameFile);
+        console.log('RESULT!: ', newPhotoAWS);
+        setPhotoMain(newPhotoAWS);
+      }*/
+
+      //setOptionCreateListing('Scratch');
+      //setStep(1);
+
+      /*let source = jsonResponse.PictureDetails.PictureURL[0];
+
+      if (source) {
+        let newPhotoAWS = await handleImage(source, nameFile);
+        setPhotoMain(newPhotoAWS);
+
+      }*/
+
+      //onSelectedCategory(jsonResponse.PrimaryCategory.CategoryID);
+
+      //setCategory(jsonResponse.PrimaryCategory.CategoryID);
+
+      //console.log(jsonResponse.PictureDetails.PictureURL[0]);
+      //console.log('CATEGORY ID!!!!', jsonResponse.PrimaryCategory.CategoryID);
+      /*let categoryId = jsonResponse.PrimaryCategory.CategoryID.toString();
+      getCategoriesSearch(searchCategories);
+      setCategory(categoryId);
+      getItemAspects(categoryId);
+      getCategoriesFeatures(categoryId);
+
+      setStep(1);
+      
+
+      
+
+      //console.log(jsonResponse);
+
+      setProcessingPrices(false);
+
+      setOptionCreateListing('Scratch');*/
+
+      setProcessingPrices(false);
+
+    } catch(error){
+      setProcessingPrices(false);
+      console.log(error);
+    }
+  }
 
   const createNewListingOnline = async (id) => {
     try {
@@ -2691,7 +2763,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       let jsonResponse = await response.json();
       setProductSearchList(jsonResponse.itemSummaries);
 
-      console.log(jsonResponse.itemSummaries);
+      //console.log(jsonResponse.itemSummaries);
 
       setProcessingPrices(false);
     } catch (error) {
@@ -4311,6 +4383,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         getProductSearchList={getProductSearchList}
         productSearchList={productSearchList}
         processingPrices={processingPrices}
+        getItemFromEbay={getItemFromEbay}
 
         //backward={backward}
         //forward={forward}

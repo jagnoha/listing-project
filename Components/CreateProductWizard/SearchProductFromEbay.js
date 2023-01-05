@@ -70,7 +70,8 @@ const PriceCard = ({ item, onPress }) => {
         <Button
           icon='cog-outline'
           style={{ margin: 10 }}
-          onPress={() => console.log('SELECTED!')}
+          //onPress={() => props.getItemFromEbay(item.legacyItemId)}
+          onPress={()=>onPress(item.legacyItemId)}
         >
           Use it
         </Button>
@@ -86,10 +87,12 @@ export default function SearchProductFromEbay(props) {
     return (
       <PriceCard
         item={item}
-        onPress={() => {
-          props.onChangeProductPrice(item.price);
-          onClosePriceList();
-        }}
+        /*onPress={() => {
+          getItemFromEbay
+          //props.onChangeProductPrice(item.price);          
+          //onClosePriceList();
+        }}*/
+        onPress={props.getItemFromEbay}
       />
     );
   };
@@ -122,7 +125,7 @@ export default function SearchProductFromEbay(props) {
       />
       <View>
         <Banner visible={true} icon={props.checkType(props.type.toUpperCase())}>
-          Do a search on eBay. You can use the product description, part number,
+          Find a product like yours on eBay. You can use the product description, part number,
           UPC/ISBN/EIN or even the eBay Item ID.
         </Banner>
 
