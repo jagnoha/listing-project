@@ -56,7 +56,9 @@ export default function ListingsPublished() {
   const [selected, setSelected] = useRecoilState(selectedAtom);
   const [listings, setListings] = useRecoilState(listingsAtom);
 
-  const [listingsPublished, setListingsPublished] = useRecoilState(listingsPublishedAtom);
+  const [listingsPublished, setListingsPublished] = useRecoilState(
+    listingsPublishedAtom
+  );
 
   const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
 
@@ -149,7 +151,13 @@ export default function ListingsPublished() {
       descriptionStyle={{ color: 'gray' }}
       description={item.conditionName}
       //onPress={() => navigation.navigate('AddListing')}
-      onPress={() => onSelectListing({ id: item.id, version: item._version }) /*console.log('ITEM PRESSED!')*/ /*onOpenListing(item.id, item.type)*/}
+      onPress={
+        () =>
+          onSelectListing({
+            id: item.id,
+            version: item._version,
+          }) /*console.log('ITEM PRESSED!')*/ /*onOpenListing(item.id, item.type)*/
+      }
       /*onLongPress={() =>
         onSelectListing({ id: item.id, version: item._version })
       }*/
@@ -183,10 +191,18 @@ export default function ListingsPublished() {
 
   return (
     <>
-    <Text style={{paddingTop: 10, paddingLeft: 20, paddingRight: 20}}>List of the latest products you have already posted on eBay using this app. You can also make a copy of the product you select.</Text>
+      <Text style={{ paddingTop: 10, paddingLeft: 20, paddingRight: 20 }}>
+        List of the latest products you have already posted on eBay using this
+        app. You can also make a copy of the product you select.
+      </Text>
       <Searchbar
-        style={{ marginLeft: 25, marginRight: 25, marginBottom: 25, marginTop: 15 }}
-        placeholder={'search (last 1000 items)'}
+        style={{
+          marginLeft: 25,
+          marginRight: 25,
+          marginBottom: 25,
+          marginTop: 15,
+        }}
+        placeholder={'Search'}
         onChangeText={onChangeSearch}
         value={searchQuery}
         icon={'magnify'}

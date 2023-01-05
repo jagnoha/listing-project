@@ -72,6 +72,7 @@ import CategoryStage from './CreateProductWizard/CategoryStage';
 import ItemSpecificsStage from './CreateProductWizard/ItemSpecificsStage';
 import ConditionStage from './CreateProductWizard/ConditionStage';
 import DimensionStage from './CreateProductWizard/DimensionStage';
+import SearchProductFromEbay from './CreateProductWizard/SearchProductFromEbay';
 import PolicyStage from './CreateProductWizard/PolicyStage';
 import PriceStage from './CreateProductWizard/PriceStage';
 import urlImagesAtom from '../Store/atoms/urlImagesAtom';
@@ -87,6 +88,8 @@ export default function AddListingForm(props) {
   const [hasCameraPermission, setHasCameraPermission] = useState();
 
   const [optionCreateListing, setOptionCreateListing] = useState();
+
+  const [productSearchList, setProductSearchList] = useState([]);
 
   const [hasImagePickerPermission, setHasImagePickerPermission] = useState();
 
@@ -1598,17 +1601,14 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['neckline']);
       shortPendingTitle.push(keywords['neckline']);
 
-
-      if (keywords['material']){
-      pendingTitle.push(
-        keywords['material'].filter((item) => item !== 'Polyester')
-      );
-      shortPendingTitle.push(
-        keywords['material'].filter((item) => item !== 'Polyester')
-      );
+      if (keywords['material']) {
+        pendingTitle.push(
+          keywords['material'].filter((item) => item !== 'Polyester')
+        );
+        shortPendingTitle.push(
+          keywords['material'].filter((item) => item !== 'Polyester')
+        );
       }
-
-
 
       pendingTitle.push(keywords['features']);
 
@@ -1697,7 +1697,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)];
 
       uniqueFilteredTitle = uniqueFilteredTitle
-        .join(' ').replace(' Polyester', '').replace(',', ' ')
+        .join(' ')
+        .replace(' Polyester', '')
+        .replace(',', ' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
       // processing short title
@@ -1705,7 +1707,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)];
 
       uniqueFilteredTitleShort = uniqueFilteredTitleShort
-        .join(' ').replace(' Polyester', '').replace(',', ' ')
+        .join(' ')
+        .replace(' Polyester', '')
+        .replace(',', ' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
       if (uniqueFilteredTitle.trim().length <= 80) {
@@ -1808,7 +1812,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)];
 
       uniqueFilteredTitle = uniqueFilteredTitle
-        .join(' ').replace(',', ' ')
+        .join(' ')
+        .replace(',', ' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
       // short title
@@ -1835,7 +1840,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)];
 
       uniqueFilteredTitleShort = uniqueFilteredTitleShort
-        .join(' ').replace(',', ' ')
+        .join(' ')
+        .replace(',', ' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
       if (uniqueFilteredTitle.trim().length <= 80) {
@@ -2674,6 +2680,26 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     }
   };
 
+  const getProductSearchList = async (query) => {
+    try {
+      setProcessingPrices(true);
+
+      const response = await fetch(
+        `https://listerfast.com/api/ebay/search/${query}/0/US/${userAccount.postalCode}/0/${ebayUser}`
+      );
+
+      let jsonResponse = await response.json();
+      setProductSearchList(jsonResponse.itemSummaries);
+
+      console.log(jsonResponse.itemSummaries);
+
+      setProcessingPrices(false);
+    } catch (error) {
+      console.log(error);
+      setProcessingPrices(false);
+    }
+  };
+
   const getPrices = async () => {
     try {
       getGooglePrices();
@@ -2685,14 +2711,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       const extraAspects = getExtraAspectsValuesClothing().filter(
         (itm) => itm !== ''
       );
-
-      //setProcessingPrices(true);
-
-      /*console.log('Get Prices!');
-      console.log('Title: ', titleProcessed);
-      console.log('Barcode: ', barcodeValue);
-      console.log('Category: ', category);
-      console.log('Condition: ', condition);*/
 
       let jsonResponse;
 
@@ -2770,70 +2788,17 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
           pendingTitle.push(extraAspects.join(' '));
 
-          /*keywords['fit'] !== ''
-            ? pendingTitle.push(`${keywords['fit']} Fit`)
-            : '';*/
-
           if (keywords['fit'] !== '') {
             if (keywords['fit'] !== 'Regular') {
               pendingTitle.push(`${keywords['fit']} Fit`);
             }
           }
 
-          //pendingTitle.push(keywords['sleeveLength']);
-          //pendingTitle.push(keywords['skirtLength']);
-          //pendingTitle.push(keywords['dressLength']);
-          //pendingTitle.push(keywords['occasion']);
-
           if (keywords['department'] === '') {
             pendingTitle.push(keywords['gender']);
           } else {
             pendingTitle.push(keywords['department']);
           }
-
-          /*if (!keywords['model'].includes(keywords['brand'])) {
-          pendingTitle.push(keywords['brand']);
-        }
-
-        pendingTitle.push(keywords['type']);
-
-        if (keywords['type'] === ''){
-          if (keywords['category'].slice(keywords['category'].length - 2) === 'es'){
-          pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 2));
-        } else {
-          pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 1))
-        }
-        } else if (!keywords['category'].includes(keywords['type'])) {
-          if (keywords['category'].slice(keywords['category'].length - 2) === 'es'){
-            pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 2));
-          } else {
-            pendingTitle.push(keywords['category'].slice(0,keywords['category'].length - 1))
-          }
-        };
-
-
-        pendingTitle.push(keywords['vintage']);
-
-      
-
-      pendingTitle.push(keywords['model']);
-
-      
-
-      
-      pendingTitle.push(keywords['style']);
-      pendingTitle.push(keywords['characterFamily']);
-      pendingTitle.push(keywords['character']);
-      
-      
-      pendingTitle.push(keywords['neckline']);
-      pendingTitle.push(keywords['fit']);
-      pendingTitle.push(keywords['sleeveLength']);
-      pendingTitle.push(keywords['skirtLength']);
-      pendingTitle.push(keywords['dressLength']);
-      pendingTitle.push(keywords['department']);
-      //pendingTitle.push(keywords['sizeType']);
-      //pendingTitle.push(`Size ${keywords['size']}`);*/
         }
         if (type === 'shoes') {
           let tempBrand = keywords['brand'].toUpperCase();
@@ -2890,10 +2855,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           pendingTitle.push(keywords['vintage']);
           shortPendingTitle.push(keywords['vintage']);
 
-          //pendingTitle.push(extraAspects.join(' '));
-
-          //keywords['fit'] !== '' ? pendingTitle.push(`${keywords['fit']} Fit`) : '';
-
           if (keywords['department'] === '') {
             pendingTitle.push(keywords['gender']);
             shortPendingTitle.push(keywords['gender']);
@@ -2901,8 +2862,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             pendingTitle.push(keywords['department']);
             shortPendingTitle.push(keywords['department']);
           }
-
-          //pendingTitle.push(`Size ${keywords['usShoeSize']}`);
         }
 
         if (type === 'autoparts') {
@@ -2959,11 +2918,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           shortPendingTitle.push(keywords['vintage']);
         }
 
-        /*console.log(
-          'PENDING TITLE***********************************: ',
-          pendingTitle
-        );*/
-
         const response = await fetch(
           `https://listerfast.com/api/ebay/search/${pendingTitle
             .join(' ')
@@ -2989,7 +2943,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           processPrices(jsonResponse);
         }
       }
-      //setProcessingPrices(false);
     } catch (error) {
       console.log(error);
       setProcessingPrices(false);
@@ -4332,7 +4285,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         <Button
           style={{ margin: 20 }}
           mode='outlined'
-          //onPress={() => pickPicMain()}
+          onPress={() => setOptionCreateListing('fromEbay')}
           //icon='image'
         >
           Use an existing eBay Listing
@@ -4341,6 +4294,28 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           Close
         </Button>
       </View>
+    );
+  }
+
+  if (optionCreateListing === 'fromEbay') {
+    return (
+      <SearchProductFromEbay
+        title={'Search Product on eBay'}
+        typeHeader={'searchListing'}
+        navigation={navigation}
+        onSearchCategories={onSearchCategories}
+        searchCategories={searchCategories}
+        styles={styles}
+        checkType={checkType}
+        type={type}
+        getProductSearchList={getProductSearchList}
+        productSearchList={productSearchList}
+        processingPrices={processingPrices}
+
+        //backward={backward}
+        //forward={forward}
+        //setCategory={setCategory}
+      />
     );
   }
 
