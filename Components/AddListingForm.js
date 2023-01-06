@@ -97,6 +97,8 @@ export default function AddListingForm(props) {
 
   const [listingVersion, setListingVersion] = useState();
 
+  const [aspectsFromEbay, setAspectsFromEbay] = useState();
+
   const [userAccount, setUserAccount] = useRecoilState(userAccountAtom);
 
   const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
@@ -657,7 +659,12 @@ export default function AddListingForm(props) {
 
       let jsonResponse = await response.json();
 
-      console.log('CATEGORY: ', jsonResponse.PrimaryCategory.CategoryID);
+      //console.log('ITEM SPECIFICS: ');
+      //console.log(jsonResponse.ItemSpecifics.NameValueList);
+      setAspectsFromEbay(jsonResponse.ItemSpecifics.NameValueList);
+      //console.log('CATEGORY: ', jsonResponse.PrimaryCategory.CategoryID);
+
+      //setCategory(jsonResponse.PrimaryCategory.CategoryID);
 
       setOptionCreateListing('Scratch');
       setStep(1);
@@ -2295,7 +2302,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       const json = await response.json();
 
-      console.log(json);
+      //console.log(json);
 
       let aspectValues = [];
 
@@ -2336,6 +2343,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               : [],
           });
         }
+
+        
 
         setAspectValues(aspectValues);
         setProcessingAspects(false);
@@ -2439,12 +2448,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               ? itemProduct.aspectValues.map((value) => value.localizedValue)
               : [];
 
-          console.log(tempSizeList);
+          //console.log(tempSizeList);
           //let tempSize = '';
 
           let tempSize = findCommonElements(wordsFromLabel, tempSizeList);
 
-          console.log('TempSize: ', tempSize);
+          //console.log('TempSize: ', tempSize);
 
           if (
             itemProduct.localizedAspectName === 'Size' &&
@@ -2490,17 +2499,58 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           };
         });
 
-      //console.log(aspects);
-      /*console.log(
-        '***********************************************************************************'
-      );*/
-      //console.log(aspectValues);
-      setAspectValues(aspectValues);
-      /*console.log(
-        '***********************************************************************************'
-      );*/
+      
+      //console.log('ASPECTS FROM EBAY: ', aspectsFromEbay);
+      //console.log('ASPECTS VALUES: ', aspectValues);
+      
+      let aspectValuesFromEbay = [];
 
-      setAspects(aspects.sort((a, b) => b.require - a.require));
+      if (aspectsFromEbay){
+      
+        aspectValuesFromEbay = aspects.map(item => {
+          let foundItem = aspectsFromEbay.find(itm => itm.Name === item.localizedAspectName);
+
+          console.log(foundItem);
+
+          if (foundItem) {
+
+            return (
+              {
+                localizedAspectName: item.localizedAspectName,
+              value: foundItem.Value,
+              require: item.require,
+              cardinality: item.cardinality,
+              mode: item.mode,
+              }    
+            )
+          } 
+
+          return (
+            item
+          )
+
+          
+        })
+
+        console.log('ASPECTS VALUES FROM EBAY: ', aspectValuesFromEbay);
+
+        setAspects(aspectValuesFromEbay.sort((a, b) => b.require - a.require));
+
+      } else {
+
+        setAspects(aspects.sort((a, b) => b.require - a.require));
+
+      //setAspectValues(aspectValues);
+      }
+      
+
+      setAspectValues(aspectValues);
+
+      //setAspects(aspects.sort((a, b) => b.require - a.require));
+
+      //console.log('ASPECTS!!!!: ', aspects);
+
+
       setProcessingAspects(false);
     } catch (error) {
       console.log(error);
