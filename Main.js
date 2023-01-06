@@ -169,19 +169,8 @@ export default function Main() {
 
   useEffect(() => {
     (async () => {
+      
       /*const listingsResponse = await API.graphql({
-        query: queries.syncListings,
-        variables: {
-          filter: {
-            accountsID: { eq: user.username.toLowerCase() },
-            isDraft: { eq: true },
-            //_deleted: { eq: false },
-          },
-          limit: 1000,
-        },
-      });*/
-
-      const listingsResponse = await API.graphql({
         query: queries.listingsByDate,
         variables: {
           modelType: 'Listing',
@@ -193,16 +182,77 @@ export default function Main() {
           },
           limit: 1000,
         },
-      });
+      });*/
+      
 
-      /*setListings(
-        listingsResponse.data.syncListings.items
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          .filter((item) => item._deleted !== true)
-      );*/
+      const listAccounts = `
+          query MyQuery {
+            listAccounts(filter: {id: {eq: "${user.username.toLowerCase()}"}}) {
+              items {
+                Listings(filter: {isDraft: {eq: true}}, limit: 1000, sortDirection: DESC) {
+                  nextToken
+                  startedAt
+                  items {
+                    id
+                    title
+                    createdAt
+                    width
+                    weightMinor
+                    weightMayor
+                    updatedAt
+                    type
+                    sku
+                    shippingProfileID
+                    returnProfileID
+                    quantity
+                    price
+                    photos
+                    photoMain
+                    photoLabelExtra
+                    photoLabel
+                    paymentProfileID
+                    otherPartNumber
+                    modelType
+                    manufacturerPartNumber
+                    listingItemsCompatibilityId
+                    length
+                    lastStep
+                    itemsSpecifics
+                    isReadyToGo
+                    isDraft
+                    isChangedAspects
+                    interchangePartNumber
+                    height
+                    ebayMotors
+                    description
+                    conditionName
+                    conditionDescription
+                    conditionCode
+                    categoryList
+                    categoryID
+                    categoryFeatures
+                    brand
+                    barcodeValue
+                    accountsID
+                    _version
+                    _lastChangedAt
+                    _deleted
+                    UPC
+                    EAN
+                    ISBN
+                            }
+                          }
+                          id
+                        }
+                      }
+                    }
+      `
+
+      const listingsResponse = await API.graphql(graphqlOperation(listAccounts));      
+      
 
       setListings(
-        listingsResponse.data.listingsByDate.items.filter(
+        listingsResponse.data.listAccounts.items[0].Listings.items.filter(
           (item) => item._deleted !== true
         )
       );
@@ -211,7 +261,9 @@ export default function Main() {
 
   useEffect(() => {
     (async () => {
-      const listingsResponse = await API.graphql({
+
+
+      /*const listingsResponse = await API.graphql({
         query: queries.listingsByDate,
         variables: {
           modelType: 'Listing',
@@ -224,12 +276,76 @@ export default function Main() {
           },
           limit: 1000,
         },
-      });
+      });*/
+
+      const listAccounts = `
+          query MyQuery {
+            listAccounts(filter: {id: {eq: "${user.username.toLowerCase()}"}}) {
+              items {
+                Listings(limit: 1000, sortDirection: DESC) { 
+                  nextToken
+                  startedAt
+                  items {
+                    id
+                    title
+                    createdAt
+                    width
+                    weightMinor
+                    weightMayor
+                    updatedAt
+                    type
+                    sku
+                    shippingProfileID
+                    returnProfileID
+                    quantity
+                    price
+                    photos
+                    photoMain
+                    photoLabelExtra
+                    photoLabel
+                    paymentProfileID
+                    otherPartNumber
+                    modelType
+                    manufacturerPartNumber
+                    listingItemsCompatibilityId
+                    length
+                    lastStep
+                    itemsSpecifics
+                    isReadyToGo
+                    isDraft
+                    isChangedAspects
+                    interchangePartNumber
+                    height
+                    ebayMotors
+                    description
+                    conditionName
+                    conditionDescription
+                    conditionCode
+                    categoryList
+                    categoryID
+                    categoryFeatures
+                    brand
+                    barcodeValue
+                    accountsID
+                    _version
+                    _lastChangedAt
+                    _deleted
+                    UPC
+                    EAN
+                    ISBN
+                            }
+                          }
+                          id
+                        }
+                      }
+                    }
+      `
+
+      const listingsResponse = await API.graphql(graphqlOperation(listAccounts));
 
       setListingsOnline(
-        listingsResponse.data.listingsByDate.items.filter(
-          (item) => item._deleted !== true
-        )
+        listingsResponse.data.listAccounts.items[0].Listings.items.filter(
+          (item) => item._deleted !== true)
       );
 
       /*const toReviseListResponse = await API.graphql({
@@ -266,40 +382,77 @@ export default function Main() {
 
   useEffect(() => {
     (async () => {
-      /*const listingsResponse = await API.graphql({
-        query: queries.syncListings,
-        variables: {
-          filter: {
-            accountsID: { eq: user.username.toLowerCase() },
-            isDraft: { eq: true },
-            //_deleted: { eq: false },
-          },
-          limit: 1000,
-        },
-      });*/
+      
 
-      const listingsResponse = await API.graphql({
-        query: queries.listingsByDate,
-        variables: {
-          modelType: 'Listing',
-          sortDirection: 'DESC',
-          filter: {
-            accountsID: { eq: user.username.toLowerCase() },
-            isDraft: { eq: false },
-            //_deleted: { eq: false },
-          },
-          limit: 1000,
-        },
-      });
+      const listAccounts = `
+          query MyQuery {
+            listAccounts(filter: {id: {eq: "${user.username.toLowerCase()}"}}) {
+              items {
+                Listings(filter: {isDraft: {eq: false}}, limit: 1000, sortDirection: DESC) { 
+                  nextToken
+                  startedAt
+                  items {
+                    id
+                    title
+                    createdAt
+                    width
+                    weightMinor
+                    weightMayor
+                    updatedAt
+                    type
+                    sku
+                    shippingProfileID
+                    returnProfileID
+                    quantity
+                    price
+                    photos
+                    photoMain
+                    photoLabelExtra
+                    photoLabel
+                    paymentProfileID
+                    otherPartNumber
+                    modelType
+                    manufacturerPartNumber
+                    listingItemsCompatibilityId
+                    length
+                    lastStep
+                    itemsSpecifics
+                    isReadyToGo
+                    isDraft
+                    isChangedAspects
+                    interchangePartNumber
+                    height
+                    ebayMotors
+                    description
+                    conditionName
+                    conditionDescription
+                    conditionCode
+                    categoryList
+                    categoryID
+                    categoryFeatures
+                    brand
+                    barcodeValue
+                    accountsID
+                    _version
+                    _lastChangedAt
+                    _deleted
+                    UPC
+                    EAN
+                    ISBN
+                            }
+                          }
+                          id
+                        }
+                      }
+                    }
+      `
 
-      /*setListings(
-        listingsResponse.data.syncListings.items
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          .filter((item) => item._deleted !== true)
-      );*/
+      const listingsResponse = await API.graphql(graphqlOperation(listAccounts));      
+      
+      
 
       setListingsPublished(
-        listingsResponse.data.listingsByDate.items.filter(
+        listingsResponse.data.listAccounts.items[0].Listings.items.filter(
           (item) => item._deleted !== true
         )
       );

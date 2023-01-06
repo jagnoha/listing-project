@@ -343,8 +343,10 @@ export const schema = {
                     "type": "key",
                     "properties": {
                         "name": "byAccounts",
+                        "queryField": "byAccounts",
                         "fields": [
-                            "accountsID"
+                            "accountsID",
+                            "createdAt"
                         ]
                     }
                 },
