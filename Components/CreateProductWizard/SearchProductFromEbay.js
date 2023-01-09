@@ -14,13 +14,17 @@ import {
   Chip,
   List,
 } from 'react-native-paper';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 import Header from '../Header';
 
-const PriceCard = ({ item, onPress }) => {
+const PriceCard = ({ item, onPress, onPressImage }) => {
   return (
     <View style={{ margin: 10 }}>
       <View>
+      <Card>
+        {/*<Card.Cover source={{ uri: item.image.imageUrl }} />*/}
         <Card.Title
+          
           titleStyle={{ fontSize: 12, paddingLeft: 10 }}
           subtitleStyle={{ fontSize: 12, paddingLeft: 10, fontWeight: 'bold' }}
           style={{ padding: 7 }}
@@ -33,49 +37,46 @@ const PriceCard = ({ item, onPress }) => {
           //subtitle="Card Subtitle"
           left={(props) => (
             <List.Image variant='image' source={{ uri: item.image.imageUrl }} />
+            
+            
           )}
-          /*right={(props) => (
-            <Chip icon='currency-usd' onPress={() => console.log('Pressed')}>
-              {item.price.value}
-            </Chip>
-          )}*/
+
+          
+          
         />
+
+            <Card.Actions style={{alignSelf: 'center'}}>
+            <Button
+                      icon='currency-usd'
+                      style={{ margin: 10 }}
+                      labelStyle={{fontSize: 15}}
+                      
+                      //onPress={() => onPress(item.itemId)}
+                    >
+                      {item.price.value}
+                    </Button>
+            <Button
+                      icon='cog-outline'
+                      labelStyle={{fontSize: 13}}
+                      
+                      style={{ margin: 10 }}
+                      onPress={() => onPress(item.legacyItemId)}
+                    >
+                      Use it
+                    </Button>
+                  
+                </Card.Actions>
+
+        </Card>
+    
+
         {/*<Text style={{textAlign: 'center'}}>{item.price}</Text>*/}
 
         {/*<List.Image variant='image' source={{ uri: item.image }} />*/}
       </View>
       {/*<View style={{ marginLeft: '30%', paddingBottom: 10}}><Text style={{fontWeight:'bold'}}>{item.shop}</Text></View>*/}
 
-      <View
-        style={{ marginLeft: '20%', marginRight: '20%', flexDirection: 'row' }}
-      >
-        <Chip
-          mode={'outlined'}
-          icon='currency-usd'
-          //onPress={() => onPress(item.itemId)}
-          style={{ margin: 10 }}
-          //elevated={4}
-        >
-          {item.price.value}
-        </Chip>
-        {/*<Chip
-          mode={'outlined'}
-          icon='currency-usd'
-          onPress={() => onPress(item.itemId)}
-          style={{ margin: 10 }}
-          //elevated={4}
-        >
-          {item.price.value}
-          </Chip>*/}
-        <Button
-          icon='cog-outline'
-          style={{ margin: 10 }}
-          //onPress={() => props.getItemFromEbay(item.legacyItemId)}
-          onPress={()=>onPress(item.legacyItemId)}
-        >
-          Use it
-        </Button>
-      </View>
+      
     </View>
   );
 };
@@ -93,6 +94,7 @@ export default function SearchProductFromEbay(props) {
           //onClosePriceList();
         }}*/
         onPress={props.getItemFromEbay}
+        onPressImage={()=>console.log('PRESSED IMAGE!!!')}
       />
     );
   };
@@ -114,6 +116,32 @@ export default function SearchProductFromEbay(props) {
       </View>
     );
   }*/
+
+  if (props.barcodeOpen) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <BarCodeScanner
+          onBarCodeScanned={props.handleBarCodeScannedInEbaySearch}
+          style={props.styles.containerBarcode}
+        />
+
+        <Button
+          mode='outlined'
+          icon={'close'}
+          onPress={() => props.onOpenBarcode(false)}
+        >
+          Close
+        </Button>
+      </View>
+    );
+  }
 
   return (
     <View>
@@ -146,7 +174,7 @@ export default function SearchProductFromEbay(props) {
             right={
               <TextInput.Icon
                 icon='magnify'
-                //onPress={() => console.log('END EDITTING!!!!')}
+                onPress={() => props.getProductSearchList(props.searchCategories)}
               />
             }
             onChangeText={props.onSearchCategories}
@@ -156,6 +184,20 @@ export default function SearchProductFromEbay(props) {
             }
           />
         }
+
+        <View style={{marginBottom: -5}}>
+          <Text style={{textAlign: 'center'}}>Or</Text>
+        </View>
+
+        <View style={{ marginLeft: 60, marginRight: 60, marginTop: 20 }}>
+          <Button
+            icon='barcode'
+            mode='contained'
+            onPress={() => props.onOpenBarcode(true)}
+          >
+            Scan barcode
+          </Button>
+        </View>
 
         {props.processingPrices ? (
           <View

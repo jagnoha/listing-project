@@ -3391,6 +3391,15 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     setBarcodeOpen(false);
   };
 
+  const handleBarCodeScannedInEbaySearch = ({ type, data }) => {
+    /*console.log(type);
+    console.log(data);*/
+    getProductSearchList(data);
+    setBarcodeValue(data);
+    setSearchCategories(data);
+    setBarcodeOpen(false);
+  };
+
   const deleteBarcodeValue = () => {
     setBarcodeValue();
   };
@@ -4434,6 +4443,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         productSearchList={productSearchList}
         processingPrices={processingPrices}
         getItemFromEbay={getItemFromEbay}
+        onOpenBarcode={onOpenBarcode}
+        barcodeOpen={barcodeOpen}
+        handleBarCodeScannedInEbaySearch={handleBarCodeScannedInEbaySearch}
 
         //backward={backward}
         //forward={forward}

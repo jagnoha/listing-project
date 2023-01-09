@@ -23,6 +23,7 @@ const PriceCard = ({ item, onPress }) => {
   return (
     <View style={{ margin: 10 }}>
       <View>
+        <Card>
         <Card.Title
           titleStyle={{ fontSize: 12, paddingLeft: 10 }}
           subtitleStyle={{ fontSize: 12, paddingLeft: 10, fontWeight: 'bold' }}
@@ -37,18 +38,56 @@ const PriceCard = ({ item, onPress }) => {
           left={(props) => (
             <List.Image variant='image' source={{ uri: item.image }} />
           )}
+
+          
+
+          
           
           /*right={(props) => <Chip icon='currency-usd' onPress={() => console.log('Pressed')}>{item.price}</Chip>}*/
         />
+        <Card.Content style={{flexDirection: 'row', alignContent: 'center', alignSelf: 'center'}}>
+        
+        <Button icon='store'>
+         {item.shop}
+      </Button>
+      {/*<Chip
+          mode={'outlined'}
+          icon='currency-usd'
+          style={{ margin: 10 }}
+        >
+          {item.price}
+          </Chip>*/}
+          
+        </Card.Content>
+<Card.Actions style={{alignSelf: 'center'}}>
+<Button
+          icon='currency-usd'
+          style={{ margin: 10 }}
+          labelStyle={{fontSize: 15}}
+          
+          //onPress={() => onPress(item.itemId)}
+        >
+          {item.price}
+        </Button>
+<Button
+          icon='check'
+          labelStyle={{fontSize: 13}}
+          
+          style={{ margin: 10 }}
+          onPress={() => onPress(item.itemId)}
+        >
+          Use this price
+        </Button>
+      
+    </Card.Actions>
+        </Card>
         {/*<Text style={{textAlign: 'center'}}>{item.price}</Text>*/}
 
         {/*<List.Image variant='image' source={{ uri: item.image }} />*/}
       </View>
       {/*<View style={{ marginLeft: '30%', paddingBottom: 10}}><Text style={{fontWeight:'bold'}}>{item.shop}</Text></View>*/}
 
-      <Button icon='store'>
-         {item.shop}
-      </Button>
+      
 
       {/*<View style={{ marginLeft: '30%', marginRight: '30%' }}>
         <Chip
@@ -62,35 +101,7 @@ const PriceCard = ({ item, onPress }) => {
           </View>*/}
 
 
-      <View
-        style={{ flexDirection: 'row', alignSelf: 'center'  }}
-      >
-        <Chip
-          mode={'outlined'}
-          icon='currency-usd'
-          //onPress={() => onPress(item.itemId)}
-          style={{ margin: 10 }}
-          //elevated={4}
-        >
-          {item.price}
-        </Chip>
-        {/*<Chip
-          mode={'outlined'}
-          icon='currency-usd'
-          onPress={() => onPress(item.itemId)}
-          style={{ margin: 10 }}
-          //elevated={4}
-        >
-          {item.price.value}
-          </Chip>*/}
-        <Button
-          icon='check'
-          style={{ margin: 10 }}
-          onPress={() => onPress(item.itemId)}
-        >
-          Use this price
-        </Button>
-      </View>
+      
 
 
 
