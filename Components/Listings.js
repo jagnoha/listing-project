@@ -47,21 +47,21 @@ export default function Listings() {
                   });
                 },
               },
-              /*{
+              {
                 icon: 'car-side',
                 label: 'Auto & Motorcycle Parts',
                 onPress: () => { navigation.navigate('AddListing', {title: 'Add Auto Parts', type:'autoparts'}) }
               },
-              {
+              /*{
                 icon: 'book-open-variant',
                 label: 'Books',
                 onPress: () => { navigation.navigate('AddListing', {title: 'Add Books', type:'books'}) }
-              },
+              },*/
               {
                 icon: 'tag-multiple',
                 label: 'Everything else',
                 onPress: () => { navigation.navigate('AddListing', {title: 'Add Listing', type:'other'}) }
-              },*/
+              },
             ]}
             onStateChange={onStateChange}
             onPress={() => {

@@ -242,10 +242,10 @@ export default function AddListingForm(props) {
     (async () => {
       //console.log(userAccount.postalCode);
 
-      if (type === 'clothing' || type === 'shoes') {
+      //if (type === 'clothing' || type === 'shoes' || type === 'other') {
         setStep(1);
         setLastStep(1);
-      }
+      //}
 
       setFetchPoliciesProcessing(true);
 
@@ -2689,7 +2689,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       let title = `${titleProcessed}`;
 
       if (barcodeValue) {
-        title = title + ' ' + barcodeValue;
+        title = barcodeValue; //title + ' ' + barcodeValue;
       }
 
       //const title = descriptionProcessed.split('<h2>')[1].split('</h2>')[0];
@@ -2753,7 +2753,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       const title = `${titleProcessed}`;
 
       if (barcodeValue) {
-        title = title + ' ' + barcodeValue;
+        title = barcodeValue; // title + ' ' + barcodeValue;
       }
 
       const urlGet = `https://listerfast.com/api/utils/searchprices/${title}/${isNew}`;
@@ -2824,7 +2824,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
   const getPrices = async () => {
     try {
-      getGooglePrices();
+      //getGooglePrices();
 
       let pendingTitle = [];
       let shortPendingTitle = [];
@@ -3699,7 +3699,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
   const processImage = async (photo) => {
     try {
       //setProcessingSelectedAspectValue(true);
-      if (type === 'clothing' || type === 'shoes') {
+      //if (type === 'clothing' || type === 'shoes' || type === 'other') {
         const imageChecked = await fetch(
           `https://listerfast.com/api/utils/labelsfromimage/${photo}`
         );
@@ -3731,7 +3731,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
         getCategoriesSearch(uniqueList.join(' '));
         //onSearchCategories(uniqueList.join(' '))
-      }
+      //}
 
       /*let tagCheckedExtra;
     let jsonExtra;
@@ -5075,7 +5075,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         onChangeTitle={onChangeTitle}
         onChangeDescription={onChangeDescription}
         processingPrices={processingPrices}
-        getPrices={getPrices}
+        //getPrices={getPrices}
         getGooglePrices={getGooglePrices}
         saveListing={saveListing}
         onProcessingTitle={onProcessingTitle}
@@ -5123,7 +5123,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         goToFirstStep={goToFirstStep}
         goToListingDetails={goToListingDetails}
         onOpenBackDialog={onOpenBackDialog}
-        getPrices={getPrices}
+        //getPrices={getPrices}
         getGooglePrices={getGooglePrices}
         prices={prices}
         processingPrices={processingPrices}

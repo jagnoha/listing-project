@@ -2206,7 +2206,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       let title = `${titleProcessed}`;
 
       if (barcodeValue) {
-        title = title + ' ' + barcodeValue;
+        title = barcodeValue; //title + ' ' + barcodeValue;
       }
 
       //const title = descriptionProcessed.split('<h2>')[1].split('</h2>')[0];
@@ -2270,7 +2270,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       let title = `${titleProcessed}`;
 
       if (barcodeValue) {
-        title = title + ' ' + barcodeValue;
+        title = barcodeValue; //title + ' ' + barcodeValue;
       }
 
       //const title = descriptionProcessed.split('<h2>')[1].split('</h2>')[0];
@@ -4490,7 +4490,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           onChangeTitle={onChangeTitle}
           onChangeDescription={onChangeDescription}
           processingPrices={processingPrices}
-          getPrices={getPrices}
+          //getPrices={getPrices}
           getGooglePrices={getGooglePrices}
           saveListing={saveListing}
           onDeleteItem={onDeleteItem}
@@ -4538,7 +4538,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           forward={forward}
           goToFirstStep={goToFirstStep}
           goToListingDetails={goToListingDetails}
-          getPrices={getPrices}
+          //getPrices={getPrices}
           getGooglePrices={getGooglePrices}
           processingSaveListing={processingSaveListing}
           prices={prices}
