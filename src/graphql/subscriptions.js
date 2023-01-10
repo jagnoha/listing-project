@@ -27,6 +27,7 @@ export const onCreateListing = /* GraphQL */ `
       height
       weightMayor
       quantity
+      lot
       sku
       isDraft
       brand
@@ -89,6 +90,7 @@ export const onUpdateListing = /* GraphQL */ `
       height
       weightMayor
       quantity
+      lot
       sku
       isDraft
       brand
@@ -151,6 +153,7 @@ export const onDeleteListing = /* GraphQL */ `
       height
       weightMayor
       quantity
+      lot
       sku
       isDraft
       brand

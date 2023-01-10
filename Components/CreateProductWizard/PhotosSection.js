@@ -282,10 +282,10 @@ export default function PhotosSection(props) {
             icon: 'arrow-left',
             style: props.styles.nextBackControlButton,
             onPress: () => props.backward(),
-            disabled:
-              props.type === 'clothing' || props.type === 'shoes'
+            disabled: true
+              /*props.type === 'clothing' || props.type === 'shoes'
                 ? true
-                : false, //props.backward(),
+                : false, //props.backward(),*/
           },
           {
             value: 'next',

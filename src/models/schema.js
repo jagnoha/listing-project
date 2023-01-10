@@ -165,6 +165,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "lot": {
+                    "name": "lot",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "sku": {
                     "name": "sku",
                     "isArray": false,
@@ -678,5 +685,5 @@ export const schema = {
     },
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "c2b80bfbedf315d53729997cb46b1d24"
+    "version": "469c3ae327ffeb3efd0006220a8380b2"
 };

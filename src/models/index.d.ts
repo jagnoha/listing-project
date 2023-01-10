@@ -55,6 +55,7 @@ type EagerListing = {
   readonly height?: number | null;
   readonly weightMayor?: number | null;
   readonly quantity?: number | null;
+  readonly lot?: number | null;
   readonly sku?: string | null;
   readonly isDraft?: boolean | null;
   readonly brand?: string | null;
@@ -103,6 +104,7 @@ type LazyListing = {
   readonly height?: number | null;
   readonly weightMayor?: number | null;
   readonly quantity?: number | null;
+  readonly lot?: number | null;
   readonly sku?: string | null;
   readonly isDraft?: boolean | null;
   readonly brand?: string | null;

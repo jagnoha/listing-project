@@ -27,6 +27,7 @@ export const getListing = /* GraphQL */ `
       height
       weightMayor
       quantity
+      lot
       sku
       isDraft
       brand
@@ -94,6 +95,7 @@ export const listListings = /* GraphQL */ `
         height
         weightMayor
         quantity
+        lot
         sku
         isDraft
         brand
@@ -161,6 +163,79 @@ export const syncListings = /* GraphQL */ `
         height
         weightMayor
         quantity
+        lot
+        sku
+        isDraft
+        brand
+        accountsID
+        type
+        categoryList
+        photoMain
+        photoLabel
+        photos
+        lastStep
+        conditionName
+        isReadyToGo
+        barcodeValue
+        categoryFeatures
+        weightMinor
+        isChangedAspects
+        photoLabelExtra
+        modelType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        listingItemsCompatibilityId
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const byAccounts = /* GraphQL */ `
+  query ByAccounts(
+    $accountsID: ID!
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelListingFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    byAccounts(
+      accountsID: $accountsID
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        title
+        description
+        price
+        categoryID
+        shippingProfileID
+        returnProfileID
+        paymentProfileID
+        ebayMotors
+        itemsSpecifics
+        manufacturerPartNumber
+        interchangePartNumber
+        otherPartNumber
+        UPC
+        EAN
+        ISBN
+        conditionCode
+        conditionDescription
+        length
+        width
+        height
+        weightMayor
+        quantity
+        lot
         sku
         isDraft
         brand
@@ -232,6 +307,7 @@ export const listingsByDate = /* GraphQL */ `
         height
         weightMayor
         quantity
+        lot
         sku
         isDraft
         brand

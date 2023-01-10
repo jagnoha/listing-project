@@ -30,6 +30,7 @@ type Listing @model @auth(rules: [{allow: public}]) {
   height: Float
   weightMayor: Float
   quantity: Int
+  lot: Int
   sku: String
   isDraft: Boolean
   brand: String
@@ -84,4 +85,4 @@ type EbayAccounts @model @auth(rules: [{allow: public}]) {
   returnPolicy: AWSJSON
   postalCode: String
 }
-   
+    

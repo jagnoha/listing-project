@@ -171,6 +171,8 @@ export default function AddListingForm(props) {
 
   const [prices, setPrices] = useState([]);
 
+  const [lot, setLot] = useState('1');
+
   const [pricingList, setPricingList] = useState([]);
 
   const [length, setLength] = useState('6');
@@ -481,6 +483,7 @@ export default function AddListingForm(props) {
         photoLabelExtra: photoLabelExtra,
         photos: JSON.stringify(photos),
         lastStep: lastStep,
+        lot: lot,
         ebayMotors:
           ListingType[type.toUpperCase()] === 'AUTOPARTS' ? true : false,
         categoryID: category,
@@ -576,6 +579,7 @@ export default function AddListingForm(props) {
         photoLabelExtra: photoLabelExtra,
         photos: JSON.stringify(photos),
         lastStep: lastStep,
+        lot: lot,
         ebayMotors:
           ListingType[type.toUpperCase()] === 'AUTOPARTS' ? true : false,
         categoryID: category,
@@ -744,6 +748,7 @@ export default function AddListingForm(props) {
         photoLabelExtra: photoLabelExtra,
         photos: JSON.stringify(photos),
         lastStep: lastStep,
+        lot: lot,
         ebayMotors:
           ListingType[type.toUpperCase()] === 'AUTOPARTS' ? true : false,
         categoryID: category,
@@ -828,6 +833,7 @@ export default function AddListingForm(props) {
         photoLabelExtra: photoLabelExtra,
         photos: JSON.stringify(photos),
         lastStep: lastStep,
+        lot: lot,
         ebayMotors:
           ListingType[type.toUpperCase()] === 'AUTOPARTS' ? true : false,
         categoryID: category,
@@ -1792,13 +1798,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .replace(',', ' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
-      if (uniqueFilteredTitle.trim().length <= 80) {
-        setTitleProcessed(uniqueFilteredTitle.trim());
-      } else {
-        setTitleProcessed(uniqueFilteredTitleShort.trim());
-      }
-
-      processingDescription(uniqueFilteredTitle.trim());
+        if (uniqueFilteredTitle.trim().length <= 80) {
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
+        } else {
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitleShort.trim()}`);
+        }
+  
+        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
     } else if (type === 'shoes') {
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
@@ -1924,13 +1930,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .replace(',', ' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
-      if (uniqueFilteredTitle.trim().length <= 80) {
-        setTitleProcessed(uniqueFilteredTitle.trim());
-      } else {
-        setTitleProcessed(uniqueFilteredTitleShort.trim());
-      }
-
-      processingDescription(uniqueFilteredTitle);
+        if (uniqueFilteredTitle.trim().length <= 80) {
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
+        } else {
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitleShort.trim()}`);
+        }
+  
+        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
     } else if (type === 'autoparts') {
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
@@ -2037,13 +2043,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .join(' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
-      if (uniqueFilteredTitle.trim().length <= 80) {
-        setTitleProcessed(uniqueFilteredTitle.trim());
-      } else {
-        setTitleProcessed(uniqueFilteredTitleShort.trim());
-      }
-
-      processingDescription(uniqueFilteredTitle);
+        if (uniqueFilteredTitle.trim().length <= 80) {
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
+        } else {
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitleShort.trim()}`);
+        }
+  
+        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
     } else if (type === 'other') {
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
@@ -2147,13 +2153,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .join(' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
-      if (uniqueFilteredTitle.trim().length <= 80) {
-        setTitleProcessed(uniqueFilteredTitle.trim());
-      } else {
-        setTitleProcessed(uniqueFilteredTitleShort.trim());
-      }
-
-      processingDescription(uniqueFilteredTitle);
+        if (uniqueFilteredTitle.trim().length <= 80) {
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
+        } else {
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitleShort.trim()}`);
+        }
+  
+        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
     }
   };
 
@@ -3781,6 +3787,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       console.log('TYPE: ', type);
 
       //setWeight(listing.weight.toString());
+      setLot(listing.lot ? listing.lot.toString() : '1');
 
       setFulfillmentPolicyId(listing.shippingProfileID);
       setReturnPolicyId(listing.returnProfileID);
@@ -4237,6 +4244,11 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       setProcessingImage(false);
     }
   };
+
+  const changeLot = (value) => {
+    setIsChangedAspects(true);
+    setLot(value);
+  }
 
   const takePicLabelExtra = async () => {
     try {
@@ -4946,6 +4958,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         step={step}
         lastStep={lastStep}
         goToFirstStep={goToFirstStep}
+        lot={lot}
+        changeLot={changeLot}
         onOpenBackDialog={onOpenBackDialog}
         processingSaveListing={processingSaveListing}
         processingAspects={processingAspects}

@@ -626,6 +626,20 @@ export default function ItemSpecificsStage(props) {
           better result.
         </Banner>
 
+        <View style={{margin: 10, marginLeft: 40, marginRight: 40}}>
+          { props.lot !== '1' ?  <TextInput
+          keyboardType={'number-pad'}
+      mode="outlined"
+      label="Product sell in lots"
+      //placeholder="Type something"
+      value = {props.lot}
+      onChangeText={text => props.changeLot(text)}
+      
+      left={<TextInput.Affix text="Lot of" />}
+      right={<TextInput.Icon icon="close" onPress={()=>props.changeLot('1')} />}
+    /> : <Button onPress={()=>props.changeLot('')}>Sell in lots?</Button> }
+        </View>
+
         {props.processingAspects ? (
           <View>
             <ActivityIndicator

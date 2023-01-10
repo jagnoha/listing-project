@@ -134,6 +134,7 @@ export default function EditListingForm(props) {
   const [photoLabelExtra, setPhotoLabelExtra] = useState();
   const [barcodeValue, setBarcodeValue] = useState();
   const [categories, setCategories] = useState([]);
+  const [lot, setLot] = useState('1');
 
   const [brand, setBrand] = useState('');
   const [wordsFromLabel, setWordsFromLabel] = useState([]);
@@ -263,6 +264,8 @@ export default function EditListingForm(props) {
       setWeightMayor(listing.weightMayor.toString());
       setWeightMinor(listing.weightMinor.toString());
 
+      setLot(listing.lot ? listing.lot.toString() : '1');
+
       setIsChangedAspects(listing.isChangedAspects);
       //setType(listing.type.toLowerCase());
 
@@ -345,6 +348,7 @@ export default function EditListingForm(props) {
         setQuantity(listing.quantity.toString());
         setPriceProduct(listing.price.toString());
         setCategoryFeatures(JSON.parse(listing.categoryFeatures));
+        setLot(listing.lot ? listing.lot.toString() : '1');
 
         setStep(listing.lastStep);
         setLastStep(listing.lastStep);
@@ -590,6 +594,7 @@ export default function EditListingForm(props) {
         photoLabelExtra: photoLabelExtra,
         photos: JSON.stringify(photos),
         lastStep: lastStep,
+        lot: lot,
         ebayMotors:
           ListingType[type.toUpperCase()] === 'AUTOPARTS' ? true : false,
         categoryID: category,
@@ -677,6 +682,7 @@ export default function EditListingForm(props) {
         photoLabelExtra: photoLabelExtra,
         photos: JSON.stringify(photos),
         lastStep: lastStep,
+        lot: lot,
         ebayMotors:
           ListingType[type.toUpperCase()] === 'AUTOPARTS' ? true : false,
         categoryID: category,
@@ -855,6 +861,11 @@ export default function EditListingForm(props) {
       console.log(error);
     }
   };
+
+  const changeLot = (value) => {
+    setIsChangedAspects(true);
+    setLot(value);
+  }
 
   const saveListingAndClose = async () => {
     try {
@@ -1247,6 +1258,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     if (type === 'clothing') {
       // step 1
 
+      
+
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
 
@@ -1442,13 +1455,16 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       //console.log('*********************************', uniqueFilteredTitle);
 
       if (uniqueFilteredTitle.trim().length <= 80) {
-        setTitleProcessed(uniqueFilteredTitle.trim());
+        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
       } else {
-        setTitleProcessed(uniqueFilteredTitleShort.trim());
+        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitleShort.trim()}`);
       }
 
-      processingDescription(uniqueFilteredTitle.trim());
+      processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
     } else if (type === 'shoes') {
+      
+      
+
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
 
@@ -1580,13 +1596,16 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       //console.log('*********************************', uniqueFilteredTitle);
 
       if (uniqueFilteredTitle.trim().length <= 80) {
-        setTitleProcessed(uniqueFilteredTitle.trim());
+        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
       } else {
-        setTitleProcessed(uniqueFilteredTitleShort.trim());
+        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitleShort.trim()}`);
       }
 
-      processingDescription(uniqueFilteredTitle);
+      processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
     } else if (type === 'autoparts') {
+
+      
+
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
 
@@ -1692,13 +1711,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .join(' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
-      if (uniqueFilteredTitle.trim().length <= 80) {
-        setTitleProcessed(uniqueFilteredTitle.trim());
-      } else {
-        setTitleProcessed(uniqueFilteredTitleShort.trim());
-      }
-
-      processingDescription(uniqueFilteredTitle);
+        if (uniqueFilteredTitle.trim().length <= 80) {
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
+        } else {
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitleShort.trim()}`);
+        }
+  
+        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
     } else if (type === 'other') {
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
@@ -1802,13 +1821,13 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .join(' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
-      if (uniqueFilteredTitle.trim().length <= 80) {
-        setTitleProcessed(uniqueFilteredTitle.trim());
-      } else {
-        setTitleProcessed(uniqueFilteredTitleShort.trim());
-      }
-
-      processingDescription(uniqueFilteredTitle);
+        if (uniqueFilteredTitle.trim().length <= 80) {
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
+        } else {
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitleShort.trim()}`);
+        }
+  
+        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
     }
   };
 
@@ -4367,6 +4386,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           forward={forward}
           gotoStep={goToStep}
           lastStep={lastStep}
+          lot={lot}
+          changeLot={changeLot}
           step={step}
           goToFirstStep={goToFirstStep}
           processingSaveListing={processingSaveListing}
