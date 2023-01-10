@@ -1192,16 +1192,15 @@ export default function EditListingForm(props) {
     //let pendingDescription = [];
 
     //const keywords = getImportantAspectsValues();
-    let pendingDescription = `<h2>${encode(
-      title
-    )}</h2><h3>Condition</h3><p style={font-size: 1.2em}>${
+    let pendingDescription = `<h2>${encode(title)}</h2><h3>Condition</h3>
+    <p style={font-size: 1.2em}>${
       Array.isArray(categoryFeatures.conditions)
         ? categoryFeatures.conditions.find((item) => item.ID === condition)
             .DisplayName
         : categoryFeatures.conditions.DisplayName
     }</p> 
 ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
-<b>Additional Details:</b>    
+<p><b>Additional Details:</b></p>    
 `;
     let aspectsFil = aspects.filter((item) => item.value !== '');
 
@@ -1325,11 +1324,15 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       if (keywords['material']) {
         pendingTitle.push(
-          keywords['material'].filter((item) => item !== 'Polyester')
+          keywords['material'].filter((item) => item !== 'Polyester').length > 0
+            ? keywords['material'].filter((item) => item !== 'Polyester')
+            : ''
         );
 
         shortPendingTitle.push(
-          keywords['material'].filter((item) => item !== 'Polyester')
+          keywords['material'].filter((item) => item !== 'Polyester').length > 0
+            ? keywords['material'].filter((item) => item !== 'Polyester')
+            : ''
         );
       }
 
@@ -1372,6 +1375,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       // Long Title processing
 
       let expandTitle = [];
+
+      //console.log('ITEM!!!!: ', pendingTitle)
 
       for (let item of pendingTitle) {
         if (Array.isArray(item)) {

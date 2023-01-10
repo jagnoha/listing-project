@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 import {
   useTheme,
   Text,
@@ -17,12 +17,15 @@ import {
 } from 'react-native-paper';
 import Header from '../Header';
 
+import RenderHtml from 'react-native-render-html';
+
 export default function TitleRevisionStage(props) {
   //const theme = useTheme();
 
   const [openTitle, setOpenTitle] = useState(false);
   const [openDescription, setOpenDescription] = useState(false);
   const [textForm, setTextForm] = useState('');
+  const { width } = useWindowDimensions();
 
   useEffect(() => {
     (async () => {
@@ -291,9 +294,15 @@ export default function TitleRevisionStage(props) {
                     </Text>
                   </View>
 
-                  <Paragraph style={{ fontSize: 15 }}>
-                    {props.descriptionProcessed}
-                  </Paragraph>
+                  {
+                    <Paragraph style={{ fontSize: 15 }}>
+                      {props.descriptionProcessed}
+                    </Paragraph>
+                  }
+                  {/*<RenderHtml
+                    contentWidth={width}
+                    source={{ html: `${props.descriptionProcessed}` }}
+                />*/}
                 </Card.Content>
               </Card>
             </Surface>

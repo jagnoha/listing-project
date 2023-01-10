@@ -1678,10 +1678,15 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       if (keywords['material']) {
         pendingTitle.push(
-          keywords['material'].filter((item) => item !== 'Polyester')
+          keywords['material'].filter((item) => item !== 'Polyester').length > 0
+            ? keywords['material'].filter((item) => item !== 'Polyester')
+            : ''
         );
+
         shortPendingTitle.push(
-          keywords['material'].filter((item) => item !== 'Polyester')
+          keywords['material'].filter((item) => item !== 'Polyester').length > 0
+            ? keywords['material'].filter((item) => item !== 'Polyester')
+            : ''
         );
       }
 
