@@ -630,7 +630,7 @@ export default function ItemSpecificsStage(props) {
           { props.lot !== '1' ?  <TextInput
           keyboardType={'number-pad'}
       mode="outlined"
-      label="Product sell in lots"
+      label="How many products in a lot?"
       //placeholder="Type something"
       value = {props.lot}
       onChangeText={text => props.changeLot(text)}

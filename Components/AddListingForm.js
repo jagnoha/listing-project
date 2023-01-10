@@ -1799,12 +1799,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
         if (uniqueFilteredTitle.trim().length <= 80) {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
         } else {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitleShort.trim()}`);
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitleShort.trim()}`);
         }
   
-        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
+        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
     } else if (type === 'shoes') {
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
@@ -1931,12 +1931,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
         if (uniqueFilteredTitle.trim().length <= 80) {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
         } else {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitleShort.trim()}`);
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitleShort.trim()}`);
         }
   
-        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
+        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
     } else if (type === 'autoparts') {
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
@@ -2044,12 +2044,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
         if (uniqueFilteredTitle.trim().length <= 80) {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
         } else {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitleShort.trim()}`);
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitleShort.trim()}`);
         }
   
-        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
+        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
     } else if (type === 'other') {
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
@@ -2154,12 +2154,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
         if (uniqueFilteredTitle.trim().length <= 80) {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
         } else {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitleShort.trim()}`);
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitleShort.trim()}`);
         }
   
-        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''} ${uniqueFilteredTitle.trim()}`);
+        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
     }
   };
 

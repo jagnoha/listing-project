@@ -161,7 +161,7 @@ export default function ListingsPublished() {
       /*onLongPress={() =>
         onSelectListing({ id: item.id, version: item._version })
       }*/
-      delayLongPress={200}
+      delayLongPress={100}
       left={(props) =>
         selected.find((listing) => listing.id === item.id) ? (
           <IconButton
