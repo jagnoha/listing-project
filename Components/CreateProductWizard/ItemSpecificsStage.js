@@ -132,8 +132,10 @@ export default function ItemSpecificsStage(props) {
   useEffect(() => {
     //props.processLabel();
     console.log(props.type);
+
     props.getAspectValues(props.category);
     props.getCategoriesFeatures(props.category);
+    props.checkItemsAspect();
   }, []);
 
   const onChangeSearch = (query) => {

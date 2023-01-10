@@ -736,6 +736,14 @@ export default function EditListingForm(props) {
     }
   };
 
+  const checkItemsAspect = () => {
+    const aspectList = aspects.filter(
+      (item) => item.require === true && item.value === ''
+    );
+
+    setCheckedAllAspects(aspectList.length > 0 ? false : true);
+  };
+
   const uploadImage = async (filename, img) => {
     return Storage.put(filename, img, {
       level: 'public',
@@ -1315,16 +1323,14 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       pendingTitle.push(keywords['neckline']);
       shortPendingTitle.push(keywords['neckline']);
 
-      if (keywords['material']){
-      pendingTitle.push(
-        keywords['material'].filter((item) => item !== 'Polyester')
-      );
+      if (keywords['material']) {
+        pendingTitle.push(
+          keywords['material'].filter((item) => item !== 'Polyester')
+        );
 
-
-      shortPendingTitle.push(
-        keywords['material'].filter((item) => item !== 'Polyester')
-      );
-
+        shortPendingTitle.push(
+          keywords['material'].filter((item) => item !== 'Polyester')
+        );
       }
 
       pendingTitle.push(keywords['features']);
@@ -1385,7 +1391,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       );
 
       console.log('FILTETED!!!! ', filtetedTitle);
-      
 
       // Short title processing
 
@@ -1413,16 +1418,20 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
         .split(' ');
 
-      uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)].join(' ').replace(' Polyester', '').replace(',', ' ');
+      uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)]
+        .join(' ')
+        .replace(' Polyester', '')
+        .replace(',', ' ');
 
       let uniqueFilteredTitleShort = filtetedTitleShort
         .join(' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
         .split(' ');
 
-      uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)].join(
-        ' '
-      ).replace(' Polyester', '').replace(',', ' ');
+      uniqueFilteredTitleShort = [...new Set(uniqueFilteredTitleShort)]
+        .join(' ')
+        .replace(' Polyester', '')
+        .replace(',', ' ');
 
       //console.log('*********************************', uniqueFilteredTitle);
 
@@ -1545,14 +1554,16 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       );
 
       let uniqueFilteredTitle = filtetedTitle
-        .join(' ').replace(',', ' ')
+        .join(' ')
+        .replace(',', ' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
         .split(' ');
 
       uniqueFilteredTitle = [...new Set(uniqueFilteredTitle)].join(' ');
 
       let uniqueFilteredTitleShort = filtetedTitleShort
-        .join(' ').replace(',', ' ')
+        .join(' ')
+        .replace(',', ' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
         .split(' ');
 
@@ -4349,6 +4360,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           checkedAllAspects={checkedAllAspects}
           category={category}
           getCategoriesFeatures={getCategoriesFeatures}
+          checkItemsAspect={checkItemsAspect}
           saveListing={saveListing}
           processingSelectedAspectValue={processingSelectedAspectValue}
           onDeleteItem={onDeleteItem}

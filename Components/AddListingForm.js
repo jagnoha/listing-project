@@ -243,8 +243,8 @@ export default function AddListingForm(props) {
       //console.log(userAccount.postalCode);
 
       //if (type === 'clothing' || type === 'shoes' || type === 'other') {
-        setStep(1);
-        setLastStep(1);
+      setStep(1);
+      setLastStep(1);
       //}
 
       setFetchPoliciesProcessing(true);
@@ -648,7 +648,6 @@ export default function AddListingForm(props) {
 
   const getItemFromEbay = async (id) => {
     try {
-
       setProcessingPrices(true);
 
       let nameFile = `${uuidv4()}.jpg`;
@@ -668,8 +667,6 @@ export default function AddListingForm(props) {
 
       setOptionCreateListing('Scratch');
       setStep(1);
-
-      
 
       /*let source = jsonResponse.PictureDetails.PictureURL[0];
 
@@ -716,12 +713,11 @@ export default function AddListingForm(props) {
       setOptionCreateListing('Scratch');*/
 
       setProcessingPrices(false);
-
-    } catch(error){
+    } catch (error) {
       setProcessingPrices(false);
       console.log(error);
     }
-  }
+  };
 
   const createNewListingOnline = async (id) => {
     try {
@@ -2344,8 +2340,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           });
         }
 
-        
-
         setAspectValues(aspectValues);
         setProcessingAspects(false);
       }
@@ -2499,50 +2493,40 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           };
         });
 
-      
       //console.log('ASPECTS FROM EBAY: ', aspectsFromEbay);
       //console.log('ASPECTS VALUES: ', aspectValues);
-      
+
       let aspectValuesFromEbay = [];
 
-      if (aspectsFromEbay){
-      
-        aspectValuesFromEbay = aspects.map(item => {
-          let foundItem = aspectsFromEbay.find(itm => itm.Name === item.localizedAspectName);
+      if (aspectsFromEbay) {
+        aspectValuesFromEbay = aspects.map((item) => {
+          let foundItem = aspectsFromEbay.find(
+            (itm) => itm.Name === item.localizedAspectName
+          );
 
           console.log(foundItem);
 
           if (foundItem) {
-
-            return (
-              {
-                localizedAspectName: item.localizedAspectName,
+            return {
+              localizedAspectName: item.localizedAspectName,
               value: foundItem.Value,
               require: item.require,
               cardinality: item.cardinality,
               mode: item.mode,
-              }    
-            )
-          } 
+            };
+          }
 
-          return (
-            item
-          )
-
-          
-        })
+          return item;
+        });
 
         console.log('ASPECTS VALUES FROM EBAY: ', aspectValuesFromEbay);
 
         setAspects(aspectValuesFromEbay.sort((a, b) => b.require - a.require));
-
       } else {
-
         setAspects(aspects.sort((a, b) => b.require - a.require));
 
-      //setAspectValues(aspectValues);
+        //setAspectValues(aspectValues);
       }
-      
 
       setAspectValues(aspectValues);
 
@@ -2550,12 +2534,19 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       //console.log('ASPECTS!!!!: ', aspects);
 
-
       setProcessingAspects(false);
     } catch (error) {
       console.log(error);
       setProcessingAspects(false);
     }
+  };
+
+  const checkItemsAspect = () => {
+    const aspectList = aspects.filter(
+      (item) => item.require === true && item.value === ''
+    );
+
+    setCheckedAllAspects(aspectList.length > 0 ? false : true);
   };
 
   const changeValueItemAspect = (itm, value) => {
@@ -3138,6 +3129,11 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       console.log('SEARCH CATEGORIES: ', searchCategories);
 
+      console.log(
+        'SEARCH CATEGORIES LARGE!!!!!!!!!!!!!!!!!!!!!!: ',
+        searchCategoriesLarge
+      );
+
       //console.log('Ebay User: ', ebayUser);
 
       //const searchCategoriesLarge = searchCategories;
@@ -3700,37 +3696,37 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
     try {
       //setProcessingSelectedAspectValue(true);
       //if (type === 'clothing' || type === 'shoes' || type === 'other') {
-        const imageChecked = await fetch(
-          `https://listerfast.com/api/utils/labelsfromimage/${photo}`
-        );
+      const imageChecked = await fetch(
+        `https://listerfast.com/api/utils/labelsfromimage/${photo}`
+      );
 
-        const json = await imageChecked.json();
-        let labelsDetections = json.Labels;
+      const json = await imageChecked.json();
+      let labelsDetections = json.Labels;
 
-        console.log(json);
+      console.log(json);
 
-        /*console.log(JSON.stringify(labelsDetections.sort((a,b) => b.Confidence - a.Confidence).filter(itm => itm.Confidence > 99.9 && itm.Parents.length> 0)));*/
+      /*console.log(JSON.stringify(labelsDetections.sort((a,b) => b.Confidence - a.Confidence).filter(itm => itm.Confidence > 99.9 && itm.Parents.length> 0)));*/
 
-        /*console.log(JSON.stringify(labelsDetections.sort((a,b) => b.Confidence - a.Confidence)[0].Name));*/
+      /*console.log(JSON.stringify(labelsDetections.sort((a,b) => b.Confidence - a.Confidence)[0].Name));*/
 
-        let result = labelsDetections
-          .sort((a, b) => b.Confidence - a.Confidence)
-          .filter((itm) => itm.Confidence > 95 && itm.Parents.length > 0);
+      let result = labelsDetections
+        .sort((a, b) => b.Confidence - a.Confidence)
+        .filter((itm) => itm.Confidence > 50 && itm.Parents.length > 0);
 
-        console.log('RESULT: ', result);
+      console.log('RESULT: ', result);
 
-        let list = result
-          .map((item) => item.Name)
-          .join(' ')
-          .split(' ');
-        let uniqueList = [...new Set(list)];
+      let list = result
+        .map((item) => item.Name)
+        .join(' ')
+        .split(' ');
+      let uniqueList = [...new Set(list)];
 
-        console.log('NEW SEARCH CATEGORIES ', uniqueList.join(' '));
+      console.log('NEW SEARCH CATEGORIES ', uniqueList.join(' '));
 
-        setSearchCategories(uniqueList.join(' '));
+      setSearchCategories(uniqueList.join(' '));
 
-        getCategoriesSearch(uniqueList.join(' '));
-        //onSearchCategories(uniqueList.join(' '))
+      getCategoriesSearch(uniqueList.join(' '));
+      //onSearchCategories(uniqueList.join(' '))
       //}
 
       /*let tagCheckedExtra;
@@ -3739,6 +3735,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
       //setProcessingSelectedAspectValue(false);
     } catch (error) {
+      console.log('ERROR_PROCESS_IMAGE');
       console.log(error);
       setProcessingSelectedAspectValue(false);
     }
@@ -4939,6 +4936,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         getAspectValues={getAspectValues}
         aspectValues={aspectValues}
         changeValueItemAspect={changeValueItemAspect}
+        checkItemsAspect={checkItemsAspect}
         checkedAllAspects={checkedAllAspects}
         category={category}
         getCategoriesFeatures={getCategoriesFeatures}
