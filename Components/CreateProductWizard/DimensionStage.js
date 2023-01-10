@@ -15,6 +15,7 @@ import {
   IconButton,
 } from 'react-native-paper';
 import Header from '../Header';
+import ToggleStages from './ToggleStages';
 
 export default function DimensionStage(props) {
   //const theme = useTheme();
@@ -31,6 +32,11 @@ export default function DimensionStage(props) {
         type={props.typeHeader}
         actionBack={props.onOpenBackDialog}
         processingSaveListing={props.processingSaveListing}
+      />
+      <ToggleStages
+        step={props.step}
+        gotoStep={props.gotoStep}
+        lastStep={props.lastStep}
       />
       <View>
         <Banner visible={true} icon={'tape-measure'}>

@@ -15,6 +15,7 @@ import {
   IconButton,
 } from 'react-native-paper';
 import Header from '../Header';
+import ToggleStages from './ToggleStages';
 
 export default function ConditionStage(props) {
   //const theme = useTheme();
@@ -31,6 +32,11 @@ export default function ConditionStage(props) {
         type={props.typeHeader}
         actionBack={props.onOpenBackDialog}
         processingSaveListing={props.processingSaveListing}
+      />
+      <ToggleStages
+        step={props.step}
+        gotoStep={props.gotoStep}
+        lastStep={props.lastStep}
       />
       <View>
         <Banner visible={true} icon={'playlist-edit'}>
@@ -60,97 +66,103 @@ export default function ConditionStage(props) {
             style={{ flexDirection: 'column', justifyContent: 'space-between' }}
           >
             <ScrollView style={{ height: 300 }}>
-              {Array.isArray(props.categoryFeatures.conditions) ? props.categoryFeatures.conditions.map((item) => {
-                return (
-                  <View key={item.ID}>
-                    <Pressable
-                      //onPress={() => props.onSelectedCategory(item.categoryId)}
-                      //onPress={() => console.log(item.ID)}
-                      onPress={() =>
-                        props.onSelectedCondition(item.ID, item.DisplayName)
-                      }
-                    >
-                      <Card>
-                        <Card.Content>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'space-between',
-                            }}
-                          >
-                            <View>
-                              <Title>{item.DisplayName}</Title>
-                            </View>
-                            {props.condition === item.ID ? (
+              {Array.isArray(props.categoryFeatures.conditions) ? (
+                props.categoryFeatures.conditions.map((item) => {
+                  return (
+                    <View key={item.ID}>
+                      <Pressable
+                        //onPress={() => props.onSelectedCategory(item.categoryId)}
+                        //onPress={() => console.log(item.ID)}
+                        onPress={() =>
+                          props.onSelectedCondition(item.ID, item.DisplayName)
+                        }
+                      >
+                        <Card>
+                          <Card.Content>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                              }}
+                            >
                               <View>
-                                {/*<IconButton
+                                <Title>{item.DisplayName}</Title>
+                              </View>
+                              {props.condition === item.ID ? (
+                                <View>
+                                  {/*<IconButton
                               icon='check-outline'
                               iconColor={'green'}
                               size={20}
                             />*/}
-                                <Text>
-                                  <IconButton
-                                    icon='check-outline'
-                                    iconColor={'green'}
-                                    size={15}
-                                  />
-                                </Text>
-                              </View>
-                            ) : (
-                              ''
-                            )}
-                          </View>
-                        </Card.Content>
-                      </Card>
-                    </Pressable>
-                  </View>
-                );
-              }) : 
-              
-              <View key={props.categoryFeatures.conditions.ID}>
-                    <Pressable
-                      //onPress={() => props.onSelectedCategory(item.categoryId)}
-                      //onPress={() => console.log(item.ID)}
-                      onPress={() =>
-                        props.onSelectedCondition(props.categoryFeatures.conditions.ID, props.categoryFeatures.conditions.DisplayName)
-                      }
-                    >
-                      <Card>
-                        <Card.Content>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'space-between',
-                            }}
-                          >
-                            <View>
-                              <Title>{props.categoryFeatures.conditions.DisplayName}</Title>
+                                  <Text>
+                                    <IconButton
+                                      icon='check-outline'
+                                      iconColor={'green'}
+                                      size={15}
+                                    />
+                                  </Text>
+                                </View>
+                              ) : (
+                                ''
+                              )}
                             </View>
-                            {props.condition === props.categoryFeatures.conditions.ID ? (
-                              <View>
-                                {/*<IconButton
+                          </Card.Content>
+                        </Card>
+                      </Pressable>
+                    </View>
+                  );
+                })
+              ) : (
+                <View key={props.categoryFeatures.conditions.ID}>
+                  <Pressable
+                    //onPress={() => props.onSelectedCategory(item.categoryId)}
+                    //onPress={() => console.log(item.ID)}
+                    onPress={() =>
+                      props.onSelectedCondition(
+                        props.categoryFeatures.conditions.ID,
+                        props.categoryFeatures.conditions.DisplayName
+                      )
+                    }
+                  >
+                    <Card>
+                      <Card.Content>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                          }}
+                        >
+                          <View>
+                            <Title>
+                              {props.categoryFeatures.conditions.DisplayName}
+                            </Title>
+                          </View>
+                          {props.condition ===
+                          props.categoryFeatures.conditions.ID ? (
+                            <View>
+                              {/*<IconButton
                               icon='check-outline'
                               iconColor={'green'}
                               size={20}
                             />*/}
-                                <Text>
-                                  <IconButton
-                                    icon='check-outline'
-                                    iconColor={'green'}
-                                    size={15}
-                                  />
-                                </Text>
-                              </View>
-                            ) : (
-                              ''
-                            )}
-                          </View>
-                        </Card.Content>
-                      </Card>
-                    </Pressable>
-                  </View>
-              
-              }
+                              <Text>
+                                <IconButton
+                                  icon='check-outline'
+                                  iconColor={'green'}
+                                  size={15}
+                                />
+                              </Text>
+                            </View>
+                          ) : (
+                            ''
+                          )}
+                        </View>
+                      </Card.Content>
+                    </Card>
+                  </Pressable>
+                </View>
+              )}
             </ScrollView>
           </View>
         )}

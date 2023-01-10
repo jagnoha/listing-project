@@ -16,6 +16,7 @@ import {
   IconButton,
 } from 'react-native-paper';
 import Header from '../Header';
+import ToggleStages from './ToggleStages';
 
 import RenderHtml from 'react-native-render-html';
 
@@ -195,6 +196,11 @@ export default function TitleRevisionStage(props) {
         type={props.typeHeader}
         actionBack={props.onOpenBackDialog}
         processingSaveListing={props.processingSaveListing}
+      />
+      <ToggleStages
+        step={props.step}
+        gotoStep={props.gotoStep}
+        lastStep={props.lastStep}
       />
       <View>
         <Banner visible={true} icon={'draw'}>

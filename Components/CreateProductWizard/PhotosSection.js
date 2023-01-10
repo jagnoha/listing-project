@@ -1,6 +1,12 @@
 import { prototype } from 'form-data';
 import React, { useEffect } from 'react';
-import { View, Pressable, StyleSheet, Image } from 'react-native';
+import {
+  View,
+  Pressable,
+  StyleSheet,
+  Image,
+  useWindowDimensions,
+} from 'react-native';
 import {
   useTheme,
   Text,
@@ -16,12 +22,15 @@ import {
 } from 'react-native-paper';
 import { useRecoilState } from 'recoil';
 import urlImagesAtom from '../../Store/atoms/urlImagesAtom';
+import ToggleStages from './ToggleStages';
 import Header from '../Header';
 
 export default function PhotosSection(props) {
   //const theme = useTheme();
 
   const [urlImages, setUrlImages] = useRecoilState(urlImagesAtom);
+
+  const { width, height } = useWindowDimensions();
 
   const processCategories = () => {
     //console.log('CATEGORY: ', props.category);
@@ -46,6 +55,12 @@ export default function PhotosSection(props) {
         type={props.typeHeader}
         //actionBack={props.navigation.goBack}
         actionBack={props.onOpenBackDialog}
+      />
+
+      <ToggleStages
+        step={props.step}
+        gotoStep={props.gotoStep}
+        lastStep={props.lastStep}
       />
 
       <View>
@@ -201,16 +216,17 @@ export default function PhotosSection(props) {
         {/*<Divider style={{ marginTop: 0 }} bold='true' horizontalInset='true' />*/}
 
         <View
-          style={{ alignSelf: 'center' }}
+          style={{ alignSelf: 'center', marginTop: -8 }}
           /*style={{ marginLeft: 60, marginRight: 60, marginTop: 20 }}*/
         >
-          {props.photoMain && props.photos.length < 8 ? (
+          {props.photoMain && props.photos.length < 9 ? (
             <Button
               icon='image'
               mode='contained-tonal'
               onPress={() => props.onOpenPreviewPhoto()}
+              labelStyle={{ fontSize: 12 }}
               disabled={
-                props.photoMain && props.photos.length < 8 ? false : true
+                props.photoMain && props.photos.length < 9 ? false : true
               }
             >
               Add more photos
@@ -256,7 +272,8 @@ export default function PhotosSection(props) {
       </View>
 
       <SegmentedButtons
-        style={props.styles.nextBackControl}
+        //style={props.styles.nextBackControl}
+        style={{ justifyContent: 'center' }}
         onValueChange={() => console.log('Change value')}
         buttons={[
           {

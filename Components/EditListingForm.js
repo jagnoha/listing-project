@@ -66,6 +66,7 @@ import ConditionStage from './CreateProductWizard/ConditionStage';
 import DimensionStage from './CreateProductWizard/DimensionStage';
 import PolicyStage from './CreateProductWizard/PolicyStage';
 import PriceStage from './CreateProductWizard/PriceStage';
+import DrawerStages from './CreateProductWizard/ToggleStages';
 
 import TitleRevisionStage from './CreateProductWizard/TitleRevisionStage';
 
@@ -3945,6 +3946,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
               title={titleHeader}
               typeHeader={'editListing'}
               navigation={navigation}
+              gotoStep={goToStep}
+              step={step}
+              lastStep={lastStep}
               onOpenBackDialog={onOpenBackDialog}
               styles={styles}
               onMainPhotoOpen={onMainPhotoOpen}
@@ -4302,6 +4306,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           styles={styles}
           processingSaveListing={processingSaveListing}
           backward={backward}
+          gotoStep={goToStep}
+          step={step}
+          lastStep={lastStep}
           onOpenBackDialog={onOpenBackDialog}
           forward={forward}
           goToFirstStep={goToFirstStep}
@@ -4324,6 +4331,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         <CategoryStage
           title={titleHeader}
           typeHeader={'editListing'}
+          gotoStep={goToStep}
+          step={step}
           navigation={navigation}
           styles={styles}
           backward={backward}
@@ -4335,6 +4344,7 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           categories={categories}
           onSelectedCategory={onSelectedCategory}
           category={category}
+          lastStep={lastStep}
           saveListing={saveListing}
           onDeleteItem={onDeleteItem}
           getCategoriesSearch={getCategoriesSearch}
@@ -4355,6 +4365,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           backward={backward}
           onOpenBackDialog={onOpenBackDialog}
           forward={forward}
+          gotoStep={goToStep}
+          lastStep={lastStep}
+          step={step}
           goToFirstStep={goToFirstStep}
           processingSaveListing={processingSaveListing}
           processingAspects={processingAspects}
@@ -4390,6 +4403,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           backward={backward}
           onOpenBackDialog={onOpenBackDialog}
           forward={forward}
+          gotoStep={goToStep}
+          lastStep={lastStep}
+          step={step}
           goToFirstStep={goToFirstStep}
           processingSaveListing={processingSaveListing}
           processingCategoryFeatures={processingCategoryFeatures}
@@ -4420,6 +4436,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           forward={forward}
           goToFirstStep={goToFirstStep}
           onOpenBackDialog={onOpenBackDialog}
+          gotoStep={goToStep}
+          step={step}
+          lastStep={lastStep}
           processingSaveListing={processingSaveListing}
           //onChangeDimensions={onChangeDimensions}
           onChangeLength={onChangeLength}
@@ -4453,6 +4472,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           styles={styles}
           backward={backward}
           forward={forward}
+          gotoStep={goToStep}
+          step={step}
+          lastStep={lastStep}
           goToFirstStep={goToFirstStep}
           onOpenBackDialog={onOpenBackDialog}
           processingSaveListing={processingSaveListing}
@@ -4497,6 +4519,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           navigation={navigation}
           styles={styles}
           backward={backward}
+          gotoStep={goToStep}
+          step={step}
+          lastStep={lastStep}
           goToFirstStep={goToFirstStep}
           goToListingDetails={goToListingDetails}
           onOpenBackDialog={onOpenBackDialog}
@@ -4514,7 +4539,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           onProcessingTitle={onProcessingTitle}
           onIsChangedAspects={onIsChangedAspects}
           isChangedAspects={isChangedAspects}
-          lastStep={lastStep}
 
           /*processingPolicies={processingPolicies}
         fulfillmentPolicies={fulfillmentPolicies}
@@ -4553,6 +4577,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
           styles={styles}
           backward={backward}
           forward={forward}
+          gotoStep={goToStep}
+          step={step}
+          lastStep={lastStep}
           goToFirstStep={goToFirstStep}
           goToListingDetails={goToListingDetails}
           //getPrices={getPrices}

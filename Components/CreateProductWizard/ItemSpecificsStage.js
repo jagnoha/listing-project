@@ -28,6 +28,8 @@ import Header from '../Header';
 import { useRecoilState } from 'recoil';
 import * as Haptics from 'expo-haptics';
 
+import ToggleStages from './ToggleStages';
+
 import snackBarAtom from '../../Store/atoms/snackBarAtom';
 
 //const CITIES = 'Jakarta,Bandung,Sumbawa,Taliwang,Lombok,Bima'.split(',');
@@ -612,6 +614,11 @@ export default function ItemSpecificsStage(props) {
         actionBack={props.onOpenBackDialog}
         processingSaveListing={props.processingSaveListing}
       />
+      <ToggleStages
+        step={props.step}
+        gotoStep={props.gotoStep}
+        lastStep={props.lastStep}
+      />
       <View>
         <Banner visible={true} icon={'star-circle-outline'}>
           Add item details. The title and description will be created using this
@@ -627,7 +634,7 @@ export default function ItemSpecificsStage(props) {
             />
           </View>
         ) : (
-          <ScrollView style={{ height: '55%' }}>
+          <ScrollView style={{ height: '45%' }}>
             {props.aspects.map((item) => {
               return (
                 <View key={item.localizedAspectName}>

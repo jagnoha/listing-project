@@ -4561,6 +4561,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
             deleteMainPic={deleteMainPic}
             deleteLabelPic={deleteLabelPic}
             deleteLabelPicExtra={deleteLabelPicExtra}
+            gotoStep={goToStep}
+            step={step}
+            lastStep={lastStep}
             onMainPhotoOpen={onMainPhotoOpen}
             photoMain={photoMain}
             photoLabel={photoLabel}
@@ -4884,6 +4887,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         backward={backward}
         forward={forward}
         goToFirstStep={goToFirstStep}
+        gotoStep={goToStep}
+        step={step}
+        lastStep={lastStep}
         onOpenBackDialog={onOpenBackDialog}
         barcodeOpen={barcodeOpen}
         onOpenBarcode={onOpenBarcode}
@@ -4908,6 +4914,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         styles={styles}
         backward={backward}
         forward={forward}
+        gotoStep={goToStep}
+        step={step}
+        lastStep={lastStep}
         onOpenBackDialog={onOpenBackDialog}
         processingSaveListing={processingSaveListing}
         goToFirstStep={goToFirstStep}
@@ -4933,6 +4942,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         styles={styles}
         backward={backward}
         forward={forward}
+        gotoStep={goToStep}
+        step={step}
+        lastStep={lastStep}
         goToFirstStep={goToFirstStep}
         onOpenBackDialog={onOpenBackDialog}
         processingSaveListing={processingSaveListing}
@@ -4965,6 +4977,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         processingSaveListing={processingSaveListing}
         forward={forward}
         goToFirstStep={goToFirstStep}
+        gotoStep={goToStep}
+        step={step}
+        lastStep={lastStep}
         onOpenBackDialog={onOpenBackDialog}
         processingCategoryFeatures={processingCategoryFeatures}
         categoryFeatures={categoryFeatures}
@@ -4991,6 +5006,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         backward={backward}
         processingSaveListing={processingSaveListing}
         forward={forward}
+        gotoStep={goToStep}
+        step={step}
+        lastStep={lastStep}
         goToFirstStep={goToFirstStep}
         onOpenBackDialog={onOpenBackDialog}
         //onChangeDimensions={onChangeDimensions}
@@ -5026,6 +5044,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         backward={backward}
         forward={forward}
         goToFirstStep={goToFirstStep}
+        gotoStep={goToStep}
+        step={step}
+        lastStep={lastStep}
         onOpenBackDialog={onOpenBackDialog}
         processingPolicies={processingPolicies}
         fulfillmentPolicies={fulfillmentPolicies}
@@ -5071,6 +5092,8 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         goToFirstStep={goToFirstStep}
         goToListingDetails={goToListingDetails}
         onOpenBackDialog={onOpenBackDialog}
+        gotoStep={goToStep}
+        step={step}
         forward={forward}
         titleProcessed={titleProcessed}
         descriptionProcessed={descriptionProcessed}
@@ -5128,6 +5151,9 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         onOpenBackDialog={onOpenBackDialog}
         //getPrices={getPrices}
         getGooglePrices={getGooglePrices}
+        gotoStep={goToStep}
+        step={step}
+        lastStep={lastStep}
         prices={prices}
         processingPrices={processingPrices}
         processingSaveListing={processingSaveListing}

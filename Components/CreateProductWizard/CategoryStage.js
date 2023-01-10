@@ -17,6 +17,7 @@ import {
   IconButton,
 } from 'react-native-paper';
 import Header from '../Header';
+import ToggleStages from './ToggleStages';
 
 export default function CategoryStage(props) {
   //const theme = useTheme();
@@ -26,7 +27,6 @@ export default function CategoryStage(props) {
   console.log(props.categories);
 
   const [searchText, setSearchText] = useState('');
-
 
   /*useEffect(() => {
     if (props.photoLabel || props.photoLabelExtra) {
@@ -40,7 +40,7 @@ export default function CategoryStage(props) {
     props.getCategoriesSearch(searchText);
     setSearchText('');
     searchInput.current.blur();
-  }
+  };
 
   return (
     <View>
@@ -52,6 +52,11 @@ export default function CategoryStage(props) {
         type={props.typeHeader}
         actionBack={props.onOpenBackDialog}
         processingSaveListing={props.processingSaveListing}
+      />
+      <ToggleStages
+        step={props.step}
+        gotoStep={props.gotoStep}
+        lastStep={props.lastStep}
       />
       <View>
         <Banner visible={true} icon={'shape'}>
@@ -66,7 +71,7 @@ export default function CategoryStage(props) {
             />
           </View>
         ) : (
-          <ScrollView style={{ height: '45%' }}>
+          <ScrollView style={{ height: '40%' }}>
             {props.categories.map((item) => {
               return (
                 <View key={item.categoryId}>
@@ -110,34 +115,49 @@ export default function CategoryStage(props) {
           <Text style={{color: 'white'}}>Can't find the right category? Give me more information</Text>
           
           </View>*/}
-        
-        <Card mode='elevated' style={{  backgroundColor: '#E0FFFF', marginTop: 10, marginLeft: 10, marginRight: 10}}>
-        <Card.Title
-    title="Can't find the right category?"
-    left={(props) => <Avatar.Icon {...props} icon="emoticon-sad" />}
-    
-  />
 
-        {/*<Card.Content>
+        <Card
+          mode='elevated'
+          style={{
+            backgroundColor: '#E0FFFF',
+            marginTop: 10,
+            marginLeft: 10,
+            marginRight: 10,
+          }}
+        >
+          <Card.Title
+            title="Can't find the right category?"
+            left={(props) => <Avatar.Icon {...props} icon='emoticon-sad' />}
+          />
+
+          {/*<Card.Content>
         
           <Title style={{fontSize: 14, fontWeight: 'bold'}}>Can't find the right category?</Title>
           
           
         </Card.Content>*/}
 
-        <TextInput
-          ref={searchInput} 
-          mode='outlined'
-          value={searchText}
-          onChangeText={text => setSearchText(text)}
-          style={{marginLeft: 10, marginBottom: 10, marginRight: 10, fontSize: 14}}
-          label="Enter more details about your product"
-          right={<TextInput.Icon icon="send" disabled={searchText && searchText.length > 0 ? false : true} onPress={()=>onProcessCategories()} />}
-        />
-            
-          </Card>
-      
-         
+          <TextInput
+            ref={searchInput}
+            mode='outlined'
+            value={searchText}
+            onChangeText={(text) => setSearchText(text)}
+            style={{
+              marginLeft: 10,
+              marginBottom: 10,
+              marginRight: 10,
+              fontSize: 14,
+            }}
+            label='Enter more details about your product'
+            right={
+              <TextInput.Icon
+                icon='send'
+                disabled={searchText && searchText.length > 0 ? false : true}
+                onPress={() => onProcessCategories()}
+              />
+            }
+          />
+        </Card>
 
         <SegmentedButtons
           style={props.styles.nextBackControl}

@@ -13,6 +13,7 @@ import {
 
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import Header from '../Header';
+import ToggleStages from './ToggleStages';
 
 export default function BarcodeStage(props) {
   //const theme = useTheme();
@@ -55,7 +56,7 @@ export default function BarcodeStage(props) {
   }
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <Header
         title={props.title}
         onDeleteItem={props.onDeleteItem}
@@ -65,6 +66,12 @@ export default function BarcodeStage(props) {
         actionBack={props.onOpenBackDialog}
         processingSaveListing={props.processingSaveListing}
       />
+      <ToggleStages
+        step={props.step}
+        gotoStep={props.gotoStep}
+        lastStep={props.lastStep}
+      />
+
       <View>
         <Banner visible={true} icon={'barcode'}>
           If this item contains a barcode (UPC, EAN, ISBN), it might be useful

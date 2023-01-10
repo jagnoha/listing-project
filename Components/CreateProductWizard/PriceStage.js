@@ -17,6 +17,7 @@ import {
   TextInput,
   List,
 } from 'react-native-paper';
+import ToggleStages from './ToggleStages';
 import Header from '../Header';
 
 const PriceCard = ({ item, onPress }) => {
@@ -24,70 +25,72 @@ const PriceCard = ({ item, onPress }) => {
     <View style={{ margin: 10 }}>
       <View>
         <Card>
-        <Card.Title
-          titleStyle={{ fontSize: 12, paddingLeft: 10 }}
-          subtitleStyle={{ fontSize: 12, paddingLeft: 10, fontWeight: 'bold' }}
-          style={{ padding: 7 }}
-          title={item.title}
-          //subtitle={'FreeShipping: ' + item.freeShipping}          
-          subtitle={item.condition === 'USED' ? 'Used' : 'New' + ' | FreeShipping: ' + item.freeShipping}
-          //subtitle={(props) => {<Text>Hola</Text>}}
-          titleNumberOfLines={4}
-          subtitleNumberOfLines={2}
-          //subtitle="Card Subtitle"
-          left={(props) => (
-            <List.Image variant='image' source={{ uri: item.image }} />
-          )}
+          <Card.Title
+            titleStyle={{ fontSize: 12, paddingLeft: 10 }}
+            subtitleStyle={{
+              fontSize: 12,
+              paddingLeft: 10,
+              fontWeight: 'bold',
+            }}
+            style={{ padding: 7 }}
+            title={item.title}
+            //subtitle={'FreeShipping: ' + item.freeShipping}
+            subtitle={
+              item.condition === 'USED'
+                ? 'Used'
+                : 'New' + ' | FreeShipping: ' + item.freeShipping
+            }
+            //subtitle={(props) => {<Text>Hola</Text>}}
+            titleNumberOfLines={4}
+            subtitleNumberOfLines={2}
+            //subtitle="Card Subtitle"
+            left={(props) => (
+              <List.Image variant='image' source={{ uri: item.image }} />
+            )}
 
-          
-
-          
-          
-          /*right={(props) => <Chip icon='currency-usd' onPress={() => console.log('Pressed')}>{item.price}</Chip>}*/
-        />
-        <Card.Content style={{flexDirection: 'row', alignContent: 'center', alignSelf: 'center'}}>
-        
-        <Button icon='store'>
-         {item.shop}
-      </Button>
-      {/*<Chip
+            /*right={(props) => <Chip icon='currency-usd' onPress={() => console.log('Pressed')}>{item.price}</Chip>}*/
+          />
+          <Card.Content
+            style={{
+              flexDirection: 'row',
+              alignContent: 'center',
+              alignSelf: 'center',
+            }}
+          >
+            <Button icon='store'>{item.shop}</Button>
+            {/*<Chip
           mode={'outlined'}
           icon='currency-usd'
           style={{ margin: 10 }}
         >
           {item.price}
           </Chip>*/}
-          
-        </Card.Content>
-<Card.Actions style={{alignSelf: 'center'}}>
-<Button
-          icon='currency-usd'
-          style={{ margin: 10 }}
-          labelStyle={{fontSize: 15}}
-          
-          //onPress={() => onPress(item.itemId)}
-        >
-          {item.price}
-        </Button>
-<Button
-          icon='check'
-          labelStyle={{fontSize: 13}}
-          
-          style={{ margin: 10 }}
-          onPress={() => onPress(item.itemId)}
-        >
-          Use this price
-        </Button>
-      
-    </Card.Actions>
+          </Card.Content>
+          <Card.Actions style={{ alignSelf: 'center' }}>
+            <Button
+              icon='currency-usd'
+              style={{ margin: 10 }}
+              labelStyle={{ fontSize: 15 }}
+
+              //onPress={() => onPress(item.itemId)}
+            >
+              {item.price}
+            </Button>
+            <Button
+              icon='check'
+              labelStyle={{ fontSize: 13 }}
+              style={{ margin: 10 }}
+              onPress={() => onPress(item.itemId)}
+            >
+              Use this price
+            </Button>
+          </Card.Actions>
         </Card>
         {/*<Text style={{textAlign: 'center'}}>{item.price}</Text>*/}
 
         {/*<List.Image variant='image' source={{ uri: item.image }} />*/}
       </View>
       {/*<View style={{ marginLeft: '30%', paddingBottom: 10}}><Text style={{fontWeight:'bold'}}>{item.shop}</Text></View>*/}
-
-      
 
       {/*<View style={{ marginLeft: '30%', marginRight: '30%' }}>
         <Chip
@@ -99,12 +102,6 @@ const PriceCard = ({ item, onPress }) => {
           {item.price}
         </Chip>
           </View>*/}
-
-
-      
-
-
-
     </View>
   );
 };
@@ -159,11 +156,19 @@ export default function PriceStage(props) {
         }}
       >
         <View>
-          <Text style={{ fontSize: 20, marginBottom: 15, textAlign: 'center', fontWeight: 'bold' }}>Price List</Text>
-          <Text style={{ fontSize: 15, marginBottom: 20, textAlign:'center' }}>
-          Internet reference prices
+          <Text
+            style={{
+              fontSize: 20,
+              marginBottom: 15,
+              textAlign: 'center',
+              fontWeight: 'bold',
+            }}
+          >
+            Price List
           </Text>
-        
+          <Text style={{ fontSize: 15, marginBottom: 20, textAlign: 'center' }}>
+            Internet reference prices
+          </Text>
         </View>
         <Surface
           style={{
@@ -204,6 +209,11 @@ export default function PriceStage(props) {
         onDeleteItem={props.onDeleteItem}
         saveListing={props.saveListing}
         processingSaveListing={props.processingSaveListing}
+      />
+      <ToggleStages
+        step={props.step}
+        gotoStep={props.gotoStep}
+        lastStep={props.lastStep}
       />
       <View>
         <Banner visible={true} icon={'currency-usd'}>
@@ -250,17 +260,20 @@ export default function PriceStage(props) {
           ''
         )}
 
-        {!props.processingPrices && props.letPriceListing && !props.isChangedAspects ?  (
-                <View>
-                  <Button icon='refresh' onPress={() => props.getGooglePrices()}>Get internet reference prices</Button>
-                </View>
-        ) : ''}
-
-
+        {!props.processingPrices &&
+        props.letPriceListing &&
+        !props.isChangedAspects ? (
+          <View>
+            <Button icon='refresh' onPress={() => props.getGooglePrices()}>
+              Get internet reference prices
+            </Button>
+          </View>
+        ) : (
+          ''
+        )}
 
         <SegmentedButtons
           style={props.styles.nextBackControl}
-          
           onValueChange={() => console.log('Change value')}
           buttons={[
             {
@@ -271,7 +284,7 @@ export default function PriceStage(props) {
                 props.goToFirstStep();
                 //props.getCategoriesFeatures(props.category);
               },
-              style: props.styles.nextBackControlButton
+              style: props.styles.nextBackControlButton,
               //disabled: 'false'
               //disabled: categoryId
             },
@@ -300,8 +313,6 @@ export default function PriceStage(props) {
               //disabled: 'false'
               //disabled: categoryId
             },
-
-            
 
             {
               value: 'publish',
@@ -349,12 +360,7 @@ export default function PriceStage(props) {
         ) : (
           ''
         )}
-
-
-
-
       </View>
-      
     </View>
   );
 }

@@ -15,6 +15,7 @@ import {
   IconButton,
   Paragraph,
 } from 'react-native-paper';
+import ToggleStages from './ToggleStages';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../Header';
 
@@ -257,6 +258,11 @@ export default function PolicyStage(props) {
         type={props.typeHeader}
         actionBack={props.onOpenBackDialog}
         processingSaveListing={props.processingSaveListing}
+      />
+      <ToggleStages
+        step={props.step}
+        gotoStep={props.gotoStep}
+        lastStep={props.lastStep}
       />
       <View>
         <Banner visible={true} icon={'format-list-group'}>
