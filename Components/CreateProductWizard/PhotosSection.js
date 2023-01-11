@@ -104,13 +104,13 @@ export default function PhotosSection(props) {
               ''
             )}
             {props.photoMain ? (
-              <View style={{ flexDirection: 'row' }}>
+              <View /*style={{ flexDirection: 'row' }}*/>
                 <IconButton
                   style={{ alignSelf: 'center' }}
                   onPress={() => props.deleteMainPic()}
                   icon='delete'
                 />
-                <IconButton
+                {/*<IconButton
                   style={{ alignSelf: 'center' }}
                   onPress={() => props.removeBackground()}
                   icon='circle-opacity'
@@ -118,7 +118,7 @@ export default function PhotosSection(props) {
                     props.processedRemoveBackground ||
                     props.processingRemoveBackground
                   }
-                />
+                />*/}
               </View>
             ) : (
               ''

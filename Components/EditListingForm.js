@@ -802,6 +802,8 @@ export default function EditListingForm(props) {
 
       const urlAWS = `${urlImages}${photoMain}`;
 
+      console.log('URL AWS: ', urlAWS);
+
       const imgProccesed = await axios.get(
         `https://api.imagga.com/v2/remove-background?image_url=${decodeURIComponent(
           urlAWS
@@ -1126,6 +1128,14 @@ export default function EditListingForm(props) {
         pictureLabelExtra
       );
 
+      const urlImageEPSPost = 'https://listerfast.com/api/ebay/uploadpictures';
+      const resImages = await axios.post(urlImageEPSPost, {
+        uploadPictures: {
+          pictureList: images,
+          ebayAccount: ebayUser 
+        }
+      });
+
       //console.log(images);
 
       const res = await axios.post(urlPost, {
@@ -1143,7 +1153,7 @@ export default function EditListingForm(props) {
           dispatchTimeMax: 1,
           listingDuration: 'GTC',
           listingType: 'FixedPriceItem',
-          pictures: images,
+          pictures: resImages, //images,
           postalCode: `${userAccount.postalCode}`,
           quantity: Number(quantity),
           shippingProfileID: fulfillmentPolicyId,
@@ -1455,12 +1465,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       //console.log('*********************************', uniqueFilteredTitle);
 
       if (uniqueFilteredTitle.trim().length <= 80) {
-        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
+        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
       } else {
-        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitleShort.trim()}`);
+        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitleShort.trim()}`);
       }
 
-      processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
+      processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
     } else if (type === 'shoes') {
       
       
@@ -1596,12 +1606,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       //console.log('*********************************', uniqueFilteredTitle);
 
       if (uniqueFilteredTitle.trim().length <= 80) {
-        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
+        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
       } else {
-        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitleShort.trim()}`);
+        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitleShort.trim()}`);
       }
 
-      processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
+      processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
     } else if (type === 'autoparts') {
 
       
@@ -1712,12 +1722,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
         if (uniqueFilteredTitle.trim().length <= 80) {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
         } else {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitleShort.trim()}`);
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitleShort.trim()}`);
         }
   
-        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
+        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
     } else if (type === 'other') {
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
@@ -1822,12 +1832,12 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
         if (uniqueFilteredTitle.trim().length <= 80) {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
         } else {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitleShort.trim()}`);
+          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitleShort.trim()}`);
         }
   
-        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot}` : ''}${uniqueFilteredTitle.trim()}`);
+        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
     }
   };
 
