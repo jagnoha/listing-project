@@ -867,7 +867,7 @@ export default function EditListingForm(props) {
   const changeLot = (value) => {
     setIsChangedAspects(true);
     setLot(value);
-  }
+  };
 
   const saveListingAndClose = async () => {
     try {
@@ -1128,13 +1128,18 @@ export default function EditListingForm(props) {
         pictureLabelExtra
       );
 
+      console.log(images);
+      console.log(ebayUser);
+
       const urlImageEPSPost = 'https://listerfast.com/api/ebay/uploadpictures';
       const resImages = await axios.post(urlImageEPSPost, {
         uploadPictures: {
           pictureList: images,
-          ebayAccount: ebayUser 
-        }
+          ebayAccount: ebayUser,
+        },
       });
+
+      console.log(resImages.data);
 
       //console.log(images);
 
@@ -1153,7 +1158,7 @@ export default function EditListingForm(props) {
           dispatchTimeMax: 1,
           listingDuration: 'GTC',
           listingType: 'FixedPriceItem',
-          pictures: resImages, //images,
+          pictures: resImages.data.result, //images, //resImages, //images,
           postalCode: `${userAccount.postalCode}`,
           quantity: Number(quantity),
           shippingProfileID: fulfillmentPolicyId,
@@ -1267,8 +1272,6 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
 
     if (type === 'clothing') {
       // step 1
-
-      
 
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
@@ -1465,16 +1468,25 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       //console.log('*********************************', uniqueFilteredTitle);
 
       if (uniqueFilteredTitle.trim().length <= 80) {
-        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
+        setTitleProcessed(
+          `${
+            parseInt(lot) > 1 ? `Set of ${lot} ` : ''
+          }${uniqueFilteredTitle.trim()}`
+        );
       } else {
-        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitleShort.trim()}`);
+        setTitleProcessed(
+          `${
+            parseInt(lot) > 1 ? `Set of ${lot} ` : ''
+          }${uniqueFilteredTitleShort.trim()}`
+        );
       }
 
-      processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
+      processingDescription(
+        `${
+          parseInt(lot) > 1 ? `Set of ${lot} ` : ''
+        }${uniqueFilteredTitle.trim()}`
+      );
     } else if (type === 'shoes') {
-      
-      
-
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
 
@@ -1606,16 +1618,25 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
       //console.log('*********************************', uniqueFilteredTitle);
 
       if (uniqueFilteredTitle.trim().length <= 80) {
-        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
+        setTitleProcessed(
+          `${
+            parseInt(lot) > 1 ? `Set of ${lot} ` : ''
+          }${uniqueFilteredTitle.trim()}`
+        );
       } else {
-        setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitleShort.trim()}`);
+        setTitleProcessed(
+          `${
+            parseInt(lot) > 1 ? `Set of ${lot} ` : ''
+          }${uniqueFilteredTitleShort.trim()}`
+        );
       }
 
-      processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
+      processingDescription(
+        `${
+          parseInt(lot) > 1 ? `Set of ${lot} ` : ''
+        }${uniqueFilteredTitle.trim()}`
+      );
     } else if (type === 'autoparts') {
-
-      
-
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
 
@@ -1721,13 +1742,25 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .join(' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
-        if (uniqueFilteredTitle.trim().length <= 80) {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
-        } else {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitleShort.trim()}`);
-        }
-  
-        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
+      if (uniqueFilteredTitle.trim().length <= 80) {
+        setTitleProcessed(
+          `${
+            parseInt(lot) > 1 ? `Set of ${lot} ` : ''
+          }${uniqueFilteredTitle.trim()}`
+        );
+      } else {
+        setTitleProcessed(
+          `${
+            parseInt(lot) > 1 ? `Set of ${lot} ` : ''
+          }${uniqueFilteredTitleShort.trim()}`
+        );
+      }
+
+      processingDescription(
+        `${
+          parseInt(lot) > 1 ? `Set of ${lot} ` : ''
+        }${uniqueFilteredTitle.trim()}`
+      );
     } else if (type === 'other') {
       pendingTitle.push(keywords['vintage']);
       shortPendingTitle.push(keywords['vintage']);
@@ -1831,13 +1864,25 @@ ${conditionDescription.length > 0 ? `** ${conditionDescription} **` : ''}
         .join(' ')
         .replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 
-        if (uniqueFilteredTitle.trim().length <= 80) {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
-        } else {
-          setTitleProcessed(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitleShort.trim()}`);
-        }
-  
-        processingDescription(`${parseInt(lot) > 1 ? `Set of ${lot} ` : ''}${uniqueFilteredTitle.trim()}`);
+      if (uniqueFilteredTitle.trim().length <= 80) {
+        setTitleProcessed(
+          `${
+            parseInt(lot) > 1 ? `Set of ${lot} ` : ''
+          }${uniqueFilteredTitle.trim()}`
+        );
+      } else {
+        setTitleProcessed(
+          `${
+            parseInt(lot) > 1 ? `Set of ${lot} ` : ''
+          }${uniqueFilteredTitleShort.trim()}`
+        );
+      }
+
+      processingDescription(
+        `${
+          parseInt(lot) > 1 ? `Set of ${lot} ` : ''
+        }${uniqueFilteredTitle.trim()}`
+      );
     }
   };
 
